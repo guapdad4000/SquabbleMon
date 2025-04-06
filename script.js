@@ -1638,9 +1638,9 @@ function useMove(move) {
     setTimeout(() => endPlayerTurn(), 1000);
     
     // Remove animation
+    setTimeout(() => {
       playerSprite.classList.remove("attack-animation");
       if (window.originalPlayerClass) playerSprite.classList.add(window.originalPlayerClass);
-      playerSprite.classList.remove("attack-animation");
       canAct = true;
     }, 1000);
     return;
@@ -1692,8 +1692,6 @@ function useMove(move) {
     } else {
       setTimeout(() => endPlayerTurn(), 1000);
     }
-    playerSprite.classList.remove("attack-animation");
-    if (window.originalPlayerClass) playerSprite.classList.add(window.originalPlayerClass);
     // Remove animation and restore floating
     playerSprite.classList.remove("attack-animation");
     if (window.originalPlayerClass) playerSprite.classList.add(window.originalPlayerClass);
@@ -1814,9 +1812,9 @@ function executeOpponentMove(move) {
     setTimeout(() => endOpponentTurn(), 1000);
     
     // Remove animation
+    setTimeout(() => {
       opponentSprite.classList.remove("attack-animation-reverse");
       if (window.originalOpponentClass) opponentSprite.classList.add(window.originalOpponentClass);
-      opponentSprite.classList.remove("attack-animation-reverse");
     }, 1000);
     return;
   }
@@ -1867,10 +1865,9 @@ function executeOpponentMove(move) {
     } else {
       setTimeout(() => endOpponentTurn(), 1000);
     }
-    opponentSprite.classList.remove("attack-animation-reverse");
-    if (window.originalOpponentClass) opponentSprite.classList.add(window.originalOpponentClass);
     // Remove animation
     opponentSprite.classList.remove("attack-animation-reverse");
+    if (window.originalOpponentClass) opponentSprite.classList.add(window.originalOpponentClass);
   }, 1000);
 }
 
