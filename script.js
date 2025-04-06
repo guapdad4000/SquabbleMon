@@ -2266,13 +2266,20 @@ function handleStatusMove(move, user) {
     switch (activePlayerCharacter.id) {
       case 1: // Rastamon
         if (move.name === "Irie Recharge") {
-          // Healing move
-          const healAmount = 30;
+          // Healing move - more dynamic calculation: 20-30% of maxHp
           // Make sure maxHp is set
           activePlayerCharacter.maxHp = activePlayerCharacter.maxHp || activePlayerCharacter.hp;
           
-          // Use maxHp directly for healing calculation
+          // Calculate a dynamic heal amount (20-30% of max HP)
+          const healPercent = 0.2 + Math.random() * 0.1; // 20-30%
+          const healAmount = Math.floor(activePlayerCharacter.maxHp * healPercent);
+          
+          // Apply the healing
+          const oldHp = activePlayerCharacter.hp; // Store old hp for logging
           activePlayerCharacter.hp = Math.min(activePlayerCharacter.hp + healAmount, activePlayerCharacter.maxHp);
+          
+          // Calculate the actual amount healed (could be less if near max HP)
+          const actualHealAmount = activePlayerCharacter.hp - oldHp;
           
           // Add visual healing effect
           const playerSprite = document.getElementById("player-sprite");
@@ -2318,8 +2325,8 @@ function handleStatusMove(move, user) {
             }, 1500);
           }
           
-          addToBattleLog(`${activePlayerCharacter.name} recovered ${healAmount} HP!`);
-          showFloatingLog(`+${healAmount} HP`);
+          addToBattleLog(`${activePlayerCharacter.name} recovered ${actualHealAmount} HP!`);
+          showFloatingLog(`+${actualHealAmount} HP!`);
         } else {
           applyStatusEffect(activeOpponent, "baked", 3, "opponent");
         }
@@ -2344,13 +2351,20 @@ function handleStatusMove(move, user) {
         break;
       case 4: // Cool Vibe YN
         if (move.name === "Call Girls for Gang") {
-          // Healing move
-          const healAmount = 40;
+          // Healing move - more dynamic calculation: 25-35% of maxHp
           // Make sure maxHp is set
           activePlayerCharacter.maxHp = activePlayerCharacter.maxHp || activePlayerCharacter.hp;
           
-          // Use maxHp directly for healing calculation
+          // Calculate a dynamic heal amount (25-35% of max HP)
+          const healPercent = 0.25 + Math.random() * 0.1; // 25-35%
+          const healAmount = Math.floor(activePlayerCharacter.maxHp * healPercent);
+          
+          // Apply the healing
+          const oldHp = activePlayerCharacter.hp; // Store old hp for logging
           activePlayerCharacter.hp = Math.min(activePlayerCharacter.hp + healAmount, activePlayerCharacter.maxHp);
+          
+          // Calculate the actual amount healed (could be less if near max HP)
+          const actualHealAmount = activePlayerCharacter.hp - oldHp;
           
           // Add visual healing effect
           const playerSprite = document.getElementById("player-sprite");
@@ -2396,21 +2410,28 @@ function handleStatusMove(move, user) {
             }, 1500);
           }
           
-          addToBattleLog(`${activePlayerCharacter.name} recovered ${healAmount} HP!`);
-          showFloatingLog(`+${healAmount} HP`);
+          addToBattleLog(`${activePlayerCharacter.name} recovered ${actualHealAmount} HP!`);
+          showFloatingLog(`+${actualHealAmount} HP!`);
         } else {
           applyStatusEffect(activeOpponent, "slimed", 3, "opponent");
         }
         break;
       case 5: // 9-5 Homie
         if (move.name === "PTO Prayer") {
-          // Healing move
-          const healAmount = 35;
+          // Healing move - more dynamic calculation: 22-32% of maxHp
           // Make sure maxHp is set
           activePlayerCharacter.maxHp = activePlayerCharacter.maxHp || activePlayerCharacter.hp;
           
-          // Use maxHp directly for healing calculation
+          // Calculate a dynamic heal amount (22-32% of max HP)
+          const healPercent = 0.22 + Math.random() * 0.1; // 22-32%
+          const healAmount = Math.floor(activePlayerCharacter.maxHp * healPercent);
+          
+          // Apply the healing
+          const oldHp = activePlayerCharacter.hp; // Store old hp for logging
           activePlayerCharacter.hp = Math.min(activePlayerCharacter.hp + healAmount, activePlayerCharacter.maxHp);
+          
+          // Calculate the actual amount healed (could be less if near max HP)
+          const actualHealAmount = activePlayerCharacter.hp - oldHp;
           
           // Add visual healing effect
           const playerSprite = document.getElementById("player-sprite");
@@ -2456,8 +2477,8 @@ function handleStatusMove(move, user) {
             }, 1500);
           }
           
-          addToBattleLog(`${activePlayerCharacter.name} recovered ${healAmount} HP!`);
-          showFloatingLog(`+${healAmount} HP`);
+          addToBattleLog(`${activePlayerCharacter.name} recovered ${actualHealAmount} HP!`);
+          showFloatingLog(`+${actualHealAmount} HP!`);
         } else {
           opponentStatModifiers.speed *= 0.7;
           addToBattleLog(`${activeOpponent.name}'s Speed decreased!`);
@@ -2501,13 +2522,20 @@ function handleStatusMove(move, user) {
     switch (activeOpponent.id) {
       case 101: // Functional Addict
         if (move.name === "Sober Up Sis") {
-          // Healing move
-          const healAmount = 30;
+          // Healing move - more dynamic calculation: 20-30% of maxHp for opponent
           // Make sure maxHp is set
           activeOpponent.maxHp = activeOpponent.maxHp || activeOpponent.hp;
           
-          // Use maxHp directly for healing calculation
+          // Calculate a dynamic heal amount (20-30% of max HP)
+          const healPercent = 0.2 + Math.random() * 0.1; // 20-30%
+          const healAmount = Math.floor(activeOpponent.maxHp * healPercent);
+          
+          // Apply the healing
+          const oldHp = activeOpponent.hp; // Store old hp for logging
           activeOpponent.hp = Math.min(activeOpponent.hp + healAmount, activeOpponent.maxHp);
+          
+          // Calculate the actual amount healed (could be less if near max HP)
+          const actualHealAmount = activeOpponent.hp - oldHp;
           
           // Add visual healing effect
           const opponentSprite = document.getElementById("opponent-sprite");
@@ -2553,8 +2581,8 @@ function handleStatusMove(move, user) {
             }, 1500);
           }
           
-          addToBattleLog(`${activeOpponent.name} recovered ${healAmount} HP!`);
-          showFloatingLog(`+${healAmount} HP`);
+          addToBattleLog(`${activeOpponent.name} recovered ${actualHealAmount} HP!`);
+          showFloatingLog(`+${actualHealAmount} HP!`);
         } else {
           applyStatusEffect(activePlayerCharacter, "dazed", 2, "player");
         }
