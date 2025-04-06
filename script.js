@@ -546,7 +546,7 @@ const opponents = [
   {
     id: 105,
     name: "Techbro Rich",
-    sprite: "https://i.imgur.com/GmlKf6u.png", 
+    sprite: "https://i.imgur.com/eJpAcGt.png", 
     hp: 180,
     attack: 180,
     defense: 120,
@@ -555,10 +555,10 @@ const opponents = [
     type: "Electric",
     description: "Disrupting the Squabblemon scene, one NFT at a time. Very rich.",
     moves: [
-      { name: "Tesla Taze", power: 55, accuracy: 90, type: "Electric" },
-      { name: "NFT Nuke", power: 85, accuracy: 70, type: "Normal" },
-      { name: "VC Funded Flex", power: 0, accuracy: 100, type: "Electric" },
-      { name: "Crypto Crash", power: 75, accuracy: 80, type: "Dark" }
+      { name: "Tesla Taze", power: 55, accuracy: 90, type: "Electric", description: "Electric-type attack that may cause paralysis.", pp: 15, maxPp: 15 },
+      { name: "NFT Nuke", power: 85, accuracy: 70, type: "Normal", description: "Normal-type powerful attack with low accuracy.", pp: 5, maxPp: 5 },
+      { name: "VC Funded Flex", power: 0, accuracy: 100, type: "Electric", description: "Raises speed with venture capital energy.", pp: 10, maxPp: 10 },
+      { name: "Crypto Crash", power: 75, accuracy: 80, type: "Dark", description: "Dark-type attack with medium power and accuracy.", pp: 10, maxPp: 10 }
     ],
     ai: "balanced"
   },
