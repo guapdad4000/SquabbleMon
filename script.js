@@ -754,6 +754,7 @@ let battleLog = [];
 let gameActive = false;
 let currentTurn = "player"; // player or opponent
 let fadeCount = 0;
+let battleCounter = 0; // Count battles within a "fade" sequence (3 battles = 1 fade)
 let opponentIndex = 0;
 let playerStatModifiers = { attack: 1, defense: 1, speed: 1, accuracy: 1 };
 let opponentStatModifiers = { attack: 1, defense: 1, speed: 1, accuracy: 1 };
@@ -885,6 +886,7 @@ function initGame() {
   // Reset game state
   playerTeam = [];
   fadeCount = 0;
+  battleCounter = 0;
   opponentIndex = 0;
   updateFadeDisplay();
   
@@ -2191,8 +2193,15 @@ function handlePlayerFaint() {
 }
 
 function handleOpponentFaint() {
-  fadeCount++;
-  updateFadeDisplay();
+  // Increment battle counter
+  battleCounter++;
+  
+  // Only increase fade count after 3 battles
+  if (battleCounter >= 3) {
+    fadeCount++;
+    battleCounter = 0; // Reset battle counter for next fade
+    updateFadeDisplay();
+  }
   
   addToBattleLog(`${activeOpponent.name} got faded!`);
   showFloatingLog(`${activeOpponent.name} faded!`);
@@ -2301,6 +2310,7 @@ function restartGame() {
   // Reset game state
   playerTeam = [];
   fadeCount = 0;
+  battleCounter = 0; // Reset battle counter
   opponentIndex = 0;
   battleLog = [];
   gameActive = false;

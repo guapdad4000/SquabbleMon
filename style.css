@@ -106,6 +106,16 @@ body {
   font-size: 1.3em;
   margin-top: 25px;
 }
+
+.selection-instruction {
+  color: var(--pixel-text-light);
+  font-size: 0.8em;
+  margin-bottom: 15px;
+  text-align: center;
+  max-width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+}
 #character-list {
   display: flex;
   flex-wrap: wrap;
@@ -747,15 +757,22 @@ body {
   max-width: 250px;
   z-index: 100;
   pointer-events: none;
+  overflow: hidden; /* Prevent scrollbars */
+  max-height: none; /* Allow natural height */
+  text-overflow: ellipsis; /* Add ellipsis for text overflow */
+  white-space: normal; /* Allow text wrapping */
 }
 
 .character-tooltip {
   font-size: 1em;
   line-height: 1.3;
+  max-width: 100%; /* Ensure it fits in parent container */
 }
 
 .character-tooltip p {
   margin: 4px 0;
+  overflow: hidden; /* Hide overflowing text */
+  text-overflow: ellipsis; /* Add ellipsis for text overflow */
 }
 
 .character-tooltip strong {
