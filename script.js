@@ -1273,9 +1273,17 @@ function startBattle() {
   // Initialize battle
   gameActive = true;
   
-  // Set active characters
+  // Set active characters and ensure maxHp is set
+  playerTeam.forEach(character => {
+    // Set maxHp for each character if not already set
+    character.maxHp = character.maxHp || character.hp;
+  });
+  
   activePlayerCharacter = { ...playerTeam[0] };
   activeOpponent = { ...opponents[opponentIndex] };
+  
+  // Set maxHp for opponent
+  activeOpponent.maxHp = activeOpponent.maxHp || activeOpponent.hp;
   
   // Reset stat modifiers and status effects
   resetBattleModifiers();
@@ -1337,20 +1345,23 @@ function determineFirstTurn() {
 function updateBattleUI() {
   // Update player character display
   document.getElementById("player-name").textContent = activePlayerCharacter.name;
-  document.getElementById("player-hp").textContent = `${activePlayerCharacter.hp}/${playerTeam[playerTeam.findIndex(c => c.id === activePlayerCharacter.id)].hp}`;
+  
+  // Make sure maxHp is set for both active characters
+  activePlayerCharacter.maxHp = activePlayerCharacter.maxHp || activePlayerCharacter.hp;
+  activeOpponent.maxHp = activeOpponent.maxHp || activeOpponent.hp;
+  
+  // Update HP display using maxHp
+  document.getElementById("player-hp").textContent = `${activePlayerCharacter.hp}/${activePlayerCharacter.maxHp}`;
   document.getElementById("player-sprite").src = activePlayerCharacter.sprite;
   
   // Update opponent display
   document.getElementById("opponent-name").textContent = activeOpponent.name;
-  document.getElementById("opponent-hp").textContent = `${activeOpponent.hp}/${opponents[opponentIndex].hp}`;
+  document.getElementById("opponent-hp").textContent = `${activeOpponent.hp}/${activeOpponent.maxHp}`;
   document.getElementById("opponent-sprite").src = activeOpponent.sprite;
   
-  // Update HP bars
-  const playerMaxHP = playerTeam[playerTeam.findIndex(c => c.id === activePlayerCharacter.id)].hp;
-  const opponentMaxHP = opponents[opponentIndex].hp;
-  
-  document.getElementById("player-hp-fill").style.width = `${(activePlayerCharacter.hp / playerMaxHP) * 100}%`;
-  document.getElementById("opponent-hp-fill").style.width = `${(activeOpponent.hp / opponentMaxHP) * 100}%`;
+  // Update HP bars using maxHp directly
+  document.getElementById("player-hp-fill").style.width = `${(activePlayerCharacter.hp / activePlayerCharacter.maxHp) * 100}%`;
+  document.getElementById("opponent-hp-fill").style.width = `${(activeOpponent.hp / activeOpponent.maxHp) * 100}%`;
   
   // Update player info tooltip with safety checks
   if (activePlayerCharacter && document.getElementById("player-info-text")) {
@@ -2881,16 +2892,12 @@ function useItem(itemType) {
   // Apply item effect
   switch (item.effect) {
     case "heal":
-      // Find the maximum HP for the current character
-      const playerIndex = playerTeam.findIndex(c => c.id === activePlayerCharacter.id);
-      if (playerIndex === -1) {
-        console.error("Player character not found in team");
-        break;
-      }
+      // Make sure maxHp is set
+      activePlayerCharacter.maxHp = activePlayerCharacter.maxHp || activePlayerCharacter.hp;
       
-      const maxHp = playerTeam[playerIndex].hp;
-      const healAmount = Math.min(item.value, maxHp - activePlayerCharacter.hp);
-      activePlayerCharacter.hp = Math.min(maxHp, activePlayerCharacter.hp + item.value);
+      // Use the maxHp property directly
+      const healAmount = Math.min(item.value, activePlayerCharacter.maxHp - activePlayerCharacter.hp);
+      activePlayerCharacter.hp = Math.min(activePlayerCharacter.maxHp, activePlayerCharacter.hp + item.value);
       
       // Add visual healing effect
       const healingPlayerSprite = document.getElementById("player-sprite");
@@ -3029,13 +3036,13 @@ function useItem(itemType) {
         updateStatusIcons();
         
         // Small HP recovery bonus
-        const playerIdx = playerTeam.findIndex(c => c.id === activePlayerCharacter.id);
-        if (playerIdx !== -1) {
-          const maxHp = playerTeam[playerIdx].hp;
-          const cureHealAmount = Math.floor(maxHp * 0.1);
-          activePlayerCharacter.hp = Math.min(maxHp, activePlayerCharacter.hp + cureHealAmount);
-          addToBattleLog(`${activePlayerCharacter.name} recovered ${cureHealAmount} HP!`);
-        }
+        // Make sure maxHp is set
+        activePlayerCharacter.maxHp = activePlayerCharacter.maxHp || activePlayerCharacter.hp;
+        
+        // Use maxHp for healing calculation
+        const cureHealAmount = Math.floor(activePlayerCharacter.maxHp * 0.1);
+        activePlayerCharacter.hp = Math.min(activePlayerCharacter.maxHp, activePlayerCharacter.hp + cureHealAmount);
+        addToBattleLog(`${activePlayerCharacter.name} recovered ${cureHealAmount} HP!`);
       } else {
         addToBattleLog(`It had no effect...`);
         showFloatingLog("No effect");
@@ -3104,7 +3111,7 @@ function switchYN() {
       <img src="${character.sprite}" alt="${character.name}" style="${imgStyle}">
       <p>${character.name}${isFainted ? " (faded)" : ""}</p>
       <div class="hp-indicator">
-        <div class="hp-indicator-fill" style="width: ${Math.max(0, (character.hp / (character.maxHp || character.hp)) * 100)}%"></div>
+        <div class="hp-indicator-fill" style="width: ${isFainted ? 0 : Math.max(0, (character.hp / character.maxHp) * 100)}%"></div>
       </div>
     `;
     
