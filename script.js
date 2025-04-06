@@ -1071,27 +1071,39 @@ function updateBattleUI() {
   document.getElementById("player-hp-fill").style.width = `${(activePlayerCharacter.hp / playerMaxHP) * 100}%`;
   document.getElementById("opponent-hp-fill").style.width = `${(activeOpponent.hp / opponentMaxHP) * 100}%`;
   
-  // Update player info tooltip
-  const playerInfo = `
-    <div class="character-tooltip">
-      <p><strong>${activePlayerCharacter.name}</strong></p>
-      <p>Type: ${activePlayerCharacter.type}</p>
-      <p>ATK: ${activePlayerCharacter.stats.attack} | DEF: ${activePlayerCharacter.stats.defense} | SPD: ${activePlayerCharacter.stats.speed}</p>
-      <small>${activePlayerCharacter.description || 'Hover to see stats'}</small>
-    </div>
-  `;
-  document.getElementById("player-info-text").innerHTML = playerInfo;
+  // Update player info tooltip with safety checks
+  if (activePlayerCharacter && document.getElementById("player-info-text")) {
+    const playerAttack = activePlayerCharacter.stats ? activePlayerCharacter.stats.attack : activePlayerCharacter.attack || 0;
+    const playerDefense = activePlayerCharacter.stats ? activePlayerCharacter.stats.defense : activePlayerCharacter.defense || 0;
+    const playerSpeed = activePlayerCharacter.stats ? activePlayerCharacter.stats.speed : activePlayerCharacter.speed || 0;
+    
+    const playerInfo = `
+      <div class="character-tooltip">
+        <p><strong>${activePlayerCharacter.name}</strong></p>
+        <p>Type: ${activePlayerCharacter.type || 'Unknown'}</p>
+        <p>ATK: ${playerAttack} | DEF: ${playerDefense} | SPD: ${playerSpeed}</p>
+        <small>${activePlayerCharacter.description || 'Hover to see stats'}</small>
+      </div>
+    `;
+    document.getElementById("player-info-text").innerHTML = playerInfo;
+  }
   
-  // Update opponent info box for tooltip
-  const characterInfo = `
-    <div class="character-tooltip">
-      <p><strong>${activeOpponent.name}</strong></p>
-      <p>Type: ${activeOpponent.type}</p>
-      <p>ATK: ${activeOpponent.stats.attack} | DEF: ${activeOpponent.stats.defense} | SPD: ${activeOpponent.stats.speed}</p>
-      <small>${activeOpponent.description || 'Hover to see stats'}</small>
-    </div>
-  `;
-  document.getElementById("opponent-info-text").innerHTML = characterInfo;
+  // Update opponent info box for tooltip with safety checks
+  if (activeOpponent && document.getElementById("opponent-info-text")) {
+    const opponentAttack = activeOpponent.stats ? activeOpponent.stats.attack : activeOpponent.attack || 0;
+    const opponentDefense = activeOpponent.stats ? activeOpponent.stats.defense : activeOpponent.defense || 0;
+    const opponentSpeed = activeOpponent.stats ? activeOpponent.stats.speed : activeOpponent.speed || 0;
+    
+    const characterInfo = `
+      <div class="character-tooltip">
+        <p><strong>${activeOpponent.name}</strong></p>
+        <p>Type: ${activeOpponent.type || 'Unknown'}</p>
+        <p>ATK: ${opponentAttack} | DEF: ${opponentDefense} | SPD: ${opponentSpeed}</p>
+        <small>${activeOpponent.description || 'Hover to see stats'}</small>
+      </div>
+    `;
+    document.getElementById("opponent-info-text").innerHTML = characterInfo;
+  }
 }
 
 function updateStatusIcons() {
@@ -1120,12 +1132,16 @@ function updateStatusIcons() {
 
 function updateMoveButtons() {
   const movesContainer = document.getElementById("moves");
+  if (!movesContainer || !activePlayerCharacter || !activePlayerCharacter.moves) return;
+  
   movesContainer.innerHTML = "";
   
   activePlayerCharacter.moves.forEach(move => {
+    if (!move) return;
+    
     const moveButton = document.createElement("button");
     moveButton.className = "pixel-button";
-    moveButton.textContent = move.name;
+    moveButton.textContent = move.name || "Unknown Move";
     moveButton.dataset.move = JSON.stringify(move);
     moveButton.addEventListener("click", () => useMove(move));
     moveButton.addEventListener("mouseover", showMoveTooltip);
@@ -1136,19 +1152,26 @@ function updateMoveButtons() {
 
 function updateItemButtons() {
   const itemButtons = document.querySelectorAll("#items button:not(#toggle-switch)");
+  if (!itemButtons || itemButtons.length === 0) return;
   
   itemButtons.forEach(button => {
-    const itemType = button.getAttribute("onclick").match(/'([^']+)'/)[1];
-    if (itemUseCounts[itemType] <= 0) {
-      button.disabled = true;
-    } else {
-      button.disabled = false;
-    }
+    const onclickAttr = button.getAttribute("onclick");
+    if (!onclickAttr) return;
+    
+    const match = onclickAttr.match(/'([^']+)'/);
+    if (!match || !match[1]) return;
+    
+    const itemType = match[1];
+    if (!itemUseCounts[itemType] && itemUseCounts[itemType] !== 0) return;
+    
+    button.disabled = itemUseCounts[itemType] <= 0;
   });
 }
 
 function updateFadeDisplay() {
-  document.getElementById("fade-display").textContent = `Fades: ${fadeCount}`;
+  const fadeDisplay = document.getElementById("fade-display");
+  if (!fadeDisplay) return;
+  fadeDisplay.textContent = `Fades: ${fadeCount}`;
 }
 
 function setupMoveTooltips() {
@@ -1162,47 +1185,66 @@ function setupMoveTooltips() {
 }
 
 function showMoveTooltip(e) {
-  const moveData = JSON.parse(e.target.dataset.move);
-  const tooltip = document.getElementById("move-tooltip");
+  if (!e || !e.target || !e.target.dataset || !e.target.dataset.move) return;
   
-  tooltip.innerHTML = `
-    <p><strong>${moveData.name}</strong></p>
-    <p>Type: ${moveData.type}</p>
-    <p>Power: ${moveData.power}</p>
-    <p>Accuracy: ${moveData.accuracy}%</p>
-    <p>${moveData.description || ""}</p>
-  `;
-  
-  tooltip.style.display = "block";
-  tooltip.style.left = `${e.pageX + 10}px`;
-  tooltip.style.top = `${e.pageY + 10}px`;
+  try {
+    const moveData = JSON.parse(e.target.dataset.move);
+    const tooltip = document.getElementById("move-tooltip");
+    if (!tooltip || !moveData) return;
+    
+    tooltip.innerHTML = `
+      <p><strong>${moveData.name || 'Unknown Move'}</strong></p>
+      <p>Type: ${moveData.type || 'Normal'}</p>
+      <p>Power: ${moveData.power || 0}</p>
+      <p>Accuracy: ${moveData.accuracy || 100}%</p>
+      <p>${moveData.description || ""}</p>
+    `;
+    
+    tooltip.style.display = "block";
+    tooltip.style.left = `${e.pageX + 10}px`;
+    tooltip.style.top = `${e.pageY + 10}px`;
+  } catch (err) {
+    console.error("Error showing move tooltip:", err);
+  }
 }
 
 function hideMoveTooltip() {
-  document.getElementById("move-tooltip").style.display = "none";
+  const tooltip = document.getElementById("move-tooltip");
+  if (tooltip) tooltip.style.display = "none";
 }
 
 // Character tooltip functions
 function showCharacterTooltip(e) {
-  const tooltipData = JSON.parse(e.currentTarget.getAttribute("data-tooltip"));
-  const tooltip = document.getElementById("move-tooltip"); // Reuse the same tooltip element
+  if (!e || !e.currentTarget) return;
   
-  tooltip.innerHTML = `
-    <div class="character-tooltip">
-      <p><strong>${tooltipData.name}</strong> (${tooltipData.type})</p>
-      <p>HP: ${tooltipData.hp} | ATK: ${tooltipData.attack} | DEF: ${tooltipData.defense} | SPD: ${tooltipData.speed}</p>
-      <p>${tooltipData.description}</p>
-      <p><small>Moves: ${tooltipData.moves}</small></p>
-    </div>
-  `;
-  
-  tooltip.style.display = "block";
-  tooltip.style.left = `${e.pageX + 10}px`;
-  tooltip.style.top = `${e.pageY + 10}px`;
+  try {
+    const tooltipAttr = e.currentTarget.getAttribute("data-tooltip");
+    if (!tooltipAttr) return;
+    
+    const tooltipData = JSON.parse(tooltipAttr);
+    const tooltip = document.getElementById("move-tooltip"); // Reuse the same tooltip element
+    if (!tooltip || !tooltipData) return;
+    
+    tooltip.innerHTML = `
+      <div class="character-tooltip">
+        <p><strong>${tooltipData.name || 'Unknown'}</strong> (${tooltipData.type || 'Normal'})</p>
+        <p>HP: ${tooltipData.hp || 0} | ATK: ${tooltipData.attack || 0} | DEF: ${tooltipData.defense || 0} | SPD: ${tooltipData.speed || 0}</p>
+        <p>${tooltipData.description || 'No description available'}</p>
+        <p><small>Moves: ${tooltipData.moves || 'None'}</small></p>
+      </div>
+    `;
+    
+    tooltip.style.display = "block";
+    tooltip.style.left = `${e.pageX + 10}px`;
+    tooltip.style.top = `${e.pageY + 10}px`;
+  } catch (err) {
+    console.error("Error showing character tooltip:", err);
+  }
 }
 
 function hideCharacterTooltip() {
-  document.getElementById("move-tooltip").style.display = "none";
+  const tooltip = document.getElementById("move-tooltip");
+  if (tooltip) tooltip.style.display = "none";
 }
 
 function processTurn() {
