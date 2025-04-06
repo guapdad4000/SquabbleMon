@@ -3069,7 +3069,7 @@ function switchYN() {
   if (isActiveFainted) {
     const message = document.createElement("p");
     message.className = "switch-message";
-    message.textContent = "Choose a new character!";
+    message.textContent = "Your character faded! Choose a new one:";
     switchOptions.appendChild(message);
   }
   
@@ -3096,11 +3096,15 @@ function switchYN() {
     
     const option = document.createElement("div");
     option.className = `switch-option ${isFainted ? "fainted" : ""} ${isCurrentActive ? "current" : ""}`;
+    
+    // If character is fainted, apply greyed out style 
+    let imgStyle = isFainted ? "filter: grayscale(100%) opacity(0.7);" : "";
+    
     option.innerHTML = `
-      <img src="${character.sprite}" alt="${character.name}">
-      <p>${character.name}</p>
+      <img src="${character.sprite}" alt="${character.name}" style="${imgStyle}">
+      <p>${character.name}${isFainted ? " (faded)" : ""}</p>
       <div class="hp-indicator">
-        <div class="hp-indicator-fill" style="width: ${Math.max(0, (character.hp / character.hp || 1) * 100)}%"></div>
+        <div class="hp-indicator-fill" style="width: ${Math.max(0, (character.hp / (character.maxHp || character.hp)) * 100)}%"></div>
       </div>
     `;
     
@@ -3129,8 +3133,17 @@ function confirmSwitch(index) {
   
   // Get the new active character
   const newActive = playerTeam[index];
-  addToBattleLog(`${activePlayerCharacter.name} switched out for ${newActive.name}!`);
-  showFloatingLog(`Go, ${newActive.name}!`);
+  
+  // Check if this is a forced switch due to faint or a voluntary switch
+  const isForced = activePlayerCharacter && activePlayerCharacter.hp <= 0;
+  
+  if (isForced) {
+    addToBattleLog(`${newActive.name} was sent out!`);
+    showFloatingLog(`Go, ${newActive.name}!`);
+  } else {
+    addToBattleLog(`${activePlayerCharacter.name} switched out for ${newActive.name}!`);
+    showFloatingLog(`Go, ${newActive.name}!`);
+  }
   
   // Update active character
   activePlayerCharacter = newActive;
@@ -3140,8 +3153,16 @@ function confirmSwitch(index) {
   updateStatusIcons();
   updateMoveButtons();
   
-  // End turn
-  setTimeout(() => endPlayerTurn(), 600);
+  // Check if this was after an opponent switch/faint
+  if (isForced || (currentTurn === "player" && canAct)) {
+    // Start the next turn after a brief delay
+    setTimeout(() => {
+      processTurn();
+    }, 600);
+  } else {
+    // Normal case - end the player's turn
+    setTimeout(() => endPlayerTurn(), 600);
+  }
 }
 
 function cancelSwitch() {
@@ -3154,6 +3175,16 @@ function cancelSwitch() {
   
   // Otherwise, hide the switch screen
   document.getElementById("switch-screen").style.display = "none";
+  
+  // If this was after an opponent switch, proceed with the battle
+  if (currentTurn === "player" && canAct) {
+    // Start the next turn after a brief delay
+    setTimeout(() => {
+      addToBattleLog(`${activePlayerCharacter.name} stays in the battle!`);
+      showFloatingLog(`${activePlayerCharacter.name} is ready!`);
+      processTurn();
+    }, 500);
+  }
 }
 
 function handlePlayerFaint() {
@@ -3178,13 +3209,11 @@ function handlePlayerFaint() {
     setTimeout(() => {
       gameActive = false; // Ensure game is marked as not active
       showGameOver(false);
-    }, 1000);
+    }, 500);
   } else {
-    // Show switch screen to choose next character
-    setTimeout(() => {
-      canAct = true; // Re-enable actions before showing switch screen
-      switchYN();
-    }, 1000);
+    // Immediately show switch screen to choose next character
+    canAct = true; // Re-enable actions before showing switch screen
+    switchYN(); // Show switch screen right away
   }
 }
 
@@ -3213,22 +3242,43 @@ function handleOpponentFaint() {
     // Check if we've completed the current fade (3 battles)
     if (battleCounter === 0) {
       // Game over - player won and a fade was just completed
-      setTimeout(() => showGameOver(true), 1500);
+      setTimeout(() => showGameOver(true), 1000);
     } else {
-      // We haven't completed a full fade yet, show an intermediate screen
+      // We haven't completed a full fade yet
       setTimeout(() => {
         addToBattleLog("You need to complete a full fade (3 battles) to win!");
         
         // Reset opponents to give the player more battles to reach 3 for the fade
         opponentIndex = 0;
         
-        // Show the next opponent screen with a message about needing more battles for a fade
-        showNextOpponentScreen(true);
-      }, 1500);
+        // Automatically continue to the next battle with new opponent
+        continueBattle();
+      }, 1000);
     }
   } else {
-    // Show next opponent screen
-    setTimeout(() => showNextOpponentScreen(), 1500);
+    // Move to next opponent
+    opponentIndex++;
+    
+    // Show switch option to player
+    setTimeout(() => {
+      addToBattleLog(`${activeOpponent.name} got faded! Next opponent is coming out!`);
+      
+      // Set the active opponent for the next battle
+      activeOpponent = { ...opponents[opponentIndex] };
+      
+      // Reset battle modifiers
+      resetBattleModifiers();
+      
+      // Update UI
+      updateBattleUI();
+      updateStatusIcons();
+      
+      // Give player option to switch characters
+      switchYN();
+      
+      // Add a custom message
+      showFloatingLog("Switch character or cancel to continue");
+    }, 1000);
   }
 }
 
