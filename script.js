@@ -20,6 +20,42 @@ let musicMuted = false;
 let soundMuted = false;
 let audioInitialized = false; // Track if audio is initialized
 
+// Animation state management
+const ANIMATION_STATE = {
+  player: {
+    default: "float 2s ease-in-out infinite",
+    attack: "attack 1s ease-in-out",
+    current: "float 2s ease-in-out infinite"
+  },
+  opponent: {
+    default: "float 2s ease-in-out infinite", // Will be flipped with transform
+    attack: "attack 1s ease-in-out",
+    current: "float 2s ease-in-out infinite"
+  }
+};
+
+// Animation helper functions
+function setPlayerAnimation(animationType) {
+  const playerSprite = document.getElementById("player-sprite");
+  if (!playerSprite) return;
+  
+  const animation = ANIMATION_STATE.player[animationType] || ANIMATION_STATE.player.default;
+  playerSprite.style.animation = animation;
+  ANIMATION_STATE.player.current = animation;
+}
+
+function setOpponentAnimation(animationType) {
+  const opponentSprite = document.getElementById("opponent-sprite");
+  if (!opponentSprite) return;
+  
+  const animation = ANIMATION_STATE.opponent[animationType] || ANIMATION_STATE.opponent.default;
+  opponentSprite.style.animation = animation;
+  ANIMATION_STATE.opponent.current = animation;
+  
+  // Ensure the opponent is always flipped
+  opponentSprite.style.transform = "scaleX(-1)";
+}
+
 // ================ GAME DATA ================
 // Character data with battle info
 const characters = [
@@ -1538,13 +1574,8 @@ function useMove(move) {
   // Play hit sound
   playHitSound();
   
-  // Attack animation
-  const playerSprite = document.getElementById("player-sprite");
-  // Store the original animation for restoration later
-  window.originalPlayerClass = true;
-  // Temporarily stop the floating animation
-  playerSprite.style.animation = "none";
-  playerSprite.classList.add("attack-animation");
+  // Apply attack animation
+  setPlayerAnimation("attack");
   
   // Add visual effect based on move type
   const battleArena = document.getElementById("battle-arena");
@@ -1722,13 +1753,8 @@ function executeOpponentMove(move) {
   // Play hit sound
   playHitSound();
   
-  // Attack animation
-  let opponentSprite = document.getElementById("opponent-sprite");
-  // Store the original animation style
-  window.originalOpponentClass = "floatFlipped";
-  // Temporarily stop the floating animation
-  opponentSprite.style.animation = "none";
-  opponentSprite.classList.add("attack-animation-reverse");
+  // Apply opponent attack animation
+  setOpponentAnimation("attack");
   
   // Add visual effect based on move type
   const battleArena = document.getElementById("battle-arena");
