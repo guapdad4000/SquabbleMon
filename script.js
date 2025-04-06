@@ -1755,6 +1755,9 @@ function useMove(move) {
   // Apply attack animation
   setPlayerAnimation("attack");
   
+  // Apply move-specific animation based on type
+  applyMoveAnimation(move.type, "player");
+  
   // Add visual effect based on move type
   const battleArena = document.getElementById("battle-arena");
   const opponentSprite = document.getElementById("opponent-sprite");
@@ -1933,6 +1936,9 @@ function executeOpponentMove(move) {
   
   // Apply opponent attack animation
   setOpponentAnimation("attack");
+  
+  // Apply move-specific animation based on type
+  applyMoveAnimation(move.type, "opponent");
   
   // Add visual effect based on move type
   const battleArena = document.getElementById("battle-arena");
@@ -2556,6 +2562,9 @@ function applyStatusEffect(character, statusType, duration, side) {
   
   // Update the status icons
   updateStatusIcons();
+  
+  // Apply status effect animation using our animation system
+  handleStatusEffectAnimation(statusType, side);
   
   // Show status effect animation if available
   if (statusAnimations[statusType]) {
