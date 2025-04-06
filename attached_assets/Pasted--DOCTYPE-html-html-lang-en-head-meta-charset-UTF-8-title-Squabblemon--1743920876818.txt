@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Squabblemon - Retro Fade v2</title>
+    <!-- Updated Title -->
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Selection Screen -->
+    <div id="selection-screen">
+      <h1>Build Your Gang (Pick 3)</h1>
+      <div id="character-list"></div>
+      <div id="team-preview">
+        <h2>The Gang</h2>
+        <div id="team-slots">
+          <div class="team-slot"></div>
+          <div class="team-slot"></div>
+          <div class="team-slot"></div>
+        </div>
+        <button
+          id="start-battle"
+          class="pixel-button"
+          disabled
+          onclick="startBattle();"
+        >
+          Start Fade <img src="https://i.gifer.com/ZS3t.gif" alt="Start" />
+        </button>
+      </div>
+    </div>
+
+    <!-- Battle Screen (Initially Hidden) -->
+    <div id="battle-screen" style="display: none">
+      <div id="ui-overlay">
+        <div id="fade-display">Fades: 0</div>
+        <div id="opponent-info-box"><p id="opponent-info-text"></p></div>
+        <div id="floating-log-container"><div id="floating-log"></div></div>
+      </div>
+      <div id="battle-arena">
+        <div id="opponent-platform"></div>
+        <div id="player-platform"></div>
+        <div id="opponent-area">
+          <p id="opponent-name" class="yn-name"></p>
+          <!-- Name ABOVE -->
+          <div class="hp-bar">
+            <div class="hp-fill" id="opponent-hp-fill"></div>
+            <span id="opponent-status-icon" class="status-icon"></span>
+          </div>
+          <p id="opponent-hp" class="yn-hp-value"></p>
+          <!-- Value BELOW -->
+          <img id="opponent-sprite" src="" alt="Opponent" />
+        </div>
+        <div id="player-area">
+          <p id="player-name" class="yn-name"></p>
+          <!-- Name ABOVE -->
+          <div class="hp-bar">
+            <div class="hp-fill" id="player-hp-fill"></div>
+            <span id="player-status-icon" class="status-icon"></span>
+          </div>
+          <p id="player-hp" class="yn-hp-value"></p>
+          <!-- Value BELOW -->
+          <img id="player-sprite" src="" alt="Player" />
+        </div>
+      </div>
+      <div id="battle-menu">
+        <div id="action-container">
+          <div id="moves"></div>
+          <div id="items">
+            <button class="pixel-button" onclick="useItem('jcole')">
+              <img src="https://i.imgur.com/DAIXWrB.png" alt="J Cole CD" /> J
+              Cole CD
+            </button>
+            <button class="pixel-button" onclick="useItem('nbayoungboy')">
+              <img
+                src="https://i.imgur.com/DAIXWrB.png"
+                alt="NBA Youngboy CD"
+              />
+              NBA CD
+            </button>
+            <button class="pixel-button" onclick="useItem('weed')">
+              <img src="https://i.imgur.com/rsqXcY7.png" alt="Weed Plant" />
+              Weed
+            </button>
+            <button class="pixel-button" onclick="useItem('crashdummy')">
+              <img src="https://i.imgur.com/eV7Ki9I.gif" alt="Crash Dummy" />
+              Dummy
+            </button>
+            <button
+              id="toggle-switch"
+              class="pixel-button"
+              onclick="switchYN()"
+            >
+              Switch
+            </button>
+          </div>
+        </div>
+        <div id="battle-log" class="history-log"></div>
+      </div>
+    </div>
+
+    <!-- Popups -->
+    <div id="game-over" class="pixel-popup" style="display: none">
+      <p id="game-over-message"></p>
+      <p id="fade-counter">Fades: 0</p>
+      <img id="win-lose-gif" src="" alt="Result Animation" />
+      <div id="share-buttons">
+        <p>Share:</p>
+        <img
+          src="https://s.imgur.com/desktop-assets/desktop-assets/facebook_share.8a1a86eac5223496bcac.svg"
+          alt="Share on Facebook"
+          onclick="share('facebook')"
+        />
+        <img
+          src="https://s.imgur.com/desktop-assets/desktop-assets/reddit_share.baa45974c901969819f8.svg"
+          alt="Share on Reddit"
+          onclick="share('reddit')"
+        />
+        <img
+          src="https://s.imgur.com/desktop-assets/desktop-assets/bluesky_share.221053c1008cd5c901fd.svg"
+          alt="Share on Bluesky"
+          onclick="share('bluesky')"
+        />
+      </div>
+      <button class="pixel-button" onclick="restartGame()">Again</button>
+      <button
+        id="continue-battle"
+        class="pixel-button"
+        style="display: none"
+        onclick="continueBattle()"
+      >
+        Next Fade
+      </button>
+    </div>
+    <div id="switch-screen" class="pixel-popup" style="display: none">
+      <h2>Switch YN</h2>
+      <div id="switch-options"></div>
+      <button
+        class="pixel-button"
+        onclick="cancelSwitch()"
+        style="margin-top: 15px"
+      >
+        Cancel
+      </button>
+    </div>
+    <div id="move-tooltip" style="display: none"></div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
