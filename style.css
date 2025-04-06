@@ -254,21 +254,22 @@ body {
   align-items: center;
   justify-content: center;
   position: relative;
-  background-color: rgba(0, 0, 0, 0.7);
-  border: 2px solid #00aa00;
-  border-radius: 8px;
+  background-color: transparent;
+  background-image: url('/images/ui/game/move-button.png');
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: none;
   color: #ffffff;
   text-transform: uppercase;
   letter-spacing: 1px;
   text-shadow: 0 0 3px #00ff00;
-  box-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
   transition: all 0.2s ease;
 }
 
 #moves button:hover,
 #items button:hover {
-  border-color: #00ff00;
-  box-shadow: 0 0 10px #00ff00, inset 0 0 5px #00ff00;
+  filter: brightness(1.2);
   transform: translateY(-2px);
 }
 
@@ -760,20 +761,26 @@ body {
 
 .section-divider {
   position: relative;
-  height: 12px;
+  height: 24px;
   margin: 5px 0 15px;
   text-align: center;
-  border-bottom: 2px solid #00aa00;
+  background-image: url('/images/ui/game/fade-counter.png');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-bottom: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .section-divider span {
   position: relative;
   display: inline-block;
   padding: 0 8px;
-  background-color: rgba(0, 0, 0, 0.7); 
+  background-color: transparent; 
   color: #00ff00;
   font-size: 0.9em;
-  transform: translateY(50%);
   text-transform: uppercase;
   font-weight: bold;
   letter-spacing: 1px;
