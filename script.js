@@ -618,6 +618,43 @@ const opponents = [
       { name: "Ponzi Scheme", power: 80, accuracy: 75, type: "Dark" }
     ],
     ai: "balanced"
+  },
+  {
+    id: 109,
+    name: "Smoker Jr",
+    sprite: "https://i.imgur.com/vdaAi7h.png",
+    hp: 190,
+    attack: 120,
+    defense: 130,
+    speed: 150,
+    critRate: 0.05,
+    type: "Air",
+    description: "Permanently hazy. Might forget what move it was using mid-battle.",
+    moves: [
+      { name: "Cloud Cough", power: 40, accuracy: 100, type: "Air", pp: 15, maxPP: 15, effect: "lowerAccuracy" },
+      { name: "Bong Rip Blast", power: 45, accuracy: 95, type: "Fire", pp: 15, maxPP: 15, effect: "sleep" },
+      { name: "Smoke Screen Stunt", power: 0, accuracy: 100, type: "Normal", pp: 10, maxPP: 10, effect: "raiseDefense" }
+    ],
+    ai: "defensive"
+  },
+  {
+    id: 110,
+    name: "Jittery Junkman",
+    sprite: "https://i.imgur.com/cl7GtvK.png",
+    hp: 150,
+    attack: 140,
+    defense: 90,
+    speed: 195,
+    critRate: 0.10,
+    type: "Poison",
+    description: "Moves fast, thinks faster... maybe too fast. Always looking for the next score.",
+    moves: [
+      { name: "Scrap Scramble", power: 40, accuracy: 100, type: "Poison", pp: 15, maxPP: 20, effect: "poison" },
+      { name: "Twitchy Takedown", power: 60, accuracy: 85, type: "Normal", pp: 15, maxPP: 15, effect: "none" },
+      { name: "Fiending Focus", power: 0, accuracy: 100, type: "Poison", pp: 10, maxPP: 10, effect: "raiseSpeed" },
+      { name: "Pookie Push", power: 60, accuracy: 100, type: "Rock", pp: 10, maxPP: 10, effect: "raiseEvasion" }
+    ],
+    ai: "aggressive"
   }
 ];
 
