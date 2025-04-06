@@ -441,25 +441,29 @@ body {
   position: absolute;
   top: 10px;
   right: 10px;
-  width: 180px;
-  height: 60px;
+  width: 120px;
+  height: 140px;
   z-index: 21;
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  overflow: hidden;
 }
 
 #fade-count-text {
   position: absolute;
-  color: #00ff00;
-  font-size: 1.4em;
+  color: #ffffff;
+  font-size: 1.6em;
   font-weight: bold;
-  text-shadow: 0 0 5px #00ff00;
-  letter-spacing: 1px;
+  text-shadow: 1px 1px 0 #000;
+  letter-spacing: 2px;
   text-transform: uppercase;
-  right: 15px;
   top: 50%;
-  transform: translateY(-50%);
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 .opponent-sprite-container,
 .player-sprite-container {
@@ -730,7 +734,7 @@ body {
 /* Battle Menu */
 #battle-menu {
   background-color: rgba(0, 0, 0, 0.3);
-  border: 2px solid #00ff00;
+  border: 2px solid var(--pixel-border);
   width: calc(100% - 8px); /* Account for the border */
   max-width: 742px; /* Keep it within the main container (750px - 8px) */
   display: flex;
@@ -741,15 +745,15 @@ body {
   z-index: 10;
   border-radius: 10px;
   margin: 0 auto; /* Center it */
-  box-shadow: 0 0 10px #00ff00, inset 0 0 5px #00ff00;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
 }
 #action-container {
   flex: 0 0 60%;
   display: flex;
   flex-direction: column;
   padding-right: 15px;
-  border-right: 2px solid #00ff00;
-  box-shadow: 2px 0 5px -2px #00ff00;
+  border-right: 2px solid var(--pixel-border);
+  box-shadow: 2px 0 5px -2px rgba(0, 0, 0, 0.3);
 }
 #moves {
   display: grid;
@@ -760,17 +764,17 @@ body {
 
 .section-divider {
   position: relative;
-  height: 24px;
+  height: 32px;
   margin: 5px 0 15px;
   text-align: center;
-  background-image: url('/images/ui/game/fade-counter.png');
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  background-position: center;
-  border-bottom: none;
+  background-color: rgba(0, 0, 0, 0.4);
+  border: 2px solid var(--pixel-border);
+  border-radius: 10px;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 }
 
 .section-divider span {
@@ -778,12 +782,12 @@ body {
   display: inline-block;
   padding: 0 8px;
   background-color: transparent; 
-  color: #00ff00;
-  font-size: 0.9em;
+  color: var(--pixel-text-light);
+  font-size: 1.2em;
   text-transform: uppercase;
   font-weight: bold;
   letter-spacing: 1px;
-  text-shadow: 0 0 3px #00ff00;
+  text-shadow: 1px 1px 0 var(--pixel-border);
 }
 #items {
   display: grid;
@@ -794,7 +798,7 @@ body {
   flex: 1;
   overflow-y: auto;
   background-color: rgba(0, 0, 0, 0.3);
-  border: 2px solid #00ff00;
+  border: 2px solid var(--pixel-border);
   border-radius: 10px;
   padding: 15px;
   color: #ffffff;
@@ -803,16 +807,16 @@ body {
   margin-left: 15px;
   max-height: 140px;
   scrollbar-width: thin;
-  scrollbar-color: #00ff00 #333;
-  box-shadow: 0 0 10px #00ff00, inset 0 0 5px #00ff00;
+  scrollbar-color: #555 #333;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
 }
 #battle-log::-webkit-scrollbar {
   width: 6px;
 }
 #battle-log::-webkit-scrollbar-thumb {
-  background-color: #00ff00;
+  background-color: #555;
   border-radius: 3px;
-  box-shadow: 0 0 3px #00ff00;
+  box-shadow: 0 0 3px #333;
 }
 #battle-log::-webkit-scrollbar-track {
   background-color: rgba(0, 0, 0, 0.3);
@@ -820,7 +824,7 @@ body {
 }
 .log-entry {
   margin-bottom: 6px;
-  border-bottom: 1px solid rgba(0, 255, 0, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding-bottom: 4px;
   font-weight: 500;
   letter-spacing: 0.5px;
@@ -831,7 +835,7 @@ body {
   margin-bottom: 0;
 }
 .log-entry:hover {
-  text-shadow: 0 0 3px rgba(0, 255, 0, 0.5);
+  text-shadow: 0 0 3px rgba(255, 255, 255, 0.5);
 }
 /* Popup Components */
 .pixel-popup {
@@ -855,8 +859,8 @@ body {
 }
 
 #switch-screen h2 {
-  color: #00ff00;
-  text-shadow: 0 0 5px #00ff00;
+  color: var(--pixel-text-light);
+  text-shadow: 1px 1px 0px var(--pixel-border);
   font-size: 1.3em;
   font-weight: bold;
   letter-spacing: 1px;
@@ -865,10 +869,10 @@ body {
 
 #cancel-switch {
   background-color: rgba(0, 0, 0, 0.7);
-  border: 2px solid #00aa00;
+  border: 2px solid var(--pixel-border);
   color: #ffffff;
-  text-shadow: 0 0 3px #00ff00;
-  box-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
+  text-shadow: 1px 1px 0px #000;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
   padding: 8px 20px;
   transition: all 0.2s ease;
   font-weight: bold;
@@ -877,8 +881,7 @@ body {
 }
 
 #cancel-switch:hover {
-  box-shadow: 0 0 10px #00ff00, inset 0 0 5px #00ff00;
-  border-color: #00ff00;
+  background-color: rgba(50, 50, 50, 0.8);
   transform: translateY(-2px);
 }
 .pixel-popup p {
@@ -920,10 +923,10 @@ body {
   transform: translate(-50%, -50%);
   min-width: 280px;
   background-color: rgba(0, 0, 0, 0.85);
-  border: 4px solid #00aa00;
+  border: 4px solid var(--pixel-border);
   border-radius: 10px;
   padding: 25px;
-  box-shadow: 0 0 15px #00ff00, inset 0 0 8px #00ff00;
+  box-shadow: 8px 8px 0px 0px rgba(0, 0, 0, 0.4);
   z-index: 1000;
   text-align: center;
 }
@@ -936,12 +939,12 @@ body {
 .switch-option {
   cursor: pointer;
   padding: 8px;
-  border: 2px solid #00aa00;
+  border: 2px solid var(--pixel-border);
   background-color: rgba(0, 0, 0, 0.7);
   transition: all 0.2s ease;
   text-align: center;
   border-radius: 8px;
-  box-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
 }
 .switch-option.fainted {
   opacity: 0.4;
@@ -951,8 +954,7 @@ body {
 }
 .switch-option:not(.fainted):hover {
   transform: translateY(-3px);
-  border-color: #00ff00;
-  box-shadow: 0 0 10px #00ff00, inset 0 0 5px #00ff00;
+  background-color: rgba(50, 50, 50, 0.8);
 }
 .switch-option img {
   width: 48px;
@@ -963,7 +965,7 @@ body {
   margin: 5px 0 0;
   font-size: 0.8em;
   color: #ffffff;
-  text-shadow: 0 0 3px #00ff00;
+  text-shadow: 1px 1px 0 #000;
 }
 .switch-option .hp-indicator {
   width: 100%;
@@ -980,8 +982,7 @@ body {
   left: 0;
   top: 0;
   height: 100%;
-  background: #00ff00;
-  box-shadow: 0 0 5px #00ff00;
+  background: var(--pixel-hp-high);
   transition: width 0.3s ease;
 }
 #move-tooltip {
