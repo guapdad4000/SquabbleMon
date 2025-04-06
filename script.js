@@ -3,154 +3,154 @@
 const characters = [
   {
     id: 1,
-    name: "MC Crazy Legs",
-    sprite: "/images/mc-crazy-legs.png",
-    hp: 120,
-    attack: 65,
-    defense: 40,
-    speed: 85,
+    name: "Rastamon",
+    sprite: "/images/mc-crazy-legs.png", // Using generated image for now
+    hp: 200,
+    attack: 150,
+    defense: 130,
+    speed: 130,
     critRate: 0.1,
-    type: "breaker",
+    type: "Plant",
     status: "normal",
-    description: "Breakdance specialist with powerful spins and flips. Known for high-speed attacks.",
+    description: "Chill vibes only. Prefers napping in sunbeams to actual squabbling.",
     moves: [
-      { name: "Backflip", power: 40, accuracy: 95, type: "breaker", description: "Quick move with momentum, might cause 'Dazed' status." },
-      { name: "Power Spin", power: 60, accuracy: 85, type: "breaker", description: "Moderate damage attack with spinning kicks." },
-      { name: "Floor Freeze", power: 25, accuracy: 90, type: "status", description: "Slows opponent's moves by freezing the floor." },
-      { name: "Headspin Fury", power: 70, accuracy: 75, type: "breaker", description: "Heavy attack with spinning head strikes." }
+      { name: "Dreadlock Whip", power: 50, accuracy: 95, type: "Plant", description: "Plant-type whip attack with dreadlocks." },
+      { name: "6 Rasclaat Eggs?!", power: 70, accuracy: 85, type: "Fire", description: "Fiery attack that may cause 'sleep' status." },
+      { name: "Irie Recharge", power: 0, accuracy: 100, type: "Plant", description: "Healing move that restores HP." },
+      { name: "Chill Vibes", power: 40, accuracy: 90, type: "status", description: "Lowers opponent's speed with relaxed energy." }
     ]
   },
   {
     id: 2,
-    name: "DJ Scratch Master",
-    sprite: "/images/dj-scratch.png",
-    hp: 110,
-    attack: 65,
-    defense: 70,
-    speed: 60,
+    name: "Fitness Bro",
+    sprite: "/images/dj-scratch.png", // Using generated image for now
+    hp: 230,
+    attack: 170,
+    defense: 130,
+    speed: 120,
     critRate: 0.15,
-    type: "turntable",
+    type: "Fire",
     status: "normal",
-    description: "Controls battle rhythm with vinyl precision. Can boost team's performance.",
+    description: "NEVER skips leg day. Or arm day. Or any day. Fueled by pure gainz.",
     moves: [
-      { name: "Beat Drop", power: 50, accuracy: 90, type: "turntable", description: "Drops heavy beats that deal solid damage." },
-      { name: "Wax Cutter", power: 65, accuracy: 85, type: "turntable", description: "Sharp vinyl attack that may cause bleeding." },
-      { name: "Sample Loop", power: 30, accuracy: 95, type: "status", description: "Causes 'Confused' status, opponent moves erratically." },
-      { name: "Bass Cannon", power: 80, accuracy: 70, type: "turntable", description: "Massive sound wave blast with area effect." }
+      { name: "Squat Slap", power: 45, accuracy: 90, type: "Normal", description: "Physical attack with leg strength." },
+      { name: "Protein Powder Burn", power: 45, accuracy: 85, type: "Fire", description: "Fire-type attack that may cause 'burn' status." },
+      { name: "Flex on 'Em", power: 0, accuracy: 100, type: "Normal", description: "Boosts defense by showing off muscles." },
+      { name: "Gym Motivation", power: 50, accuracy: 90, type: "Fire", description: "Energetic attack with fiery passion." }
     ]
   },
   {
     id: 3,
-    name: "Graffiti King",
-    sprite: "/images/graffiti-king.png",
-    hp: 100,
-    attack: 80,
-    defense: 45,
-    speed: 65,
+    name: "Techy",
+    sprite: "/images/graffiti-king.png", // Using generated image for now
+    hp: 170,
+    attack: 150,
+    defense: 150,
+    speed: 190,
     critRate: 0.15,
-    type: "spray",
+    type: "Electric",
     status: "normal",
-    description: "Master of aerosol combat. His attacks can cause 'Blinded' status and visual confusion.",
+    description: "Runs on caffeine and pure code. Might DDoS you for fun.",
     moves: [
-      { name: "Tag Attack", power: 35, accuracy: 90, type: "spray", description: "Quick spray that marks opponent, causing DoT damage." },
-      { name: "Chrome Blast", power: 60, accuracy: 85, type: "spray", description: "Metallic paint bomb with reflective damage." },
-      { name: "Wall Bomb", power: 70, accuracy: 80, type: "spray", description: "Large-scale tag that overwhelms defenses." },
-      { name: "Fade Style", power: 55, accuracy: 90, type: "status", description: "Fades opponent's visibility, reducing accuracy." }
+      { name: "Keyboard Smash", power: 60, accuracy: 90, type: "Electric", description: "Electric attack that may cause 'paralysis'." },
+      { name: "404 Headshot", power: 80, accuracy: 80, type: "Dark", description: "Powerful dark-type attack with high damage." },
+      { name: "Caffeine Overload", power: 0, accuracy: 100, type: "Electric", description: "Boosts speed with excessive caffeine." },
+      { name: "Code Error", power: 65, accuracy: 85, type: "Electric", description: "Buggy attack that may confuse the opponent." }
     ]
   },
   {
     id: 4,
-    name: "Beatbox Wizard",
-    sprite: "/images/beatbox-wizard.png",
-    hp: 95,
-    attack: 70,
-    defense: 45,
-    speed: 90,
+    name: "Cool Vibe YN",
+    sprite: "/images/beatbox-wizard.png", // Using generated image for now
+    hp: 190,
+    attack: 170,
+    defense: 130,
+    speed: 150,
     critRate: 0.2,
-    type: "vocal",
+    type: "Water",
     status: "normal",
-    description: "Human sound machine with rapid-fire vocal attacks. High critical hit rate.",
+    description: "Smooth operator. Always hydrated and ready to slide into the DMs.",
     moves: [
-      { name: "Vocal Jab", power: 45, accuracy: 95, type: "vocal", description: "Quick burst of sound with high crit chance." },
-      { name: "Bass Drop", power: 65, accuracy: 85, type: "vocal", description: "Low frequency attack that shakes defenses." },
-      { name: "Sound Clone", power: 55, accuracy: 90, type: "vocal", description: "Creates sound duplicates that confuse opponents." },
-      { name: "Sonic Boom", power: 80, accuracy: 75, type: "vocal", description: "Massive sonic attack with high damage but risky accuracy." }
+      { name: "Splash Dat Ass", power: 50, accuracy: 95, type: "Water", description: "Water attack that causes 'wet' status." },
+      { name: "Wave Check Fade", power: 70, accuracy: 85, type: "Water", description: "Wave-based attack that might put opponent to sleep." },
+      { name: "Call Girls for Gang", power: 0, accuracy: 100, type: "Water", description: "Healing move that restores HP." },
+      { name: "Flow State", power: 60, accuracy: 90, type: "Water", description: "Smooth attack with increased critical hit chance." }
     ]
   },
   {
     id: 5,
-    name: "Flow Master",
-    sprite: "/images/flow-master.png",
-    hp: 105,
-    attack: 75,
-    defense: 60,
-    speed: 65,
+    name: "9-5 Homie",
+    sprite: "/images/flow-master.png", // Using generated image for now
+    hp: 210,
+    attack: 130,
+    defense: 150,
+    speed: 180,
     critRate: 0.1,
-    type: "lyrical",
+    type: "Rock",
     status: "normal",
-    description: "Conscious lyricist with balanced stats and wordplay abilities that boost stats.",
+    description: "Just trying to make it to Friday. Powered by lukewarm coffee.",
     moves: [
-      { name: "Word Play", power: 50, accuracy: 90, type: "lyrical", description: "Clever rhymes deal solid damage." },
-      { name: "Battle Verse", power: 65, accuracy: 85, type: "lyrical", description: "Strong verbal assault with increased crit chance." },
-      { name: "Ego Check", power: 40, accuracy: 100, type: "status", description: "Never misses. Lowers opponent's ATK." },
-      { name: "Mic Drop", power: 70, accuracy: 80, type: "lyrical", description: "Finisher move with stunning effect." }
+      { name: "Cubicle Clapback", power: 50, accuracy: 90, type: "Normal", description: "Office-themed attack with moderate damage." },
+      { name: "Overtime Overload", power: 65, accuracy: 85, type: "Electric", description: "Stressful attack that may cause paralysis." },
+      { name: "PTO Prayer", power: 0, accuracy: 100, type: "Normal", description: "Healing move that gives a much-needed break." },
+      { name: "Monday Mayhem", power: 55, accuracy: 85, type: "Rock", description: "Rock-solid attack fueled by beginning-of-week dread." }
     ]
   },
   {
     id: 6,
-    name: "Street Styler",
-    sprite: "/images/street-styler.png",
-    hp: 90,
-    attack: 65,
-    defense: 40,
-    speed: 95,
+    name: "All Jokes Roaster",
+    sprite: "/images/street-styler.png", // Using generated image for now
+    hp: 180,
+    attack: 170,
+    defense: 110,
+    speed: 180,
     critRate: 0.15,
-    type: "fashion",
+    type: "Air",
     status: "normal",
-    description: "Hip-hop fashion icon with extremely fast attacks. Lower HP but hard to hit.",
+    description: "Can't take anything seriously. Will ratio you into oblivion.",
     moves: [
-      { name: "Fresh Kicks", power: 40, accuracy: 95, type: "fashion", description: "Quick sneaker attack, might cause knockback." },
-      { name: "Chain Whip", power: 50, accuracy: 90, type: "fashion", description: "Medium damage with gold chain weapons." },
-      { name: "Style Blitz", power: 70, accuracy: 75, type: "fashion", description: "Strong but risky style combination attack." },
-      { name: "Hype Beast", power: 30, accuracy: 100, type: "status", description: "Increases own speed while confusing opponent." }
+      { name: "Ratio'd Receipts", power: 40, accuracy: 100, type: "Air", description: "Quick aerial attack with high accuracy." },
+      { name: "Clapback Inferno", power: 55, accuracy: 90, type: "Fire", description: "Fiery comeback that may cause burn status." },
+      { name: "Dodge the Shade", power: 0, accuracy: 100, type: "Air", description: "Boosts speed by effortlessly avoiding criticism." },
+      { name: "Viral Diss", power: 65, accuracy: 85, type: "Air", description: "Widespread attack that damages opponent's reputation." }
     ]
   },
   {
     id: 7,
-    name: "Boom Bap",
-    sprite: "/images/boom-bap.png",
-    hp: 115,
-    attack: 85,
-    defense: 55,
-    speed: 50,
+    name: "Closet Nerd",
+    sprite: "/images/boom-bap.png", // Using generated image for now
+    hp: 200,
+    attack: 140,
+    defense: 100,
+    speed: 170,
     critRate: 0.15,
-    type: "percussion",
+    type: "Dark",
     status: "normal",
-    description: "Old school rhythm keeper. High attack and defense but slower moving.",
+    description: "Knows more about anime than you know about yourself. Don't ask.",
     moves: [
-      { name: "Snare Hit", power: 55, accuracy: 90, type: "percussion", description: "Sharp attack with bleeding effect." },
-      { name: "Drum Break", power: 70, accuracy: 85, type: "percussion", description: "Powerful attack that ignores some DEF." },
-      { name: "Beat Pattern", power: 60, accuracy: 90, type: "percussion", description: "Consistent damage dealer with rhythm." },
-      { name: "Tempo Up", power: 40, accuracy: 95, type: "status", description: "Raises team ATK and SPD but lowers DEF." }
+      { name: "Manga Smack", power: 60, accuracy: 95, type: "Normal", description: "Physical attack using heavy manga volumes." },
+      { name: "Weeb Roast", power: 55, accuracy: 85, type: "Fire", description: "Fiery attack that may cause burn status." },
+      { name: "Incognito Glow-Up", power: 0, accuracy: 100, type: "Dark", description: "Dark-type move that raises defense." },
+      { name: "Anime Reference", power: 70, accuracy: 80, type: "Dark", description: "Obscure attack that confuses those who don't get it." }
     ]
   },
   {
     id: 8,
-    name: "Mixtape Master",
-    sprite: "/images/mixtape-master.png",
-    hp: 110,
-    attack: 70,
-    defense: 65,
-    speed: 60,
-    critRate: 0.1,
-    type: "producer",
+    name: "Dysfunctional YN",
+    sprite: "/images/mixtape-master.png", // Using generated image for now
+    hp: 160,
+    attack: 190,
+    defense: 90,
+    speed: 140,
+    critRate: 0.2,
+    type: "Fire",
     status: "normal",
-    description: "Versatile producer with balanced stats. Can switch styles for different effects.",
+    description: "A walking disaster, but somehow still functioning. Handle with care.",
     moves: [
-      { name: "Track Drop", power: 45, accuracy: 95, type: "producer", description: "Quick release that rarely misses." },
-      { name: "Remix", power: 50, accuracy: 90, type: "status", description: "Alters battle flow, raises team's DEF and heals slightly." },
-      { name: "Beat Switch", power: 65, accuracy: 85, type: "producer", description: "Strong attack with self ATK boost." },
-      { name: "Golden Era", power: 75, accuracy: 80, type: "producer", description: "Classic sound blast with stun effect." }
+      { name: "Hot Mess Slap", power: 55, accuracy: 90, type: "Fire", description: "Chaotic attack that may cause burn status." },
+      { name: "Chaos Cookout", power: 85, accuracy: 75, type: "Fire", description: "Powerful but risky attack with recoil damage." },
+      { name: "Trainwreck Tantrum", power: 0, accuracy: 100, type: "Normal", description: "Emotional outburst that raises attack." },
+      { name: "Identity Crisis", power: 60, accuracy: 85, type: "Dark", description: "Confusing attack that may cause opponent to hit themselves." }
     ]
   }
 ];
@@ -159,118 +159,112 @@ const characters = [
 const opponents = [
   {
     id: 101,
-    name: "Copycat",
-    sprite: "/images/copycat.png",
-    hp: 85,
-    attack: 60,
-    defense: 30,
-    speed: 75,
-    critRate: 0.05,
-    type: "biter",
-    description: "Steals other people's styles. No originality but dangerous imitations.",
+    name: "Functional Addict",
+    sprite: "/images/copycat.png", // Using generated image for now
+    hp: 200,
+    attack: 150,
+    defense: 100,
+    speed: 130,
+    critRate: 0.15,
+    type: "Water",
+    description: "Runs on liquids that aren't always water. Surprisingly coherent.",
     moves: [
-      { name: "Style Theft", power: 40, accuracy: 85, type: "biter" },
-      { name: "Fake Move", power: 55, accuracy: 80, type: "biter" },
-      { name: "Imitation", power: 30, accuracy: 100, type: "status" },
-      { name: "Plagiarism", power: 60, accuracy: 70, type: "biter" }
-    ],
-    ai: "aggressive"
-  },
-  {
-    id: 102,
-    name: "Pop Sellout",
-    sprite: "/images/pop-sellout.png",
-    hp: 95,
-    attack: 65,
-    defense: 40,
-    speed: 70,
-    critRate: 0.1,
-    type: "commercial",
-    description: "Abandoned underground roots for mainstream success. Flashy but shallow.",
-    moves: [
-      { name: "Chart Topper", power: 50, accuracy: 85, type: "commercial" },
-      { name: "Genre Flip", power: 40, accuracy: 90, type: "status" },
-      { name: "Radio Play", power: 55, accuracy: 85, type: "commercial" },
-      { name: "Sellout Anthem", power: 70, accuracy: 75, type: "commercial" }
+      { name: "Sip & Splash", power: 45, accuracy: 100, type: "Water" },
+      { name: "Henny Haze", power: 60, accuracy: 90, type: "Dark" },
+      { name: "Sober Up Sis", power: 0, accuracy: 100, type: "Normal" },
+      { name: "Liquid Courage", power: 70, accuracy: 80, type: "Water" }
     ],
     ai: "balanced"
   },
   {
-    id: 103,
-    name: "Internet Troll",
-    sprite: "/images/internet-troll.png",
-    hp: 90,
-    attack: 30,
-    defense: 60,
-    speed: 45,
-    critRate: 0.05,
-    type: "digital",
-    description: "Online instigator who stirs up drama but can't back it up in person.",
+    id: 102,
+    name: "Gamer Unemployed",
+    sprite: "/images/pop-sellout.png", // Using generated image for now
+    hp: 210,
+    attack: 150,
+    defense: 190,
+    speed: 150,
+    critRate: 0.15,
+    type: "Dark",
+    description: "Peak performance involves Cheetos and minimal movement. Hasn't seen the sun in weeks.",
     moves: [
-      { name: "Comment Section", power: 30, accuracy: 95, type: "digital" },
-      { name: "Keyboard Warrior", power: 20, accuracy: 100, type: "digital" },
-      { name: "Ratio'd", power: 45, accuracy: 85, type: "digital" },
-      { name: "Cancel Culture", power: 50, accuracy: 80, type: "status" }
+      { name: "Cheeto Dust Jab", power: 50, accuracy: 95, type: "Normal" },
+      { name: "WiFi Crash", power: 65, accuracy: 85, type: "Electric" },
+      { name: "Couch Potato Power", power: 0, accuracy: 100, type: "Normal" },
+      { name: "Rage Quit", power: 75, accuracy: 75, type: "Dark" }
+    ],
+    ai: "aggressive"
+  },
+  {
+    id: 103,
+    name: "Houseless Hustler",
+    sprite: "/images/internet-troll.png", // Using generated image for now
+    hp: 220,
+    attack: 170,
+    defense: 110,
+    speed: 120,
+    critRate: 0.1,
+    type: "Rock",
+    description: "Resourceful survivor. Turns trash into treasure, and opponents into dust.",
+    moves: [
+      { name: "Cardboard Cut", power: 50, accuracy: 95, type: "Normal" },
+      { name: "Sidewalk Stomp", power: 60, accuracy: 85, type: "Rock" },
+      { name: "Hustle Hard", power: 0, accuracy: 100, type: "Normal" },
+      { name: "Street Wisdom", power: 65, accuracy: 80, type: "Dark" }
     ],
     ai: "defensive"
   },
   {
     id: 104,
-    name: "One-Hit Wonder",
-    sprite: "/images/one-hit-wonder.png",
-    hp: 75,
-    attack: 40,
-    defense: 30,
-    speed: 60,
-    critRate: 0.05,
-    type: "flash",
-    description: "Had one big song years ago. Still riding that wave but fading fast.",
+    name: "Night Stalker",
+    sprite: "/images/one-hit-wonder.png", // Using generated image for now
+    hp: 160,
+    attack: 200,
+    defense: 100,
+    speed: 180,
+    critRate: 0.2,
+    type: "Dark",
+    description: "Moves in the shadows. Definitely gives off creepy vibes.",
     moves: [
-      { name: "That One Song", power: 25, accuracy: 100, type: "flash" },
-      { name: "Remember Me?", power: 35, accuracy: 90, type: "flash" },
-      { name: "Nostalgia Trip", power: 40, accuracy: 85, type: "status" },
-      { name: "Comeback Attempt", power: 50, accuracy: 80, type: "flash" }
+      { name: "Knife Nightcap", power: 45, accuracy: 85, type: "Dark" },
+      { name: "Stalk & Snooze", power: 90, accuracy: 65, type: "Dark" },
+      { name: "Killer Instinct", power: 0, accuracy: 100, type: "Dark" },
+      { name: "Shadow Strike", power: 70, accuracy: 80, type: "Dark" }
     ],
-    ai: "random"
+    ai: "aggressive"
   },
   {
     id: 105,
-    name: "Mumble Rapper",
-    sprite: "/images/mumble-rapper.png",
-    hp: 85,
-    attack: 55,
-    defense: 35,
-    speed: 65,
-    critRate: 0.1,
-    type: "mumble",
-    description: "No one can understand what they're saying, but somehow still popular.",
+    name: "Techbro Rich",
+    sprite: "/images/mumble-rapper.png", // Using generated image for now
+    hp: 180,
+    attack: 180,
+    defense: 120,
+    speed: 190,
+    critRate: 0.15,
+    type: "Electric",
+    description: "Disrupting the Squabblemon scene, one NFT at a time. Very rich.",
     moves: [
-      { name: "Unintelligible Verse", power: 45, accuracy: 90, type: "mumble" },
-      { name: "Auto-Tune Overload", power: 40, accuracy: 95, type: "mumble" },
-      { name: "Slurred Words", power: 15, accuracy: 100, type: "status" },
-      { name: "Lean Sipping", power: 60, accuracy: 80, type: "mumble" }
+      { name: "Tesla Taze", power: 55, accuracy: 90, type: "Electric" },
+      { name: "NFT Nuke", power: 85, accuracy: 70, type: "Normal" },
+      { name: "VC Funded Flex", power: 0, accuracy: 100, type: "Electric" },
+      { name: "Crypto Crash", power: 75, accuracy: 80, type: "Dark" }
     ],
-    ai: "aggressive"
+    ai: "balanced"
   }
 ];
 
 // Type effectiveness chart
 const typeEffectiveness = {
   // Player types
-  breaker: { biter: 1.2, digital: 0.8, commercial: 1.5, flash: 1.0 },
-  turntable: { commercial: 1.2, mumble: 1.5, biter: 0.8, digital: 1.0 },
-  spray: { digital: 1.5, flash: 1.2, commercial: 0.8, biter: 1.0 },
-  vocal: { mumble: 1.5, flash: 0.8, digital: 1.2, commercial: 1.0 },
-  lyrical: { mumble: 1.5, biter: 1.2, flash: 0.8, digital: 1.0 },
-  fashion: { flash: 1.5, commercial: 1.2, mumble: 0.8, biter: 1.0 },
-  percussion: { digital: 0.8, flash: 1.5, biter: 1.2, commercial: 1.0 },
-  producer: { biter: 1.5, digital: 1.2, flash: 0.8, mumble: 1.0 },
-  // Enemy types
-  biter: { breaker: 0.8, producer: 0.5, lyrical: 1.5, percussion: 1.2 },
-  commercial: { turntable: 0.8, fashion: 0.8, spray: 1.5, breaker: 1.2 },
-  digital: { spray: 0.5, vocal: 0.8, percussion: 1.5, producer: 1.2 },
-  flash: { fashion: 0.5, percussion: 0.8, vocal: 1.5, producer: 1.2 },
-  mumble: { lyrical: 0.5, vocal: 0.8, turntable: 1.5, fashion: 1.2 }
+  Fire: { Plant: 1.5, Water: 0.5, Rock: 0.5, Normal: 1.0, Electric: 1.0, Air: 1.0, Dark: 1.0 },
+  Plant: { Water: 1.5, Rock: 1.5, Fire: 0.5, Air: 0.5, Normal: 1.0, Electric: 1.0, Dark: 1.0 },
+  Water: { Fire: 1.5, Rock: 1.5, Plant: 0.5, Electric: 0.5, Normal: 1.0, Air: 1.0, Dark: 1.0 },
+  Rock: { Electric: 1.5, Fire: 1.5, Air: 1.5, Plant: 0.5, Water: 0.5, Normal: 1.0, Dark: 1.0 },
+  Electric: { Water: 1.5, Air: 1.5, Rock: 0.5, Plant: 0.5, Normal: 1.0, Fire: 1.0, Dark: 1.0 },
+  Air: { Plant: 1.5, Electric: 0.5, Rock: 0.5, Normal: 1.0, Water: 1.0, Fire: 1.0, Dark: 1.0 },
+  Dark: { Normal: 1.5, Plant: 1.0, Water: 1.0, Rock: 1.0, Electric: 1.0, Air: 1.0, Fire: 1.0 },
+  Normal: { Dark: 0.5, Rock: 0.5, Plant: 1.0, Water: 1.0, Electric: 1.0, Air: 1.0, Fire: 1.0 }
 };
 
 // Status effect definitions
@@ -978,103 +972,147 @@ function handleStatusMove(move, user) {
   // Apply different status effects based on the move and user
   if (user === "player") {
     switch (activePlayerCharacter.id) {
-      case 1: // Young Thug
-        applyStatusEffect(activeOpponent, "slimed", 3, "opponent");
-        break;
-      case 2: // Travis Scott
-        applyStatusEffect(activeOpponent, "dazed", 2, "opponent");
-        break;
-      case 3: // Future
-        if (move.name === "Purple Reign") {
-          if (opponentStatusEffect.type === "dirtySprite") {
-            addToBattleLog(`${activeOpponent.name}'s Dirty Sprite effect was extended!`);
-            showFloatingLog("Status extended!");
-          } else {
-            applyStatusEffect(activeOpponent, "dirtySprite", 3, "opponent");
-          }
+      case 1: // Rastamon
+        if (move.name === "Irie Recharge") {
+          // Healing move
+          const healAmount = 30;
+          activePlayerCharacter.hp = Math.min(activePlayerCharacter.hp + healAmount, playerTeam[playerTeam.findIndex(c => c.id === activePlayerCharacter.id)].hp);
+          addToBattleLog(`${activePlayerCharacter.name} recovered ${healAmount} HP!`);
+          showFloatingLog(`+${healAmount} HP`);
         } else {
-          applyStatusEffect(activeOpponent, "dirtySprite", 3, "opponent");
+          applyStatusEffect(activeOpponent, "baked", 3, "opponent");
         }
         break;
-      case 9: // Snoop Dogg
-        applyStatusEffect(activeOpponent, "baked", 3, "opponent");
+      case 2: // Fitness Bro
+        if (move.name === "Flex on 'Em") {
+          playerStatModifiers.defense *= 1.5;
+          addToBattleLog(`${activePlayerCharacter.name}'s Defense increased!`);
+          showFloatingLog("DEF ↑");
+        } else {
+          applyStatusEffect(activeOpponent, "dazed", 2, "opponent");
+        }
         break;
-      case 6: // Playboi Carti
-        applyStatusEffect(activeOpponent, "confused", 2, "opponent");
-        break;
-      case 7: // 21 Savage
-        // Increase player ATK, but decrease DEF
-        playerStatModifiers.attack *= 1.3;
-        playerStatModifiers.defense *= 0.8;
-        addToBattleLog(`${activePlayerCharacter.name}'s Attack rose but Defense fell!`);
-        showFloatingLog("ATK ↑, DEF ↓");
-        break;
-      case 8: // Drake
-        // Heal slightly and raise defense
-        const healAmount = Math.floor(activePlayerCharacter.hp * 0.15);
-        activePlayerCharacter.hp = Math.min(playerTeam[playerTeam.findIndex(c => c.id === activePlayerCharacter.id)].hp, activePlayerCharacter.hp + healAmount);
-        playerStatModifiers.defense *= 1.2;
-        updateBattleUI();
-        addToBattleLog(`${activePlayerCharacter.name} healed ${healAmount} HP and Defense rose!`);
-        showFloatingLog(`+${healAmount} HP, DEF ↑`);
-        break;
-      case 5: // Kendrick
-        // Lower opponent's attack
-        opponentStatModifiers.attack *= 0.7;
-        addToBattleLog(`${activeOpponent.name}'s Attack was lowered!`);
-        showFloatingLog("Opponent ATK ↓");
-        break;
-      case 10: // Kanye
-        // Raise defense but might confuse opponent
-        playerStatModifiers.defense *= 1.3;
-        addToBattleLog(`${activePlayerCharacter.name}'s Defense rose!`);
-        showFloatingLog("DEF ↑");
-        
-        if (Math.random() < 0.4) {
+      case 3: // Techy
+        if (move.name === "Caffeine Overload") {
+          playerStatModifiers.speed *= 1.5;
+          addToBattleLog(`${activePlayerCharacter.name}'s Speed increased!`);
+          showFloatingLog("SPD ↑");
+        } else {
           applyStatusEffect(activeOpponent, "confused", 2, "opponent");
         }
         break;
-    }
-  } else {
-    // Opponent's status moves
-    switch (activeOpponent.id) {
-      case 101: // 6ix9ine
-        // Rainbow Hair - lower player attack
-        playerStatModifiers.attack *= 0.8;
-        addToBattleLog(`${activePlayerCharacter.name}'s Attack was lowered!`);
-        showFloatingLog("ATK ↓");
-        break;
-      case 102: // MGK
-        // Genre Switch - Apply confused status
-        applyStatusEffect(activePlayerCharacter, "confused", 2, "player");
-        break;
-      case 103: // DJ Akademiks
-        // Drama Alert - Apply confused status and raise own defense
-        applyStatusEffect(activePlayerCharacter, "confused", 1, "player");
-        opponentStatModifiers.defense *= 1.2;
-        addToBattleLog(`${activeOpponent.name}'s Defense rose!`);
-        showFloatingLog("Enemy DEF ↑");
-        break;
-      case 104: // Island Boys
-        // Coconut Head - Lower player accuracy
-        playerStatModifiers.accuracy *= 0.8;
-        addToBattleLog(`${activePlayerCharacter.name}'s Accuracy was lowered!`);
-        showFloatingLog("ACC ↓");
-        break;
-      case 105: // Lil Pump
-        // Harvard Dropout - Random stat changes
-        if (Math.random() < 0.5) {
-          // Raise own attack
-          opponentStatModifiers.attack *= 1.2;
-          addToBattleLog(`${activeOpponent.name}'s Attack rose!`);
-          showFloatingLog("Enemy ATK ↑");
+      case 4: // Cool Vibe YN
+        if (move.name === "Call Girls for Gang") {
+          // Healing move
+          const healAmount = 40;
+          activePlayerCharacter.hp = Math.min(activePlayerCharacter.hp + healAmount, playerTeam[playerTeam.findIndex(c => c.id === activePlayerCharacter.id)].hp);
+          addToBattleLog(`${activePlayerCharacter.name} recovered ${healAmount} HP!`);
+          showFloatingLog(`+${healAmount} HP`);
         } else {
-          // Lower own defense
-          opponentStatModifiers.defense *= 0.9;
-          addToBattleLog(`${activeOpponent.name}'s Defense fell!`);
-          showFloatingLog("Enemy DEF ↓");
+          applyStatusEffect(activeOpponent, "slimed", 3, "opponent");
         }
         break;
+      case 5: // 9-5 Homie
+        if (move.name === "PTO Prayer") {
+          // Healing move
+          const healAmount = 35;
+          activePlayerCharacter.hp = Math.min(activePlayerCharacter.hp + healAmount, playerTeam[playerTeam.findIndex(c => c.id === activePlayerCharacter.id)].hp);
+          addToBattleLog(`${activePlayerCharacter.name} recovered ${healAmount} HP!`);
+          showFloatingLog(`+${healAmount} HP`);
+        } else {
+          opponentStatModifiers.speed *= 0.7;
+          addToBattleLog(`${activeOpponent.name}'s Speed decreased!`);
+          showFloatingLog("SPD ↓");
+        }
+        break;
+      case 6: // All Jokes Roaster
+        if (move.name === "Dodge the Shade") {
+          playerStatModifiers.speed *= 1.5;
+          addToBattleLog(`${activePlayerCharacter.name}'s Speed increased!`);
+          showFloatingLog("SPD ↑");
+        } else {
+          applyStatusEffect(activeOpponent, "confused", 2, "opponent");
+        }
+        break;
+      case 7: // Closet Nerd
+        if (move.name === "Incognito Glow-Up") {
+          playerStatModifiers.defense *= 1.5;
+          addToBattleLog(`${activePlayerCharacter.name}'s Defense increased!`);
+          showFloatingLog("DEF ↑");
+        } else {
+          opponentStatModifiers.accuracy *= 0.8;
+          addToBattleLog(`${activeOpponent.name}'s Accuracy decreased!`);
+          showFloatingLog("ACC ↓");
+        }
+        break;
+      case 8: // Dysfunctional YN
+        if (move.name === "Trainwreck Tantrum") {
+          playerStatModifiers.attack *= 1.5;
+          addToBattleLog(`${activePlayerCharacter.name}'s Attack increased!`);
+          showFloatingLog("ATK ↑");
+        } else {
+          applyStatusEffect(activeOpponent, "confused", 2, "opponent");
+        }
+        break;
+      default:
+        applyStatusEffect(activeOpponent, "confused", 2, "opponent");
+    }
+  } else {
+    // Opponent using status move
+    switch (activeOpponent.id) {
+      case 101: // Functional Addict
+        if (move.name === "Sober Up Sis") {
+          // Healing move
+          const healAmount = 30;
+          activeOpponent.hp = Math.min(activeOpponent.hp + healAmount, opponents[opponentIndex].hp);
+          addToBattleLog(`${activeOpponent.name} recovered ${healAmount} HP!`);
+          showFloatingLog(`+${healAmount} HP`);
+        } else {
+          applyStatusEffect(activePlayerCharacter, "dazed", 2, "player");
+        }
+        break;
+      case 102: // Gamer Unemployed
+        if (move.name === "Couch Potato Power") {
+          opponentStatModifiers.attack *= 1.3;
+          addToBattleLog(`${activeOpponent.name}'s Attack increased!`);
+          showFloatingLog("ATK ↑");
+        } else {
+          applyStatusEffect(activePlayerCharacter, "confused", 2, "player");
+        }
+        break;
+      case 103: // Houseless Hustler
+        if (move.name === "Hustle Hard") {
+          opponentStatModifiers.defense *= 1.4;
+          addToBattleLog(`${activeOpponent.name}'s Defense increased!`);
+          showFloatingLog("DEF ↑");
+        } else {
+          playerStatModifiers.speed *= 0.7;
+          addToBattleLog(`${activePlayerCharacter.name}'s Speed decreased!`);
+          showFloatingLog("SPD ↓");
+        }
+        break;
+      case 104: // Night Stalker
+        if (move.name === "Killer Instinct") {
+          opponentStatModifiers.attack *= 1.5;
+          addToBattleLog(`${activeOpponent.name}'s Attack increased!`);
+          showFloatingLog("ATK ↑");
+        } else {
+          applyStatusEffect(activePlayerCharacter, "dazed", 2, "player");
+        }
+        break;
+      case 105: // Techbro Rich
+        if (move.name === "VC Funded Flex") {
+          opponentStatModifiers.speed *= 1.4;
+          addToBattleLog(`${activeOpponent.name}'s Speed increased!`);
+          showFloatingLog("SPD ↑");
+        } else {
+          playerStatModifiers.defense *= 0.7;
+          addToBattleLog(`${activePlayerCharacter.name}'s Defense decreased!`);
+          showFloatingLog("DEF ↓");
+        }
+        break;
+      default:
+        applyStatusEffect(activePlayerCharacter, "confused", 2, "player");
     }
   }
 }
@@ -1103,65 +1141,141 @@ function applyHitEffects(move, user) {
   
   if (user === "player") {
     switch (activePlayerCharacter.id) {
-      case 1: // Young Thug
-        if (move.name === "Slatt" && chance < 0.3) {
+      case 1: // Rastamon
+        if (move.name === "Dreadlock Whip" && chance < 0.3) {
+          // Apply slimed effect
           applyStatusEffect(activeOpponent, "slimed", 2, "opponent");
         }
-        else if (move.name === "YSL Wave" && chance < 0.2) {
-          // Recoil damage
-          const recoilDamage = Math.floor(move.power * 0.1);
-          activePlayerCharacter.hp = Math.max(0, activePlayerCharacter.hp - recoilDamage);
-          updateBattleUI();
-          addToBattleLog(`${activePlayerCharacter.name} took ${recoilDamage} recoil damage!`);
-          showFloatingLog(`Recoil: -${recoilDamage} HP`);
+        else if (move.name === "6 Rasclaat Eggs?!" && chance < 0.3) {
+          // Apply sleep effect
+          applyStatusEffect(activeOpponent, "baked", 2, "opponent");
         }
         break;
-      case 2: // Travis Scott
-        if (move.name === "Astro Thunder" && chance < 0.3) {
-          applyStatusEffect(activeOpponent, "dazed", 2, "opponent");
+      case 2: // Fitness Bro
+        if (move.name === "Protein Powder Burn" && chance < 0.3) {
+          // Apply burn effect (bleeding)
+          applyStatusEffect(activeOpponent, "bleeding", 2, "opponent");
         }
-        else if (move.name === "Sicko Mode" && chance < 0.3) {
+        else if (move.name === "Squat Slap" && chance < 0.2) {
           // Increase attack
           playerStatModifiers.attack *= 1.1;
           addToBattleLog(`${activePlayerCharacter.name}'s Attack slightly rose!`);
           showFloatingLog("ATK ↑");
         }
         break;
-      case 3: // Future
-        if (move.name === "Dirty Sprite" && chance < 0.4) {
-          applyStatusEffect(activeOpponent, "dirtySprite", 3, "opponent");
+      case 3: // Techy
+        if (move.name === "Keyboard Smash" && chance < 0.3) {
+          // Apply paralysis effect
+          applyStatusEffect(activeOpponent, "dazed", 2, "opponent");
         }
-        else if (move.name === "Mask Off" && chance < 0.3) {
-          // Heal a bit
-          const healAmount = Math.floor(move.power * 0.2);
+        else if (move.name === "404 Headshot" && chance < 0.3) {
+          // Chance for critical hit
+          playerStatModifiers.attack *= 1.2;
+          addToBattleLog(`${activePlayerCharacter.name}'s targeting system optimized!`);
+          showFloatingLog("CRIT chance ↑");
+        }
+        break;
+      case 4: // Cool Vibe YN
+        if (move.name === "Splash Dat Ass" && chance < 0.3) {
+          // Apply wet effect (slimed)
+          applyStatusEffect(activeOpponent, "slimed", 2, "opponent");
+        }
+        else if (move.name === "Wave Check Fade" && chance < 0.3) {
+          // Apply sleep
+          applyStatusEffect(activeOpponent, "baked", 2, "opponent");
+        }
+        break;
+      case 5: // 9-5 Homie
+        if (move.name === "Overtime Overload" && chance < 0.3) {
+          // Apply paralysis
+          applyStatusEffect(activeOpponent, "dazed", 2, "opponent");
+        }
+        else if (move.name === "Monday Mayhem" && chance < 0.2) {
+          // Slight drain effect
+          const healAmount = Math.floor(move.power * 0.1);
           activePlayerCharacter.hp = Math.min(playerTeam[playerTeam.findIndex(c => c.id === activePlayerCharacter.id)].hp, activePlayerCharacter.hp + healAmount);
           updateBattleUI();
-          addToBattleLog(`${activePlayerCharacter.name} drained ${healAmount} HP!`);
-          showFloatingLog(`Drained: +${healAmount} HP`);
+          addToBattleLog(`${activePlayerCharacter.name} found a bit of energy!`);
+          showFloatingLog(`+${healAmount} HP`);
         }
         break;
-      case 4: // Lil Uzi Vert
-        if (move.name === "Baby Pluto" && chance < 0.3) {
-          // Speed boost
-          playerStatModifiers.speed *= 1.2;
-          addToBattleLog(`${activePlayerCharacter.name}'s Speed rose!`);
-          showFloatingLog("SPD ↑");
-        }
-        break;
-      case 7: // 21 Savage
-        if (move.name === "Knife Talk" && chance < 0.3) {
+      case 6: // All Jokes Roaster
+        if (move.name === "Clapback Inferno" && chance < 0.3) {
+          // Apply burn (bleeding)
           applyStatusEffect(activeOpponent, "bleeding", 2, "opponent");
         }
+        else if (move.name === "Ratio'd Receipts" && chance < 0.3) {
+          // Apply confusion
+          applyStatusEffect(activeOpponent, "confused", 2, "opponent");
+        }
         break;
-      case 8: // Drake
-        if (move.name === "Certified Lover" && chance < 0.3) {
-          applyStatusEffect(activeOpponent, "charmed", 2, "opponent");
+      case 7: // Closet Nerd
+        if (move.name === "Weeb Roast" && chance < 0.3) {
+          // Apply burn
+          applyStatusEffect(activeOpponent, "bleeding", 2, "opponent");
+        }
+        else if (move.name === "Manga Smack" && chance < 0.3) {
+          // Defense increase
+          playerStatModifiers.defense *= 1.1;
+          addToBattleLog(`${activePlayerCharacter.name}'s Defense slightly rose!`);
+          showFloatingLog("DEF ↑");
+        }
+        break;
+      case 8: // Dysfunctional YN
+        if (move.name === "Hot Mess Slap" && chance < 0.3) {
+          // Apply burn
+          applyStatusEffect(activeOpponent, "bleeding", 2, "opponent");
+        }
+        else if (move.name === "Chaos Cookout" && chance < 0.5) {
+          // Recoil damage
+          const recoilDamage = Math.floor(move.power * 0.15);
+          activePlayerCharacter.hp = Math.max(0, activePlayerCharacter.hp - recoilDamage);
+          updateBattleUI();
+          addToBattleLog(`${activePlayerCharacter.name} took ${recoilDamage} recoil damage!`);
+          showFloatingLog(`Recoil: -${recoilDamage} HP`);
         }
         break;
     }
   } else {
-    // Opponent hit effects can be added here if needed
-    // Similar logic to player effects
+    // Opponent hit effects
+    switch (activeOpponent.id) {
+      case 101: // Functional Addict
+        if (move.name === "Henny Haze" && chance < 0.3) {
+          // Apply sleep
+          applyStatusEffect(activePlayerCharacter, "baked", 2, "player");
+        }
+        break;
+      case 102: // Gamer Unemployed
+        if (move.name === "WiFi Crash" && chance < 0.3) {
+          // Apply paralysis
+          applyStatusEffect(activePlayerCharacter, "dazed", 2, "player");
+        }
+        break;
+      case 103: // Houseless Hustler
+        if (move.name === "Sidewalk Stomp" && chance < 0.3) {
+          // Lower speed
+          playerStatModifiers.speed *= 0.8;
+          addToBattleLog(`${activePlayerCharacter.name}'s Speed decreased!`);
+          showFloatingLog("SPD ↓");
+        }
+        break;
+      case 104: // Night Stalker
+        if (move.name === "Knife Nightcap" && chance < 0.3) {
+          // Apply sleep
+          applyStatusEffect(activePlayerCharacter, "baked", 2, "player");
+        }
+        else if (move.name === "Shadow Strike" && chance < 0.3) {
+          // Apply bleeding
+          applyStatusEffect(activePlayerCharacter, "bleeding", 2, "player");
+        }
+        break;
+      case 105: // Techbro Rich
+        if (move.name === "Tesla Taze" && chance < 0.3) {
+          // Apply paralysis
+          applyStatusEffect(activePlayerCharacter, "dazed", 2, "player");
+        }
+        break;
+    }
   }
 }
 
