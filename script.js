@@ -1415,7 +1415,7 @@ function hitSelf(character) {
     setTimeout(() => {
       sprite.classList.remove("shake-animation");
       sprite.classList.remove("hit-flash");
-    }, 700);
+    }, 1000);
   }
   
   // Update UI
@@ -1478,7 +1478,7 @@ function useMove(move) {
     setTimeout(() => {
       playerSprite.classList.remove("attack-animation");
       canAct = true;
-    }, 600);
+    }, 1000);
     return;
   }
   
@@ -1567,7 +1567,7 @@ function executeOpponentMove(move) {
     // Remove animation
     setTimeout(() => {
       opponentSprite.classList.remove("attack-animation-reverse");
-    }, 600);
+    }, 1000);
     return;
   }
   
@@ -1579,7 +1579,7 @@ function executeOpponentMove(move) {
     // Remove animation
     setTimeout(() => {
       opponentSprite.classList.remove("attack-animation-reverse");
-    }, 600);
+    }, 1000);
     return;
   }
   
