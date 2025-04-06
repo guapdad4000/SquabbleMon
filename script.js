@@ -1862,16 +1862,20 @@ function executeOpponentMove(move) {
       addToBattleLog("The Crash Dummy imposter took the hit instead!");
       
       // Show a visual effect for the imposter taking damage
-      const playerCharacterElement = document.getElementById("player-character");
-      const imposterHitElement = document.createElement("div");
-      imposterHitElement.className = "imposter-hit-effect";
-      playerCharacterElement.appendChild(imposterHitElement);
-      
-      // The animation will handle the visual effects and automatically fade out
-      // Remove the element after the animation completes (imposterHitEffect animation)
-      setTimeout(() => {
-        imposterHitElement.remove();
-      }, 1500);
+      const playerAreaElement = document.getElementById("player-area");
+      if (playerAreaElement) {
+        const imposterHitElement = document.createElement("div");
+        imposterHitElement.className = "imposter-hit-effect";
+        playerAreaElement.appendChild(imposterHitElement);
+        
+        // The animation will handle the visual effects and automatically fade out
+        // Remove the element after the animation completes (imposterHitEffect animation)
+        setTimeout(() => {
+          if (imposterHitElement && imposterHitElement.parentNode) {
+            imposterHitElement.remove();
+          }
+        }, 1500);
+      }
       
       // Remove the imposter effect
       playerActiveItemEffects = playerActiveItemEffects.filter(effect => effect.effect !== "imposter");
@@ -2769,7 +2773,7 @@ function useItem(itemType) {
         imposterElement.style.opacity = "0.85";
         
         // Add to the player's area
-        const playerContainer = document.getElementById("player-character");
+        const playerContainer = document.getElementById("player-area");
         if (playerContainer) {
           playerContainer.appendChild(imposterElement);
           
@@ -2780,7 +2784,9 @@ function useItem(itemType) {
           }, 500);
           
           setTimeout(() => {
-            imposterElement.remove();
+            if (imposterElement && imposterElement.parentNode) {
+              imposterElement.remove();
+            }
           }, 2000);
         }
       }
