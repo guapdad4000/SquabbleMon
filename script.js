@@ -1641,6 +1641,15 @@ function useMove(move) {
   // Apply damage
   setTimeout(() => {
     activeOpponent.hp = Math.max(0, activeOpponent.hp - damage);
+    
+    // Add hit effect to opponent
+    document.getElementById("opponent-sprite").classList.add("hit-effect");
+    
+    // Remove hit effect after animation completes
+    setTimeout(() => {
+      document.getElementById("opponent-sprite").classList.remove("hit-effect");
+    }, 1000);
+    
     updateBattleUI();
     
     // Show damage in battle log
@@ -1660,13 +1669,12 @@ function useMove(move) {
     applyHitEffects(move, "player");
     
     // Show opponent reaction
-    const opponentSprite = document.getElementById("opponent-sprite");
-    opponentSprite.classList.add("shake-animation");
-    opponentSprite.classList.add("hit-flash");
+    document.getElementById("opponent-sprite").classList.add("shake-animation");
+    document.getElementById("opponent-sprite").classList.add("hit-flash");
     
     setTimeout(() => {
-      opponentSprite.classList.remove("shake-animation");
-      opponentSprite.classList.remove("hit-flash");
+      document.getElementById("opponent-sprite").classList.remove("shake-animation");
+      document.getElementById("opponent-sprite").classList.remove("hit-flash");
     }, 1000);
     
     // Check if opponent fainted
@@ -1796,6 +1804,15 @@ function executeOpponentMove(move) {
   // Apply damage
   setTimeout(() => {
     activePlayerCharacter.hp = Math.max(0, activePlayerCharacter.hp - damage);
+    
+    // Add hit effect to player character
+    document.getElementById("player-sprite").classList.add("hit-effect");
+    
+    // Remove hit effect after animation completes
+    setTimeout(() => {
+      document.getElementById("player-sprite").classList.remove("hit-effect");
+    }, 1000);
+    
     updateBattleUI();
     
     // Show damage in battle log
@@ -1815,13 +1832,12 @@ function executeOpponentMove(move) {
     applyHitEffects(move, "opponent");
     
     // Show player reaction
-    const playerSprite = document.getElementById("player-sprite");
-    playerSprite.classList.add("player-shake-animation");
-    playerSprite.classList.add("hit-flash");
+    document.getElementById("player-sprite").classList.add("player-shake-animation");
+    document.getElementById("player-sprite").classList.add("hit-flash");
     
     setTimeout(() => {
-      playerSprite.classList.remove("player-shake-animation");
-      playerSprite.classList.remove("hit-flash");
+      document.getElementById("player-sprite").classList.remove("player-shake-animation");
+      document.getElementById("player-sprite").classList.remove("hit-flash");
     }, 1000);
     
     // Check if player fainted
@@ -2630,6 +2646,27 @@ function continueBattle() {
   // Reset battle modifiers
   resetBattleModifiers();
   
+  // Heal player character after each battle in a "fade" (3 battles)
+  // Heal 50% of max HP between battles
+  const healAmount = Math.floor(activePlayerCharacter.maxHP * 0.5);
+  activePlayerCharacter.currentHP = Math.min(activePlayerCharacter.maxHP, activePlayerCharacter.currentHP + healAmount);
+  
+  // Add healing effect
+  const playerSprite = document.getElementById("player-sprite");
+  playerSprite.classList.add("heal-effect");
+  setTimeout(() => {
+    playerSprite.classList.remove("heal-effect");
+  }, 2000);
+  
+  // Also restore some PP to each move (1-2 PP per move)
+  activePlayerCharacter.moves.forEach(move => {
+    const restorePP = Math.floor(Math.random() * 2) + 1; // 1-2 PP restored
+    move.currentPP = Math.min(move.pp, move.currentPP + restorePP);
+  });
+  
+  addToBattleLog(`${activePlayerCharacter.name} recovered ${healAmount} HP between battles!`);
+  addToBattleLog(`Some PP was restored to ${activePlayerCharacter.name}'s moves!`);
+  
   // Update UI
   updateBattleUI();
   updateStatusIcons();
@@ -2640,8 +2677,8 @@ function continueBattle() {
   addToBattleLog(`${activePlayerCharacter.name} vs ${activeOpponent.name}!`);
   showFloatingLog(`New opponent: ${activeOpponent.name}`);
   
-  // Determine first turn
-  currentTurn = determineFirstTurn();
+  // Determine first turn - player always goes first after healing between battles
+  currentTurn = "player";
   
   // Start the turn after a delay
   setTimeout(() => {
