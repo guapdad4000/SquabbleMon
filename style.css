@@ -126,7 +126,7 @@ body {
   padding: 15px;
   background-color: rgba(0, 0, 0, 0.2);
   border: 2px solid var(--pixel-border);
-  height: 320px; /* Fixed height to fit well within the screen */
+  height: 420px; /* Increased height to fit all characters */
   overflow-y: auto;
 }
 .character-card {
@@ -1202,7 +1202,7 @@ body {
   #character-list {
     gap: 10px;
     padding: 10px;
-    height: 300px; /* Adjusted for tablet screens */
+    height: 400px; /* Increased height to fit all characters on tablet screens */
   }
   
   .character-card {
@@ -1246,7 +1246,7 @@ body {
   #character-list {
     gap: 8px;
     padding: 8px;
-    height: 280px; /* Adjusted for mobile screens */
+    height: 380px; /* Increased height to fit all characters on mobile screens */
   }
   
   .character-card {
