@@ -1760,14 +1760,28 @@ function useMove(move) {
   
   addToBattleLog(`${activePlayerCharacter.name} used ${move.name}!`);
   
-  // Play hit sound
-  playHitSound();
+  // Check if this is a damage move or a status/healing move
+  const isZeroDamageMove = move.power === 0 || move.type === "status";
   
-  // Apply attack animation
-  setPlayerAnimation("attack");
-  
-  // Apply move-specific animation based on type
-  applyMoveAnimation(move.type, "player");
+  // Only play attack sound for damage moves
+  if (!isZeroDamageMove) {
+    // Play hit sound
+    playHitSound();
+    
+    // Apply attack animation
+    setPlayerAnimation("attack");
+    
+    // Apply move-specific animation based on type
+    applyMoveAnimation(move.type, "player");
+  } else {
+    // Play a different sound for status/healing moves
+    playSuccessSound();
+    
+    // Apply a non-attack animation
+    if (move.type === "status") {
+      applyMoveAnimation("status", "player");
+    }
+  }
   
   // Add visual effect based on move type
   const battleArena = document.getElementById("battle-arena");
@@ -1786,12 +1800,10 @@ function useMove(move) {
     }, 400);
   }
   
-  // Make player sprite move forward when attacking
-  if (playerSprite) {
+  // Make player sprite move forward when attacking - only for damage moves
+  if (playerSprite && !isZeroDamageMove) {
     playerSprite.classList.add("attack-lunge");
   }
-  // Apply attack animation
-  setPlayerAnimation("attack");
   
   // Get the appropriate animation based on type
   const animationUrl = attackAnimations[move.type] || attackAnimations["Normal"];
@@ -1942,14 +1954,28 @@ function executeOpponentMove(move) {
   
   addToBattleLog(`${activeOpponent.name} used ${move.name}!`);
   
-  // Play hit sound
-  playHitSound();
+  // Check if this is a damage move or a status/healing move
+  const isZeroDamageMove = move.power === 0 || move.type === "status";
   
-  // Apply opponent attack animation
-  setOpponentAnimation("attack");
-  
-  // Apply move-specific animation based on type
-  applyMoveAnimation(move.type, "opponent");
+  // Only play attack sound for damage moves
+  if (!isZeroDamageMove) {
+    // Play hit sound
+    playHitSound();
+    
+    // Apply attack animation
+    setOpponentAnimation("attack");
+    
+    // Apply move-specific animation based on type
+    applyMoveAnimation(move.type, "opponent");
+  } else {
+    // Play a different sound for status/healing moves
+    playSuccessSound();
+    
+    // Apply a non-attack animation
+    if (move.type === "status") {
+      applyMoveAnimation("status", "opponent");
+    }
+  }
   
   // Add visual effect based on move type
   const battleArena = document.getElementById("battle-arena");
@@ -1969,51 +1995,57 @@ function executeOpponentMove(move) {
     }, 400);
   }
   
-  // Make opponent sprite move forward when attacking
-  if (opponentSprite) {
+  // Make opponent sprite move forward when attacking - only for damage moves
+  if (opponentSprite && !isZeroDamageMove) {
     opponentSprite.classList.add("attack-lunge-reverse");
   }
-  // Apply attack animation
-  setOpponentAnimation("attack");
   
-  // Get the appropriate animation based on type
-  const animationUrl = attackAnimations[move.type] || attackAnimations["Normal"];
+  // Only create attack animations for damage moves
+  const isAttackAnimation = !isZeroDamageMove;
   
-  // Create attack animation element
-  const attackAnimation = document.createElement("div");
-  attackAnimation.className = "attack-effect";
+  // Get the appropriate animation based on type (only for attack animations)
+  const animationUrl = isAttackAnimation ? 
+                      (attackAnimations[move.type] || attackAnimations["Normal"]) : 
+                      null;
   
-  try {
-    // Try to set the background image
-    attackAnimation.style.backgroundImage = `url(${animationUrl})`;
+  // Create attack animation element (only for attack animations)
+  const attackAnimation = isAttackAnimation ? document.createElement("div") : null;
+  
+  if (attackAnimation) {
+    attackAnimation.className = "attack-effect";
     
-    // Position the animation centered on the player sprite
-    const playerRect = playerSprite.getBoundingClientRect();
-    const battleArenaRect = battleArena.getBoundingClientRect();
+    try {
+      // Try to set the background image
+      attackAnimation.style.backgroundImage = `url(${animationUrl})`;
+      
+      // Position the animation centered on the player sprite
+      const playerRect = playerSprite.getBoundingClientRect();
+      const battleArenaRect = battleArena.getBoundingClientRect();
     
-    // Calculate position relative to battle arena
-    const left = playerRect.left - battleArenaRect.left + (playerRect.width / 2) - 75;
-    const top = playerRect.top - battleArenaRect.top + (playerRect.height / 2) - 75;
-    
-    attackAnimation.style.position = "absolute";
-    attackAnimation.style.left = `${left}px`;
-    attackAnimation.style.top = `${top}px`;
-    attackAnimation.style.width = "150px";
-    attackAnimation.style.height = "150px";
-    attackAnimation.style.backgroundSize = "contain";
-    attackAnimation.style.backgroundPosition = "center center";
-    attackAnimation.style.backgroundRepeat = "no-repeat";
-    attackAnimation.style.zIndex = "100";
-    
-    // Add to battle arena
-    battleArena.appendChild(attackAnimation);
-    
-    // Remove animation after it completes
-    setTimeout(() => {
-      attackAnimation.remove();
-    }, 1000);
-  } catch (error) {
-    console.error("Animation error:", error);
+      // Calculate position relative to battle arena
+      const left = playerRect.left - battleArenaRect.left + (playerRect.width / 2) - 75;
+      const top = playerRect.top - battleArenaRect.top + (playerRect.height / 2) - 75;
+      
+      attackAnimation.style.position = "absolute";
+      attackAnimation.style.left = `${left}px`;
+      attackAnimation.style.top = `${top}px`;
+      attackAnimation.style.width = "150px";
+      attackAnimation.style.height = "150px";
+      attackAnimation.style.backgroundSize = "contain";
+      attackAnimation.style.backgroundPosition = "center center";
+      attackAnimation.style.backgroundRepeat = "no-repeat";
+      attackAnimation.style.zIndex = "100";
+      
+      // Add to battle arena
+      battleArena.appendChild(attackAnimation);
+      
+      // Remove animation after it completes
+      setTimeout(() => {
+        attackAnimation.remove();
+      }, 1000);
+    } catch (error) {
+      console.error("Animation error:", error);
+    }
   }
   
   // Remove lunge animation after a short delay
@@ -2236,7 +2268,11 @@ function handleStatusMove(move, user) {
         if (move.name === "Irie Recharge") {
           // Healing move
           const healAmount = 30;
-          activePlayerCharacter.hp = Math.min(activePlayerCharacter.hp + healAmount, playerTeam[playerTeam.findIndex(c => c.id === activePlayerCharacter.id)].hp);
+          // Make sure maxHp is set
+          activePlayerCharacter.maxHp = activePlayerCharacter.maxHp || activePlayerCharacter.hp;
+          
+          // Use maxHp directly for healing calculation
+          activePlayerCharacter.hp = Math.min(activePlayerCharacter.hp + healAmount, activePlayerCharacter.maxHp);
           
           // Add visual healing effect
           const playerSprite = document.getElementById("player-sprite");
@@ -2310,7 +2346,11 @@ function handleStatusMove(move, user) {
         if (move.name === "Call Girls for Gang") {
           // Healing move
           const healAmount = 40;
-          activePlayerCharacter.hp = Math.min(activePlayerCharacter.hp + healAmount, playerTeam[playerTeam.findIndex(c => c.id === activePlayerCharacter.id)].hp);
+          // Make sure maxHp is set
+          activePlayerCharacter.maxHp = activePlayerCharacter.maxHp || activePlayerCharacter.hp;
+          
+          // Use maxHp directly for healing calculation
+          activePlayerCharacter.hp = Math.min(activePlayerCharacter.hp + healAmount, activePlayerCharacter.maxHp);
           
           // Add visual healing effect
           const playerSprite = document.getElementById("player-sprite");
@@ -2366,7 +2406,11 @@ function handleStatusMove(move, user) {
         if (move.name === "PTO Prayer") {
           // Healing move
           const healAmount = 35;
-          activePlayerCharacter.hp = Math.min(activePlayerCharacter.hp + healAmount, playerTeam[playerTeam.findIndex(c => c.id === activePlayerCharacter.id)].hp);
+          // Make sure maxHp is set
+          activePlayerCharacter.maxHp = activePlayerCharacter.maxHp || activePlayerCharacter.hp;
+          
+          // Use maxHp directly for healing calculation
+          activePlayerCharacter.hp = Math.min(activePlayerCharacter.hp + healAmount, activePlayerCharacter.maxHp);
           
           // Add visual healing effect
           const playerSprite = document.getElementById("player-sprite");
@@ -2459,7 +2503,11 @@ function handleStatusMove(move, user) {
         if (move.name === "Sober Up Sis") {
           // Healing move
           const healAmount = 30;
-          activeOpponent.hp = Math.min(activeOpponent.hp + healAmount, opponents[opponentIndex].hp);
+          // Make sure maxHp is set
+          activeOpponent.maxHp = activeOpponent.maxHp || activeOpponent.hp;
+          
+          // Use maxHp directly for healing calculation
+          activeOpponent.hp = Math.min(activeOpponent.hp + healAmount, activeOpponent.maxHp);
           
           // Add visual healing effect
           const opponentSprite = document.getElementById("opponent-sprite");
@@ -2673,7 +2721,11 @@ function applyHitEffects(move, user) {
         else if (move.name === "Monday Mayhem" && chance < 0.2) {
           // Slight drain effect
           const healAmount = Math.floor(move.power * 0.1);
-          activePlayerCharacter.hp = Math.min(playerTeam[playerTeam.findIndex(c => c.id === activePlayerCharacter.id)].hp, activePlayerCharacter.hp + healAmount);
+          // Make sure maxHp is set
+          activePlayerCharacter.maxHp = activePlayerCharacter.maxHp || activePlayerCharacter.hp;
+          
+          // Use maxHp directly for healing calculation 
+          activePlayerCharacter.hp = Math.min(activePlayerCharacter.maxHp, activePlayerCharacter.hp + healAmount);
           updateBattleUI();
           addToBattleLog(`${activePlayerCharacter.name} found a bit of energy!`);
           showFloatingLog(`+${healAmount} HP`);
