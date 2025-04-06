@@ -1540,9 +1540,10 @@ function useMove(move) {
   
   // Attack animation
   const playerSprite = document.getElementById("player-sprite");
-  // Store the original animation class for restoration later
-  window.originalPlayerClass = playerSprite.classList.contains("float-animation") ? "float-animation" : "";
-  playerSprite.classList.remove("float-animation"); // Remove floating animation
+  // Store the original animation for restoration later
+  window.originalPlayerClass = true;
+  // Temporarily stop the floating animation
+  playerSprite.style.animation = "none";
   playerSprite.classList.add("attack-animation");
   
   // Add visual effect based on move type
@@ -1626,7 +1627,10 @@ function useMove(move) {
     // Remove animation
     setTimeout(() => {
       playerSprite.classList.remove("attack-animation");
-      if (window.originalPlayerClass) playerSprite.classList.add(window.originalPlayerClass);
+      if (window.originalPlayerClass) {
+        // Restore the original animation by allowing the float animation to play again
+        playerSprite.style.animation = "float 2s ease-in-out infinite";
+      }
       canAct = true;
     }, 1000);
     return;
@@ -1640,7 +1644,10 @@ function useMove(move) {
     // Remove animation
     setTimeout(() => {
       playerSprite.classList.remove("attack-animation");
-      if (window.originalPlayerClass) playerSprite.classList.add(window.originalPlayerClass);
+      if (window.originalPlayerClass) {
+        // Restore the original animation by allowing the float animation to play again
+        playerSprite.style.animation = "float 2s ease-in-out infinite";
+      }
       canAct = true;
     }, 1000);
     return;
@@ -1694,7 +1701,10 @@ function useMove(move) {
     }
     // Remove animation and restore floating
     playerSprite.classList.remove("attack-animation");
-    if (window.originalPlayerClass) playerSprite.classList.add(window.originalPlayerClass);
+    if (window.originalPlayerClass) {
+      // Restore the original animation by allowing the float animation to play again
+      playerSprite.style.animation = "float 2s ease-in-out infinite";
+    }
     canAct = true;
   }, 1000);
 }
@@ -1714,9 +1724,10 @@ function executeOpponentMove(move) {
   
   // Attack animation
   let opponentSprite = document.getElementById("opponent-sprite");
-  window.originalOpponentClass = opponentSprite.classList.contains("floatFlipped") ? "floatFlipped" : "";
-  // Already stored the original animation class for restoration later
-  opponentSprite.classList.remove("floatFlipped"); // Remove floating animation
+  // Store the original animation style
+  window.originalOpponentClass = "floatFlipped";
+  // Temporarily stop the floating animation
+  opponentSprite.style.animation = "none";
   opponentSprite.classList.add("attack-animation-reverse");
   
   // Add visual effect based on move type
@@ -1801,7 +1812,11 @@ function executeOpponentMove(move) {
     // Remove animation
     setTimeout(() => {
       opponentSprite.classList.remove("attack-animation-reverse");
-      if (window.originalOpponentClass) opponentSprite.classList.add(window.originalOpponentClass);
+      if (window.originalOpponentClass) {
+        // Restore the original animation by allowing the float animation to play again
+        opponentSprite.style.animation = "float 2s ease-in-out infinite";
+        opponentSprite.style.transform = "scaleX(-1)"; // Keep the opponent flipped
+      }
     }, 1000);
     return;
   }
@@ -1814,7 +1829,11 @@ function executeOpponentMove(move) {
     // Remove animation
     setTimeout(() => {
       opponentSprite.classList.remove("attack-animation-reverse");
-      if (window.originalOpponentClass) opponentSprite.classList.add(window.originalOpponentClass);
+      if (window.originalOpponentClass) {
+        // Restore the original animation by allowing the float animation to play again
+        opponentSprite.style.animation = "float 2s ease-in-out infinite";
+        opponentSprite.style.transform = "scaleX(-1)"; // Keep the opponent flipped
+      }
     }, 1000);
     return;
   }
@@ -1867,7 +1886,11 @@ function executeOpponentMove(move) {
     }
     // Remove animation
     opponentSprite.classList.remove("attack-animation-reverse");
-    if (window.originalOpponentClass) opponentSprite.classList.add(window.originalOpponentClass);
+    if (window.originalOpponentClass) {
+      // Restore the original animation by allowing the float animation to play again
+      opponentSprite.style.animation = "float 2s ease-in-out infinite";
+      opponentSprite.style.transform = "scaleX(-1)"; // Keep the opponent flipped
+    }
   }, 1000);
 }
 
