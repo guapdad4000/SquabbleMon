@@ -1258,9 +1258,10 @@ function updateItemButtons() {
 }
 
 function updateFadeDisplay() {
-  const fadeDisplay = document.getElementById("fade-display");
-  if (!fadeDisplay) return;
-  fadeDisplay.textContent = `Fades: ${fadeCount}`;
+  const fadeCountText = document.getElementById("fade-count-text");
+  const fadeCounter = document.getElementById("fade-counter"); // For game over screen
+  if (fadeCountText) fadeCountText.textContent = fadeCount;
+  if (fadeCounter) fadeCounter.textContent = `Fades: ${fadeCount}`;
 }
 
 function setupMoveTooltips() {
