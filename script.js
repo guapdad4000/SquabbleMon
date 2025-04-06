@@ -25,7 +25,7 @@ const characters = [
   {
     id: 1,
     name: "Rastamon",
-    sprite: "https://i.imgur.com/dZWWrrs.png", 
+    sprite: "https://i.imgur.com/OH3B6YT.png", 
     hp: 200,
     attack: 150,
     defense: 130,
@@ -63,7 +63,7 @@ const characters = [
   {
     id: 3,
     name: "Techy",
-    sprite: "https://i.imgur.com/VVa9pm9.png", 
+    sprite: "https://i.imgur.com/m7Rup7S.png", 
     hp: 170,
     attack: 150,
     defense: 150,
@@ -120,7 +120,7 @@ const characters = [
   {
     id: 6,
     name: "All Jokes Roaster",
-    sprite: "https://i.imgur.com/9hFTFQt.png", 
+    sprite: "https://i.imgur.com/qRtemtQ.png", 
     hp: 180,
     attack: 170,
     defense: 110,
@@ -2060,12 +2060,23 @@ function useItem(itemType) {
   const item = items[itemType];
   addToBattleLog(`${activePlayerCharacter.name} used ${item.name}!`);
   
+  // Play success sound for item use
+  playSuccessSound();
+  
   // Apply item effect
   switch (item.effect) {
     case "heal":
-      const maxHp = playerTeam[playerTeam.findIndex(c => c.id === activePlayerCharacter.id)].hp;
+      // Find the maximum HP for the current character
+      const playerIndex = playerTeam.findIndex(c => c.id === activePlayerCharacter.id);
+      if (playerIndex === -1) {
+        console.error("Player character not found in team");
+        break;
+      }
+      
+      const maxHp = playerTeam[playerIndex].hp;
       const healAmount = Math.min(item.value, maxHp - activePlayerCharacter.hp);
       activePlayerCharacter.hp = Math.min(maxHp, activePlayerCharacter.hp + item.value);
+      
       addToBattleLog(`${activePlayerCharacter.name} recovered ${healAmount} HP!`);
       showFloatingLog(`Healed: +${healAmount} HP`);
       break;
@@ -2078,6 +2089,10 @@ function useItem(itemType) {
       
       // Add to active effects with duration
       if (item.duration) {
+        // Remove any existing attack boost effects first to prevent stacking
+        playerActiveItemEffects = playerActiveItemEffects.filter(effect => effect.effect !== "atkUp");
+        
+        // Add the new effect
         playerActiveItemEffects.push({
           itemType: itemType,
           effect: item.effect,
@@ -2096,6 +2111,10 @@ function useItem(itemType) {
       
       // Add to active effects with duration
       if (item.duration) {
+        // Remove any existing defense boost effects first to prevent stacking
+        playerActiveItemEffects = playerActiveItemEffects.filter(effect => effect.effect !== "defUp");
+        
+        // Add the new effect
         playerActiveItemEffects.push({
           itemType: itemType,
           effect: item.effect,
@@ -2115,9 +2134,13 @@ function useItem(itemType) {
         updateStatusIcons();
         
         // Small HP recovery bonus
-        const cureHealAmount = Math.floor(playerTeam[playerTeam.findIndex(c => c.id === activePlayerCharacter.id)].hp * 0.1);
-        activePlayerCharacter.hp = Math.min(playerTeam[playerTeam.findIndex(c => c.id === activePlayerCharacter.id)].hp, activePlayerCharacter.hp + cureHealAmount);
-        addToBattleLog(`${activePlayerCharacter.name} recovered ${cureHealAmount} HP!`);
+        const playerIdx = playerTeam.findIndex(c => c.id === activePlayerCharacter.id);
+        if (playerIdx !== -1) {
+          const maxHp = playerTeam[playerIdx].hp;
+          const cureHealAmount = Math.floor(maxHp * 0.1);
+          activePlayerCharacter.hp = Math.min(maxHp, activePlayerCharacter.hp + cureHealAmount);
+          addToBattleLog(`${activePlayerCharacter.name} recovered ${cureHealAmount} HP!`);
+        }
       } else {
         addToBattleLog(`It had no effect...`);
         showFloatingLog("No effect");
