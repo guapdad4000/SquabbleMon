@@ -249,6 +249,216 @@ const characters = [
       { name: "Sub Goal", power: 0, accuracy: 100, type: "Normal", description: "Rallies support to boost defense and attack." },
       { name: "Sponsored Content", power: 75, accuracy: 80, type: "Dark", description: "Sold-out attack that generates cash damage." }
     ]
+  },
+  // New characters from the provided list
+  {
+    id: 13,
+    name: "Smoker Jr",
+    sprite: "https://i.imgur.com/vdaAi7h.png", 
+    hp: 185,
+    attack: 160,
+    defense: 120,
+    speed: 110,
+    critRate: 0.15,
+    type: "Fire",
+    status: "normal",
+    description: "Always carrying a lighter. Probably shouldn't be smoking, but who's stopping him?",
+    moves: [
+      { name: "Smoke Screen", power: 50, accuracy: 90, type: "Fire", description: "Creates a cloud of smoke reducing opponent's accuracy." },
+      { name: "Lighter Flick", power: 65, accuracy: 85, type: "Fire", description: "Quick flame attack that may cause burn status." },
+      { name: "Puff Puff Pass", power: 0, accuracy: 100, type: "Fire", description: "Recovers HP while entering a relaxed state." },
+      { name: "Ash Flick", power: 55, accuracy: 95, type: "Fire", description: "Small but irritating attack with high accuracy." }
+    ]
+  },
+  {
+    id: 14,
+    name: "Suburban YN",
+    sprite: "https://i.imgur.com/LKtVgCn.png", 
+    hp: 190,
+    attack: 140,
+    defense: 150,
+    speed: 130,
+    critRate: 0.1,
+    type: "Normal",
+    status: "normal",
+    description: "Straight from the cul-de-sac. Has never seen an actual struggle but claims street cred.",
+    moves: [
+      { name: "HOA Complaint", power: 50, accuracy: 95, type: "Normal", description: "Administrative attack with surprising effectiveness." },
+      { name: "Mall Shopping Spree", power: 60, accuracy: 90, type: "Normal", description: "Shopping bags used as weapons, may confuse opponent." },
+      { name: "Privilege Check", power: 0, accuracy: 100, type: "Normal", description: "Uses advantages to boost defense and attack." },
+      { name: "Lawn Mower Charge", power: 75, accuracy: 80, type: "Rock", description: "Suburban weapon of choice that deals solid damage." }
+    ]
+  },
+  {
+    id: 15,
+    name: "Ganger Blue",
+    sprite: "https://i.imgur.com/7THvTR0.png", 
+    hp: 200,
+    attack: 180,
+    defense: 130,
+    speed: 150,
+    critRate: 0.2,
+    type: "Water",
+    status: "normal",
+    description: "Runs the west side. Don't wear the wrong colors around him.",
+    moves: [
+      { name: "Set Trippin'", power: 65, accuracy: 90, type: "Water", description: "Territory defense move with moderate damage." },
+      { name: "Blue Bandana Wave", power: 70, accuracy: 85, type: "Water", description: "Water attack that showcases gang colors." },
+      { name: "Call Backup", power: 0, accuracy: 100, type: "Water", description: "Summons crew to boost attack and defense." },
+      { name: "Drive-By Splash", power: 85, accuracy: 75, type: "Water", description: "Powerful but risky water attack with high damage." }
+    ]
+  },
+  {
+    id: 16,
+    name: "Ganger Red",
+    sprite: "https://i.imgur.com/DP4RBGB.png", 
+    hp: 190,
+    attack: 190,
+    defense: 120,
+    speed: 160,
+    critRate: 0.2,
+    type: "Fire",
+    status: "normal",
+    description: "Controls the east side. Blood runs deep, loyalty runs deeper.",
+    moves: [
+      { name: "Red Rag Snap", power: 60, accuracy: 90, type: "Fire", description: "Gang sign attack with moderate fire damage." },
+      { name: "Hood Tactics", power: 75, accuracy: 85, type: "Dark", description: "Strategic attack learned from street experience." },
+      { name: "Gang Meeting", power: 0, accuracy: 100, type: "Normal", description: "Plans with crew to increase all stats temporarily." },
+      { name: "Turf War Blaze", power: 90, accuracy: 70, type: "Fire", description: "All-out territorial attack with high damage but lower accuracy." }
+    ]
+  },
+  {
+    id: 17,
+    name: "Coon",
+    sprite: "https://i.imgur.com/CSvkuRk.png", 
+    hp: 170,
+    attack: 150,
+    defense: 120,
+    speed: 190,
+    critRate: 0.15,
+    type: "Dark",
+    status: "normal",
+    description: "Sells out their own people for validation. Always seeking approval from the wrong crowd.",
+    moves: [
+      { name: "Identity Betrayal", power: 65, accuracy: 90, type: "Dark", description: "Self-hating attack that damages opponent's pride." },
+      { name: "Pick Me Dance", power: 50, accuracy: 95, type: "Normal", description: "Desperate approval-seeking move with high accuracy." },
+      { name: "Internalized Hatred", power: 0, accuracy: 100, type: "Dark", description: "Redirects self-loathing to boost attack." },
+      { name: "Token Friend Card", power: 70, accuracy: 85, type: "Dark", description: "Uses tokenism as a weapon with moderate damage." }
+    ]
+  },
+  {
+    id: 18,
+    name: "Rapper",
+    sprite: "https://i.imgur.com/HcWNwJT.png", 
+    hp: 185,
+    attack: 175,
+    defense: 110,
+    speed: 170,
+    critRate: 0.15,
+    type: "Electric",
+    status: "normal",
+    description: "Spits fire and takes no prisoners. Soundcloud link in bio, of course.",
+    moves: [
+      { name: "Mic Drop", power: 65, accuracy: 90, type: "Electric", description: "Shocking performance that leaves audience stunned." },
+      { name: "Freestyle Flow", power: 70, accuracy: 85, type: "Air", description: "Off-the-top rhymes that hit with surprising force." },
+      { name: "Hype Man Backup", power: 0, accuracy: 100, type: "Electric", description: "Brings out the entourage to boost attack and speed." },
+      { name: "Diss Track", power: 85, accuracy: 75, type: "Dark", description: "Targeted verbal attack that cuts deep with high damage." }
+    ]
+  },
+  {
+    id: 19,
+    name: "Police",
+    sprite: "https://i.imgur.com/AdCwGHp.png", 
+    hp: 210,
+    attack: 160,
+    defense: 170,
+    speed: 130,
+    critRate: 0.1,
+    type: "Rock",
+    status: "normal",
+    description: "Thinks the badge makes them above the law. Has a quota to fill.",
+    moves: [
+      { name: "Racial Profiling", power: 60, accuracy: 85, type: "Dark", description: "Discriminatory tactic with moderate damage." },
+      { name: "Taser Shot", power: 70, accuracy: 80, type: "Electric", description: "Electric attack that may cause paralysis." },
+      { name: "Call for Backup", power: 0, accuracy: 100, type: "Rock", description: "Brings in reinforcements to boost defense." },
+      { name: "Excessive Force", power: 90, accuracy: 70, type: "Rock", description: "Powerful but controversial attack with poor accuracy." }
+    ]
+  },
+  {
+    id: 20,
+    name: "Snitch",
+    sprite: "https://i.imgur.com/OOZM6eu.png", 
+    hp: 150,
+    attack: 130,
+    defense: 110,
+    speed: 200,
+    critRate: 0.1,
+    type: "Air",
+    status: "normal",
+    description: "No loyalty, just self-preservation. Watch what you say around them.",
+    moves: [
+      { name: "Tell All", power: 55, accuracy: 95, type: "Air", description: "Reveals secrets for a quick, accurate attack." },
+      { name: "Recorded Evidence", power: 65, accuracy: 90, type: "Electric", description: "Uses hidden recordings for moderate damage." },
+      { name: "Witness Protection", power: 0, accuracy: 100, type: "Air", description: "Hides away to recover HP and boost defense." },
+      { name: "Backstab", power: 80, accuracy: 75, type: "Dark", description: "Betrayal attack with high damage to former allies." }
+    ]
+  },
+  {
+    id: 21,
+    name: "Cornball",
+    sprite: "https://i.imgur.com/yUUA3of.png", 
+    hp: 180,
+    attack: 140,
+    defense: 130,
+    speed: 150,
+    critRate: 0.15,
+    type: "Normal",
+    status: "normal",
+    description: "Painfully uncool but blissfully unaware. Always saying the wrong thing at the wrong time.",
+    moves: [
+      { name: "Dad Joke", power: 50, accuracy: 95, type: "Normal", description: "Cringeworthy joke that somehow causes damage." },
+      { name: "Cultural Misfire", power: 65, accuracy: 85, type: "Normal", description: "Awkward attempt to be relevant that confuses opponent." },
+      { name: "Blissful Ignorance", power: 0, accuracy: 100, type: "Normal", description: "Uses lack of awareness to boost defense." },
+      { name: "Accidental Offense", power: 75, accuracy: 80, type: "Dark", description: "Unintentionally hurtful comment with surprising impact." }
+    ]
+  },
+  {
+    id: 22,
+    name: "Crack Head",
+    sprite: "https://i.imgur.com/cl7GtvK.png", 
+    hp: 150,
+    attack: 180,
+    defense: 90,
+    speed: 190,
+    critRate: 0.2,
+    type: "Dark",
+    status: "normal",
+    description: "Unpredictable and always on edge. Might do anything for the next fix.",
+    moves: [
+      { name: "Wild Swing", power: 65, accuracy: 80, type: "Normal", description: "Erratic attack with moderate damage but lower accuracy." },
+      { name: "Paranoid Outburst", power: 75, accuracy: 75, type: "Dark", description: "Fear-driven attack that might confuse both sides." },
+      { name: "Desperate Hustle", power: 0, accuracy: 100, type: "Dark", description: "Uses survival instincts to boost speed and attack." },
+      { name: "Rock Bottom Rage", power: 90, accuracy: 65, type: "Dark", description: "All-out desperate attack with high damage but poor accuracy." }
+    ]
+  },
+  {
+    id: 23,
+    name: "Muslim Homie",
+    sprite: "https://i.imgur.com/dWO1X6j.png", 
+    hp: 200,
+    attack: 150,
+    defense: 160,
+    speed: 140,
+    critRate: 0.15,
+    type: "Normal",
+    status: "normal",
+    description: "Strong in faith and character. Will invite you to dinner and defend you till the end.",
+    moves: [
+      { name: "Prayer Focus", power: 60, accuracy: 90, type: "Normal", description: "Spiritual attack with consistent accuracy." },
+      { name: "Cultural Pride", power: 70, accuracy: 85, type: "Fire", description: "Heritage-fueled attack with moderate damage." },
+      { name: "Ramadan Strength", power: 0, accuracy: 100, type: "Normal", description: "Draws on spiritual discipline to boost all stats." },
+      { name: "Hospitality Surprise", power: 75, accuracy: 80, type: "Normal", description: "Disarms opponent with kindness before striking." }
+    ]
   }
 ];
 
@@ -703,6 +913,23 @@ function populateCharacterSelection() {
       <img src="${character.sprite}" alt="${character.name}">
       <p>${character.name}</p>
     `;
+    
+    // Add tooltip data
+    card.setAttribute("data-tooltip", JSON.stringify({
+      name: character.name,
+      type: character.type,
+      hp: character.hp,
+      attack: character.attack,
+      defense: character.defense,
+      speed: character.speed,
+      description: character.description,
+      moves: character.moves.map(move => move.name).join(", ")
+    }));
+    
+    // Add hover event listeners for tooltips
+    card.addEventListener("mouseenter", showCharacterTooltip);
+    card.addEventListener("mouseleave", hideCharacterTooltip);
+    
     card.addEventListener("click", () => selectCharacter(character));
     characterList.appendChild(card);
   });
@@ -933,6 +1160,29 @@ function showMoveTooltip(e) {
 }
 
 function hideMoveTooltip() {
+  document.getElementById("move-tooltip").style.display = "none";
+}
+
+// Character tooltip functions
+function showCharacterTooltip(e) {
+  const tooltipData = JSON.parse(e.currentTarget.getAttribute("data-tooltip"));
+  const tooltip = document.getElementById("move-tooltip"); // Reuse the same tooltip element
+  
+  tooltip.innerHTML = `
+    <div class="character-tooltip">
+      <p><strong>${tooltipData.name}</strong> (${tooltipData.type})</p>
+      <p>HP: ${tooltipData.hp} | ATK: ${tooltipData.attack} | DEF: ${tooltipData.defense} | SPD: ${tooltipData.speed}</p>
+      <p>${tooltipData.description}</p>
+      <p><small>Moves: ${tooltipData.moves}</small></p>
+    </div>
+  `;
+  
+  tooltip.style.display = "block";
+  tooltip.style.left = `${e.pageX + 10}px`;
+  tooltip.style.top = `${e.pageY + 10}px`;
+}
+
+function hideCharacterTooltip() {
   document.getElementById("move-tooltip").style.display = "none";
 }
 

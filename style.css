@@ -716,9 +716,30 @@ body {
   color: var(--pixel-text-light);
   padding: 5px 8px;
   font-size: 0.7em;
-  max-width: 200px;
+  max-width: 250px;
   z-index: 100;
   pointer-events: none;
+}
+
+.character-tooltip {
+  font-size: 1em;
+  line-height: 1.3;
+}
+
+.character-tooltip p {
+  margin: 4px 0;
+}
+
+.character-tooltip strong {
+  color: var(--pixel-accent);
+  text-shadow: 1px 1px 0px var(--pixel-border);
+}
+
+.character-tooltip small {
+  font-size: 0.8em;
+  opacity: 0.8;
+  display: block;
+  margin-top: 4px;
 }
 /* Animations */
 @keyframes shake {
