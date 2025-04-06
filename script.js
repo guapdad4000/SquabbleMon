@@ -1771,7 +1771,10 @@ function useMove(move) {
   // Check if it's a healing move (by move name)
   const isHealingMove = ["Irie Recharge", "Call Girls for Gang", "PTO Prayer"].includes(move.name);
   
-  // Only play attack sound for damage moves (not healing moves)
+  // Check if it's a stat change move (buffs and debuffs)
+  const isStatModifyingMove = ["Flex on 'Em", "Caffeine Overload", "Hustle Hard", "VC Funded Flex", "Ride the D Bus", "Low Battery", "Game On Bro"].includes(move.name);
+  
+  // Only play attack sound for damage moves (not healing/stat moves)
   if (!isZeroDamageMove && !isHealingMove) {
     // Play hit sound
     playHitSound();
@@ -1813,13 +1816,13 @@ function useMove(move) {
     }, 400);
   }
   
-  // Make player sprite move forward when attacking - only for damage moves (not healing moves)
-  if (playerSprite && !isZeroDamageMove && !isHealingMove) {
+  // Make player sprite move forward when attacking - only for damage moves (not healing/stat moves)
+  if (playerSprite && !isZeroDamageMove && !isHealingMove && !isStatModifyingMove) {
     playerSprite.classList.add("attack-lunge");
   }
   
-  // Only create attack animations for damage moves (not healing moves)
-  const isAttackAnimation = !isZeroDamageMove && !isHealingMove;
+  // Only create attack animations for damage moves (not healing/stat moves)
+  const isAttackAnimation = !isZeroDamageMove && !isHealingMove && !isStatModifyingMove;
   
   // Get the appropriate animation based on type (only for attack animations)
   const animationUrl = isAttackAnimation ? 
@@ -1995,7 +1998,10 @@ function executeOpponentMove(move) {
   // Check if it's a healing move (by move name)
   const isHealingMove = ["Irie Recharge", "Call Girls for Gang", "PTO Prayer"].includes(move.name);
   
-  // Only play attack sound for damage moves (not healing moves)
+  // Check if it's a stat change move (buffs and debuffs)
+  const isStatModifyingMove = ["Flex on 'Em", "Caffeine Overload", "Hustle Hard", "VC Funded Flex", "Ride the D Bus", "Low Battery", "Game On Bro"].includes(move.name);
+  
+  // Only play attack sound for damage moves (not healing/stat moves)
   if (!isZeroDamageMove && !isHealingMove) {
     // Play hit sound
     playHitSound();
@@ -2038,13 +2044,13 @@ function executeOpponentMove(move) {
     }, 400);
   }
   
-  // Make opponent sprite move forward when attacking - only for damage moves (not healing moves)
-  if (opponentSprite && !isZeroDamageMove && !isHealingMove) {
+  // Make opponent sprite move forward when attacking - only for damage moves (not healing/stat moves)
+  if (opponentSprite && !isZeroDamageMove && !isHealingMove && !isStatModifyingMove) {
     opponentSprite.classList.add("attack-lunge-reverse");
   }
   
-  // Only create attack animations for damage moves (not healing moves)
-  const isAttackAnimation = !isZeroDamageMove && !isHealingMove;
+  // Only create attack animations for damage moves (not healing/stat moves)
+  const isAttackAnimation = !isZeroDamageMove && !isHealingMove && !isStatModifyingMove;
   
   // Get the appropriate animation based on type (only for attack animations)
   const animationUrl = isAttackAnimation ? 
