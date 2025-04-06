@@ -18,6 +18,7 @@ let switchSoundPlayer = null;
 // Audio state
 let musicMuted = false;
 let soundMuted = false;
+let audioInitialized = false; // Track if audio is initialized
 
 // ================ GAME DATA ================
 // Character data with battle info
@@ -731,17 +732,70 @@ const battleBackgrounds = [
   "https://i.imgur.com/OdKFwva.png"  // New wallpaper
 ];
 
+// Type images from provided URLs
+const typeImages = {
+  "Fire": "https://i.imgur.com/SNIiQlg.png",
+  "Water": "https://i.imgur.com/7UM8JDs.png",
+  "Plant": "https://i.imgur.com/rsqXcY7.png",
+  "Earth": "https://i.imgur.com/iOeteHQ.png",
+  "Rock": "https://i.imgur.com/iOeteHQ.png", // Using Earth for Rock
+  "Electric": "https://i.imgur.com/UWi3DFj.png", // Using credit image temporarily
+  "Air": "https://i.imgur.com/UWi3DFj.png", // Using credit image temporarily
+  "Dark": "https://i.imgur.com/UWi3DFj.png", // Using credit image temporarily
+  "Normal": "https://i.imgur.com/UWi3DFj.png" // Using credit image temporarily
+};
+
+// Attack effect animations
+const attackAnimations = {
+  // Urban themes
+  "urban": "https://i.imgur.com/WqLGZHb.gif",   // Water splash effect
+  "street": "https://i.imgur.com/W7q1AoR.gif",  // Fiery effect
+  "hiphop": "https://i.imgur.com/Z6VXMwT.gif",  // Electric effect
+  "tech": "https://i.imgur.com/2hTPscl.gif",    // Leaf/plant effect
+  "status": "https://i.imgur.com/HNQ2XDC.gif",  // Status/purple effect
+  
+  // Keep original types for compatibility
+  "Fire": "https://i.imgur.com/W7q1AoR.gif",
+  "Water": "https://i.imgur.com/WqLGZHb.gif",
+  "Plant": "https://i.imgur.com/2hTPscl.gif",
+  "Electric": "https://i.imgur.com/Z6VXMwT.gif",
+  "Dark": "https://i.imgur.com/HNQ2XDC.gif",
+  "Air": "https://i.imgur.com/yaNJUVn.gif",
+  "Normal": "https://i.imgur.com/HNQ2XDC.gif",
+  "Rock": "https://i.imgur.com/Z8UgFb1.gif",
+  "Money": "https://i.imgur.com/xt.gif"
+};
+
+// Status effect animations
+const statusAnimations = {
+  // Urban status effects
+  "slimed": "https://i.imgur.com/7pIOdST.gif", // Water drip effect
+  "confused": "https://i.imgur.com/yaNJUVn.gif", // Dizzy stars effect
+  "baked": "https://i.imgur.com/PpxuqBD.gif",   // Sleep effect
+  "bleeding": "https://i.imgur.com/Z8UgFb1.gif", // Burning effect
+  "dazed": "https://i.imgur.com/fP0lG2M.gif",    // Thunder effect
+  
+  // Keep original effects for compatibility
+  "burn": "https://i.imgur.com/Z8UgFb1.gif", // Use bleeding animation
+  "paralysis": "https://i.imgur.com/fP0lG2M.gif", // Use dazed animation
+  "sleep": "https://i.imgur.com/PpxuqBD.gif", // Use baked animation
+  "poison": "https://i.imgur.com/7pIOdST.gif", // Use slimed animation
+  "heal": "https://i.imgur.com/684Bb2r.gif",
+  "buff": "https://i.imgur.com/XZ5L.gif"
+};
+
 // Win/Lose GIFs
 const resultGifs = {
   win: [
+    "https://i.gifer.com/ZJF0.gif",
+    "https://i.gifer.com/1uIf.gif",
     "https://i.imgur.com/GEXD7bk.gif",
-    "https://i.imgur.com/tzvjhq5.gif",
-    "https://i.imgur.com/DltUedT.gif"
+    "https://i.imgur.com/tzvjhq5.gif"
   ],
   lose: [
+    "https://i.gifer.com/Z6W8.gif",
     "https://i.imgur.com/dR3qDnS.gif",
-    "https://i.imgur.com/i4JWxGP.gif",
-    "https://i.imgur.com/EWPNbVH.gif"
+    "https://i.imgur.com/i4JWxGP.gif"
   ]
 };
 
@@ -769,41 +823,52 @@ let opponentActiveItemEffects = [];
 
 // ================ INITIALIZATION ================
 // Initialize the game when the page loads
+
 document.addEventListener("DOMContentLoaded", initGame);
 
 // Audio Functions
 function initAudio() {
-  // Initialize audio players (wait for user interaction - browser policy)
-  if (!menuMusicPlayer) {
-    menuMusicPlayer = new Audio(AUDIO.menuMusic);
-    menuMusicPlayer.loop = true;
-    menuMusicPlayer.volume = 0.5;
-  }
+  // Only initialize once
+  if (audioInitialized) return;
   
-  if (!battleMusicPlayer) {
-    battleMusicPlayer = new Audio(AUDIO.battleMusic);
-    battleMusicPlayer.loop = true;
-    battleMusicPlayer.volume = 0.5;
+  try {
+    // Initialize audio players (wait for user interaction - browser policy)
+    if (!menuMusicPlayer) {
+      menuMusicPlayer = new Audio(AUDIO.menuMusic);
+      menuMusicPlayer.loop = true;
+      menuMusicPlayer.volume = 0.5;
+    }
+    
+    if (!battleMusicPlayer) {
+      battleMusicPlayer = new Audio(AUDIO.battleMusic);
+      battleMusicPlayer.loop = true;
+      battleMusicPlayer.volume = 0.5;
+    }
+    
+    if (!hitSoundPlayer) {
+      hitSoundPlayer = new Audio(AUDIO.hitSound);
+      hitSoundPlayer.volume = 0.7;
+    }
+    
+    if (!successSoundPlayer) {
+      successSoundPlayer = new Audio(AUDIO.successSound);
+      successSoundPlayer.volume = 0.7;
+    }
+    
+    if (!switchSoundPlayer) {
+      switchSoundPlayer = new Audio(AUDIO.switchSound);
+      switchSoundPlayer.volume = 0.7;
+    }
+    
+    // Set up audio control buttons
+    document.getElementById("toggle-music").addEventListener("click", toggleMusic);
+    document.getElementById("toggle-sound").addEventListener("click", toggleSound);
+    
+    audioInitialized = true;
+    console.log("Audio initialized successfully");
+  } catch (error) {
+    console.error("Error initializing audio:", error);
   }
-  
-  if (!hitSoundPlayer) {
-    hitSoundPlayer = new Audio(AUDIO.hitSound);
-    hitSoundPlayer.volume = 0.7;
-  }
-  
-  if (!successSoundPlayer) {
-    successSoundPlayer = new Audio(AUDIO.successSound);
-    successSoundPlayer.volume = 0.7;
-  }
-  
-  if (!switchSoundPlayer) {
-    switchSoundPlayer = new Audio(AUDIO.switchSound);
-    switchSoundPlayer.volume = 0.7;
-  }
-  
-  // Set up audio control buttons
-  document.getElementById("toggle-music").addEventListener("click", toggleMusic);
-  document.getElementById("toggle-sound").addEventListener("click", toggleSound);
 }
 
 function playMenuMusic() {
@@ -1446,6 +1511,32 @@ function useMove(move) {
   
   // Add visual effect based on move type
   const battleArena = document.getElementById("battle-arena");
+  const opponentSprite = document.getElementById("opponent-sprite");
+  
+  // Create and display attack animation
+  if (attackAnimations[move.type]) {
+    // Create animation element
+    const attackAnimation = document.createElement("div");
+    attackAnimation.className = "attack-effect";
+    attackAnimation.style.backgroundImage = `url(${attackAnimations[move.type]})`;
+    
+    // Position the animation near the opponent
+    attackAnimation.style.position = "absolute";
+    attackAnimation.style.left = `${opponentSprite.offsetLeft - 20}px`;
+    attackAnimation.style.top = `${opponentSprite.offsetTop - 20}px`;
+    attackAnimation.style.width = "150px";
+    attackAnimation.style.height = "150px";
+    attackAnimation.style.backgroundSize = "cover";
+    attackAnimation.style.zIndex = "10";
+    
+    // Add to battle arena
+    battleArena.appendChild(attackAnimation);
+    
+    // Remove after animation completes
+    setTimeout(() => {
+      attackAnimation.remove();
+    }, 1000);
+  }
   
   // Add a class based on the move type for visual feedback
   battleArena.classList.add(`effect-${move.type}`);
@@ -1549,6 +1640,32 @@ function executeOpponentMove(move) {
   
   // Add visual effect based on move type
   const battleArena = document.getElementById("battle-arena");
+  const playerSprite = document.getElementById("player-sprite");
+  
+  // Create and display attack animation
+  if (attackAnimations[move.type]) {
+    // Create animation element
+    const attackAnimation = document.createElement("div");
+    attackAnimation.className = "attack-effect";
+    attackAnimation.style.backgroundImage = `url(${attackAnimations[move.type]})`;
+    
+    // Position the animation near the player
+    attackAnimation.style.position = "absolute";
+    attackAnimation.style.left = `${playerSprite.offsetLeft - 20}px`;
+    attackAnimation.style.top = `${playerSprite.offsetTop - 20}px`;
+    attackAnimation.style.width = "150px";
+    attackAnimation.style.height = "150px";
+    attackAnimation.style.backgroundSize = "cover";
+    attackAnimation.style.zIndex = "10";
+    
+    // Add to battle arena
+    battleArena.appendChild(attackAnimation);
+    
+    // Remove after animation completes
+    setTimeout(() => {
+      attackAnimation.remove();
+    }, 1000);
+  }
   
   // Add a class based on the move type for visual feedback
   battleArena.classList.add(`effect-${move.type}`);
@@ -1844,6 +1961,34 @@ function applyStatusEffect(character, statusType, duration, side) {
   
   // Update the status icons
   updateStatusIcons();
+  
+  // Show status effect animation if available
+  if (statusAnimations[statusType]) {
+    const battleArena = document.getElementById("battle-arena");
+    const targetSprite = document.getElementById(side === "player" ? "player-sprite" : "opponent-sprite");
+    
+    // Create status animation element
+    const statusAnimation = document.createElement("div");
+    statusAnimation.className = "status-effect";
+    statusAnimation.style.backgroundImage = `url(${statusAnimations[statusType]})`;
+    
+    // Position the animation on the character
+    statusAnimation.style.position = "absolute";
+    statusAnimation.style.left = `${targetSprite.offsetLeft - 10}px`;
+    statusAnimation.style.top = `${targetSprite.offsetTop - 10}px`;
+    statusAnimation.style.width = "120px";
+    statusAnimation.style.height = "120px";
+    statusAnimation.style.backgroundSize = "cover";
+    statusAnimation.style.zIndex = "10";
+    
+    // Add to battle arena
+    battleArena.appendChild(statusAnimation);
+    
+    // Remove after animation completes
+    setTimeout(() => {
+      statusAnimation.remove();
+    }, 1500);
+  }
 }
 
 function applyHitEffects(move, user) {

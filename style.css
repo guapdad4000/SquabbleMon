@@ -851,6 +851,35 @@ body {
 .attack-animation-reverse {
   animation: attackReverse 1s ease-in-out;
 }
+
+/* Animation and effect styles */
+.attack-effect {
+  position: absolute;
+  z-index: 100;
+  pointer-events: none;
+  animation: effectScale 1s ease-in-out;
+}
+
+.status-effect {
+  position: absolute;
+  z-index: 100;
+  pointer-events: none;
+  animation: effectPulse 1.5s ease-in-out;
+}
+
+/* New keyframes for effect animations */
+@keyframes effectScale {
+  0% { transform: scale(0.2); opacity: 0; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+@keyframes effectPulse {
+  0% { transform: scale(0.8); opacity: 0; }
+  25% { transform: scale(1.1); opacity: 1; }
+  75% { transform: scale(0.9); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 0; }
+}
 .float-animation {
   animation: float 2s ease-in-out infinite;
 }
