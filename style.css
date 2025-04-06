@@ -830,6 +830,24 @@ body {
   80% { transform: translateX(-15px) translateY(-5px) scaleX(-1) scale(1.05); }
   100% { transform: translateX(0) scaleX(-1) scale(1); }
 }
+
+@keyframes lunge {
+  0% { transform: translateX(0); }
+  40% { transform: translateX(40px); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes lungeReverse {
+  0% { transform: translateX(0) scaleX(-1); }
+  40% { transform: translateX(-40px) scaleX(-1); }
+  100% { transform: translateX(0) scaleX(-1); }
+}
+
+@keyframes glow {
+  0% { filter: brightness(1) contrast(1); }
+  50% { filter: brightness(1.5) contrast(1.2); }
+  100% { filter: brightness(1) contrast(1); }
+}
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-3px); }
@@ -853,6 +871,15 @@ body {
 }
 .attack-animation-reverse {
   animation: attackReverse 1s ease-in-out;
+}
+.attack-lunge {
+  animation: lunge 0.3s ease-in-out;
+}
+.attack-lunge-reverse {
+  animation: lungeReverse 0.3s ease-in-out;
+}
+.glow-effect {
+  animation: glow 0.5s ease-in-out;
 }
 
 /* Animation and effect styles */

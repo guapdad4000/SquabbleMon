@@ -699,26 +699,30 @@ const items = {
     name: "J Cole CD",
     effect: "heal",
     value: 30,
-    description: "Heals 30 HP with positive vibes"
+    description: "Heals 30 HP with positive vibes",
+    icon: "💿"
   },
   nbayoungboy: {
     name: "NBA Youngboy CD",
     effect: "atkUp",
     value: 1.3,
     duration: 3,
-    description: "Raises Attack by 30% for 3 turns"
+    description: "Raises Attack by 30% for 3 turns",
+    icon: "🎵"
   },
   weed: {
     name: "Weed",
     effect: "statusCure",
-    description: "Cures status effects and gives slight HP boost"
+    description: "Cures status effects and gives slight HP boost",
+    icon: "🌿"
   },
   crashdummy: {
     name: "Crash Dummy",
     effect: "defUp",
     value: 1.5,
     duration: 2,
-    description: "Raises Defense by 50% for 2 turns"
+    description: "Raises Defense by 50% for 2 turns",
+    icon: "🛡️"
   }
 };
 
@@ -1511,18 +1515,18 @@ function useMove(move) {
   const battleArena = document.getElementById("battle-arena");
   const opponentSprite = document.getElementById("opponent-sprite");
   
-  // Create and display attack animation
-  console.log("Attack type:", move.type);
-  console.log("Available animations:", Object.keys(attackAnimations));
+  // Make player sprite move forward when attacking
+  playerSprite.classList.add("attack-lunge");
   
   // Get the appropriate animation based on type
-  const animationUrl = attackAnimations[move.type];
-  console.log("Animation URL:", animationUrl);
+  const animationUrl = attackAnimations[move.type] || attackAnimations["Normal"];
   
-  if (animationUrl) {
-    // Create animation element
-    const attackAnimation = document.createElement("div");
-    attackAnimation.className = "attack-effect";
+  // Create attack animation element
+  const attackAnimation = document.createElement("div");
+  attackAnimation.className = "attack-effect";
+  
+  try {
+    // Try to set the background image
     attackAnimation.style.backgroundImage = `url(${animationUrl})`;
     
     // Position the animation centered on the opponent sprite
@@ -1546,13 +1550,18 @@ function useMove(move) {
     // Add to battle arena
     battleArena.appendChild(attackAnimation);
     
-    // Remove after animation completes
+    // Remove animation after it completes
     setTimeout(() => {
       attackAnimation.remove();
     }, 1000);
-  } else {
-    console.log("No animation found for type:", move.type);
+  } catch (error) {
+    console.error("Animation error:", error);
   }
+  
+  // Remove lunge animation after a short delay
+  setTimeout(() => {
+    playerSprite.classList.remove("attack-lunge");
+  }, 300);
   
   // Add a class based on the move type for visual feedback
   battleArena.classList.add(`effect-${move.type}`);
@@ -1658,18 +1667,18 @@ function executeOpponentMove(move) {
   const battleArena = document.getElementById("battle-arena");
   const playerSprite = document.getElementById("player-sprite");
   
-  // Create and display attack animation
-  console.log("Opponent attack type:", move.type);
-  console.log("Available animations:", Object.keys(attackAnimations));
+  // Make opponent sprite move forward when attacking
+  opponentSprite.classList.add("attack-lunge-reverse");
   
   // Get the appropriate animation based on type
-  const animationUrl = attackAnimations[move.type];
-  console.log("Animation URL for opponent:", animationUrl);
+  const animationUrl = attackAnimations[move.type] || attackAnimations["Normal"];
   
-  if (animationUrl) {
-    // Create animation element
-    const attackAnimation = document.createElement("div");
-    attackAnimation.className = "attack-effect";
+  // Create attack animation element
+  const attackAnimation = document.createElement("div");
+  attackAnimation.className = "attack-effect";
+  
+  try {
+    // Try to set the background image
     attackAnimation.style.backgroundImage = `url(${animationUrl})`;
     
     // Position the animation centered on the player sprite
@@ -1693,13 +1702,18 @@ function executeOpponentMove(move) {
     // Add to battle arena
     battleArena.appendChild(attackAnimation);
     
-    // Remove after animation completes
+    // Remove animation after it completes
     setTimeout(() => {
       attackAnimation.remove();
     }, 1000);
-  } else {
-    console.log("No animation found for opponent type:", move.type);
+  } catch (error) {
+    console.error("Animation error:", error);
   }
+  
+  // Remove lunge animation after a short delay
+  setTimeout(() => {
+    opponentSprite.classList.remove("attack-lunge-reverse");
+  }, 300);
   
   // Add a class based on the move type for visual feedback
   battleArena.classList.add(`effect-${move.type}`);
@@ -2241,6 +2255,9 @@ function chooseOpponentMove() {
 function useItem(itemType) {
   if (!canAct || currentTurn !== "player" || itemUseCounts[itemType] <= 0) return;
   
+  // Prevent multiple actions
+  canAct = false;
+  
   // Reduce item count
   itemUseCounts[itemType]--;
   updateItemButtons();
@@ -2250,6 +2267,40 @@ function useItem(itemType) {
   
   // Play success sound for item use
   playSuccessSound();
+  
+  // Add item use animation
+  const playerSprite = document.getElementById("player-sprite");
+  playerSprite.classList.add("glow-effect");
+  
+  // Create a floating item effect
+  const battleArena = document.getElementById("battle-arena");
+  const itemAnimation = document.createElement("div");
+  itemAnimation.className = "item-effect";
+  itemAnimation.textContent = item.icon || "🎵"; // Default to music note if no icon
+  
+  // Position above the player
+  const playerRect = playerSprite.getBoundingClientRect();
+  const battleArenaRect = battleArena.getBoundingClientRect();
+  
+  const left = playerRect.left - battleArenaRect.left + (playerRect.width / 2) - 25;
+  const top = playerRect.top - battleArenaRect.top - 50;
+  
+  itemAnimation.style.position = "absolute";
+  itemAnimation.style.left = `${left}px`;
+  itemAnimation.style.top = `${top}px`;
+  itemAnimation.style.fontSize = "40px";
+  itemAnimation.style.zIndex = "100";
+  itemAnimation.style.animation = "float 2s ease-in-out";
+  
+  // Add to battle arena
+  battleArena.appendChild(itemAnimation);
+  
+  // Remove animations after they complete
+  setTimeout(() => {
+    playerSprite.classList.remove("glow-effect");
+    itemAnimation.remove();
+    canAct = true;
+  }, 1500);
   
   // Apply item effect
   switch (item.effect) {
