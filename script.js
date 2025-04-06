@@ -1406,7 +1406,7 @@ function hitSelf(character) {
     setTimeout(() => {
       sprite.classList.remove("player-shake-animation");
       sprite.classList.remove("hit-flash");
-    }, 500);
+    }, 1000);
   } else {
     const sprite = document.getElementById("opponent-sprite");
     sprite.classList.add("shake-animation");
@@ -1415,7 +1415,7 @@ function hitSelf(character) {
     setTimeout(() => {
       sprite.classList.remove("shake-animation");
       sprite.classList.remove("hit-flash");
-    }, 500);
+    }, 700);
   }
   
   // Update UI
@@ -1451,7 +1451,7 @@ function useMove(move) {
   battleArena.classList.add(`effect-${move.type}`);
   setTimeout(() => {
     battleArena.classList.remove(`effect-${move.type}`);
-  }, 500);
+  }, 1200);
   
   // Check accuracy including status effects
   const effectiveAccuracy = move.accuracy * playerStatModifiers.accuracy;
@@ -1465,7 +1465,7 @@ function useMove(move) {
     setTimeout(() => {
       playerSprite.classList.remove("attack-animation");
       canAct = true;
-    }, 500);
+    }, 1000);
     return;
   }
   
@@ -1478,7 +1478,7 @@ function useMove(move) {
     setTimeout(() => {
       playerSprite.classList.remove("attack-animation");
       canAct = true;
-    }, 500);
+    }, 600);
     return;
   }
   
@@ -1520,7 +1520,7 @@ function useMove(move) {
     setTimeout(() => {
       opponentSprite.classList.remove("shake-animation");
       opponentSprite.classList.remove("hit-flash");
-    }, 500);
+    }, 1000);
     
     // Check if opponent fainted
     if (activeOpponent.hp <= 0) {
@@ -1554,7 +1554,7 @@ function executeOpponentMove(move) {
   battleArena.classList.add(`effect-${move.type}`);
   setTimeout(() => {
     battleArena.classList.remove(`effect-${move.type}`);
-  }, 500);
+  }, 1200);
   
   // Check accuracy including status effects
   const effectiveAccuracy = move.accuracy * opponentStatModifiers.accuracy;
@@ -1567,7 +1567,7 @@ function executeOpponentMove(move) {
     // Remove animation
     setTimeout(() => {
       opponentSprite.classList.remove("attack-animation-reverse");
-    }, 500);
+    }, 600);
     return;
   }
   
@@ -1579,7 +1579,7 @@ function executeOpponentMove(move) {
     // Remove animation
     setTimeout(() => {
       opponentSprite.classList.remove("attack-animation-reverse");
-    }, 500);
+    }, 600);
     return;
   }
   
@@ -1621,7 +1621,7 @@ function executeOpponentMove(move) {
     setTimeout(() => {
       playerSprite.classList.remove("player-shake-animation");
       playerSprite.classList.remove("hit-flash");
-    }, 500);
+    }, 1000);
     
     // Check if player fainted
     if (activePlayerCharacter.hp <= 0) {
