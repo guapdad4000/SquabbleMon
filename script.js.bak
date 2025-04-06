@@ -1772,7 +1772,7 @@ function useMove(move) {
   const isHealingMove = ["Irie Recharge", "Call Girls for Gang", "PTO Prayer"].includes(move.name);
   
   // Check if it's a stat change move (buffs and debuffs)
-  const isStatModifyingMove = ["Flex on 'Em", "Caffeine Overload", "Hustle Hard", "VC Funded Flex", "Low Battery", "Game On Bro"].includes(move.name);
+  const isStatModifyingMove = ["Flex on 'Em", "Caffeine Overload", "Hustle Hard", "VC Funded Flex", "Ride the D Bus", "Low Battery", "Game On Bro"].includes(move.name);
   
   // Only play attack sound for damage moves (not healing/stat moves)
   if (!isZeroDamageMove && !isHealingMove) {
@@ -1999,7 +1999,7 @@ function executeOpponentMove(move) {
   const isHealingMove = ["Irie Recharge", "Call Girls for Gang", "PTO Prayer"].includes(move.name);
   
   // Check if it's a stat change move (buffs and debuffs)
-  const isStatModifyingMove = ["Flex on 'Em", "Caffeine Overload", "Hustle Hard", "VC Funded Flex", "Low Battery", "Game On Bro"].includes(move.name);
+  const isStatModifyingMove = ["Flex on 'Em", "Caffeine Overload", "Hustle Hard", "VC Funded Flex", "Ride the D Bus", "Low Battery", "Game On Bro"].includes(move.name);
   
   // Only play attack sound for damage moves (not healing/stat moves)
   if (!isZeroDamageMove && !isHealingMove) {
