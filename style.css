@@ -301,24 +301,40 @@ body {
   pointer-events: auto;
   z-index: 21;
 }
-#opponent-info-box {
+.opponent-sprite-container,
+.player-sprite-container {
+  position: relative;
+  display: inline-block;
+}
+
+.opponent-tooltip,
+.player-tooltip {
+  display: none;
   position: absolute;
-  top: 95px;
-  right: 10px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 180px;
   max-height: 90px;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.85);
   color: var(--pixel-text-light);
   border: 2px solid var(--pixel-border);
   padding: 6px;
   font-size: 0.8em;
   line-height: 1.2;
   overflow-y: auto;
-  pointer-events: auto;
+  pointer-events: none;
   z-index: 25;
-  display: block;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
 }
-#opponent-info-text {
+
+.opponent-sprite-container:hover .opponent-tooltip,
+.player-sprite-container:hover .player-tooltip {
+  display: block;
+  animation: fadeIn 0.3s ease-in-out;
+}
+#opponent-info-text,
+#player-info-text {
   margin: 0;
   text-align: left;
 }
@@ -408,9 +424,17 @@ body {
   will-change: transform, opacity, filter;
   filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.4));
   image-rendering: pixelated;
+  animation: float 3s ease-in-out infinite;
 }
 #opponent-sprite {
   transform: scaleX(-1);
+  animation: floatFlipped 3s ease-in-out infinite;
+}
+
+/* Add slightly different animation timing to create variety */
+@keyframes floatFlipped {
+  0%, 100% { transform: translateY(0) scaleX(-1); }
+  50% { transform: translateY(-5px) scaleX(-1); }
 }
 
 /* HP Bar Area Structure - Player ABOVE, Opponent BELOW */
@@ -425,15 +449,19 @@ body {
   order: 3;
   margin-top: 3px;
 }
-#player-area #player-sprite {
+#player-area .player-sprite-container {
   order: 4;
   margin-top: 5px;
-} /* Sprite LAST */
+  width: 100%;
+  text-align: center;
+} /* Sprite container LAST */
 
-#opponent-area #opponent-sprite {
+#opponent-area .opponent-sprite-container {
   order: 1;
   margin-bottom: 5px;
-} /* Sprite FIRST */
+  width: 100%;
+  text-align: center;
+} /* Sprite container FIRST */
 #opponent-area .yn-name {
   order: 2;
   margin-top: 17px;

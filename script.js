@@ -1071,8 +1071,27 @@ function updateBattleUI() {
   document.getElementById("player-hp-fill").style.width = `${(activePlayerCharacter.hp / playerMaxHP) * 100}%`;
   document.getElementById("opponent-hp-fill").style.width = `${(activeOpponent.hp / opponentMaxHP) * 100}%`;
   
-  // Update opponent info box
-  document.getElementById("opponent-info-text").textContent = activeOpponent.description;
+  // Update player info tooltip
+  const playerInfo = `
+    <div class="character-tooltip">
+      <p><strong>${activePlayerCharacter.name}</strong></p>
+      <p>Type: ${activePlayerCharacter.type}</p>
+      <p>ATK: ${activePlayerCharacter.stats.attack} | DEF: ${activePlayerCharacter.stats.defense} | SPD: ${activePlayerCharacter.stats.speed}</p>
+      <small>${activePlayerCharacter.description || 'Hover to see stats'}</small>
+    </div>
+  `;
+  document.getElementById("player-info-text").innerHTML = playerInfo;
+  
+  // Update opponent info box for tooltip
+  const characterInfo = `
+    <div class="character-tooltip">
+      <p><strong>${activeOpponent.name}</strong></p>
+      <p>Type: ${activeOpponent.type}</p>
+      <p>ATK: ${activeOpponent.stats.attack} | DEF: ${activeOpponent.stats.defense} | SPD: ${activeOpponent.stats.speed}</p>
+      <small>${activeOpponent.description || 'Hover to see stats'}</small>
+    </div>
+  `;
+  document.getElementById("opponent-info-text").innerHTML = characterInfo;
 }
 
 function updateStatusIcons() {
