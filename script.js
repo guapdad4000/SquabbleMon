@@ -3369,6 +3369,39 @@ function handlePlayerFaint() {
   }
 }
 
+// Function to show the simplified switch prompt
+function showSimpleSwitchPrompt() {
+  // Set the message
+  document.getElementById("simple-switch-message").textContent = 
+    `Do you want to switch ${activePlayerCharacter.name} for a different character?`;
+  
+  // Show the popup
+  document.getElementById("simple-switch-prompt").style.display = "block";
+}
+
+// Function to handle "Yes" response to switch prompt
+function handleSimpleSwitchYes() {
+  // Hide the simple switch prompt
+  document.getElementById("simple-switch-prompt").style.display = "none";
+  
+  // Show the full switch screen
+  switchYN();
+}
+
+// Function to handle "No" response to switch prompt
+function handleSimpleSwitchNo() {
+  // Hide the simple switch prompt
+  document.getElementById("simple-switch-prompt").style.display = "none";
+  
+  // Add a message to the battle log
+  addToBattleLog(`${activePlayerCharacter.name} stays in the battle!`);
+  
+  // Start the next turn
+  setTimeout(() => {
+    processTurn();
+  }, 600);
+}
+
 function handleOpponentFaint() {
   // Increment battle counter
   battleCounter++;
@@ -3425,11 +3458,8 @@ function handleOpponentFaint() {
       updateBattleUI();
       updateStatusIcons();
       
-      // Give player option to switch characters
-      switchYN();
-      
-      // Add a custom message
-      showFloatingLog("Switch character or cancel to continue");
+      // Instead of the full switch screen, show the simple switch prompt
+      showSimpleSwitchPrompt();
     }, 1000);
   }
 }

@@ -163,6 +163,17 @@
         Cancel
       </button>
     </div>
+    
+    <!-- Simple Switch Prompt -->
+    <div id="simple-switch-prompt" class="pixel-popup" style="display: none">
+      <h2>Switch Character?</h2>
+      <p id="simple-switch-message">Do you want to switch your character?</p>
+      <div class="button-row">
+        <button class="pixel-button" onclick="handleSimpleSwitchYes()">Yes</button>
+        <button class="pixel-button" onclick="handleSimpleSwitchNo()">No</button>
+      </div>
+    </div>
+    
     <div id="move-tooltip" style="display: none"></div>
 
     <script src="animations.js"></script>
