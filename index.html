@@ -49,10 +49,7 @@
     <!-- Battle Screen (Initially Hidden) -->
     <div id="battle-screen" style="display: none">
       <div id="ui-overlay">
-        <div id="fade-display" class="pixel-ui-element">
-          <img src="/images/ui/game/fade-counter.png" alt="Fades Counter" class="ui-frame">
-          <span id="fade-count-text">0</span>
-        </div>
+        <div id="fade-display">Fades: 0</div>
         <div id="floating-log-container"><div id="floating-log"></div></div>
       </div>
       <div id="battle-arena">
@@ -97,24 +94,24 @@
             <span>ITEMS</span>
           </div>
           <div id="items">
-            <button class="neon-button item-button" onclick="useItem('jcole')" title="Heals 30 HP with positive vibes">
-              J COLE CD
+            <button class="pixel-button" onclick="useItem('jcole')" title="Heals 30 HP with positive vibes">
+              <span class="item-icon">💿</span> J Cole CD
             </button>
-            <button class="neon-button item-button" onclick="useItem('nbayoungboy')" title="Raises Attack by 30% for 3 turns">
-              NBA YB CD
+            <button class="pixel-button" onclick="useItem('nbayoungboy')" title="Raises Attack by 30% for 3 turns">
+              <span class="item-icon">🎵</span> NBA CD
             </button>
-            <button class="neon-button item-button" onclick="useItem('weed')" title="Cures status effects and gives slight HP boost">
-              ZA PACK
+            <button class="pixel-button" onclick="useItem('weed')" title="Cures status effects and gives slight HP boost">
+              <span class="item-icon">🌿</span> Weed
             </button>
-            <button class="neon-button item-button" onclick="useItem('crashdummy')" title="Raises Defense by 50% for 2 turns">
-              DUMMY
+            <button class="pixel-button" onclick="useItem('crashdummy')" title="Raises Defense by 50% for 2 turns">
+              <span class="item-icon">🛡️</span> Dummy
             </button>
             <button
               id="toggle-switch"
-              class="neon-button switch-button"
+              class="pixel-button"
               onclick="switchYN()"
             >
-              SWITCH
+              Switch
             </button>
           </div>
         </div>
@@ -145,26 +142,25 @@
           onclick="share('bluesky')"
         />
       </div>
-      <button class="neon-button" onclick="restartGame()">AGAIN</button>
+      <button class="pixel-button" onclick="restartGame()">Again</button>
       <button
         id="continue-battle"
-        class="neon-button switch-button"
+        class="pixel-button"
         style="display: none"
         onclick="continueBattle()"
       >
-        NEXT FADE
+        Next Fade
       </button>
     </div>
     <div id="switch-screen" class="pixel-popup" style="display: none">
       <h2>Switch YN</h2>
       <div id="switch-options"></div>
       <button
-        id="cancel-switch"
-        class="neon-button cancel-button"
+        class="pixel-button"
         onclick="cancelSwitch()"
         style="margin-top: 15px"
       >
-        CANCEL
+        Cancel
       </button>
     </div>
     <div id="move-tooltip" style="display: none"></div>

@@ -1222,8 +1222,8 @@ function updateMoveButtons() {
     }
     
     const moveButton = document.createElement("button");
-    moveButton.className = "neon-button item-button";
-    moveButton.innerHTML = `${move.name.toUpperCase() || "UNKNOWN MOVE"} <span class="pp-counter">${move.pp}/${move.maxPp}</span>`;
+    moveButton.className = "pixel-button";
+    moveButton.innerHTML = `${move.name || "Unknown Move"} <span class="pp-counter">${move.pp}/${move.maxPp}</span>`;
     moveButton.dataset.move = JSON.stringify(move);
     moveButton.addEventListener("click", () => useMove(move));
     moveButton.addEventListener("mouseover", showMoveTooltip);
@@ -1258,10 +1258,9 @@ function updateItemButtons() {
 }
 
 function updateFadeDisplay() {
-  const fadeCountText = document.getElementById("fade-count-text");
-  const fadeCounter = document.getElementById("fade-counter"); // For game over screen
-  if (fadeCountText) fadeCountText.textContent = fadeCount;
-  if (fadeCounter) fadeCounter.textContent = `Fades: ${fadeCount}`;
+  const fadeDisplay = document.getElementById("fade-display");
+  if (!fadeDisplay) return;
+  fadeDisplay.textContent = `Fades: ${fadeCount}`;
 }
 
 function setupMoveTooltips() {
@@ -1642,15 +1641,6 @@ function useMove(move) {
   // Apply damage
   setTimeout(() => {
     activeOpponent.hp = Math.max(0, activeOpponent.hp - damage);
-    
-    // Add hit effect to opponent
-    document.getElementById("opponent-sprite").classList.add("hit-effect");
-    
-    // Remove hit effect after animation completes
-    setTimeout(() => {
-      document.getElementById("opponent-sprite").classList.remove("hit-effect");
-    }, 1000);
-    
     updateBattleUI();
     
     // Show damage in battle log
@@ -1670,12 +1660,13 @@ function useMove(move) {
     applyHitEffects(move, "player");
     
     // Show opponent reaction
-    document.getElementById("opponent-sprite").classList.add("shake-animation");
-    document.getElementById("opponent-sprite").classList.add("hit-flash");
+    const opponentSprite = document.getElementById("opponent-sprite");
+    opponentSprite.classList.add("shake-animation");
+    opponentSprite.classList.add("hit-flash");
     
     setTimeout(() => {
-      document.getElementById("opponent-sprite").classList.remove("shake-animation");
-      document.getElementById("opponent-sprite").classList.remove("hit-flash");
+      opponentSprite.classList.remove("shake-animation");
+      opponentSprite.classList.remove("hit-flash");
     }, 1000);
     
     // Check if opponent fainted
@@ -1805,15 +1796,6 @@ function executeOpponentMove(move) {
   // Apply damage
   setTimeout(() => {
     activePlayerCharacter.hp = Math.max(0, activePlayerCharacter.hp - damage);
-    
-    // Add hit effect to player character
-    document.getElementById("player-sprite").classList.add("hit-effect");
-    
-    // Remove hit effect after animation completes
-    setTimeout(() => {
-      document.getElementById("player-sprite").classList.remove("hit-effect");
-    }, 1000);
-    
     updateBattleUI();
     
     // Show damage in battle log
@@ -1833,12 +1815,13 @@ function executeOpponentMove(move) {
     applyHitEffects(move, "opponent");
     
     // Show player reaction
-    document.getElementById("player-sprite").classList.add("player-shake-animation");
-    document.getElementById("player-sprite").classList.add("hit-flash");
+    const playerSprite = document.getElementById("player-sprite");
+    playerSprite.classList.add("player-shake-animation");
+    playerSprite.classList.add("hit-flash");
     
     setTimeout(() => {
-      document.getElementById("player-sprite").classList.remove("player-shake-animation");
-      document.getElementById("player-sprite").classList.remove("hit-flash");
+      playerSprite.classList.remove("player-shake-animation");
+      playerSprite.classList.remove("hit-flash");
     }, 1000);
     
     // Check if player fainted
@@ -2515,9 +2498,6 @@ function confirmSwitch(index) {
   // Hide switch screen
   document.getElementById("switch-screen").style.display = "none";
   
-  // Re-enable battle menu controls
-  document.getElementById("battle-menu").style.pointerEvents = "auto";
-  
   // Play success sound
   playSuccessSound();
   
@@ -2533,25 +2513,18 @@ function confirmSwitch(index) {
   updateBattleUI();
   updateStatusIcons();
   updateMoveButtons();
-  updateItemButtons(); // Also update item buttons
   
-  // End turn if this was a voluntary switch during a player's turn
-  // If this was after a faint, the turn processing continues automatically
-  if (currentTurn === "player" && canAct) {
-    setTimeout(() => endPlayerTurn(), 1000);
-  }
+  // End turn
+  setTimeout(() => endPlayerTurn(), 1000);
 }
 
 function cancelSwitch() {
   document.getElementById("switch-screen").style.display = "none";
-  
-  // Re-enable battle menu controls
-  document.getElementById("battle-menu").style.pointerEvents = "auto";
 }
 
 function handlePlayerFaint() {
-  addToBattleLog(`${activePlayerCharacter.name} got folded!`);
-  showFloatingLog(`${activePlayerCharacter.name} got folded!`);
+  addToBattleLog(`${activePlayerCharacter.name} got faded!`);
+  showFloatingLog(`${activePlayerCharacter.name} faded!`);
   
   // Play hit sound
   playHitSound();
@@ -2567,17 +2540,9 @@ function handlePlayerFaint() {
     // Game over - player lost
     setTimeout(() => showGameOver(false), 1500);
   } else {
-    // Show switch screen to choose next character with a message
-    // Make sure the battle menu is disabled during switch
-    document.getElementById("battle-menu").style.pointerEvents = "none";
-    
+    // Show switch screen to choose next character
     setTimeout(() => {
       switchYN();
-      // Add an informational message to the switch screen
-      const switchTitle = document.querySelector("#switch-screen h2");
-      if (switchTitle) {
-        switchTitle.textContent = "Choose Next YN (Character folded)";
-      }
     }, 1500);
   }
 }
@@ -2665,27 +2630,6 @@ function continueBattle() {
   // Reset battle modifiers
   resetBattleModifiers();
   
-  // Heal player character after each battle in a "fade" (3 battles)
-  // Heal 50% of max HP between battles
-  const healAmount = Math.floor(activePlayerCharacter.maxHP * 0.5);
-  activePlayerCharacter.currentHP = Math.min(activePlayerCharacter.maxHP, activePlayerCharacter.currentHP + healAmount);
-  
-  // Add healing effect
-  const playerSprite = document.getElementById("player-sprite");
-  playerSprite.classList.add("heal-effect");
-  setTimeout(() => {
-    playerSprite.classList.remove("heal-effect");
-  }, 2000);
-  
-  // Also restore some PP to each move (1-2 PP per move)
-  activePlayerCharacter.moves.forEach(move => {
-    const restorePP = Math.floor(Math.random() * 2) + 1; // 1-2 PP restored
-    move.currentPP = Math.min(move.pp, move.currentPP + restorePP);
-  });
-  
-  addToBattleLog(`${activePlayerCharacter.name} recovered ${healAmount} HP between battles!`);
-  addToBattleLog(`Some PP was restored to ${activePlayerCharacter.name}'s moves!`);
-  
   // Update UI
   updateBattleUI();
   updateStatusIcons();
@@ -2696,8 +2640,8 @@ function continueBattle() {
   addToBattleLog(`${activePlayerCharacter.name} vs ${activeOpponent.name}!`);
   showFloatingLog(`New opponent: ${activeOpponent.name}`);
   
-  // Determine first turn - player always goes first after healing between battles
-  currentTurn = "player";
+  // Determine first turn
+  currentTurn = determineFirstTurn();
   
   // Start the turn after a delay
   setTimeout(() => {
