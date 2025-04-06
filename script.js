@@ -1768,8 +1768,11 @@ function useMove(move) {
   // Check if this is a damage move or a status/healing move
   const isZeroDamageMove = move.power === 0 || move.type === "status";
   
-  // Only play attack sound for damage moves
-  if (!isZeroDamageMove) {
+  // Check if it's a healing move (by move name)
+  const isHealingMove = ["Irie Recharge", "Call Girls for Gang", "PTO Prayer"].includes(move.name);
+  
+  // Only play attack sound for damage moves (not healing moves)
+  if (!isZeroDamageMove && !isHealingMove) {
     // Play hit sound
     playHitSound();
     
@@ -1783,8 +1786,13 @@ function useMove(move) {
     playSuccessSound();
     
     // Apply a non-attack animation
-    if (move.type === "status") {
-      applyMoveAnimation("status", "player");
+    if (move.type === "status" || isHealingMove) {
+      // For healing moves specifically, use healing animation
+      if (isHealingMove) {
+        applyHealAnimation("player");
+      } else {
+        applyMoveAnimation("status", "player");
+      }
     }
   }
   
@@ -1805,49 +1813,57 @@ function useMove(move) {
     }, 400);
   }
   
-  // Make player sprite move forward when attacking - only for damage moves
-  if (playerSprite && !isZeroDamageMove) {
+  // Make player sprite move forward when attacking - only for damage moves (not healing moves)
+  if (playerSprite && !isZeroDamageMove && !isHealingMove) {
     playerSprite.classList.add("attack-lunge");
   }
   
-  // Get the appropriate animation based on type
-  const animationUrl = attackAnimations[move.type] || attackAnimations["Normal"];
+  // Only create attack animations for damage moves (not healing moves)
+  const isAttackAnimation = !isZeroDamageMove && !isHealingMove;
   
-  // Create attack animation element
-  const attackAnimation = document.createElement("div");
-  attackAnimation.className = "attack-effect";
+  // Get the appropriate animation based on type (only for attack animations)
+  const animationUrl = isAttackAnimation ? 
+                     (attackAnimations[move.type] || attackAnimations["Normal"]) : 
+                     null;
   
-  try {
-    // Try to set the background image
-    attackAnimation.style.backgroundImage = `url(${animationUrl})`;
+  // Create attack animation element (only for attack animations)
+  const attackAnimation = isAttackAnimation ? document.createElement("div") : null;
+  
+  if (attackAnimation) {
+    attackAnimation.className = "attack-effect";
     
-    // Position the animation centered on the opponent sprite
-    const opponentRect = opponentSprite.getBoundingClientRect();
-    const battleArenaRect = battleArena.getBoundingClientRect();
-    
-    // Calculate position relative to battle arena
-    const left = opponentRect.left - battleArenaRect.left + (opponentRect.width / 2) - 75;
-    const top = opponentRect.top - battleArenaRect.top + (opponentRect.height / 2) - 75;
-    
-    attackAnimation.style.position = "absolute";
-    attackAnimation.style.left = `${left}px`;
-    attackAnimation.style.top = `${top}px`;
-    attackAnimation.style.width = "150px";
-    attackAnimation.style.height = "150px";
-    attackAnimation.style.backgroundSize = "contain";
-    attackAnimation.style.backgroundPosition = "center center";
-    attackAnimation.style.backgroundRepeat = "no-repeat";
-    attackAnimation.style.zIndex = "100";
-    
-    // Add to battle arena
-    battleArena.appendChild(attackAnimation);
-    
-    // Remove animation after it completes
-    setTimeout(() => {
-      attackAnimation.remove();
-    }, 1000);
-  } catch (error) {
-    console.error("Animation error:", error);
+    try {
+      // Try to set the background image
+      attackAnimation.style.backgroundImage = `url(${animationUrl})`;
+      
+      // Position the animation centered on the opponent sprite
+      const opponentRect = opponentSprite.getBoundingClientRect();
+      const battleArenaRect = battleArena.getBoundingClientRect();
+      
+      // Calculate position relative to battle arena
+      const left = opponentRect.left - battleArenaRect.left + (opponentRect.width / 2) - 75;
+      const top = opponentRect.top - battleArenaRect.top + (opponentRect.height / 2) - 75;
+      
+      attackAnimation.style.position = "absolute";
+      attackAnimation.style.left = `${left}px`;
+      attackAnimation.style.top = `${top}px`;
+      attackAnimation.style.width = "150px";
+      attackAnimation.style.height = "150px";
+      attackAnimation.style.backgroundSize = "contain";
+      attackAnimation.style.backgroundPosition = "center center";
+      attackAnimation.style.backgroundRepeat = "no-repeat";
+      attackAnimation.style.zIndex = "100";
+      
+      // Add to battle arena
+      battleArena.appendChild(attackAnimation);
+      
+      // Remove animation after it completes
+      setTimeout(() => {
+        attackAnimation.remove();
+      }, 1000);
+    } catch (error) {
+      console.error("Animation error:", error);
+    }
   }
   
   // Remove lunge animation after a short delay
@@ -1870,6 +1886,20 @@ function useMove(move) {
     // Miss
     addToBattleLog(`${activePlayerCharacter.name}'s attack missed!`);
     showFloatingLog("MISSED!");
+    setTimeout(() => endPlayerTurn(), 600);
+    
+    // Remove animation
+    setTimeout(() => {
+      // Reset to default animation
+      setPlayerAnimation("default");
+      canAct = true;
+    }, 1000);
+    return;
+  }
+  
+  // Check if this is a healing move
+  if (isHealingMove) {
+    handleStatusMove(move, "player");
     setTimeout(() => endPlayerTurn(), 600);
     
     // Remove animation
@@ -1962,8 +1992,11 @@ function executeOpponentMove(move) {
   // Check if this is a damage move or a status/healing move
   const isZeroDamageMove = move.power === 0 || move.type === "status";
   
-  // Only play attack sound for damage moves
-  if (!isZeroDamageMove) {
+  // Check if it's a healing move (by move name)
+  const isHealingMove = ["Irie Recharge", "Call Girls for Gang", "PTO Prayer"].includes(move.name);
+  
+  // Only play attack sound for damage moves (not healing moves)
+  if (!isZeroDamageMove && !isHealingMove) {
     // Play hit sound
     playHitSound();
     
@@ -1977,8 +2010,13 @@ function executeOpponentMove(move) {
     playSuccessSound();
     
     // Apply a non-attack animation
-    if (move.type === "status") {
-      applyMoveAnimation("status", "opponent");
+    if (move.type === "status" || isHealingMove) {
+      // For healing moves specifically, use healing animation
+      if (isHealingMove) {
+        applyHealAnimation("opponent");
+      } else {
+        applyMoveAnimation("status", "opponent");
+      }
     }
   }
   
@@ -2000,13 +2038,13 @@ function executeOpponentMove(move) {
     }, 400);
   }
   
-  // Make opponent sprite move forward when attacking - only for damage moves
-  if (opponentSprite && !isZeroDamageMove) {
+  // Make opponent sprite move forward when attacking - only for damage moves (not healing moves)
+  if (opponentSprite && !isZeroDamageMove && !isHealingMove) {
     opponentSprite.classList.add("attack-lunge-reverse");
   }
   
-  // Only create attack animations for damage moves
-  const isAttackAnimation = !isZeroDamageMove;
+  // Only create attack animations for damage moves (not healing moves)
+  const isAttackAnimation = !isZeroDamageMove && !isHealingMove;
   
   // Get the appropriate animation based on type (only for attack animations)
   const animationUrl = isAttackAnimation ? 
@@ -2073,6 +2111,22 @@ function executeOpponentMove(move) {
     // Miss
     addToBattleLog(`${activeOpponent.name}'s attack missed!`);
     showFloatingLog("MISSED!");
+    setTimeout(() => endOpponentTurn(), 600);
+    
+    // Remove animation
+    setTimeout(() => {
+      const opponentElement = document.getElementById("opponent-sprite");
+      if (opponentElement) {
+        opponentElement.classList.remove("attack-animation-reverse");
+      }
+      setOpponentAnimation("default");
+    }, 1000);
+    return;
+  }
+  
+  // Check if this is a healing move
+  if (isHealingMove) {
+    handleStatusMove(move, "opponent");
     setTimeout(() => endOpponentTurn(), 600);
     
     // Remove animation
