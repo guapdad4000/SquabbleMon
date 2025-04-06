@@ -2514,6 +2514,9 @@ function confirmSwitch(index) {
   // Hide switch screen
   document.getElementById("switch-screen").style.display = "none";
   
+  // Re-enable battle menu controls
+  document.getElementById("battle-menu").style.pointerEvents = "auto";
+  
   // Play success sound
   playSuccessSound();
   
@@ -2529,18 +2532,25 @@ function confirmSwitch(index) {
   updateBattleUI();
   updateStatusIcons();
   updateMoveButtons();
+  updateItemButtons(); // Also update item buttons
   
-  // End turn
-  setTimeout(() => endPlayerTurn(), 1000);
+  // End turn if this was a voluntary switch during a player's turn
+  // If this was after a faint, the turn processing continues automatically
+  if (currentTurn === "player" && canAct) {
+    setTimeout(() => endPlayerTurn(), 1000);
+  }
 }
 
 function cancelSwitch() {
   document.getElementById("switch-screen").style.display = "none";
+  
+  // Re-enable battle menu controls
+  document.getElementById("battle-menu").style.pointerEvents = "auto";
 }
 
 function handlePlayerFaint() {
-  addToBattleLog(`${activePlayerCharacter.name} got faded!`);
-  showFloatingLog(`${activePlayerCharacter.name} faded!`);
+  addToBattleLog(`${activePlayerCharacter.name} got folded!`);
+  showFloatingLog(`${activePlayerCharacter.name} got folded!`);
   
   // Play hit sound
   playHitSound();
@@ -2556,9 +2566,17 @@ function handlePlayerFaint() {
     // Game over - player lost
     setTimeout(() => showGameOver(false), 1500);
   } else {
-    // Show switch screen to choose next character
+    // Show switch screen to choose next character with a message
+    // Make sure the battle menu is disabled during switch
+    document.getElementById("battle-menu").style.pointerEvents = "none";
+    
     setTimeout(() => {
       switchYN();
+      // Add an informational message to the switch screen
+      const switchTitle = document.querySelector("#switch-screen h2");
+      if (switchTitle) {
+        switchTitle.textContent = "Choose Next YN (Character folded)";
+      }
     }, 1500);
   }
 }
