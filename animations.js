@@ -1,39 +1,39 @@
-// Animation state management
+// Animation state management - optimized for faster gameplay
 const ANIMATION_STATE = {
   player: {
     default: "float 3s ease-in-out infinite 0.5px", // Slower and smaller float
     attack: "attack 0.6s ease-in-out", // Faster attack animation
-    shake: "player-shake-animation 0.5s ease-in-out",
-    hit: "hit-flash 0.4s ease-in-out", // Flash animation when hit
+    shake: "player-shake-animation 0.6s ease-in-out",
+    hit: "hit-flash 0.3s ease-in-out", // Flash animation when hit
     lunge: "lunge 0.3s ease-in-out", // Lunging forward animation
     glow: "glow 0.5s ease-in-out", // Glowing effect for status moves
-    criticalHit: "criticalHit 0.7s ease-out", // Critical hit animation
-    heal: "heal 1.5s ease-in-out", // Healing animation
-    statusBounce: "statusBounce 0.7s ease-out", // Status effect application
-    effectStreet: "effect-street 1.2s ease-in-out", // Street-style effect
-    effectHiphop: "effect-hiphop 1.2s ease-in-out", // Hip-hop style effect
-    effectUrban: "effect-urban 1.2s ease-in-out", // Urban style effect 
-    effectTech: "effect-tech 1.2s ease-in-out", // Tech style effect
-    effectStatus: "effect-status 1.2s ease-in-out", // Status effect style
-    imposterHit: "imposterHit 1.5s forwards", // Imposter hit effect
+    criticalHit: "criticalHit 0.6s ease-out", // Critical hit animation
+    heal: "heal 1s ease-in-out", // Healing animation
+    statusBounce: "statusBounce 0.5s ease-out", // Status effect application
+    effectStreet: "effect-street 0.8s ease-in-out", // Street-style effect
+    effectHiphop: "effect-hiphop 0.8s ease-in-out", // Hip-hop style effect
+    effectUrban: "effect-urban 0.8s ease-in-out", // Urban style effect 
+    effectTech: "effect-tech 0.8s ease-in-out", // Tech style effect
+    effectStatus: "effect-status 0.8s ease-in-out", // Status effect style
+    imposterHit: "imposterHit 1s forwards", // Imposter hit effect
     current: "float 3s ease-in-out infinite 0.5px"
   },
   opponent: {
     default: "float 3s ease-in-out infinite 0.5px", // Will be flipped with transform
     attack: "attack 0.6s ease-in-out", // Faster attack animation
-    shake: "shake-animation 0.5s ease-in-out",
-    hit: "hit-flash 0.4s ease-in-out", // Flash animation when hit
+    shake: "shake-animation 0.6s ease-in-out",
+    hit: "hit-flash 0.3s ease-in-out", // Flash animation when hit
     lungeReverse: "lungeReverse 0.3s ease-in-out", // Reversed lunging animation
     glow: "glow 0.5s ease-in-out", // Glowing effect for status moves
-    criticalHit: "criticalHit 0.7s ease-out", // Critical hit animation
-    heal: "heal 1.5s ease-in-out", // Healing animation
-    statusBounce: "statusBounce 0.7s ease-out", // Status effect application
-    effectStreet: "effect-street 1.2s ease-in-out", // Street-style effect
-    effectHiphop: "effect-hiphop 1.2s ease-in-out", // Hip-hop style effect
-    effectUrban: "effect-urban 1.2s ease-in-out", // Urban style effect
-    effectTech: "effect-tech 1.2s ease-in-out", // Tech style effect
-    effectStatus: "effect-status 1.2s ease-in-out", // Status effect style
-    imposterHit: "imposterHit 1.5s forwards", // Imposter hit effect
+    criticalHit: "criticalHit 0.6s ease-out", // Critical hit animation
+    heal: "heal 1s ease-in-out", // Healing animation
+    statusBounce: "statusBounce 0.5s ease-out", // Status effect application
+    effectStreet: "effect-street 0.8s ease-in-out", // Street-style effect
+    effectHiphop: "effect-hiphop 0.8s ease-in-out", // Hip-hop style effect
+    effectUrban: "effect-urban 0.8s ease-in-out", // Urban style effect
+    effectTech: "effect-tech 0.8s ease-in-out", // Tech style effect
+    effectStatus: "effect-status 0.8s ease-in-out", // Status effect style
+    imposterHit: "imposterHit 1s forwards", // Imposter hit effect
     current: "float 3s ease-in-out infinite 0.5px"
   }
 };
@@ -81,54 +81,7 @@ function resetAnimations() {
   setOpponentAnimation("default");
 }
 
-// Function to apply attack-specific animations based on move type
-function applyMoveAnimation(moveType, user) {
-  try {
-    // Get the right animation based on move type
-    let animationType = "attack"; // Default animation
-    
-    // Map move types to animations
-    switch(moveType.toLowerCase()) {
-      case "fire":
-        animationType = "effectHiphop";
-        break;
-      case "water":
-        animationType = "effectStreet";
-        break;
-      case "plant":
-        animationType = "effectUrban";
-        break;
-      case "electric":
-        animationType = "effectTech";
-        break;
-      case "dark":
-        animationType = "effectStatus";
-        break;
-      default:
-        animationType = "attack";
-        break;
-    }
-    
-    // Apply the animation to the correct character
-    if (user === "player") {
-      setPlayerAnimation(animationType);
-    } else {
-      setOpponentAnimation(animationType);
-    }
-    
-    // Return to default animation after a delay
-    setTimeout(() => {
-      if (user === "player") {
-        setPlayerAnimation("default");
-      } else {
-        setOpponentAnimation("default");
-      }
-    }, 1200); // Match the animation duration
-    
-  } catch (error) {
-    console.error("Error in applyMoveAnimation:", error);
-  }
-}
+// This function was replaced by the more detailed implementation below
 
 // Function to apply status-specific animations
 function applyStatusAnimation(statusType, user) {
@@ -142,14 +95,14 @@ function applyStatusAnimation(statusType, user) {
       setOpponentAnimation(animationType);
     }
     
-    // Return to default animation after a delay
+    // Return to default animation after a delay (faster)
     setTimeout(() => {
       if (user === "player") {
         setPlayerAnimation("default");
       } else {
         setOpponentAnimation("default");
       }
-    }, 700); // Match the animation duration
+    }, 500); // Faster animation duration
     
   } catch (error) {
     console.error("Error in applyStatusAnimation:", error);
@@ -161,10 +114,10 @@ function applyHealAnimation(user) {
   try {
     if (user === "player") {
       setPlayerAnimation("heal");
-      setTimeout(() => setPlayerAnimation("default"), 1500);
+      setTimeout(() => setPlayerAnimation("default"), 1000);
     } else {
       setOpponentAnimation("heal");
-      setTimeout(() => setOpponentAnimation("default"), 1500);
+      setTimeout(() => setOpponentAnimation("default"), 1000);
     }
   } catch (error) {
     console.error("Error in applyHealAnimation:", error);
@@ -176,10 +129,10 @@ function applyCriticalHitAnimation(user) {
   try {
     if (user === "player") {
       setPlayerAnimation("criticalHit");
-      setTimeout(() => setPlayerAnimation("default"), 700);
+      setTimeout(() => setPlayerAnimation("default"), 500);
     } else {
       setOpponentAnimation("criticalHit");
-      setTimeout(() => setOpponentAnimation("default"), 700);
+      setTimeout(() => setOpponentAnimation("default"), 500);
     }
   } catch (error) {
     console.error("Error in applyCriticalHitAnimation:", error);
@@ -216,13 +169,13 @@ function handleStatusEffectAnimation(effectType, target) {
         animationType = "statusBounce";
     }
     
-    // Apply the animation
+    // Apply the animation (faster)
     if (target === "player") {
       setPlayerAnimation(animationType);
-      setTimeout(() => setPlayerAnimation("default"), 1200);
+      setTimeout(() => setPlayerAnimation("default"), 500);
     } else {
       setOpponentAnimation(animationType);
-      setTimeout(() => setOpponentAnimation("default"), 1200);
+      setTimeout(() => setOpponentAnimation("default"), 500);
     }
   } catch (error) {
     console.error("Error in handleStatusEffectAnimation:", error);
@@ -264,13 +217,13 @@ function applyMoveAnimation(moveType, user) {
       // Reset animation after a delay
       setTimeout(() => {
         setPlayerAnimation("default");
-      }, 800);
+      }, 500);
     } else {
       setOpponentAnimation(animationStyle);
       // Reset animation after a delay
       setTimeout(() => {
         setOpponentAnimation("default");
-      }, 800);
+      }, 500);
     }
   } catch (error) {
     console.error("Error in applyMoveAnimation:", error);

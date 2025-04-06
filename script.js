@@ -1769,10 +1769,10 @@ function useMove(move) {
     speedLines.className = "speed-lines";
     battleArena.appendChild(speedLines);
     
-    // Remove speed lines after animation completes
+    // Remove speed lines after animation completes (faster animation)
     setTimeout(() => {
       speedLines.remove();
-    }, 700);
+    }, 400);
   }
   
   // Make player sprite move forward when attacking
@@ -1842,7 +1842,7 @@ function useMove(move) {
     // Miss
     addToBattleLog(`${activePlayerCharacter.name}'s attack missed!`);
     showFloatingLog("MISSED!");
-    setTimeout(() => endPlayerTurn(), 1000);
+    setTimeout(() => endPlayerTurn(), 600);
     
     // Remove animation
     setTimeout(() => {
@@ -1856,7 +1856,7 @@ function useMove(move) {
   // Handle status moves differently
   if (move.type === "status") {
     handleStatusMove(move, "player");
-    setTimeout(() => endPlayerTurn(), 1000);
+    setTimeout(() => endPlayerTurn(), 600);
     
     // Remove animation
     setTimeout(() => {
@@ -1912,7 +1912,7 @@ function useMove(move) {
     if (activeOpponent.hp <= 0) {
       handleOpponentFaint();
     } else {
-      setTimeout(() => endPlayerTurn(), 1000);
+      setTimeout(() => endPlayerTurn(), 600);
     }
     // Remove animation and restore floating
     // Reset to default animation
@@ -1952,10 +1952,10 @@ function executeOpponentMove(move) {
     speedLines.style.transform = "scaleX(-1)"; // Reverse the direction for opponent
     battleArena.appendChild(speedLines);
     
-    // Remove speed lines after animation completes
+    // Remove speed lines after animation completes (faster animation)
     setTimeout(() => {
       speedLines.remove();
-    }, 700);
+    }, 400);
   }
   
   // Make opponent sprite move forward when attacking
@@ -2025,7 +2025,7 @@ function executeOpponentMove(move) {
     // Miss
     addToBattleLog(`${activeOpponent.name}'s attack missed!`);
     showFloatingLog("MISSED!");
-    setTimeout(() => endOpponentTurn(), 1000);
+    setTimeout(() => endOpponentTurn(), 600);
     
     // Remove animation
     setTimeout(() => {
@@ -2041,7 +2041,7 @@ function executeOpponentMove(move) {
   // Handle status moves differently
   if (move.type === "status") {
     handleStatusMove(move, "opponent");
-    setTimeout(() => endOpponentTurn(), 1000);
+    setTimeout(() => endOpponentTurn(), 600);
     
     // Remove animation
     setTimeout(() => {
@@ -2133,7 +2133,7 @@ function executeOpponentMove(move) {
     if (activePlayerCharacter.hp <= 0) {
       handlePlayerFaint();
     } else {
-      setTimeout(() => endOpponentTurn(), 1000);
+      setTimeout(() => endOpponentTurn(), 600);
     }
     // Remove animation
     const opponentElement = document.getElementById("opponent-sprite");
@@ -3047,7 +3047,7 @@ function useItem(itemType) {
   updateBattleUI();
   
   // End turn
-  setTimeout(() => endPlayerTurn(), 1000);
+  setTimeout(() => endPlayerTurn(), 600);
 }
 
 function switchYN() {
@@ -3106,7 +3106,7 @@ function confirmSwitch(index) {
   updateMoveButtons();
   
   // End turn
-  setTimeout(() => endPlayerTurn(), 1000);
+  setTimeout(() => endPlayerTurn(), 600);
 }
 
 function cancelSwitch() {

@@ -1014,22 +1014,22 @@ body {
   50% { transform: translateY(-8px) scale(1.1); }
 }
 .shake-animation {
-  animation: shake 1s ease-in-out;
+  animation: shake 0.6s ease-in-out;
 }
 .player-shake-animation {
-  animation: playerShake 1s ease-in-out;
+  animation: playerShake 0.6s ease-in-out;
 }
 .hit-flash {
-  animation: hitFlash 1s ease-in-out;
+  animation: hitFlash 0.6s ease-in-out;
 }
 .hit-flash-animation {
-  animation: hit-flash 0.4s ease-in-out;
+  animation: hit-flash 0.3s ease-in-out;
 }
 .attack-animation {
-  animation: attack 1s ease-in-out;
+  animation: attack 0.6s ease-in-out;
 }
 .attack-animation-reverse {
-  animation: attackReverse 1s ease-in-out;
+  animation: attackReverse 0.6s ease-in-out;
 }
 .attack-lunge {
   animation: lunge 0.3s ease-in-out;
@@ -1127,25 +1127,25 @@ body {
   animation: pulse 1s ease-in-out infinite;
 }
 
-/* Type-based attack effects */
+/* Type-based attack effects - faster animations */
 .effect-street {
-  animation: effect-street 1.2s ease-in-out;
+  animation: effect-street 0.8s ease-in-out;
   position: relative;
 }
 .effect-hiphop {
-  animation: effect-hiphop 1.2s ease-in-out;
+  animation: effect-hiphop 0.8s ease-in-out;
   position: relative;
 }
 .effect-urban {
-  animation: effect-urban 1.2s ease-in-out;
+  animation: effect-urban 0.8s ease-in-out;
   position: relative;
 }
 .effect-tech {
-  animation: effect-tech 1.2s ease-in-out;
+  animation: effect-tech 0.8s ease-in-out;
   position: relative;
 }
 .effect-status {
-  animation: effect-status 1.2s ease-in-out;
+  animation: effect-status 0.8s ease-in-out;
   position: relative;
 }
 
