@@ -315,16 +315,16 @@ body {
   background-size: cover;
 }
 
-/* Horizontal line behind characters, in front of background */
+/* Horizontal line behind characters, in front of background - with reduced opacity */
 #horizontal-line {
   position: absolute;
   width: 100%;
   height: 2px;
-  background-color: var(--pixel-border);
+  background-color: rgba(26, 26, 26, 0.4); /* Reduced opacity */
   bottom: 25%;
   left: 0;
-  z-index: 2; /* Above background (z-index: 1) but below character sprites (z-index: 10) */
-  box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+  z-index: 1; /* Moved behind sprites and platforms */
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
 }
 #ui-overlay {
   position: absolute;
@@ -426,7 +426,7 @@ body {
   background-position: center bottom;
   border: none;
   box-shadow: none;
-  z-index: 1;
+  z-index: 2; /* Higher than the horizontal line but below characters */
   image-rendering: pixelated;
 }
 #player-platform {
