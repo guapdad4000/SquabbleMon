@@ -1,0 +1,7 @@
+The audio files we'll use will be these URLs:
+
+Battle music: https://audio.jukehost.co.uk/D2O32Qb2y6tpAXHw8c35FYoHRJzXoRbG
+Menu music: https://audio.jukehost.co.uk/nMJQi5KbwFgvSdkPEfRZW5WLPQrK2ZUu
+Hit sound: https://audio.jukehost.co.uk/8tUlDNLpvRgMxmbO1IXqubCDEOXTkvOm
+Success sound: https://audio.jukehost.co.uk/YXtQw8hsDwVXXqkPoDQwfPrpJ36PnqjB
+Switch sound: https://audio.jukehost.co.uk/9E15JVLzv4uKcTgUy6yUYkCRaS6htByd

@@ -40,6 +40,43 @@ body {
   font-size: 10px;
 }
 
+/* Audio Controls */
+#audio-controls {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 10px;
+  z-index: 1001;
+}
+
+.audio-button {
+  background-color: var(--pixel-bg-dark);
+  border: 2px solid var(--pixel-border);
+  border-radius: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+  box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 0.4);
+}
+
+.audio-button:hover {
+  transform: scale(1.05);
+}
+
+.audio-button span {
+  font-size: 1.4em;
+}
+
+.audio-button.muted span {
+  opacity: 0.5;
+  text-decoration: line-through;
+}
+
 /* --- Selection Screen --- */
 #selection-screen {
   display: block;

@@ -1,3 +1,24 @@
+// ================ AUDIO CONFIGURATION ================
+// Audio URLs
+const AUDIO = {
+  menuMusic: "https://audio.jukehost.co.uk/nMJQi5KbwFgvSdkPEfRZW5WLPQrK2ZUu",
+  battleMusic: "https://audio.jukehost.co.uk/D2O32Qb2y6tpAXHw8c35FYoHRJzXoRbG", 
+  hitSound: "https://audio.jukehost.co.uk/8tUlDNLpvRgMxmbO1IXqubCDEOXTkvOm",
+  successSound: "https://audio.jukehost.co.uk/YXtQw8hsDwVXXqkPoDQwfPrpJ36PnqjB",
+  switchSound: "https://audio.jukehost.co.uk/9E15JVLzv4uKcTgUy6yUYkCRaS6htByd"
+};
+
+// Audio objects
+let menuMusicPlayer = null;
+let battleMusicPlayer = null;
+let hitSoundPlayer = null;
+let successSoundPlayer = null;
+let switchSoundPlayer = null;
+
+// Audio state
+let musicMuted = false;
+let soundMuted = false;
+
 // ================ GAME DATA ================
 // Character data with battle info
 const characters = [
@@ -535,6 +556,115 @@ let canAct = true; // For preventing action during animations
 // Initialize the game when the page loads
 document.addEventListener("DOMContentLoaded", initGame);
 
+// Audio Functions
+function initAudio() {
+  // Initialize audio players (wait for user interaction - browser policy)
+  if (!menuMusicPlayer) {
+    menuMusicPlayer = new Audio(AUDIO.menuMusic);
+    menuMusicPlayer.loop = true;
+    menuMusicPlayer.volume = 0.5;
+  }
+  
+  if (!battleMusicPlayer) {
+    battleMusicPlayer = new Audio(AUDIO.battleMusic);
+    battleMusicPlayer.loop = true;
+    battleMusicPlayer.volume = 0.5;
+  }
+  
+  if (!hitSoundPlayer) {
+    hitSoundPlayer = new Audio(AUDIO.hitSound);
+    hitSoundPlayer.volume = 0.7;
+  }
+  
+  if (!successSoundPlayer) {
+    successSoundPlayer = new Audio(AUDIO.successSound);
+    successSoundPlayer.volume = 0.7;
+  }
+  
+  if (!switchSoundPlayer) {
+    switchSoundPlayer = new Audio(AUDIO.switchSound);
+    switchSoundPlayer.volume = 0.7;
+  }
+  
+  // Set up audio control buttons
+  document.getElementById("toggle-music").addEventListener("click", toggleMusic);
+  document.getElementById("toggle-sound").addEventListener("click", toggleSound);
+}
+
+function playMenuMusic() {
+  if (battleMusicPlayer) battleMusicPlayer.pause();
+  if (menuMusicPlayer && !musicMuted) {
+    menuMusicPlayer.currentTime = 0;
+    menuMusicPlayer.play().catch(e => console.log("Audio play failed:", e));
+  }
+}
+
+function playBattleMusic() {
+  if (menuMusicPlayer) menuMusicPlayer.pause();
+  if (battleMusicPlayer && !musicMuted) {
+    battleMusicPlayer.currentTime = 0;
+    battleMusicPlayer.play().catch(e => console.log("Audio play failed:", e));
+  }
+}
+
+function playHitSound() {
+  if (hitSoundPlayer && !soundMuted) {
+    hitSoundPlayer.currentTime = 0;
+    hitSoundPlayer.play().catch(e => console.log("Audio play failed:", e));
+  }
+}
+
+function playSuccessSound() {
+  if (successSoundPlayer && !soundMuted) {
+    successSoundPlayer.currentTime = 0;
+    successSoundPlayer.play().catch(e => console.log("Audio play failed:", e));
+  }
+}
+
+function playSwitchSound() {
+  if (switchSoundPlayer && !soundMuted) {
+    switchSoundPlayer.currentTime = 0;
+    switchSoundPlayer.play().catch(e => console.log("Audio play failed:", e));
+  }
+}
+
+function toggleMusic() {
+  musicMuted = !musicMuted;
+  
+  const musicButton = document.getElementById("toggle-music");
+  const musicIcon = document.getElementById("music-icon");
+  
+  if (musicMuted) {
+    if (menuMusicPlayer) menuMusicPlayer.pause();
+    if (battleMusicPlayer) battleMusicPlayer.pause();
+    musicButton.classList.add("muted");
+    musicIcon.textContent = "🔇";
+  } else {
+    if (document.getElementById("battle-screen").style.display === "flex") {
+      playBattleMusic();
+    } else {
+      playMenuMusic();
+    }
+    musicButton.classList.remove("muted");
+    musicIcon.textContent = "🔊";
+  }
+}
+
+function toggleSound() {
+  soundMuted = !soundMuted;
+  
+  const soundButton = document.getElementById("toggle-sound");
+  const soundIcon = document.getElementById("sound-icon");
+  
+  if (soundMuted) {
+    soundButton.classList.add("muted");
+    soundIcon.textContent = "🔇";
+  } else {
+    soundButton.classList.remove("muted");
+    soundIcon.textContent = "🔊";
+  }
+}
+
 function initGame() {
   populateCharacterSelection();
   setupMoveTooltips();
@@ -543,6 +673,18 @@ function initGame() {
   fadeCount = 0;
   opponentIndex = 0;
   updateFadeDisplay();
+  
+  // Initialize audio controls (but wait for user interaction to play music)
+  initAudio();
+  
+  // Set up a one-time click listener to start audio (browser policy requires user interaction)
+  const startAudioOnce = () => {
+    // Start menu music
+    playMenuMusic();
+    // Remove this listener after first click
+    document.removeEventListener('click', startAudioOnce);
+  };
+  document.addEventListener('click', startAudioOnce);
 }
 
 function populateCharacterSelection() {
@@ -567,6 +709,9 @@ function selectCharacter(character) {
     showFloatingLog("You can only pick 3 YNs!");
     return;
   }
+  
+  // Play sound effect
+  playSuccessSound();
   
   // Check if character is already selected
   if (playerTeam.some(c => c.id === character.id)) {
@@ -607,6 +752,12 @@ function startBattle() {
   // Setup battle screen
   document.getElementById("selection-screen").style.display = "none";
   document.getElementById("battle-screen").style.display = "flex";
+  
+  // Start battle music
+  playBattleMusic();
+  
+  // Play success sound
+  playSuccessSound();
   
   // Choose a random background
   const randomBg = battleBackgrounds[Math.floor(Math.random() * battleBackgrounds.length)];
@@ -895,6 +1046,9 @@ function useMove(move) {
   
   addToBattleLog(`${activePlayerCharacter.name} used ${move.name}!`);
   
+  // Play hit sound
+  playHitSound();
+  
   // Attack animation
   const playerSprite = document.getElementById("player-sprite");
   playerSprite.classList.add("attack-animation");
@@ -985,6 +1139,9 @@ function executeOpponentMove(move) {
   if (!gameActive || currentTurn !== "opponent") return;
   
   addToBattleLog(`${activeOpponent.name} used ${move.name}!`);
+  
+  // Play hit sound
+  playHitSound();
   
   // Attack animation
   const opponentSprite = document.getElementById("opponent-sprite");
@@ -1535,6 +1692,9 @@ function useItem(itemType) {
 function switchYN() {
   if (!canAct || currentTurn !== "player") return;
   
+  // Play switch sound
+  playSwitchSound();
+  
   // Show switch screen with available characters
   const switchScreen = document.getElementById("switch-screen");
   const switchOptions = document.getElementById("switch-options");
@@ -1547,7 +1707,7 @@ function switchYN() {
     const option = document.createElement("div");
     option.className = `switch-option ${isFainted ? "fainted" : ""} ${isCurrentActive ? "current" : ""}`;
     option.innerHTML = `
-      <img src="public/images/${character.sprite}" alt="${character.name}">
+      <img src="${character.sprite}" alt="${character.name}">
       <p>${character.name}</p>
       <div class="hp-indicator">
         <div class="hp-indicator-fill" style="width: ${(character.hp / playerTeam[index].hp) * 100}%"></div>
@@ -1567,6 +1727,9 @@ function switchYN() {
 function confirmSwitch(index) {
   // Hide switch screen
   document.getElementById("switch-screen").style.display = "none";
+  
+  // Play success sound
+  playSuccessSound();
   
   // Get the new active character
   const newActive = playerTeam[index];
@@ -1593,6 +1756,9 @@ function handlePlayerFaint() {
   addToBattleLog(`${activePlayerCharacter.name} got faded!`);
   showFloatingLog(`${activePlayerCharacter.name} faded!`);
   
+  // Play hit sound
+  playHitSound();
+  
   // Mark character as fainted (hp = 0)
   const index = playerTeam.findIndex(c => c.id === activePlayerCharacter.id);
   playerTeam[index].hp = 0;
@@ -1617,6 +1783,9 @@ function handleOpponentFaint() {
   
   addToBattleLog(`${activeOpponent.name} got faded!`);
   showFloatingLog(`${activeOpponent.name} faded!`);
+  
+  // Play success sound
+  playSuccessSound();
   
   // Check if all opponents are defeated
   if (opponentIndex >= opponents.length - 1) {
@@ -1650,10 +1819,13 @@ function showGameOver(playerWon) {
   const continueButton = document.getElementById("continue-battle");
   const againButton = document.querySelector("#game-over button:not(#continue-battle)");
   
+  // Play appropriate sound
   if (playerWon) {
+    playSuccessSound();
     document.getElementById("game-over-message").textContent = "You won! All opponents got faded!";
     document.getElementById("win-lose-gif").src = resultGifs.win[Math.floor(Math.random() * resultGifs.win.length)];
   } else {
+    playHitSound(); // Use hit sound for losing
     document.getElementById("game-over-message").textContent = "You lost! Your whole squad got faded!";
     document.getElementById("win-lose-gif").src = resultGifs.lose[Math.floor(Math.random() * resultGifs.lose.length)];
   }
@@ -1670,6 +1842,9 @@ function showGameOver(playerWon) {
 
 function continueBattle() {
   document.getElementById("game-over").style.display = "none";
+  
+  // Play success sound
+  playSuccessSound();
   
   // Move to next opponent
   opponentIndex++;
@@ -1702,6 +1877,9 @@ function restartGame() {
   document.getElementById("game-over").style.display = "none";
   document.getElementById("battle-screen").style.display = "none";
   document.getElementById("selection-screen").style.display = "block";
+  
+  // Switch back to menu music
+  playMenuMusic();
   
   // Clear battle log
   const battleLogElement = document.getElementById("battle-log");
