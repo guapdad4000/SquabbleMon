@@ -752,15 +752,15 @@ const typeImages = {
 // Attack effect animations
 const attackAnimations = {
   // Urban themes
-  "urban": "https://i.imgur.com/WqLGZHb.gif",   // Water splash effect
-  "street": "https://i.imgur.com/W7q1AoR.gif",  // Fiery effect
+  "urban": "https://i.imgur.com/nRllcOZ.gif",   // Water splash effect
+  "street": "https://i.imgur.com/ikygIg7.gif",  // Fiery effect
   "hiphop": "https://i.imgur.com/Z6VXMwT.gif",  // Electric effect
   "tech": "https://i.imgur.com/2hTPscl.gif",    // Leaf/plant effect
   "status": "https://i.imgur.com/HNQ2XDC.gif",  // Status/purple effect
   
   // Standard types 
-  "Fire": "https://i.imgur.com/W7q1AoR.gif",    // Fire animation
-  "Water": "https://i.imgur.com/WqLGZHb.gif",   // Water animation
+  "Fire": "https://i.imgur.com/ikygIg7.gif",    // Fire animation - Updated
+  "Water": "https://i.imgur.com/nRllcOZ.gif",   // Water animation - Updated
   "Plant": "https://i.imgur.com/2hTPscl.gif",   // Plant animation
   "Electric": "https://i.imgur.com/Z6VXMwT.gif", // Electric animation
   "Dark": "https://i.imgur.com/HNQ2XDC.gif",    // Dark animation
@@ -772,17 +772,17 @@ const attackAnimations = {
 // Status effect animations
 const statusAnimations = {
   // Urban status effects
-  "slimed": "https://i.imgur.com/7pIOdST.gif", // Water drip effect
+  "slimed": "https://i.imgur.com/nRllcOZ.gif", // Water effect - Updated
   "confused": "https://i.imgur.com/yaNJUVn.gif", // Dizzy stars effect
   "baked": "https://i.imgur.com/PpxuqBD.gif",   // Sleep effect
-  "bleeding": "https://i.imgur.com/Z8UgFb1.gif", // Burning effect
+  "bleeding": "https://i.imgur.com/jW8KQD2.gif", // Fire effect - Updated
   "dazed": "https://i.imgur.com/fP0lG2M.gif",    // Thunder effect
   
   // Keep original effects for compatibility
-  "burn": "https://i.imgur.com/Z8UgFb1.gif", // Use bleeding animation
+  "burn": "https://i.imgur.com/jW8KQD2.gif", // Use bleeding animation - Updated
   "paralysis": "https://i.imgur.com/fP0lG2M.gif", // Use dazed animation
   "sleep": "https://i.imgur.com/PpxuqBD.gif", // Use baked animation
-  "poison": "https://i.imgur.com/7pIOdST.gif", // Use slimed animation
+  "poison": "https://i.imgur.com/nRllcOZ.gif", // Use slimed animation - Updated
   "heal": "https://i.imgur.com/684Bb2r.gif"   // Healing animation
 };
 

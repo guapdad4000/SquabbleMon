@@ -247,12 +247,24 @@ body {
   font-size: 0.8em;
   min-height: 28px;
   padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 #items button img {
   width: 10px;
   height: 10px;
   margin-right: 4px;
   image-rendering: pixelated;
+}
+.item-icon {
+  font-size: 14px;
+  margin-right: 5px;
+  display: inline-block;
+}
+.item-effect {
+  text-shadow: 0 0 5px white, 0 0 10px yellow;
+  filter: drop-shadow(0 0 3px rgba(255, 255, 100, 0.7));
 }
 #toggle-switch {
   background-color: var(--pixel-accent-alt);
