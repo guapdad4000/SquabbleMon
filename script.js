@@ -655,6 +655,42 @@ const opponents = [
       { name: "Pookie Push", power: 60, accuracy: 100, type: "Rock", pp: 10, maxPP: 10, effect: "raiseEvasion" }
     ],
     ai: "aggressive"
+  },
+  {
+    id: 111,
+    name: "Closet Nerd",
+    sprite: "https://i.imgur.com/knA2Yxz.png",
+    hp: 200,
+    attack: 140,
+    defense: 100,
+    speed: 170,
+    critRate: 0.05,
+    type: "Dark",
+    description: "Knows more about anime than you know about yourself. Don't ask.",
+    moves: [
+      { name: "Manga Smack", power: 60, accuracy: 95, type: "Normal", pp: 15, maxPP: 15, effect: "none" },
+      { name: "Weeb Roast", power: 55, accuracy: 85, type: "Fire", pp: 10, maxPP: 10, effect: "burn" },
+      { name: "Anime Reference", power: 0, accuracy: 100, type: "Dark", pp: 10, maxPP: 10, effect: "raiseAttack" }
+    ],
+    ai: "defensive"
+  },
+  {
+    id: 112,
+    name: "Cool Vibe YN",
+    sprite: "https://i.imgur.com/2n71aSJ.png",
+    hp: 190,
+    attack: 170,
+    defense: 130,
+    speed: 150,
+    critRate: 0.08,
+    type: "Water",
+    description: "Smooth operator. Always hydrated and ready to slide into the DMs.",
+    moves: [
+      { name: "Splash Dat Ass", power: 50, accuracy: 95, type: "Water", pp: 15, maxPP: 15, effect: "wet" },
+      { name: "Wave Check Fade", power: 70, accuracy: 85, type: "Water", pp: 10, maxPP: 10, effect: "sleep" },
+      { name: "Call Girls for Gang", power: 0, accuracy: 100, type: "Water", pp: 5, maxPP: 5, effect: "heal" }
+    ],
+    ai: "balanced"
   }
 ];
 
