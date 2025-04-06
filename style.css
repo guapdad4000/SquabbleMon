@@ -460,17 +460,60 @@ body {
   will-change: transform, opacity, filter;
   filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.4));
   image-rendering: pixelated;
-  animation: float 1.5s ease-in-out infinite;
+  animation: floatRotate 2s ease-in-out infinite;
+  transition: filter 0.3s ease, transform 0.3s ease;
 }
 #opponent-sprite {
   transform: scaleX(-1);
-  animation: floatFlipped 1.5s ease-in-out infinite;
+  animation: floatFlippedRotate 2s ease-in-out infinite;
 }
 
 /* Add slightly different animation timing to create variety */
 @keyframes floatFlipped {
   0%, 100% { transform: translateY(0) scaleX(-1); }
   50% { transform: translateY(-5px) scaleX(-1); }
+}
+
+@keyframes floatFlippedRotate {
+  0% { transform: translateY(0) scaleX(-1) rotate(0deg) scale(1); }
+  25% { transform: translateY(-3px) scaleX(-1) rotate(1deg) scale(1.02); }
+  50% { transform: translateY(-5px) scaleX(-1) rotate(0deg) scale(1.03); }
+  75% { transform: translateY(-3px) scaleX(-1) rotate(-1deg) scale(1.02); }
+  100% { transform: translateY(0) scaleX(-1) rotate(0deg) scale(1); }
+}
+
+/* Speed lines for attack animations */
+.speed-lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: repeating-linear-gradient(90deg, 
+    transparent, 
+    transparent 10px, 
+    rgba(255, 255, 255, 0.5) 10px, 
+    rgba(255, 255, 255, 0.5) 14px
+  );
+  opacity: 0;
+  z-index: 5;
+  pointer-events: none;
+  animation: speedLines 0.7s forwards;
+}
+
+/* Critical hit animation */
+.critical-hit {
+  animation: criticalHit 0.7s ease-out;
+}
+
+/* Healing effect */
+.heal-effect {
+  animation: heal 1s ease-in-out;
+}
+
+/* Status effect application animation */
+.status-bounce {
+  animation: statusBounce 0.7s ease-out;
 }
 
 /* HP Bar Area Structure - Player ABOVE, Opponent BELOW */
@@ -857,46 +900,86 @@ body {
 }
 @keyframes attack {
   0% { transform: translateX(0) scale(1); }
-  15% { transform: translateX(-15px) translateY(-10px) scale(1.15); }
-  30% { transform: translateX(15px) translateY(10px) scale(1.1); }
-  60% { transform: translateX(80px) scale(0.9); }
-  80% { transform: translateX(15px) translateY(-5px) scale(1.05); }
-  100% { transform: translateX(0) scale(1); }
+  15% { transform: translateX(-15px) translateY(-10px) scale(1.15) rotate(-5deg); }
+  30% { transform: translateX(15px) translateY(10px) scale(1.1) rotate(5deg); }
+  60% { transform: translateX(80px) scale(0.9) rotate(3deg); }
+  80% { transform: translateX(15px) translateY(-5px) scale(1.05) rotate(-2deg); }
+  100% { transform: translateX(0) scale(1) rotate(0); }
 }
 @keyframes attackReverse {
   0% { transform: translateX(0) scaleX(-1) scale(1); }
-  15% { transform: translateX(15px) translateY(-10px) scaleX(-1) scale(1.15); }
-  30% { transform: translateX(-15px) translateY(10px) scaleX(-1) scale(1.1); }
-  60% { transform: translateX(-80px) scaleX(-1) scale(0.9); }
-  80% { transform: translateX(-15px) translateY(-5px) scaleX(-1) scale(1.05); }
-  100% { transform: translateX(0) scaleX(-1) scale(1); }
+  15% { transform: translateX(15px) translateY(-10px) scaleX(-1) scale(1.15) rotate(5deg); }
+  30% { transform: translateX(-15px) translateY(10px) scaleX(-1) scale(1.1) rotate(-5deg); }
+  60% { transform: translateX(-80px) scaleX(-1) scale(0.9) rotate(-3deg); }
+  80% { transform: translateX(-15px) translateY(-5px) scaleX(-1) scale(1.05) rotate(2deg); }
+  100% { transform: translateX(0) scaleX(-1) scale(1) rotate(0); }
 }
 
 @keyframes lunge {
   0% { transform: translateX(0); }
-  40% { transform: translateX(40px); }
+  40% { transform: translateX(50px) scale(1.1) rotate(3deg); }
+  70% { transform: translateX(30px) scale(1.05); }
   100% { transform: translateX(0); }
 }
 
 @keyframes lungeReverse {
   0% { transform: translateX(0) scaleX(-1); }
-  40% { transform: translateX(-40px) scaleX(-1); }
+  40% { transform: translateX(-50px) scaleX(-1) scale(1.1) rotate(-3deg); }
+  70% { transform: translateX(-30px) scaleX(-1) scale(1.05); }
   100% { transform: translateX(0) scaleX(-1); }
 }
 
 @keyframes glow {
   0% { filter: brightness(1) contrast(1); }
-  50% { filter: brightness(1.5) contrast(1.2); }
+  25% { filter: brightness(1.6) contrast(1.3) drop-shadow(0 0 5px rgba(255, 255, 100, 0.8)); }
+  50% { filter: brightness(1.8) contrast(1.4) drop-shadow(0 0 8px rgba(255, 255, 100, 0.9)); }
+  75% { filter: brightness(1.6) contrast(1.3) drop-shadow(0 0 5px rgba(255, 255, 100, 0.8)); }
   100% { filter: brightness(1) contrast(1); }
 }
+
 @keyframes float {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-3px); }
+  50% { transform: translateY(-5px); }
 }
+
+@keyframes floatRotate {
+  0% { transform: translateY(0) rotate(0deg) scale(1); }
+  25% { transform: translateY(-3px) rotate(-1deg) scale(1.02); }
+  50% { transform: translateY(-5px) rotate(0deg) scale(1.03); }
+  75% { transform: translateY(-3px) rotate(1deg) scale(1.02); }
+  100% { transform: translateY(0) rotate(0deg) scale(1); }
+}
+
 @keyframes pulse {
   0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+  50% { transform: scale(1.08); }
   100% { transform: scale(1); }
+}
+
+@keyframes speedLines {
+  0% { background-position: 0% 0%; opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { background-position: 100% 0%; opacity: 0; }
+}
+
+@keyframes criticalHit {
+  0% { transform: scale(1); filter: brightness(1); }
+  25% { transform: scale(1.15) rotate(-2deg); filter: brightness(1.8) contrast(1.3); }
+  50% { transform: scale(0.95) rotate(2deg); filter: brightness(1.4) contrast(1.2); }
+  75% { transform: scale(1.05) rotate(-1deg); filter: brightness(1.6) contrast(1.25); }
+  100% { transform: scale(1); filter: brightness(1); }
+}
+
+@keyframes heal {
+  0% { filter: brightness(1) contrast(1); }
+  50% { filter: brightness(1.4) contrast(1.1) drop-shadow(0 0 8px rgba(30, 255, 100, 0.8)); }
+  100% { filter: brightness(1) contrast(1); }
+}
+
+@keyframes statusBounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-15px) scale(1.3); }
 }
 .shake-animation {
   animation: shake 1s ease-in-out;

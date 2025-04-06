@@ -1546,6 +1546,18 @@ function useMove(move) {
   const battleArena = document.getElementById("battle-arena");
   const opponentSprite = document.getElementById("opponent-sprite");
   
+  // Create speed lines effect for dynamic attacks
+  if (move.power > 50) {
+    const speedLines = document.createElement("div");
+    speedLines.className = "speed-lines";
+    battleArena.appendChild(speedLines);
+    
+    // Remove speed lines after animation completes
+    setTimeout(() => {
+      speedLines.remove();
+    }, 700);
+  }
+  
   // Make player sprite move forward when attacking
   playerSprite.classList.add("attack-lunge");
   
@@ -1702,6 +1714,19 @@ function executeOpponentMove(move) {
   // Add visual effect based on move type
   const battleArena = document.getElementById("battle-arena");
   const playerSprite = document.getElementById("player-sprite");
+  
+  // Create speed lines effect for powerful attacks
+  if (move.power > 50) {
+    const speedLines = document.createElement("div");
+    speedLines.className = "speed-lines";
+    speedLines.style.transform = "scaleX(-1)"; // Reverse the direction for opponent
+    battleArena.appendChild(speedLines);
+    
+    // Remove speed lines after animation completes
+    setTimeout(() => {
+      speedLines.remove();
+    }, 700);
+  }
   
   // Make opponent sprite move forward when attacking
   opponentSprite.classList.add("attack-lunge-reverse");
@@ -1870,6 +1895,30 @@ function calculateDamage(attacker, defender, move, attackerMods, defenderMods) {
     damage = Math.floor(damage * 1.3); // Reduced from 1.5 for balance
     addToBattleLog("A critical hit!");
     showFloatingLog("CRITICAL HIT!");
+    
+    // Add critical hit visual effect
+    const targetSprite = document.getElementById(attacker === activePlayerCharacter ? "opponent-sprite" : "player-sprite");
+    targetSprite.classList.add("critical-hit");
+    
+    // Create flash effect for critical hits
+    const battleArena = document.getElementById("battle-arena");
+    const flashEffect = document.createElement("div");
+    flashEffect.style.position = "absolute";
+    flashEffect.style.top = "0";
+    flashEffect.style.left = "0";
+    flashEffect.style.width = "100%";
+    flashEffect.style.height = "100%";
+    flashEffect.style.backgroundColor = "rgba(255, 255, 0, 0.2)";
+    flashEffect.style.zIndex = "50";
+    flashEffect.style.animation = "fadeOut 0.5s forwards";
+    
+    battleArena.appendChild(flashEffect);
+    
+    // Remove flash effect after animation completes
+    setTimeout(() => {
+      flashEffect.remove();
+      targetSprite.classList.remove("critical-hit");
+    }, 700);
   }
   
   // Ensure minimum damage for actual attack moves
@@ -1894,6 +1943,51 @@ function handleStatusMove(move, user) {
           // Healing move
           const healAmount = 30;
           activePlayerCharacter.hp = Math.min(activePlayerCharacter.hp + healAmount, playerTeam[playerTeam.findIndex(c => c.id === activePlayerCharacter.id)].hp);
+          
+          // Add visual healing effect
+          const playerSprite = document.getElementById("player-sprite");
+          playerSprite.classList.add("heal-effect");
+          
+          // Create healing particles
+          const battleArena = document.getElementById("battle-arena");
+          for (let i = 0; i < 5; i++) {
+            const healParticle = document.createElement("div");
+            healParticle.style.position = "absolute";
+            healParticle.style.width = "30px";
+            healParticle.style.height = "30px";
+            healParticle.style.backgroundImage = "url('https://i.imgur.com/5jzg2L3.png')";
+            healParticle.style.backgroundSize = "contain";
+            healParticle.style.backgroundRepeat = "no-repeat";
+            healParticle.style.zIndex = "50";
+            
+            // Random positions around player
+            const playerRect = playerSprite.getBoundingClientRect();
+            const battleArenaRect = battleArena.getBoundingClientRect();
+            
+            const left = playerRect.left - battleArenaRect.left + Math.random() * playerRect.width;
+            const top = playerRect.top - battleArenaRect.top + Math.random() * playerRect.height;
+            
+            healParticle.style.left = `${left}px`;
+            healParticle.style.top = `${top}px`;
+            healParticle.style.transform = "translateY(0)";
+            healParticle.style.opacity = "1";
+            healParticle.style.transition = "all 1.5s ease-out";
+            
+            battleArena.appendChild(healParticle);
+            
+            // Animate particles rising up and fading
+            setTimeout(() => {
+              healParticle.style.transform = "translateY(-50px)";
+              healParticle.style.opacity = "0";
+            }, 10);
+            
+            // Remove particles after animation
+            setTimeout(() => {
+              healParticle.remove();
+              playerSprite.classList.remove("heal-effect");
+            }, 1500);
+          }
+          
           addToBattleLog(`${activePlayerCharacter.name} recovered ${healAmount} HP!`);
           showFloatingLog(`+${healAmount} HP`);
         } else {
@@ -1923,6 +2017,51 @@ function handleStatusMove(move, user) {
           // Healing move
           const healAmount = 40;
           activePlayerCharacter.hp = Math.min(activePlayerCharacter.hp + healAmount, playerTeam[playerTeam.findIndex(c => c.id === activePlayerCharacter.id)].hp);
+          
+          // Add visual healing effect
+          const playerSprite = document.getElementById("player-sprite");
+          playerSprite.classList.add("heal-effect");
+          
+          // Create healing particles
+          const battleArena = document.getElementById("battle-arena");
+          for (let i = 0; i < 6; i++) {
+            const healParticle = document.createElement("div");
+            healParticle.style.position = "absolute";
+            healParticle.style.width = "30px";
+            healParticle.style.height = "30px";
+            healParticle.style.backgroundImage = "url('https://i.imgur.com/5jzg2L3.png')";
+            healParticle.style.backgroundSize = "contain";
+            healParticle.style.backgroundRepeat = "no-repeat";
+            healParticle.style.zIndex = "50";
+            
+            // Random positions around player
+            const playerRect = playerSprite.getBoundingClientRect();
+            const battleArenaRect = battleArena.getBoundingClientRect();
+            
+            const left = playerRect.left - battleArenaRect.left + Math.random() * playerRect.width;
+            const top = playerRect.top - battleArenaRect.top + Math.random() * playerRect.height;
+            
+            healParticle.style.left = `${left}px`;
+            healParticle.style.top = `${top}px`;
+            healParticle.style.transform = "translateY(0)";
+            healParticle.style.opacity = "1";
+            healParticle.style.transition = "all 1.5s ease-out";
+            
+            battleArena.appendChild(healParticle);
+            
+            // Animate particles rising up and fading
+            setTimeout(() => {
+              healParticle.style.transform = "translateY(-50px)";
+              healParticle.style.opacity = "0";
+            }, 10);
+            
+            // Remove particles after animation
+            setTimeout(() => {
+              healParticle.remove();
+              playerSprite.classList.remove("heal-effect");
+            }, 1500);
+          }
+          
           addToBattleLog(`${activePlayerCharacter.name} recovered ${healAmount} HP!`);
           showFloatingLog(`+${healAmount} HP`);
         } else {
@@ -1934,6 +2073,51 @@ function handleStatusMove(move, user) {
           // Healing move
           const healAmount = 35;
           activePlayerCharacter.hp = Math.min(activePlayerCharacter.hp + healAmount, playerTeam[playerTeam.findIndex(c => c.id === activePlayerCharacter.id)].hp);
+          
+          // Add visual healing effect
+          const playerSprite = document.getElementById("player-sprite");
+          playerSprite.classList.add("heal-effect");
+          
+          // Create healing particles
+          const battleArena = document.getElementById("battle-arena");
+          for (let i = 0; i < 5; i++) {
+            const healParticle = document.createElement("div");
+            healParticle.style.position = "absolute";
+            healParticle.style.width = "30px";
+            healParticle.style.height = "30px";
+            healParticle.style.backgroundImage = "url('https://i.imgur.com/5jzg2L3.png')";
+            healParticle.style.backgroundSize = "contain";
+            healParticle.style.backgroundRepeat = "no-repeat";
+            healParticle.style.zIndex = "50";
+            
+            // Random positions around player
+            const playerRect = playerSprite.getBoundingClientRect();
+            const battleArenaRect = battleArena.getBoundingClientRect();
+            
+            const left = playerRect.left - battleArenaRect.left + Math.random() * playerRect.width;
+            const top = playerRect.top - battleArenaRect.top + Math.random() * playerRect.height;
+            
+            healParticle.style.left = `${left}px`;
+            healParticle.style.top = `${top}px`;
+            healParticle.style.transform = "translateY(0)";
+            healParticle.style.opacity = "1";
+            healParticle.style.transition = "all 1.5s ease-out";
+            
+            battleArena.appendChild(healParticle);
+            
+            // Animate particles rising up and fading
+            setTimeout(() => {
+              healParticle.style.transform = "translateY(-50px)";
+              healParticle.style.opacity = "0";
+            }, 10);
+            
+            // Remove particles after animation
+            setTimeout(() => {
+              healParticle.remove();
+              playerSprite.classList.remove("heal-effect");
+            }, 1500);
+          }
+          
           addToBattleLog(`${activePlayerCharacter.name} recovered ${healAmount} HP!`);
           showFloatingLog(`+${healAmount} HP`);
         } else {
@@ -1982,6 +2166,51 @@ function handleStatusMove(move, user) {
           // Healing move
           const healAmount = 30;
           activeOpponent.hp = Math.min(activeOpponent.hp + healAmount, opponents[opponentIndex].hp);
+          
+          // Add visual healing effect
+          const opponentSprite = document.getElementById("opponent-sprite");
+          opponentSprite.classList.add("heal-effect");
+          
+          // Create healing particles
+          const battleArena = document.getElementById("battle-arena");
+          for (let i = 0; i < 5; i++) {
+            const healParticle = document.createElement("div");
+            healParticle.style.position = "absolute";
+            healParticle.style.width = "30px";
+            healParticle.style.height = "30px";
+            healParticle.style.backgroundImage = "url('https://i.imgur.com/5jzg2L3.png')";
+            healParticle.style.backgroundSize = "contain";
+            healParticle.style.backgroundRepeat = "no-repeat";
+            healParticle.style.zIndex = "50";
+            
+            // Random positions around opponent
+            const opponentRect = opponentSprite.getBoundingClientRect();
+            const battleArenaRect = battleArena.getBoundingClientRect();
+            
+            const left = opponentRect.left - battleArenaRect.left + Math.random() * opponentRect.width;
+            const top = opponentRect.top - battleArenaRect.top + Math.random() * opponentRect.height;
+            
+            healParticle.style.left = `${left}px`;
+            healParticle.style.top = `${top}px`;
+            healParticle.style.transform = "translateY(0)";
+            healParticle.style.opacity = "1";
+            healParticle.style.transition = "all 1.5s ease-out";
+            
+            battleArena.appendChild(healParticle);
+            
+            // Animate particles rising up and fading
+            setTimeout(() => {
+              healParticle.style.transform = "translateY(-50px)";
+              healParticle.style.opacity = "0";
+            }, 10);
+            
+            // Remove particles after animation
+            setTimeout(() => {
+              healParticle.remove();
+              opponentSprite.classList.remove("heal-effect");
+            }, 1500);
+          }
+          
           addToBattleLog(`${activeOpponent.name} recovered ${healAmount} HP!`);
           showFloatingLog(`+${healAmount} HP`);
         } else {
