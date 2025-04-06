@@ -1262,7 +1262,14 @@ function updateItemButtons() {
 function updateFadeDisplay() {
   const fadeDisplay = document.getElementById("fade-display");
   if (!fadeDisplay) return;
+  
   fadeDisplay.textContent = `Fades: ${fadeCount}`;
+  
+  // If we're in the middle of completing a fade, show progress
+  if (battleCounter > 0) {
+    const remaining = 3 - battleCounter;
+    fadeDisplay.textContent += ` (${remaining} more battle${remaining !== 1 ? 's' : ''} to complete fade)`;
+  }
 }
 
 function setupMoveTooltips() {
@@ -2813,36 +2820,61 @@ function handleOpponentFaint() {
   // Increment battle counter
   battleCounter++;
   
-  // Only increase fade count after 3 battles
-  if (battleCounter >= 3) {
-    fadeCount++;
-    battleCounter = 0; // Reset battle counter for next fade
-    updateFadeDisplay();
-  }
-  
   addToBattleLog(`${activeOpponent.name} got faded!`);
   showFloatingLog(`${activeOpponent.name} faded!`);
   
   // Play success sound
   playSuccessSound();
   
+  // Check if we've completed a fade (3 battles)
+  if (battleCounter >= 3) {
+    fadeCount++;
+    battleCounter = 0; // Reset battle counter for next fade
+    updateFadeDisplay();
+    
+    // Show fade completion message
+    addToBattleLog(`You've completed a fade! (${fadeCount} total fades)`);
+  }
+  
   // Check if all opponents are defeated
   if (opponentIndex >= opponents.length - 1) {
-    // Game over - player won
-    setTimeout(() => showGameOver(true), 1500);
+    // Check if we've completed the current fade (3 battles)
+    if (battleCounter === 0) {
+      // Game over - player won and a fade was just completed
+      setTimeout(() => showGameOver(true), 1500);
+    } else {
+      // We haven't completed a full fade yet, show an intermediate screen
+      setTimeout(() => {
+        addToBattleLog("You need to complete a full fade (3 battles) to win!");
+        
+        // Reset opponents to give the player more battles to reach 3 for the fade
+        opponentIndex = 0;
+        
+        // Show the next opponent screen with a message about needing more battles for a fade
+        showNextOpponentScreen(true);
+      }, 1500);
+    }
   } else {
     // Show next opponent screen
     setTimeout(() => showNextOpponentScreen(), 1500);
   }
 }
 
-function showNextOpponentScreen() {
+function showNextOpponentScreen(isFinalOpponent = false) {
   // Set up game-over screen as "continue" screen
   const gameOverScreen = document.getElementById("game-over");
   const continueButton = document.getElementById("continue-battle");
   const againButton = document.querySelector("#game-over button:not(#continue-battle)");
   
-  document.getElementById("game-over-message").textContent = `${activeOpponent.name} got faded!`;
+  // Customize the message based on whether this is the final opponent
+  if (isFinalOpponent) {
+    const remainingBattles = 3 - battleCounter;
+    document.getElementById("game-over-message").textContent = 
+      `${activeOpponent.name} got faded! You need ${remainingBattles} more battle${remainingBattles !== 1 ? 's' : ''} to complete this fade!`;
+  } else {
+    document.getElementById("game-over-message").textContent = `${activeOpponent.name} got faded!`;
+  }
+  
   document.getElementById("fade-counter").textContent = `Fades: ${fadeCount}`;
   document.getElementById("win-lose-gif").src = resultGifs.win[Math.floor(Math.random() * resultGifs.win.length)];
   
@@ -2861,7 +2893,7 @@ function showGameOver(playerWon) {
   // Play appropriate sound
   if (playerWon) {
     playSuccessSound();
-    document.getElementById("game-over-message").textContent = "You won! All opponents got faded!";
+    document.getElementById("game-over-message").textContent = `You won! You completed ${fadeCount} fade${fadeCount !== 1 ? 's' : ''}!`;
     document.getElementById("win-lose-gif").src = resultGifs.win[Math.floor(Math.random() * resultGifs.win.length)];
   } else {
     playHitSound(); // Use hit sound for losing
@@ -2885,8 +2917,17 @@ function continueBattle() {
   // Play success sound
   playSuccessSound();
   
-  // Move to next opponent
-  opponentIndex++;
+  // Heal player's team between battles
+  healPlayerTeam();
+  
+  // If we're not at opponentIndex 0, it means we're moving to the next opponent
+  // If we're at 0, it means we're starting a new series after completing all opponents
+  if (opponentIndex < opponents.length - 1) {
+    // Normal case: move to next opponent
+    opponentIndex++;
+  }
+  
+  // Set the active opponent
   activeOpponent = { ...opponents[opponentIndex] };
   
   // Reset battle modifiers
@@ -2899,8 +2940,14 @@ function continueBattle() {
   updateItemButtons();
   
   // Start battle with next opponent
-  addToBattleLog(`${activePlayerCharacter.name} vs ${activeOpponent.name}!`);
-  showFloatingLog(`New opponent: ${activeOpponent.name}`);
+  if (battleCounter > 0) {
+    const remainingBattles = 3 - battleCounter;
+    addToBattleLog(`${activePlayerCharacter.name} vs ${activeOpponent.name}! (${remainingBattles} more battle${remainingBattles !== 1 ? 's' : ''} to complete the fade)`);
+    showFloatingLog(`New opponent: ${activeOpponent.name} (${remainingBattles} more to fade)`);
+  } else {
+    addToBattleLog(`${activePlayerCharacter.name} vs ${activeOpponent.name}!`);
+    showFloatingLog(`New opponent: ${activeOpponent.name}`);
+  }
   
   // Determine first turn
   currentTurn = determineFirstTurn();
@@ -2909,6 +2956,31 @@ function continueBattle() {
   setTimeout(() => {
     processTurn();
   }, 1000);
+}
+
+// Function to heal player's team between battles
+function healPlayerTeam() {
+  // Heal all characters in the player's team to full health
+  playerTeam.forEach(character => {
+    character.currentHp = character.hp;
+    character.statusEffects = []; // Remove all status effects
+    
+    // Reset PP for all moves
+    character.moves.forEach(move => {
+      move.currentPP = move.pp;
+    });
+  });
+  
+  // Reset used items
+  usedItems = {
+    healItem: false,
+    maxItem: false,
+    shieldItem: false,
+    critItem: false
+  };
+  
+  addToBattleLog("Your team has been fully healed for the next battle!");
+  showFloatingLog("Team healed!");
 }
 
 function restartGame() {
@@ -2973,7 +3045,7 @@ function showFloatingLog(text) {
 }
 
 function share(platform) {
-  const message = `I just played Squabblemon and got ${fadeCount} fade${fadeCount !== 1 ? 's' : ''}!`;
+  const message = `I just played Squabblemon - Retro Fade v2 and got ${fadeCount} fade${fadeCount !== 1 ? 's' : ''}!`;
   
   let url;
   switch (platform) {
