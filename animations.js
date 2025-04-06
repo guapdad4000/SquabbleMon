@@ -4,12 +4,14 @@ const ANIMATION_STATE = {
     default: "float 3s ease-in-out infinite 0.5px", // Slower and smaller float
     attack: "attack 0.6s ease-in-out", // Faster attack animation
     shake: "player-shake-animation 0.5s ease-in-out",
+    hit: "hit-flash 0.4s ease-in-out", // Flash animation when hit
     current: "float 3s ease-in-out infinite 0.5px"
   },
   opponent: {
     default: "float 3s ease-in-out infinite 0.5px", // Will be flipped with transform
     attack: "attack 0.6s ease-in-out", // Faster attack animation
     shake: "shake-animation 0.5s ease-in-out",
+    hit: "hit-flash 0.4s ease-in-out", // Flash animation when hit
     current: "float 3s ease-in-out infinite 0.5px"
   }
 };

@@ -1,11 +1,11 @@
 // ================ AUDIO CONFIGURATION ================
 // Audio URLs
 const AUDIO = {
-  menuMusic: "https://audio.jukehost.co.uk/nMJQi5KbwFgvSdkPEfRZW5WLPQrK2ZUu",
-  battleMusic: "https://audio.jukehost.co.uk/D2O32Qb2y6tpAXHw8c35FYoHRJzXoRbG", 
-  hitSound: "https://audio.jukehost.co.uk/8tUlDNLpvRgMxmbO1IXqubCDEOXTkvOm",
-  successSound: "https://audio.jukehost.co.uk/YXtQw8hsDwVXXqkPoDQwfPrpJ36PnqjB",
-  switchSound: "https://audio.jukehost.co.uk/9E15JVLzv4uKcTgUy6yUYkCRaS6htByd"
+  menuMusic: "audio/sounds/menu-music.mp3",
+  battleMusic: "audio/sounds/battle-music.mp3", 
+  hitSound: "audio/sounds/hit-sound.mp3",
+  successSound: "audio/sounds/success-sound.mp3",
+  switchSound: "audio/sounds/switch-sound.mp3"
 };
 
 // Audio objects
@@ -1691,12 +1691,11 @@ function useMove(move) {
     // Show opponent reaction
     const opponentSprite = document.getElementById("opponent-sprite");
     opponentSprite.classList.add("shake-animation");
-    opponentSprite.classList.add("hit-flash");
-    setOpponentAnimation("shake");
+    // Use our new hit animation function from animations.js
+    setOpponentAnimation("hit");
     
     setTimeout(() => {
       opponentSprite.classList.remove("shake-animation");
-      opponentSprite.classList.remove("hit-flash");
       setOpponentAnimation("default");
     }, 1000);
     
@@ -1910,12 +1909,11 @@ function executeOpponentMove(move) {
     // Show player reaction
     const playerSprite = document.getElementById("player-sprite");
     playerSprite.classList.add("player-shake-animation");
-    playerSprite.classList.add("hit-flash");
-    setPlayerAnimation("shake");
+    // Use our new hit animation function from animations.js
+    setPlayerAnimation("hit");
     
     setTimeout(() => {
       playerSprite.classList.remove("player-shake-animation");
-      playerSprite.classList.remove("hit-flash");
       setPlayerAnimation("default");
     }, 1000);
     
