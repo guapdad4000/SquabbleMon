@@ -3051,7 +3051,11 @@ function useItem(itemType) {
 }
 
 function switchYN() {
-  if (!canAct || currentTurn !== "player") return;
+  // Special handling for when active character is fainted - always allow switching
+  const isActiveFainted = activePlayerCharacter && activePlayerCharacter.hp <= 0;
+  
+  // Normal case - only allow switching during player's turn and when canAct is true
+  if (!isActiveFainted && (!canAct || currentTurn !== "player")) return;
   
   // Play switch sound
   playSwitchSound();
@@ -3060,6 +3064,31 @@ function switchYN() {
   const switchScreen = document.getElementById("switch-screen");
   const switchOptions = document.getElementById("switch-options");
   switchOptions.innerHTML = "";
+  
+  // Add a message at the top if the active character is fainted
+  if (isActiveFainted) {
+    const message = document.createElement("p");
+    message.className = "switch-message";
+    message.textContent = "Choose a new character!";
+    switchOptions.appendChild(message);
+  }
+  
+  // Check if the player has any non-fainted characters left
+  const hasAvailableCharacters = playerTeam.some(character => character.hp > 0);
+  
+  // If no available characters, trigger game over
+  if (!hasAvailableCharacters) {
+    // Hide switch screen
+    switchScreen.style.display = "none";
+    
+    // Show game over
+    setTimeout(() => {
+      gameActive = false;
+      showGameOver(false);
+    }, 500);
+    
+    return;
+  }
   
   playerTeam.forEach((character, index) => {
     const isCurrentActive = character.id === activePlayerCharacter.id;
@@ -3071,7 +3100,7 @@ function switchYN() {
       <img src="${character.sprite}" alt="${character.name}">
       <p>${character.name}</p>
       <div class="hp-indicator">
-        <div class="hp-indicator-fill" style="width: ${(character.hp / playerTeam[index].hp) * 100}%"></div>
+        <div class="hp-indicator-fill" style="width: ${Math.max(0, (character.hp / character.hp || 1) * 100)}%"></div>
       </div>
     `;
     
@@ -3081,6 +3110,12 @@ function switchYN() {
     
     switchOptions.appendChild(option);
   });
+  
+  // Only show cancel button if active character is not fainted
+  const cancelButton = document.querySelector("#switch-screen button");
+  if (cancelButton) {
+    cancelButton.style.display = isActiveFainted ? "none" : "block";
+  }
   
   switchScreen.style.display = "block";
 }
@@ -3110,6 +3145,14 @@ function confirmSwitch(index) {
 }
 
 function cancelSwitch() {
+  // If the active player character is fainted, don't allow canceling the switch
+  if (activePlayerCharacter && activePlayerCharacter.hp <= 0) {
+    // Show a message explaining why they must switch
+    showFloatingLog("You must choose a new character!");
+    return;
+  }
+  
+  // Otherwise, hide the switch screen
   document.getElementById("switch-screen").style.display = "none";
 }
 
@@ -3127,14 +3170,21 @@ function handlePlayerFaint() {
   // Check if all team members are fainted
   const allFainted = playerTeam.every(character => character.hp <= 0);
   
+  // Set game state to ensure no other actions can be performed during this transition
+  canAct = false;
+  
   if (allFainted) {
     // Game over - player lost
-    setTimeout(() => showGameOver(false), 1500);
+    setTimeout(() => {
+      gameActive = false; // Ensure game is marked as not active
+      showGameOver(false);
+    }, 1000);
   } else {
     // Show switch screen to choose next character
     setTimeout(() => {
+      canAct = true; // Re-enable actions before showing switch screen
       switchYN();
-    }, 1500);
+    }, 1000);
   }
 }
 
@@ -3296,13 +3346,21 @@ function continueBattle() {
 function healPlayerTeam() {
   // Heal all characters in the player's team to full health
   playerTeam.forEach(character => {
-    character.currentHp = character.hp;
+    // Restore HP to original value (even for fainted characters)
+    character.hp = character.maxHp || character.hp; // Use maxHp if available, otherwise use default hp value
+    
+    // Clear status effects
+    character.status = "normal";
     character.statusEffects = []; // Remove all status effects
     
     // Reset PP for all moves
-    character.moves.forEach(move => {
-      move.currentPP = move.pp;
-    });
+    if (character.moves) {
+      character.moves.forEach(move => {
+        if (move.pp !== undefined && move.maxPp !== undefined) {
+          move.pp = move.maxPp;
+        }
+      });
+    }
   });
   
   // Reset item use counts to default values

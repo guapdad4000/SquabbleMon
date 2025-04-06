@@ -816,6 +816,16 @@ body {
   gap: 10px;
   margin-top: 10px;
 }
+
+.switch-message {
+  grid-column: 1 / -1;
+  text-align: center;
+  font-size: 1.2em;
+  color: var(--pixel-hp-low);
+  margin-bottom: 10px;
+  text-shadow: 1px 1px 0 #000;
+  animation: pulse 1s infinite;
+}
 .switch-option {
   cursor: pointer;
   padding: 5px;
