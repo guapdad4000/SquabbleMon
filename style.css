@@ -7,16 +7,18 @@
 :root {
   --pixel-bg-dark: #2b2b2b;
   --pixel-bg-light: #e0e0e0;
-  --pixel-border: #1a1a1a;
+  --pixel-border: #00ff00;
   --pixel-text: #1a1a1a;
   --pixel-text-light: #f0f0f0;
-  --pixel-accent: #4caf50;
+  --pixel-accent: #00ff00;
   --pixel-accent-alt: #ff9800;
-  --pixel-hp-high: #38a169;
-  --pixel-hp-mid: #d69e2e;
-  --pixel-hp-low: #e53e3e;
-  --pixel-button-bg: #68d391;
+  --pixel-hp-high: #00ff00;
+  --pixel-hp-mid: #ffff00;
+  --pixel-hp-low: #ff0000;
+  --pixel-button-bg: #00ff00;
   --pixel-button-hover: #48bb78;
+  --neon-green: #00ff00;
+  --neon-green-glow: 0 0 10px rgba(0, 255, 0, 0.7), 0 0 20px rgba(0, 255, 0, 0.4);
 }
 
 /* Global Reset and Box Sizing */
@@ -727,12 +729,8 @@ body {
 
 /* Battle Menu */
 #battle-menu {
-  background-color: rgba(0, 0, 0, 0.5);
-  background-image: url('/images/ui/game/battle-frame.png');
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  background-position: center;
-  border-top: none;
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 2px solid #00ff00;
   width: calc(100% - 8px); /* Account for the border */
   max-width: 742px; /* Keep it within the main container (750px - 8px) */
   display: flex;
@@ -741,16 +739,17 @@ body {
   padding: 15px;
   position: relative;
   z-index: 10;
-  border: none;
-  border-radius: 0;
+  border-radius: 10px;
   margin: 0 auto; /* Center it */
+  box-shadow: 0 0 10px #00ff00, inset 0 0 5px #00ff00;
 }
 #action-container {
   flex: 0 0 60%;
   display: flex;
   flex-direction: column;
-  padding-right: 10px;
-  border-right: 2px solid var(--pixel-border);
+  padding-right: 15px;
+  border-right: 2px solid #00ff00;
+  box-shadow: 2px 0 5px -2px #00ff00;
 }
 #moves {
   display: grid;
@@ -794,12 +793,9 @@ body {
 #battle-log {
   flex: 1;
   overflow-y: auto;
-  background-color: transparent;
-  background-image: url('/images/ui/game/log-frame.png');
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  background-position: center;
-  border: none;
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 2px solid #00ff00;
+  border-radius: 10px;
   padding: 15px;
   color: #ffffff;
   font-size: 0.85em;
@@ -808,6 +804,7 @@ body {
   max-height: 140px;
   scrollbar-width: thin;
   scrollbar-color: #00ff00 #333;
+  box-shadow: 0 0 10px #00ff00, inset 0 0 5px #00ff00;
 }
 #battle-log::-webkit-scrollbar {
   width: 6px;
