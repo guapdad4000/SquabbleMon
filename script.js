@@ -1865,25 +1865,13 @@ function executeOpponentMove(move) {
       const playerCharacterElement = document.getElementById("player-character");
       const imposterHitElement = document.createElement("div");
       imposterHitElement.className = "imposter-hit-effect";
-      imposterHitElement.style.position = "absolute";
-      imposterHitElement.style.top = "0";
-      imposterHitElement.style.left = "0";
-      imposterHitElement.style.width = "100%";
-      imposterHitElement.style.height = "100%";
-      imposterHitElement.style.backgroundColor = "rgba(255, 0, 0, 0.3)";
-      imposterHitElement.style.boxShadow = "0 0 20px 5px rgba(255, 0, 0, 0.5)";
-      imposterHitElement.style.borderRadius = "10px";
-      imposterHitElement.style.transition = "opacity 0.5s";
-      imposterHitElement.style.pointerEvents = "none";
       playerCharacterElement.appendChild(imposterHitElement);
       
-      // Fade out and remove the hit effect
+      // The animation will handle the visual effects and automatically fade out
+      // Remove the element after the animation completes
       setTimeout(() => {
-        imposterHitElement.style.opacity = "0";
-        setTimeout(() => {
-          imposterHitElement.remove();
-        }, 500);
-      }, 500);
+        imposterHitElement.remove();
+      }, 1500);
       
       // Remove the imposter effect
       playerActiveItemEffects = playerActiveItemEffects.filter(effect => effect.effect !== "imposter");
@@ -2766,49 +2754,51 @@ function useItem(itemType) {
       addToBattleLog(`${activePlayerCharacter.name} sent out a Crash Dummy imposter!`);
       showFloatingLog("Imposter deployed!");
       
-      // Add visual effect - create a duplicated character with slightly different appearance
+      // Add visual effect - create a greyed-out blob dummy
       const imposterPlayerSprite = document.getElementById("player-sprite");
       if (imposterPlayerSprite) {
         // Create the dummy element
         const imposterElement = document.createElement("div");
         imposterElement.className = "imposter-effect";
-        imposterElement.innerHTML = `<img src="${activePlayerCharacter.sprite}" alt="Imposter">`;
+        imposterElement.innerHTML = `<img src="/imposter.svg" alt="Imposter">`;
         
         // Style the imposter
         imposterElement.style.position = "absolute";
         imposterElement.style.zIndex = "6";
-        imposterElement.style.filter = "brightness(0.9) contrast(1.1) hue-rotate(15deg)";
         imposterElement.style.transform = "translateX(-20px) scale(0.9)";
         imposterElement.style.opacity = "0.85";
         
         // Add to the player's area
         const playerContainer = document.getElementById("player-character");
-        playerContainer.appendChild(imposterElement);
-        
-        // Remove after visual effect completes
-        setTimeout(() => {
-          imposterElement.style.transform = "translateX(-40px) scale(0.8)";
-          imposterElement.style.opacity = "0.6";
-        }, 500);
-        
-        setTimeout(() => {
-          imposterElement.remove();
-        }, 2000);
+        if (playerContainer) {
+          playerContainer.appendChild(imposterElement);
+          
+          // Remove after visual effect completes
+          setTimeout(() => {
+            imposterElement.style.transform = "translateX(-40px) scale(0.8)";
+            imposterElement.style.opacity = "0.6";
+          }, 500);
+          
+          setTimeout(() => {
+            imposterElement.remove();
+          }, 2000);
+        }
       }
       
-      // Add to active effects with duration
-      if (item.duration) {
-        // Remove any existing imposter effects first to prevent stacking
-        playerActiveItemEffects = playerActiveItemEffects.filter(effect => effect.effect !== "imposter");
-        
-        // Add the new effect
-        playerActiveItemEffects.push({
-          itemType: itemType,
-          effect: item.effect,
-          remainingDuration: item.duration
-        });
-        addToBattleLog(`The Crash Dummy will take the next hit for ${activePlayerCharacter.name}!`);
-      }
+      // Set the duration to 1 regardless of what's in the items definition 
+      // to ensure it only lasts for one hit
+      
+      // Remove any existing imposter effects first to prevent stacking
+      playerActiveItemEffects = playerActiveItemEffects.filter(effect => effect.effect !== "imposter");
+      
+      // Add the new effect - always with duration 1
+      playerActiveItemEffects.push({
+        itemType: itemType,
+        effect: item.effect,
+        value: 0, // No direct value, just presence
+        remainingDuration: 1 // Force to 1 so it only lasts for one hit
+      });
+      addToBattleLog(`The Crash Dummy will take the next hit for ${activePlayerCharacter.name}!`);
       break;
       
     case "statusCure":

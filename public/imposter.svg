@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="240" viewBox="0 0 200 240">
+  <defs>
+    <filter id="blur-filter" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="5" />
+    </filter>
+  </defs>
+  <!-- Shadow blob -->
+  <g opacity="0.7">
+    <ellipse cx="100" cy="160" rx="65" ry="20" fill="#222" filter="url(#blur-filter)"/>
+  </g>
+  <!-- Main blob body -->
+  <path d="M60,170 Q100,120 140,170 Q160,200 100,200 Q40,200 60,170 Z" 
+        fill="#777" 
+        stroke="#555" 
+        stroke-width="2"
+        filter="url(#blur-filter)"/>
+  <!-- Eyes -->
+  <circle cx="85" cy="150" r="8" fill="#444" />
+  <circle cx="115" cy="150" r="8" fill="#444" />
+  <!-- Mouth -->
+  <path d="M85,175 Q100,185 115,175" fill="none" stroke="#444" stroke-width="3" stroke-linecap="round"/>
+  <!-- Wispy top -->
+  <path d="M100,140 Q110,120 115,110 Q100,115 90,110 Q95,120 100,140" fill="#999" filter="url(#blur-filter)" />
+</svg>
