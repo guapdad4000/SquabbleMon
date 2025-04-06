@@ -89,7 +89,7 @@ body {
   box-shadow: 4px 4px 0px 0px var(--pixel-border);
   max-width: 90%;
   width: 750px;
-  max-height: 95vh;
+  height: 95vh; /* Using fixed height instead of max-height */
   overflow-y: auto;
   color: var(--pixel-text-light);
 }
@@ -126,7 +126,7 @@ body {
   padding: 15px;
   background-color: rgba(0, 0, 0, 0.2);
   border: 2px solid var(--pixel-border);
-  max-height: 40vh;
+  max-height: 50vh; /* Increased height to show more characters */
   overflow-y: auto;
 }
 .character-card {
@@ -1202,6 +1202,7 @@ body {
   #character-list {
     gap: 10px;
     padding: 10px;
+    max-height: 50vh; /* Maintain the increased height on tablet screens */
   }
   
   .character-card {
@@ -1245,6 +1246,7 @@ body {
   #character-list {
     gap: 8px;
     padding: 8px;
+    max-height: 50vh; /* Maintain the increased height on mobile screens */
   }
   
   .character-card {
