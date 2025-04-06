@@ -4,7 +4,7 @@ const characters = [
   {
     id: 1,
     name: "Rastamon",
-    sprite: "mc-crazy-legs.png", // Using generated image for now
+    sprite: "https://i.imgur.com/dZWWrrs.png", 
     hp: 200,
     attack: 150,
     defense: 130,
@@ -23,7 +23,7 @@ const characters = [
   {
     id: 2,
     name: "Fitness Bro",
-    sprite: "dj-scratch.png", // Using generated image for now
+    sprite: "https://i.imgur.com/YeMI4sr.png", 
     hp: 230,
     attack: 170,
     defense: 130,
@@ -42,7 +42,7 @@ const characters = [
   {
     id: 3,
     name: "Techy",
-    sprite: "graffiti-king.png", // Using generated image for now
+    sprite: "https://i.imgur.com/VVa9pm9.png", 
     hp: 170,
     attack: 150,
     defense: 150,
@@ -61,7 +61,7 @@ const characters = [
   {
     id: 4,
     name: "Cool Vibe YN",
-    sprite: "beatbox-wizard.png", // Using generated image for now
+    sprite: "https://i.imgur.com/2n71aSJ.png", 
     hp: 190,
     attack: 170,
     defense: 130,
@@ -80,7 +80,7 @@ const characters = [
   {
     id: 5,
     name: "9-5 Homie",
-    sprite: "flow-master.png", // Using generated image for now
+    sprite: "https://i.imgur.com/UkE9crR.png", 
     hp: 210,
     attack: 130,
     defense: 150,
@@ -99,7 +99,7 @@ const characters = [
   {
     id: 6,
     name: "All Jokes Roaster",
-    sprite: "street-styler.png", // Using generated image for now
+    sprite: "https://i.imgur.com/9hFTFQt.png", 
     hp: 180,
     attack: 170,
     defense: 110,
@@ -118,7 +118,7 @@ const characters = [
   {
     id: 7,
     name: "Closet Nerd",
-    sprite: "boom-bap.png", // Using generated image for now
+    sprite: "https://i.imgur.com/knA2Yxz.png", 
     hp: 200,
     attack: 140,
     defense: 100,
@@ -137,7 +137,7 @@ const characters = [
   {
     id: 8,
     name: "Dysfunctional YN",
-    sprite: "mixtape-master.png", // Using generated image for now
+    sprite: "https://i.imgur.com/yA0lUbo.png", 
     hp: 160,
     attack: 190,
     defense: 90,
@@ -152,6 +152,82 @@ const characters = [
       { name: "Trainwreck Tantrum", power: 0, accuracy: 100, type: "Normal", description: "Emotional outburst that raises attack." },
       { name: "Identity Crisis", power: 60, accuracy: 85, type: "Dark", description: "Confusing attack that may cause opponent to hit themselves." }
     ]
+  },
+  {
+    id: 9,
+    name: "Gamer YN",
+    sprite: "https://i.imgur.com/vFvQKap.png", 
+    hp: 190,
+    attack: 160,
+    defense: 140,
+    speed: 140,
+    critRate: 0.15,
+    type: "Electric",
+    status: "normal",
+    description: "Lives in a digital world. Will pwn you and teabag your avatar.",
+    moves: [
+      { name: "Rapid Button Mash", power: 55, accuracy: 90, type: "Normal", description: "Frantic attack with quick button presses." },
+      { name: "Energy Drink Rush", power: 65, accuracy: 85, type: "Electric", description: "Energized attack that may cause paralysis." },
+      { name: "Paused Game", power: 0, accuracy: 100, type: "Normal", description: "Takes a breather to recover HP." },
+      { name: "Rage Mode", power: 80, accuracy: 75, type: "Dark", description: "Powerful but risky attack when games get serious." }
+    ]
+  },
+  {
+    id: 10,
+    name: "Hooper",
+    sprite: "https://i.imgur.com/nmL74YQ.png", 
+    hp: 210,
+    attack: 180,
+    defense: 140,
+    speed: 190,
+    critRate: 0.2,
+    type: "Air",
+    status: "normal",
+    description: "Ball is life. Will cross you up on the court and in conversation.",
+    moves: [
+      { name: "Crossover Break", power: 60, accuracy: 90, type: "Normal", description: "Quick dribble move that breaks ankles." },
+      { name: "Three-Point Shot", power: 75, accuracy: 80, type: "Air", description: "Long-range attack with high damage but lower accuracy." },
+      { name: "Pick & Roll", power: 0, accuracy: 100, type: "Normal", description: "Strategic team move that boosts attack." },
+      { name: "Posterize", power: 85, accuracy: 75, type: "Air", description: "Devastating dunk that may intimidate opponent." }
+    ]
+  },
+  {
+    id: 11,
+    name: "Bikelife YN",
+    sprite: "https://i.imgur.com/i6xU3C7.png", 
+    hp: 180,
+    attack: 160,
+    defense: 120,
+    speed: 200,
+    critRate: 0.15,
+    type: "Rock",
+    status: "normal",
+    description: "Wheelies through traffic and problems alike. Cannot be caught.",
+    moves: [
+      { name: "Wheelie Strike", power: 60, accuracy: 90, type: "Rock", description: "Front wheel attack with moderate damage." },
+      { name: "Burnout", power: 65, accuracy: 85, type: "Fire", description: "Tire-spinning attack that may cause burn status." },
+      { name: "Rev Engine", power: 0, accuracy: 100, type: "Normal", description: "Revs up to increase speed." },
+      { name: "Stunt Jump", power: 80, accuracy: 75, type: "Air", description: "Aerial bike stunt with high damage but risky landing." }
+    ]
+  },
+  {
+    id: 12,
+    name: "Streamer",
+    sprite: "https://i.imgur.com/3rCsqGF.png", 
+    hp: 170,
+    attack: 150,
+    defense: 120,
+    speed: 160,
+    critRate: 0.15,
+    type: "Electric",
+    status: "normal",
+    description: "Lives for the chat and donations. Will do anything for subscribers.",
+    moves: [
+      { name: "Clickbait", power: 55, accuracy: 95, type: "Normal", description: "Misleading attack that's surprisingly effective." },
+      { name: "Viral Moment", power: 70, accuracy: 85, type: "Electric", description: "Electric attack powered by viewer energy." },
+      { name: "Sub Goal", power: 0, accuracy: 100, type: "Normal", description: "Rallies support to boost defense and attack." },
+      { name: "Sponsored Content", power: 75, accuracy: 80, type: "Dark", description: "Sold-out attack that generates cash damage." }
+    ]
   }
 ];
 
@@ -160,7 +236,7 @@ const opponents = [
   {
     id: 101,
     name: "Functional Addict",
-    sprite: "copycat.png", // Using generated image for now
+    sprite: "https://i.imgur.com/G3xfSjU.png", 
     hp: 200,
     attack: 150,
     defense: 100,
@@ -179,7 +255,7 @@ const opponents = [
   {
     id: 102,
     name: "Gamer Unemployed",
-    sprite: "pop-sellout.png", // Using generated image for now
+    sprite: "https://i.imgur.com/b5pnt7o.png", 
     hp: 210,
     attack: 150,
     defense: 190,
@@ -198,7 +274,7 @@ const opponents = [
   {
     id: 103,
     name: "Houseless Hustler",
-    sprite: "internet-troll.png", // Using generated image for now
+    sprite: "https://i.imgur.com/LRVrieF.png", 
     hp: 220,
     attack: 170,
     defense: 110,
@@ -217,7 +293,7 @@ const opponents = [
   {
     id: 104,
     name: "Night Stalker",
-    sprite: "one-hit-wonder.png", // Using generated image for now
+    sprite: "https://i.imgur.com/Kwe1HpA.png", 
     hp: 160,
     attack: 200,
     defense: 100,
@@ -236,7 +312,7 @@ const opponents = [
   {
     id: 105,
     name: "Techbro Rich",
-    sprite: "mumble-rapper.png", // Using generated image for now
+    sprite: "https://i.imgur.com/GmlKf6u.png", 
     hp: 180,
     attack: 180,
     defense: 120,
@@ -249,6 +325,63 @@ const opponents = [
       { name: "NFT Nuke", power: 85, accuracy: 70, type: "Normal" },
       { name: "VC Funded Flex", power: 0, accuracy: 100, type: "Electric" },
       { name: "Crypto Crash", power: 75, accuracy: 80, type: "Dark" }
+    ],
+    ai: "balanced"
+  },
+  {
+    id: 106,
+    name: "Earthy YN",
+    sprite: "https://i.imgur.com/1SuHgnZ.png", 
+    hp: 210,
+    attack: 140,
+    defense: 180,
+    speed: 120,
+    critRate: 0.1,
+    type: "Plant",
+    description: "One with nature. Will judge your plastic use while hitting a handmade bamboo bong.",
+    moves: [
+      { name: "Crystal Healing", power: 50, accuracy: 95, type: "Rock" },
+      { name: "Herbal Essence", power: 60, accuracy: 90, type: "Plant" },
+      { name: "Meditate", power: 0, accuracy: 100, type: "Normal" },
+      { name: "Compost Bomb", power: 75, accuracy: 80, type: "Plant" }
+    ],
+    ai: "defensive"
+  },
+  {
+    id: 107,
+    name: "The Plug",
+    sprite: "https://i.imgur.com/Mal7dZQ.png", 
+    hp: 190,
+    attack: 190,
+    defense: 130,
+    speed: 150,
+    critRate: 0.2,
+    type: "Dark",
+    description: "Always has what you need. Never caught slipping.",
+    moves: [
+      { name: "Burner Phone", power: 50, accuracy: 100, type: "Electric" },
+      { name: "Product Sample", power: 70, accuracy: 85, type: "Dark" },
+      { name: "Re-Up", power: 0, accuracy: 100, type: "Normal" },
+      { name: "Trap House Ambush", power: 85, accuracy: 75, type: "Dark" }
+    ],
+    ai: "aggressive"
+  },
+  {
+    id: 108,
+    name: "Scammer",
+    sprite: "https://i.imgur.com/tvAPXl8.png", 
+    hp: 170,
+    attack: 160,
+    defense: 140,
+    speed: 170,
+    critRate: 0.15,
+    type: "Dark",
+    description: "Always has a sketchy opportunity. Your grandmother already sent him money.",
+    moves: [
+      { name: "Phishing Attack", power: 55, accuracy: 95, type: "Water" },
+      { name: "Identity Theft", power: 70, accuracy: 85, type: "Dark" },
+      { name: "Nigerian Prince", power: 0, accuracy: 100, type: "Dark" },
+      { name: "Ponzi Scheme", power: 80, accuracy: 75, type: "Dark" }
     ],
     ai: "balanced"
   }
@@ -359,10 +492,12 @@ const items = {
 
 // Background images for battle scenes
 const battleBackgrounds = [
-  "https://i.imgur.com/F9vtpJJ.png", // Street
-  "https://i.imgur.com/TxYXmcL.png", // Studio
-  "https://i.imgur.com/IM883ID.png", // Stage
-  "https://i.imgur.com/l3eoGIc.png"  // Club
+  "https://i.imgur.com/cefa76T.png", // Original background
+  "https://i.imgur.com/ivJoNSj.png", // Original background
+  "https://i.imgur.com/pEs4HJ5.jpeg", // New wallpaper
+  "https://i.imgur.com/VTeIMuN.png", // New wallpaper
+  "https://i.imgur.com/LhIaHVy.png", // New wallpaper
+  "https://i.imgur.com/OdKFwva.png"  // New wallpaper
 ];
 
 // Win/Lose GIFs
@@ -419,7 +554,7 @@ function populateCharacterSelection() {
     card.className = "character-card";
     card.dataset.id = character.id;
     card.innerHTML = `
-      <img src="public/images/${character.sprite}" alt="${character.name}">
+      <img src="${character.sprite}" alt="${character.name}">
       <p>${character.name}</p>
     `;
     card.addEventListener("click", () => selectCharacter(character));
@@ -461,7 +596,7 @@ function updateTeamSlots() {
   // Fill slots with selected characters
   playerTeam.forEach((character, index) => {
     if (index < slots.length) {
-      slots[index].innerHTML = `<img src="public/images/${character.sprite}" alt="${character.name}">`;
+      slots[index].innerHTML = `<img src="${character.sprite}" alt="${character.name}">`;
     }
   });
 }
@@ -531,12 +666,12 @@ function updateBattleUI() {
   // Update player character display
   document.getElementById("player-name").textContent = activePlayerCharacter.name;
   document.getElementById("player-hp").textContent = `${activePlayerCharacter.hp}/${playerTeam[playerTeam.findIndex(c => c.id === activePlayerCharacter.id)].hp}`;
-  document.getElementById("player-sprite").src = `public/images/${activePlayerCharacter.sprite}`;
+  document.getElementById("player-sprite").src = activePlayerCharacter.sprite;
   
   // Update opponent display
   document.getElementById("opponent-name").textContent = activeOpponent.name;
   document.getElementById("opponent-hp").textContent = `${activeOpponent.hp}/${opponents[opponentIndex].hp}`;
-  document.getElementById("opponent-sprite").src = `public/images/${activeOpponent.sprite}`;
+  document.getElementById("opponent-sprite").src = activeOpponent.sprite;
   
   // Update HP bars
   const playerMaxHP = playerTeam[playerTeam.findIndex(c => c.id === activePlayerCharacter.id)].hp;
