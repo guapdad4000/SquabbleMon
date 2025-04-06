@@ -3,84 +3,84 @@
 const characters = [
   {
     id: 1,
-    name: "Young Thug",
-    sprite: "https://i.imgur.com/VZYTcBw.png",
+    name: "MC Crazy Legs",
+    sprite: "/images/mc-crazy-legs.png",
     hp: 120,
     attack: 65,
     defense: 40,
     speed: 85,
     critRate: 0.1,
-    type: "shooter",
+    type: "breaker",
     status: "normal",
-    description: "The Slime Boss. Fast attacks, high crit chance. Status effects on hit.",
+    description: "Breakdance specialist with powerful spins and flips. Known for high-speed attacks.",
     moves: [
-      { name: "Slatt", power: 40, accuracy: 95, type: "shooter", description: "Quick shots, might cause 'Slimed' status." },
-      { name: "Gunna Flow", power: 60, accuracy: 85, type: "shooter", description: "Moderate damage attack. Higher crit chance." },
-      { name: "Snake Style", power: 25, accuracy: 90, type: "status", description: "Changes opponent's status to 'Slimed', lowering DEF." },
-      { name: "YSL Wave", power: 70, accuracy: 75, type: "shooter", description: "Heavy attack with recoil damage." }
+      { name: "Backflip", power: 40, accuracy: 95, type: "breaker", description: "Quick move with momentum, might cause 'Dazed' status." },
+      { name: "Power Spin", power: 60, accuracy: 85, type: "breaker", description: "Moderate damage attack with spinning kicks." },
+      { name: "Floor Freeze", power: 25, accuracy: 90, type: "status", description: "Slows opponent's moves by freezing the floor." },
+      { name: "Headspin Fury", power: 70, accuracy: 75, type: "breaker", description: "Heavy attack with spinning head strikes." }
     ]
   },
   {
     id: 2,
-    name: "Travis Scott",
-    sprite: "https://i.imgur.com/9m3LMod.png",
+    name: "DJ Scratch Master",
+    sprite: "/images/dj-scratch.png",
     hp: 110,
-    attack: 75,
-    defense: 50,
-    speed: 70,
+    attack: 65,
+    defense: 70,
+    speed: 60,
     critRate: 0.15,
-    type: "mosh",
+    type: "turntable",
     status: "normal",
-    description: "Rage Rapper. Hits hard with mosh-style attacks. Can induce 'Dazed' status.",
+    description: "Controls battle rhythm with vinyl precision. Can boost team's performance.",
     moves: [
-      { name: "Sicko Mode", power: 50, accuracy: 90, type: "mosh", description: "Solid damage, might increase ATK." },
-      { name: "Astro Thunder", power: 65, accuracy: 85, type: "mosh", description: "Strong attack with chance to Daze." },
-      { name: "Goosebumps", power: 30, accuracy: 95, type: "status", description: "Causes 'Dazed' status, opponent loses accuracy." },
-      { name: "Highest Room", power: 80, accuracy: 70, type: "mosh", description: "Heavy damage but risky accuracy." }
+      { name: "Beat Drop", power: 50, accuracy: 90, type: "turntable", description: "Drops heavy beats that deal solid damage." },
+      { name: "Wax Cutter", power: 65, accuracy: 85, type: "turntable", description: "Sharp vinyl attack that may cause bleeding." },
+      { name: "Sample Loop", power: 30, accuracy: 95, type: "status", description: "Causes 'Confused' status, opponent moves erratically." },
+      { name: "Bass Cannon", power: 80, accuracy: 70, type: "turntable", description: "Massive sound wave blast with area effect." }
     ]
   },
   {
     id: 3,
-    name: "Future",
-    sprite: "https://i.imgur.com/kJ91Qqp.png",
+    name: "Graffiti King",
+    sprite: "/images/graffiti-king.png",
     hp: 100,
     attack: 80,
     defense: 45,
     speed: 65,
     critRate: 0.15,
-    type: "toxic",
+    type: "spray",
     status: "normal",
-    description: "Toxic King. His attacks cause 'Dirty Sprite' status, dealing DoT damage.",
+    description: "Master of aerosol combat. His attacks can cause 'Blinded' status and visual confusion.",
     moves: [
-      { name: "Dirty Sprite", power: 35, accuracy: 90, type: "toxic", description: "Causes 'Dirty Sprite' status, DoT damage each turn." },
-      { name: "Codeine Crazy", power: 60, accuracy: 85, type: "toxic", description: "Moderate damage, may heal self slightly." },
-      { name: "Mask Off", power: 70, accuracy: 80, type: "toxic", description: "Strong attack with health drain." },
-      { name: "Purple Reign", power: 55, accuracy: 90, type: "status", description: "Extends 'Dirty Sprite' status effect duration." }
+      { name: "Tag Attack", power: 35, accuracy: 90, type: "spray", description: "Quick spray that marks opponent, causing DoT damage." },
+      { name: "Chrome Blast", power: 60, accuracy: 85, type: "spray", description: "Metallic paint bomb with reflective damage." },
+      { name: "Wall Bomb", power: 70, accuracy: 80, type: "spray", description: "Large-scale tag that overwhelms defenses." },
+      { name: "Fade Style", power: 55, accuracy: 90, type: "status", description: "Fades opponent's visibility, reducing accuracy." }
     ]
   },
   {
     id: 4,
-    name: "Lil Uzi Vert",
-    sprite: "https://i.imgur.com/6QM8sGm.png",
+    name: "Beatbox Wizard",
+    sprite: "/images/beatbox-wizard.png",
     hp: 95,
     attack: 70,
     defense: 45,
     speed: 90,
     critRate: 0.2,
-    type: "rage",
+    type: "vocal",
     status: "normal",
-    description: "Rage Rapper with extraterrestrial vibes. Fast with high crit rate.",
+    description: "Human sound machine with rapid-fire vocal attacks. High critical hit rate.",
     moves: [
-      { name: "XO Tour Life", power: 45, accuracy: 95, type: "rage", description: "Quick rage attack with high crit chance." },
-      { name: "Eternal Atake", power: 65, accuracy: 85, type: "rage", description: "Powerful strike with knockback effect." },
-      { name: "Baby Pluto", power: 55, accuracy: 90, type: "rage", description: "Medium damage, might boost SPD." },
-      { name: "444+222", power: 80, accuracy: 75, type: "rage", description: "Heavy damage but might miss." }
+      { name: "Vocal Jab", power: 45, accuracy: 95, type: "vocal", description: "Quick burst of sound with high crit chance." },
+      { name: "Bass Drop", power: 65, accuracy: 85, type: "vocal", description: "Low frequency attack that shakes defenses." },
+      { name: "Sound Clone", power: 55, accuracy: 90, type: "vocal", description: "Creates sound duplicates that confuse opponents." },
+      { name: "Sonic Boom", power: 80, accuracy: 75, type: "vocal", description: "Massive sonic attack with high damage but risky accuracy." }
     ]
   },
   {
     id: 5,
-    name: "Kendrick Lamar",
-    sprite: "https://i.imgur.com/gqLlbV8.png",
+    name: "Flow Master",
+    sprite: "/images/flow-master.png",
     hp: 105,
     attack: 75,
     defense: 60,
@@ -88,107 +88,69 @@ const characters = [
     critRate: 0.1,
     type: "lyrical",
     status: "normal",
-    description: "Conscious Lyricist. Balanced stats with 'Wordplay' abilities that boost stats.",
+    description: "Conscious lyricist with balanced stats and wordplay abilities that boost stats.",
     moves: [
-      { name: "DAMN Flow", power: 50, accuracy: 90, type: "lyrical", description: "Solid lyrical attack." },
-      { name: "King Kunta", power: 65, accuracy: 85, type: "lyrical", description: "Strong verbal assault." },
-      { name: "Humble", power: 40, accuracy: 100, type: "status", description: "Never misses. Lowers opponent's ATK." },
-      { name: "DNA Wordplay", power: 70, accuracy: 80, type: "lyrical", description: "Potent lyrical attack with stun chance." }
+      { name: "Word Play", power: 50, accuracy: 90, type: "lyrical", description: "Clever rhymes deal solid damage." },
+      { name: "Battle Verse", power: 65, accuracy: 85, type: "lyrical", description: "Strong verbal assault with increased crit chance." },
+      { name: "Ego Check", power: 40, accuracy: 100, type: "status", description: "Never misses. Lowers opponent's ATK." },
+      { name: "Mic Drop", power: 70, accuracy: 80, type: "lyrical", description: "Finisher move with stunning effect." }
     ]
   },
   {
     id: 6,
-    name: "Playboi Carti",
-    sprite: "https://i.imgur.com/tNSujbF.png",
+    name: "Street Styler",
+    sprite: "/images/street-styler.png",
     hp: 90,
     attack: 65,
     defense: 40,
     speed: 95,
     critRate: 0.15,
-    type: "vamp",
+    type: "fashion",
     status: "normal",
-    description: "Vamp aesthetic with extremely fast attacks. Lower HP but hard to hit.",
+    description: "Hip-hop fashion icon with extremely fast attacks. Lower HP but hard to hit.",
     moves: [
-      { name: "Vamp Anthem", power: 40, accuracy: 95, type: "vamp", description: "Quick strike, might drain HP." },
-      { name: "Magnolia", power: 50, accuracy: 90, type: "vamp", description: "Medium damage with increased evasion." },
-      { name: "WLR Rage", power: 70, accuracy: 75, type: "vamp", description: "Strong but risky attack." },
-      { name: "Psyched Out", power: 30, accuracy: 100, type: "status", description: "Confuses opponent, might hit themselves." }
+      { name: "Fresh Kicks", power: 40, accuracy: 95, type: "fashion", description: "Quick sneaker attack, might cause knockback." },
+      { name: "Chain Whip", power: 50, accuracy: 90, type: "fashion", description: "Medium damage with gold chain weapons." },
+      { name: "Style Blitz", power: 70, accuracy: 75, type: "fashion", description: "Strong but risky style combination attack." },
+      { name: "Hype Beast", power: 30, accuracy: 100, type: "status", description: "Increases own speed while confusing opponent." }
     ]
   },
   {
     id: 7,
-    name: "21 Savage",
-    sprite: "https://i.imgur.com/DWlYKbQ.png",
+    name: "Boom Bap",
+    sprite: "/images/boom-bap.png",
     hp: 115,
     attack: 85,
     defense: 55,
     speed: 50,
     critRate: 0.15,
-    type: "slaughter",
+    type: "percussion",
     status: "normal",
-    description: "UK-born slaughterer. High attack and defense but slower.",
+    description: "Old school rhythm keeper. High attack and defense but slower moving.",
     moves: [
-      { name: "Knife Talk", power: 55, accuracy: 90, type: "slaughter", description: "Direct attack with bleeding effect." },
-      { name: "No Heart", power: 70, accuracy: 85, type: "slaughter", description: "Powerful attack, ignores some DEF." },
-      { name: "Bank Account", power: 60, accuracy: 90, type: "slaughter", description: "Consistent damage dealer." },
-      { name: "Savage Mode", power: 40, accuracy: 95, type: "status", description: "Raises ATK and CRIT but lowers DEF." }
+      { name: "Snare Hit", power: 55, accuracy: 90, type: "percussion", description: "Sharp attack with bleeding effect." },
+      { name: "Drum Break", power: 70, accuracy: 85, type: "percussion", description: "Powerful attack that ignores some DEF." },
+      { name: "Beat Pattern", power: 60, accuracy: 90, type: "percussion", description: "Consistent damage dealer with rhythm." },
+      { name: "Tempo Up", power: 40, accuracy: 95, type: "status", description: "Raises team ATK and SPD but lowers DEF." }
     ]
   },
   {
     id: 8,
-    name: "Drake",
-    sprite: "https://i.imgur.com/9dQvVZm.png",
+    name: "Mixtape Master",
+    sprite: "/images/mixtape-master.png",
     hp: 110,
-    attack: 65,
-    defense: 70,
+    attack: 70,
+    defense: 65,
     speed: 60,
     critRate: 0.1,
-    type: "melodic",
+    type: "producer",
     status: "normal",
-    description: "Versatile artist with balanced stats. Can switch styles for different effects.",
+    description: "Versatile producer with balanced stats. Can switch styles for different effects.",
     moves: [
-      { name: "Hotline Bling", power: 45, accuracy: 95, type: "melodic", description: "Quick melodic attack that rarely misses." },
-      { name: "God's Plan", power: 50, accuracy: 90, type: "status", description: "Raises team's DEF and heals slightly." },
-      { name: "Started from Bottom", power: 65, accuracy: 85, type: "melodic", description: "Strong attack with self ATK boost." },
-      { name: "Certified Lover", power: 75, accuracy: 80, type: "melodic", description: "Heavy damage with charm effect." }
-    ]
-  },
-  {
-    id: 9,
-    name: "Snoop Dogg",
-    sprite: "https://i.imgur.com/BUaMnB1.png",
-    hp: 100,
-    attack: 60,
-    defense: 65,
-    speed: 70,
-    critRate: 0.1,
-    type: "chronic",
-    status: "normal",
-    description: "OG with 'Chronic' status attacks. Can heal himself with weed abilities.",
-    moves: [
-      { name: "Gin & Juice", power: 45, accuracy: 95, type: "chronic", description: "Quick attack that may confuse." },
-      { name: "Drop It Like It's Hot", power: 60, accuracy: 85, type: "chronic", description: "Medium damage with DEF reduction." },
-      { name: "Chronic Haze", power: 30, accuracy: 100, type: "status", description: "Causes 'Baked' status, opponent moves slower." },
-      { name: "Doggy Style", power: 70, accuracy: 80, type: "chronic", description: "Strong attack with lingering damage." }
-    ]
-  },
-  {
-    id: 10,
-    name: "Kanye West",
-    sprite: "https://i.imgur.com/4iNAY7p.png",
-    hp: 115,
-    attack: 75,
-    defense: 50,
-    speed: 65,
-    critRate: 0.15,
-    type: "genius",
-    status: "normal",
-    description: "Musical genius with unstable moves. High attack but unpredictable.",
-    moves: [
-      { name: "POWER", power: 60, accuracy: 85, type: "genius", description: "Strong attack with self-boost chance." },
-      { name: "Yeezus Flow", power: 70, accuracy: 80, type: "genius", description: "Unpredictable damage range." },
-      { name: "Ultralight Beam", power: 80, accuracy: 75, type: "genius", description: "Powerful but unreliable attack." },
-      { name: "Runaway", power: 40, accuracy: 90, type: "status", description: "Raises DEF but opponent may get confused." }
+      { name: "Track Drop", power: 45, accuracy: 95, type: "producer", description: "Quick release that rarely misses." },
+      { name: "Remix", power: 50, accuracy: 90, type: "status", description: "Alters battle flow, raises team's DEF and heals slightly." },
+      { name: "Beat Switch", power: 65, accuracy: 85, type: "producer", description: "Strong attack with self ATK boost." },
+      { name: "Golden Era", power: 75, accuracy: 80, type: "producer", description: "Classic sound blast with stun effect." }
     ]
   }
 ];
@@ -197,96 +159,96 @@ const characters = [
 const opponents = [
   {
     id: 101,
-    name: "Tekashi 6ix9ine",
-    sprite: "https://i.imgur.com/NTxD6Hw.png",
+    name: "Copycat",
+    sprite: "/images/copycat.png",
     hp: 85,
     attack: 60,
     defense: 30,
     speed: 75,
     critRate: 0.05,
-    type: "snitch",
-    description: "The rainbow-haired snitch. Will fold under pressure.",
+    type: "biter",
+    description: "Steals other people's styles. No originality but dangerous imitations.",
     moves: [
-      { name: "STOOPID", power: 40, accuracy: 85, type: "snitch" },
-      { name: "GUMMO", power: 55, accuracy: 80, type: "snitch" },
-      { name: "Rainbow Hair", power: 30, accuracy: 100, type: "status" },
-      { name: "Snitch Tactic", power: 60, accuracy: 70, type: "snitch" }
+      { name: "Style Theft", power: 40, accuracy: 85, type: "biter" },
+      { name: "Fake Move", power: 55, accuracy: 80, type: "biter" },
+      { name: "Imitation", power: 30, accuracy: 100, type: "status" },
+      { name: "Plagiarism", power: 60, accuracy: 70, type: "biter" }
     ],
     ai: "aggressive"
   },
   {
     id: 102,
-    name: "Machine Gun Kelly",
-    sprite: "https://i.imgur.com/bz66DpV.png",
+    name: "Pop Sellout",
+    sprite: "/images/pop-sellout.png",
     hp: 95,
     attack: 65,
     defense: 40,
     speed: 70,
     critRate: 0.1,
-    type: "poser",
-    description: "Confused genre-hopper. Thinks he won against Eminem.",
+    type: "commercial",
+    description: "Abandoned underground roots for mainstream success. Flashy but shallow.",
     moves: [
-      { name: "RAP DEVIL", power: 50, accuracy: 85, type: "poser" },
-      { name: "Genre Switch", power: 40, accuracy: 90, type: "status" },
-      { name: "Blonde Ambition", power: 55, accuracy: 85, type: "poser" },
-      { name: "Hotel Diablo", power: 70, accuracy: 75, type: "poser" }
+      { name: "Chart Topper", power: 50, accuracy: 85, type: "commercial" },
+      { name: "Genre Flip", power: 40, accuracy: 90, type: "status" },
+      { name: "Radio Play", power: 55, accuracy: 85, type: "commercial" },
+      { name: "Sellout Anthem", power: 70, accuracy: 75, type: "commercial" }
     ],
     ai: "balanced"
   },
   {
     id: 103,
-    name: "DJ Akademiks",
-    sprite: "https://i.imgur.com/SZjf8k5.png",
+    name: "Internet Troll",
+    sprite: "/images/internet-troll.png",
     hp: 90,
     attack: 30,
     defense: 60,
     speed: 45,
     critRate: 0.05,
-    type: "blogger",
-    description: "Internet personality who talks too much.",
+    type: "digital",
+    description: "Online instigator who stirs up drama but can't back it up in person.",
     moves: [
-      { name: "Stream Rant", power: 30, accuracy: 95, type: "blogger" },
-      { name: "Cheeto Fingers", power: 20, accuracy: 100, type: "blogger" },
-      { name: "Off The Record", power: 45, accuracy: 85, type: "blogger" },
-      { name: "Drama Alert", power: 50, accuracy: 80, type: "status" }
+      { name: "Comment Section", power: 30, accuracy: 95, type: "digital" },
+      { name: "Keyboard Warrior", power: 20, accuracy: 100, type: "digital" },
+      { name: "Ratio'd", power: 45, accuracy: 85, type: "digital" },
+      { name: "Cancel Culture", power: 50, accuracy: 80, type: "status" }
     ],
     ai: "defensive"
   },
   {
     id: 104,
-    name: "Island Boys",
-    sprite: "https://i.imgur.com/UgBrpLQ.png",
+    name: "One-Hit Wonder",
+    sprite: "/images/one-hit-wonder.png",
     hp: 75,
     attack: 40,
     defense: 30,
     speed: 60,
     critRate: 0.05,
-    type: "viral",
-    description: "TikTok sensations with questionable talent.",
+    type: "flash",
+    description: "Had one big song years ago. Still riding that wave but fading fast.",
     moves: [
-      { name: "Island Vibes", power: 25, accuracy: 100, type: "viral" },
-      { name: "TikTok Dance", power: 35, accuracy: 90, type: "viral" },
-      { name: "Coconut Head", power: 40, accuracy: 85, type: "status" },
-      { name: "I'm an Island Boy", power: 50, accuracy: 80, type: "viral" }
+      { name: "That One Song", power: 25, accuracy: 100, type: "flash" },
+      { name: "Remember Me?", power: 35, accuracy: 90, type: "flash" },
+      { name: "Nostalgia Trip", power: 40, accuracy: 85, type: "status" },
+      { name: "Comeback Attempt", power: 50, accuracy: 80, type: "flash" }
     ],
     ai: "random"
   },
   {
     id: 105,
-    name: "Lil Pump",
-    sprite: "https://i.imgur.com/YcQ5YN1.png",
+    name: "Mumble Rapper",
+    sprite: "/images/mumble-rapper.png",
     hp: 85,
     attack: 55,
     defense: 35,
     speed: 65,
     critRate: 0.1,
     type: "mumble",
-    description: "One-hit wonder who fell off hard.",
+    description: "No one can understand what they're saying, but somehow still popular.",
     moves: [
-      { name: "Gucci Gang", power: 45, accuracy: 90, type: "mumble" },
-      { name: "Esketit", power: 40, accuracy: 95, type: "mumble" },
-      { name: "Harvard Dropout", power: 15, accuracy: 100, type: "status" },
-      { name: "D Rose", power: 60, accuracy: 80, type: "mumble" }
+      { name: "Unintelligible Verse", power: 45, accuracy: 90, type: "mumble" },
+      { name: "Auto-Tune Overload", power: 40, accuracy: 95, type: "mumble" },
+      { name: "Slurred Words", power: 15, accuracy: 100, type: "status" },
+      { name: "Lean Sipping", power: 60, accuracy: 80, type: "mumble" }
     ],
     ai: "aggressive"
   }
@@ -294,22 +256,21 @@ const opponents = [
 
 // Type effectiveness chart
 const typeEffectiveness = {
-  shooter: { slaughter: 0.8, blogger: 1.5, snitch: 1.2, poser: 1.0 },
-  mosh: { shooter: 1.2, viral: 1.5, mumble: 1.3, poser: 0.8 },
-  toxic: { chronic: 0.8, genius: 1.2, melodic: 1.0, mumble: 1.5 },
-  rage: { mosh: 1.2, lyrical: 0.8, snitch: 1.5, blogger: 1.0 },
-  lyrical: { rage: 1.5, snitch: 1.2, mumble: 1.5, genius: 0.8 },
-  vamp: { poser: 1.5, chronic: 0.8, shooter: 1.0, viral: 1.2 },
-  slaughter: { vamp: 1.2, rage: 1.5, melodic: 0.8, shooter: 1.0 },
-  melodic: { lyrical: 0.8, toxic: 1.2, slaughter: 1.5, blogger: 1.0 },
-  chronic: { toxic: 1.5, vamp: 1.2, mumble: 1.0, viral: 0.8 },
-  genius: { lyrical: 1.5, melodic: 1.2, poser: 1.5, toxic: 0.8 },
+  // Player types
+  breaker: { biter: 1.2, digital: 0.8, commercial: 1.5, flash: 1.0 },
+  turntable: { commercial: 1.2, mumble: 1.5, biter: 0.8, digital: 1.0 },
+  spray: { digital: 1.5, flash: 1.2, commercial: 0.8, biter: 1.0 },
+  vocal: { mumble: 1.5, flash: 0.8, digital: 1.2, commercial: 1.0 },
+  lyrical: { mumble: 1.5, biter: 1.2, flash: 0.8, digital: 1.0 },
+  fashion: { flash: 1.5, commercial: 1.2, mumble: 0.8, biter: 1.0 },
+  percussion: { digital: 0.8, flash: 1.5, biter: 1.2, commercial: 1.0 },
+  producer: { biter: 1.5, digital: 1.2, flash: 0.8, mumble: 1.0 },
   // Enemy types
-  snitch: { shooter: 0.8, slaughter: 0.5, lyrical: 1.5, rage: 1.2 },
-  poser: { mosh: 1.5, vamp: 0.8, genius: 0.5, lyrical: 1.2 },
-  blogger: { melodic: 1.2, rage: 1.5, shooter: 0.8, slaughter: 0.5 },
-  viral: { chronic: 1.5, vamp: 0.8, mosh: 0.5, genius: 1.2 },
-  mumble: { lyrical: 0.5, toxic: 0.8, rage: 1.5, chronic: 1.2 }
+  biter: { breaker: 0.8, producer: 0.5, lyrical: 1.5, percussion: 1.2 },
+  commercial: { turntable: 0.8, fashion: 0.8, spray: 1.5, breaker: 1.2 },
+  digital: { spray: 0.5, vocal: 0.8, percussion: 1.5, producer: 1.2 },
+  flash: { fashion: 0.5, percussion: 0.8, vocal: 1.5, producer: 1.2 },
+  mumble: { lyrical: 0.5, vocal: 0.8, turntable: 1.5, fashion: 1.2 }
 };
 
 // Status effect definitions

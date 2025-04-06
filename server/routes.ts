@@ -10,22 +10,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const rootDir = path.resolve(process.cwd());
   log(`Serving static files from ${rootDir}`);
   
-  // Serve individual static files
-  app.get('/', (req, res) => {
-    res.sendFile(path.join(rootDir, 'index.html'));
-  });
+  // Serve all static files in the root directory
+  app.use(express.static(rootDir));
   
-  app.get('/style.css', (req, res) => {
-    res.sendFile(path.join(rootDir, 'style.css'));
-  });
-  
-  app.get('/script.js', (req, res) => {
-    res.sendFile(path.join(rootDir, 'script.js'));
-  });
+  // Also serve assets from public directory
+  app.use(express.static(path.join(rootDir, 'public')));
 
   // For API routes
   app.get('/api/health', (req, res) => {
     res.json({ status: 'ok' });
+  });
+
+  // Default route to serve the game
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(rootDir, 'index.html'));
   });
 
   const httpServer = createServer(app);
