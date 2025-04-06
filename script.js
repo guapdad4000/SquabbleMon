@@ -1222,8 +1222,8 @@ function updateMoveButtons() {
     }
     
     const moveButton = document.createElement("button");
-    moveButton.className = "pixel-button";
-    moveButton.innerHTML = `${move.name || "Unknown Move"} <span class="pp-counter">${move.pp}/${move.maxPp}</span>`;
+    moveButton.className = "neon-button item-button";
+    moveButton.innerHTML = `${move.name.toUpperCase() || "UNKNOWN MOVE"} <span class="pp-counter">${move.pp}/${move.maxPp}</span>`;
     moveButton.dataset.move = JSON.stringify(move);
     moveButton.addEventListener("click", () => useMove(move));
     moveButton.addEventListener("mouseover", showMoveTooltip);

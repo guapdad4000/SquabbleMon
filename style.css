@@ -256,13 +256,84 @@ body {
   position: relative;
 }
 
+/* Neon button styles based on reference images */
+.neon-button {
+  background-color: #006600;
+  background-image: none !important;
+  color: #adff2f;
+  border: 2px solid #008800;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 1em;
+  transition: all 0.2s ease;
+  user-select: none;
+  text-transform: uppercase;
+  font-weight: bold;
+  position: relative;
+  text-shadow: 0 0 5px rgba(173, 255, 47, 0.7);
+  box-shadow: 
+    0 0 5px #00aa00,
+    0 0 10px #00ff00,
+    inset 0 0 5px #00aa00;
+  outline: none;
+  letter-spacing: 1px;
+  filter: none !important;
+}
+
+.neon-button:hover {
+  background-color: #007700;
+  box-shadow: 
+    0 0 10px #00aa00,
+    0 0 15px #00ff00,
+    0 0 20px #00ff00,
+    inset 0 0 10px #00aa00;
+  transform: translateY(-2px);
+  filter: brightness(1.2) !important;
+}
+
+.neon-button:active {
+  transform: translateY(1px);
+  box-shadow: 
+    0 0 5px #00aa00,
+    0 0 10px #00ff00,
+    inset 0 0 10px #00cc00;
+  filter: brightness(0.9) !important;
+}
+
+.item-button {
+  margin: 4px;
+  width: 100%;
+  border-radius: 8px;
+}
+
+.switch-button {
+  background-color: #008800;
+  color: #ffff00;
+  text-shadow: 0 0 5px rgba(255, 255, 0, 0.7);
+  box-shadow: 
+    0 0 5px #00aa00,
+    0 0 10px #ffff00,
+    inset 0 0 5px #00aa00;
+  margin-top: 8px;
+  width: 100%;
+}
+
+.cancel-button {
+  background-color: #006600;
+  color: #ffff00;
+  text-shadow: 0 0 5px rgba(255, 255, 0, 0.7);
+  padding: 10px 25px;
+  font-size: 1.1em;
+}
+
 .pp-counter {
   position: absolute;
   bottom: 2px;
   right: 5px;
   font-size: 0.75em;
   opacity: 0.9;
-  color: var(--pixel-text);
+  color: #ffffff;
+  text-shadow: 0 0 3px #00ff00;
   font-weight: bold;
 }
 #items button img {
