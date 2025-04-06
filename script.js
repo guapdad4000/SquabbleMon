@@ -1532,7 +1532,7 @@ function useMove(move) {
     // Remove animation
     playerSprite.classList.remove("attack-animation");
     canAct = true;
-  }, 500);
+  }, 1000);
 }
 
 function executeOpponentMove(move) {
@@ -1632,7 +1632,7 @@ function executeOpponentMove(move) {
     
     // Remove animation
     opponentSprite.classList.remove("attack-animation-reverse");
-  }, 500);
+  }, 1000);
 }
 
 function calculateDamage(attacker, defender, move, attackerMods, defenderMods) {
