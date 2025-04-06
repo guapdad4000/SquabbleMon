@@ -269,7 +269,7 @@ body {
   max-width: 750px;
   height: 600px;
   max-height: 650px;
-  background-size: cover;
+  background-size: contain;
   background-position: center center;
   background-repeat: no-repeat;
   border: 4px solid var(--pixel-border);
@@ -434,11 +434,11 @@ body {
   will-change: transform, opacity, filter;
   filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.4));
   image-rendering: pixelated;
-  animation: float 3s ease-in-out infinite;
+  animation: float 1.5s ease-in-out infinite;
 }
 #opponent-sprite {
   transform: scaleX(-1);
-  animation: floatFlipped 3s ease-in-out infinite;
+  animation: floatFlipped 1.5s ease-in-out infinite;
 }
 
 /* Add slightly different animation timing to create variety */
@@ -811,21 +811,23 @@ body {
 }
 @keyframes attack {
   0% { transform: translateX(0); }
-  25% { transform: translateX(-10px) translateY(-5px); }
-  50% { transform: translateX(50px); }
-  75% { transform: translateX(10px) translateY(5px); }
+  15% { transform: translateX(-15px) translateY(-5px); }
+  30% { transform: translateX(15px) translateY(5px); }
+  60% { transform: translateX(60px); }
+  80% { transform: translateX(15px) translateY(-3px); }
   100% { transform: translateX(0); }
 }
 @keyframes attackReverse {
   0% { transform: translateX(0) scaleX(-1); }
-  25% { transform: translateX(10px) translateY(-5px) scaleX(-1); }
-  50% { transform: translateX(-50px) scaleX(-1); }
-  75% { transform: translateX(-10px) translateY(5px) scaleX(-1); }
+  15% { transform: translateX(15px) translateY(-5px) scaleX(-1); }
+  30% { transform: translateX(-15px) translateY(5px) scaleX(-1); }
+  60% { transform: translateX(-60px) scaleX(-1); }
+  80% { transform: translateX(-15px) translateY(-3px) scaleX(-1); }
   100% { transform: translateX(0) scaleX(-1); }
 }
 @keyframes float {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
+  50% { transform: translateY(-3px); }
 }
 @keyframes pulse {
   0% { transform: scale(1); }
@@ -842,16 +844,68 @@ body {
   animation: hitFlash 0.3s ease-in-out;
 }
 .attack-animation {
-  animation: attack 0.5s ease-in-out;
+  animation: attack 0.4s ease-in-out;
 }
 .attack-animation-reverse {
-  animation: attackReverse 0.5s ease-in-out;
+  animation: attackReverse 0.4s ease-in-out;
 }
 .float-animation {
   animation: float 2s ease-in-out infinite;
 }
 .pulse-animation {
   animation: pulse 1s ease-in-out infinite;
+}
+
+/* Type-based attack effects */
+.effect-street {
+  animation: effect-street 0.5s ease-in-out;
+  position: relative;
+}
+.effect-hiphop {
+  animation: effect-hiphop 0.5s ease-in-out;
+  position: relative;
+}
+.effect-urban {
+  animation: effect-urban 0.5s ease-in-out;
+  position: relative;
+}
+.effect-tech {
+  animation: effect-tech 0.5s ease-in-out;
+  position: relative;
+}
+.effect-status {
+  animation: effect-status 0.5s ease-in-out;
+  position: relative;
+}
+
+@keyframes effect-street {
+  0% { box-shadow: inset 0 0 0 0 rgba(255, 165, 0, 0); }
+  50% { box-shadow: inset 0 0 50px 0 rgba(255, 165, 0, 0.5); }
+  100% { box-shadow: inset 0 0 0 0 rgba(255, 165, 0, 0); }
+}
+
+@keyframes effect-hiphop {
+  0% { box-shadow: inset 0 0 0 0 rgba(182, 63, 63, 0); }
+  50% { box-shadow: inset 0 0 50px 0 rgba(182, 63, 63, 0.5); }
+  100% { box-shadow: inset 0 0 0 0 rgba(182, 63, 63, 0); }
+}
+
+@keyframes effect-urban {
+  0% { box-shadow: inset 0 0 0 0 rgba(63, 81, 181, 0); }
+  50% { box-shadow: inset 0 0 50px 0 rgba(63, 81, 181, 0.5); }
+  100% { box-shadow: inset 0 0 0 0 rgba(63, 81, 181, 0); }
+}
+
+@keyframes effect-tech {
+  0% { box-shadow: inset 0 0 0 0 rgba(76, 175, 80, 0); }
+  50% { box-shadow: inset 0 0 50px 0 rgba(76, 175, 80, 0.5); }
+  100% { box-shadow: inset 0 0 0 0 rgba(76, 175, 80, 0); }
+}
+
+@keyframes effect-status {
+  0% { box-shadow: inset 0 0 0 0 rgba(186, 104, 200, 0); }
+  50% { box-shadow: inset 0 0 50px 0 rgba(186, 104, 200, 0.5); }
+  100% { box-shadow: inset 0 0 0 0 rgba(186, 104, 200, 0); }
 }
 
 /* Media Queries for Different Screen Sizes */

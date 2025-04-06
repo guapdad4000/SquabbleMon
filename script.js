@@ -1444,6 +1444,15 @@ function useMove(move) {
   const playerSprite = document.getElementById("player-sprite");
   playerSprite.classList.add("attack-animation");
   
+  // Add visual effect based on move type
+  const battleArena = document.getElementById("battle-arena");
+  
+  // Add a class based on the move type for visual feedback
+  battleArena.classList.add(`effect-${move.type}`);
+  setTimeout(() => {
+    battleArena.classList.remove(`effect-${move.type}`);
+  }, 500);
+  
   // Check accuracy including status effects
   const effectiveAccuracy = move.accuracy * playerStatModifiers.accuracy;
   if (Math.random() * 100 > effectiveAccuracy) {
@@ -1538,6 +1547,15 @@ function executeOpponentMove(move) {
   const opponentSprite = document.getElementById("opponent-sprite");
   opponentSprite.classList.add("attack-animation-reverse");
   
+  // Add visual effect based on move type
+  const battleArena = document.getElementById("battle-arena");
+  
+  // Add a class based on the move type for visual feedback
+  battleArena.classList.add(`effect-${move.type}`);
+  setTimeout(() => {
+    battleArena.classList.remove(`effect-${move.type}`);
+  }, 500);
+  
   // Check accuracy including status effects
   const effectiveAccuracy = move.accuracy * opponentStatModifiers.accuracy;
   if (Math.random() * 100 > effectiveAccuracy) {
@@ -1619,21 +1637,31 @@ function executeOpponentMove(move) {
 
 function calculateDamage(attacker, defender, move, attackerMods, defenderMods) {
   // Base damage calculation
-  let damage = Math.floor((attacker.attack * attackerMods.attack * move.power) / 100);
+  let damage = Math.floor((attacker.attack * attackerMods.attack * move.power) / 110);
   
-  // Apply defense reduction
-  damage = Math.floor(damage / (defender.defense * defenderMods.defense / 50));
+  // Apply defense reduction - increased defender impact for balance
+  damage = Math.floor(damage / (defender.defense * defenderMods.defense / 40));
   
-  // Apply type effectiveness
+  // Apply type effectiveness with balanced multipliers
   const effectiveness = calculateTypeEffectiveness(move.type, defender.type);
   damage = Math.floor(damage * effectiveness);
   
-  // Add random factor (85-100% of calculated damage)
+  // Add random factor (85-100% of calculated damage) for variation
   damage = Math.floor(damage * (0.85 + Math.random() * 0.15));
+  
+  // Cap damage to prevent one-hit KOs (max 60% of defender's max HP)
+  let maxHP = 0;
+  if (defender === activePlayerCharacter) {
+    maxHP = playerTeam[playerTeam.findIndex(c => c.id === defender.id)].hp;
+  } else {
+    maxHP = opponents[opponentIndex].hp;
+  }
+  const maxDamage = Math.floor(maxHP * 0.6);
+  damage = Math.min(damage, maxDamage);
   
   // Critical hit (based on attacker's critRate, typically 10-20%)
   if (Math.random() < attacker.critRate) {
-    damage = Math.floor(damage * 1.5);
+    damage = Math.floor(damage * 1.3); // Reduced from 1.5 for balance
     addToBattleLog("A critical hit!");
     showFloatingLog("CRITICAL HIT!");
   }
