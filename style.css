@@ -508,7 +508,9 @@ body {
 
 /* Healing effect */
 .heal-effect {
-  animation: heal 1s ease-in-out;
+  animation: heal 1.5s ease-in-out;
+  position: relative;
+  z-index: 5;
 }
 
 /* Status effect application animation */
@@ -973,7 +975,9 @@ body {
 
 @keyframes heal {
   0% { filter: brightness(1) contrast(1); }
-  50% { filter: brightness(1.2) contrast(1.05) drop-shadow(0 0 5px rgba(30, 255, 100, 0.6)); }
+  25% { filter: brightness(1.4) contrast(1.1) drop-shadow(0 0 12px rgba(30, 255, 100, 0.8)); }
+  50% { filter: brightness(1.2) contrast(1.05) drop-shadow(0 0 8px rgba(30, 255, 100, 0.7)); }
+  75% { filter: brightness(1.4) contrast(1.1) drop-shadow(0 0 12px rgba(30, 255, 100, 0.8)); }
   100% { filter: brightness(1) contrast(1); }
 }
 
@@ -1021,6 +1025,15 @@ body {
   animation: effectPulse 1.5s ease-in-out;
 }
 
+.item-effect {
+  position: absolute;
+  z-index: 100;
+  pointer-events: none;
+  animation: itemFloat 1.5s ease-in-out;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+  font-size: 40px;
+}
+
 /* New keyframes for effect animations */
 @keyframes effectScale {
   0% { transform: scale(0.3); opacity: 0; }
@@ -1033,6 +1046,13 @@ body {
   25% { transform: scale(1.05); opacity: 1; }
   75% { transform: scale(0.95); opacity: 0.8; }
   100% { transform: scale(1); opacity: 0; }
+}
+
+@keyframes itemFloat {
+  0% { transform: translateY(0) scale(1); opacity: 0; }
+  10% { transform: translateY(0) scale(1.2); opacity: 1; }
+  60% { transform: translateY(-50px) scale(0.9); opacity: 0.8; }
+  100% { transform: translateY(-80px) scale(0.6); opacity: 0; }
 }
 .float-animation {
   animation: float 3s ease-in-out infinite;
