@@ -20,7 +20,41 @@ let musicMuted = false;
 let soundMuted = false;
 let audioInitialized = false; // Track if audio is initialized
 
-// Animation functions are now loaded from animations.js
+// Animation state management
+const ANIMATION_STATE = {
+  player: {
+    default: "float 2s ease-in-out infinite",
+    attack: "attack 1s ease-in-out",
+    current: "float 2s ease-in-out infinite"
+  },
+  opponent: {
+    default: "float 2s ease-in-out infinite", // Will be flipped with transform
+    attack: "attack 1s ease-in-out",
+    current: "float 2s ease-in-out infinite"
+  }
+};
+
+// Animation helper functions
+function setPlayerAnimation(animationType) {
+  const playerSprite = document.getElementById("player-sprite");
+  if (!playerSprite) return;
+  
+  const animation = ANIMATION_STATE.player[animationType] || ANIMATION_STATE.player.default;
+  playerSprite.style.animation = animation;
+  ANIMATION_STATE.player.current = animation;
+}
+
+function setOpponentAnimation(animationType) {
+  const opponentSprite = document.getElementById("opponent-sprite");
+  if (!opponentSprite) return;
+  
+  const animation = ANIMATION_STATE.opponent[animationType] || ANIMATION_STATE.opponent.default;
+  opponentSprite.style.animation = animation;
+  ANIMATION_STATE.opponent.current = animation;
+  
+  // Ensure the opponent is always flipped
+  opponentSprite.style.transform = "scaleX(-1)";
+}
 
 // ================ GAME DATA ================
 // Character data with battle info
@@ -1561,8 +1595,6 @@ function useMove(move) {
   
   // Make player sprite move forward when attacking
   playerSprite.classList.add("attack-lunge");
-  // Apply attack animation
-  setPlayerAnimation("attack");
   
   // Get the appropriate animation based on type
   const animationUrl = attackAnimations[move.type] || attackAnimations["Normal"];
@@ -1625,8 +1657,11 @@ function useMove(move) {
     
     // Remove animation
     setTimeout(() => {
-      // Reset to default animation
-      setPlayerAnimation("default");
+      playerSprite.classList.remove("attack-animation");
+      if (window.originalPlayerClass) {
+        // Restore the original animation by allowing the float animation to play again
+        playerSprite.style.animation = "float 2s ease-in-out infinite";
+      }
       canAct = true;
     }, 1000);
     return;
@@ -1639,8 +1674,11 @@ function useMove(move) {
     
     // Remove animation
     setTimeout(() => {
-      // Reset to default animation
-      setPlayerAnimation("default");
+      playerSprite.classList.remove("attack-animation");
+      if (window.originalPlayerClass) {
+        // Restore the original animation by allowing the float animation to play again
+        playerSprite.style.animation = "float 2s ease-in-out infinite";
+      }
       canAct = true;
     }, 1000);
     return;
@@ -1680,12 +1718,10 @@ function useMove(move) {
     const opponentSprite = document.getElementById("opponent-sprite");
     opponentSprite.classList.add("shake-animation");
     opponentSprite.classList.add("hit-flash");
-    setOpponentAnimation("shake");
     
     setTimeout(() => {
       opponentSprite.classList.remove("shake-animation");
       opponentSprite.classList.remove("hit-flash");
-      setOpponentAnimation("default");
     }, 1000);
     
     // Check if opponent fainted
@@ -1695,8 +1731,11 @@ function useMove(move) {
       setTimeout(() => endPlayerTurn(), 1000);
     }
     // Remove animation and restore floating
-    // Reset to default animation
-      setPlayerAnimation("default");
+    playerSprite.classList.remove("attack-animation");
+    if (window.originalPlayerClass) {
+      // Restore the original animation by allowing the float animation to play again
+      playerSprite.style.animation = "float 2s ease-in-out infinite";
+    }
     canAct = true;
   }, 1000);
 }
@@ -1736,8 +1775,6 @@ function executeOpponentMove(move) {
   
   // Make opponent sprite move forward when attacking
   opponentSprite.classList.add("attack-lunge-reverse");
-  // Apply attack animation
-  setOpponentAnimation("attack");
   
   // Get the appropriate animation based on type
   const animationUrl = attackAnimations[move.type] || attackAnimations["Normal"];
@@ -1801,7 +1838,11 @@ function executeOpponentMove(move) {
     // Remove animation
     setTimeout(() => {
       opponentSprite.classList.remove("attack-animation-reverse");
-      setOpponentAnimation("default");
+      if (window.originalOpponentClass) {
+        // Restore the original animation by allowing the float animation to play again
+        opponentSprite.style.animation = "float 2s ease-in-out infinite";
+        opponentSprite.style.transform = "scaleX(-1)"; // Keep the opponent flipped
+      }
     }, 1000);
     return;
   }
@@ -1814,7 +1855,11 @@ function executeOpponentMove(move) {
     // Remove animation
     setTimeout(() => {
       opponentSprite.classList.remove("attack-animation-reverse");
-      setOpponentAnimation("default");
+      if (window.originalOpponentClass) {
+        // Restore the original animation by allowing the float animation to play again
+        opponentSprite.style.animation = "float 2s ease-in-out infinite";
+        opponentSprite.style.transform = "scaleX(-1)"; // Keep the opponent flipped
+      }
     }, 1000);
     return;
   }
@@ -1853,12 +1898,10 @@ function executeOpponentMove(move) {
     const playerSprite = document.getElementById("player-sprite");
     playerSprite.classList.add("player-shake-animation");
     playerSprite.classList.add("hit-flash");
-    setPlayerAnimation("shake");
     
     setTimeout(() => {
       playerSprite.classList.remove("player-shake-animation");
       playerSprite.classList.remove("hit-flash");
-      setPlayerAnimation("default");
     }, 1000);
     
     // Check if player fainted
@@ -1869,7 +1912,11 @@ function executeOpponentMove(move) {
     }
     // Remove animation
     opponentSprite.classList.remove("attack-animation-reverse");
-    setOpponentAnimation("default");
+    if (window.originalOpponentClass) {
+      // Restore the original animation by allowing the float animation to play again
+      opponentSprite.style.animation = "float 2s ease-in-out infinite";
+      opponentSprite.style.transform = "scaleX(-1)"; // Keep the opponent flipped
+    }
   }, 1000);
 }
 
