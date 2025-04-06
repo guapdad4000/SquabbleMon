@@ -36,10 +36,10 @@ const characters = [
     status: "normal",
     description: "Chill vibes only. Prefers napping in sunbeams to actual squabbling.",
     moves: [
-      { name: "Dreadlock Whip", power: 50, accuracy: 95, type: "Plant", description: "Plant-type whip attack with dreadlocks." },
-      { name: "6 Rasclaat Eggs?!", power: 70, accuracy: 85, type: "Fire", description: "Fiery attack that may cause 'sleep' status." },
-      { name: "Irie Recharge", power: 0, accuracy: 100, type: "Plant", description: "Healing move that restores HP." },
-      { name: "Chill Vibes", power: 40, accuracy: 90, type: "status", description: "Lowers opponent's speed with relaxed energy." }
+      { name: "Dreadlock Whip", power: 50, accuracy: 95, type: "Plant", description: "Plant-type whip attack with dreadlocks.", pp: 15, maxPp: 15 },
+      { name: "6 Rasclaat Eggs?!", power: 70, accuracy: 85, type: "Fire", description: "Fiery attack that may cause 'sleep' status.", pp: 10, maxPp: 10 },
+      { name: "Irie Recharge", power: 0, accuracy: 100, type: "Plant", description: "Healing move that restores HP.", pp: 5, maxPp: 5 },
+      { name: "Chill Vibes", power: 40, accuracy: 90, type: "status", description: "Lowers opponent's speed with relaxed energy.", pp: 10, maxPp: 10 }
     ]
   },
   {
@@ -1208,13 +1208,28 @@ function updateMoveButtons() {
   activePlayerCharacter.moves.forEach(move => {
     if (!move) return;
     
+    // If move doesn't have PP values, set default ones
+    if (move.pp === undefined) {
+      move.pp = move.power > 0 ? 10 : 5; // Attack moves get 10 PP, status moves get 5 PP
+    }
+    if (move.maxPp === undefined) {
+      move.maxPp = move.pp;
+    }
+    
     const moveButton = document.createElement("button");
     moveButton.className = "pixel-button";
-    moveButton.textContent = move.name || "Unknown Move";
+    moveButton.innerHTML = `${move.name || "Unknown Move"} <span class="pp-counter">${move.pp}/${move.maxPp}</span>`;
     moveButton.dataset.move = JSON.stringify(move);
     moveButton.addEventListener("click", () => useMove(move));
     moveButton.addEventListener("mouseover", showMoveTooltip);
     moveButton.addEventListener("mouseout", hideMoveTooltip);
+    
+    // Disable the button if PP is zero
+    if (move.pp <= 0) {
+      moveButton.disabled = true;
+      moveButton.title = "No PP remaining";
+    }
+    
     movesContainer.appendChild(moveButton);
   });
 }
@@ -1266,6 +1281,7 @@ function showMoveTooltip(e) {
       <p>Type: ${moveData.type || 'Normal'}</p>
       <p>Power: ${moveData.power || 0}</p>
       <p>Accuracy: ${moveData.accuracy || 100}%</p>
+      <p>PP: ${moveData.pp || 0}/${moveData.maxPp || 0}</p>
       <p>${moveData.description || ""}</p>
     `;
     
@@ -1500,7 +1516,17 @@ function hitSelf(character) {
 
 function useMove(move) {
   if (!canAct || currentTurn !== "player") return;
+  if (move.pp <= 0) {
+    showFloatingLog("No PP remaining!");
+    return;
+  }
   canAct = false;
+  
+  // Decrease PP
+  move.pp--;
+  
+  // Update move buttons to reflect PP change
+  updateMoveButtons();
   
   addToBattleLog(`${activePlayerCharacter.name} used ${move.name}!`);
   
@@ -1653,6 +1679,11 @@ function useMove(move) {
 
 function executeOpponentMove(move) {
   if (!gameActive || currentTurn !== "opponent") return;
+  
+  // Decrease PP for opponent move if it's not the struggle move
+  if (move.name !== "Struggle" && move.pp !== undefined) {
+    move.pp--;
+  }
   
   addToBattleLog(`${activeOpponent.name} used ${move.name}!`);
   
@@ -2212,19 +2243,43 @@ function endOpponentTurn() {
 function chooseOpponentMove() {
   const moves = activeOpponent.moves;
   
+  // Initialize PP for opponent moves if not already set
+  moves.forEach(move => {
+    if (move.pp === undefined) {
+      move.pp = move.power > 0 ? 10 : 5; // Attack moves get 10 PP, status moves get 5 PP
+    }
+    if (move.maxPp === undefined) {
+      move.maxPp = move.pp;
+    }
+  });
+  
+  // Filter out moves with no PP
+  const availableMoves = moves.filter(move => move.pp > 0);
+  
+  // If no moves with PP, return a default struggle move
+  if (availableMoves.length === 0) {
+    return {
+      name: "Struggle",
+      power: 30,
+      accuracy: 100,
+      type: "Normal",
+      description: "A desperate attack used when no other moves can be used."
+    };
+  }
+  
   // Different AI behaviors
   switch (activeOpponent.ai) {
     case "aggressive":
       // Prioritize highest damage moves
-      moves.sort((a, b) => b.power - a.power);
+      availableMoves.sort((a, b) => b.power - a.power);
       // 70% chance to use one of the two strongest moves
-      return Math.random() < 0.7 ? moves[0] : moves[Math.floor(Math.random() * moves.length)];
+      return Math.random() < 0.7 ? availableMoves[0] : availableMoves[Math.floor(Math.random() * availableMoves.length)];
       
     case "defensive":
       // Prioritize status moves when HP is high, damage when low
       if (activeOpponent.hp > opponents[opponentIndex].hp * 0.7) {
         // More likely to use status moves
-        const statusMoves = moves.filter(m => m.type === "status");
+        const statusMoves = availableMoves.filter(m => m.type === "status");
         if (statusMoves.length > 0 && Math.random() < 0.6) {
           return statusMoves[Math.floor(Math.random() * statusMoves.length)];
         }

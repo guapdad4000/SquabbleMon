@@ -250,6 +250,16 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+}
+
+.pp-counter {
+  position: absolute;
+  bottom: 2px;
+  right: 5px;
+  font-size: 0.6em;
+  opacity: 0.8;
+  color: var(--pixel-text);
 }
 #items button img {
   width: 10px;
@@ -612,7 +622,25 @@ body {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 5px;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
+}
+
+.section-divider {
+  position: relative;
+  height: 12px;
+  margin: 5px 0 10px;
+  text-align: center;
+  border-bottom: 2px solid var(--pixel-border);
+}
+
+.section-divider span {
+  position: relative;
+  display: inline-block;
+  padding: 0 8px;
+  background-color: var(--pixel-bg-dark); 
+  color: var(--pixel-text-light);
+  font-size: 0.7em;
+  transform: translateY(50%);
 }
 #items {
   display: grid;
