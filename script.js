@@ -1540,6 +1540,9 @@ function useMove(move) {
   
   // Attack animation
   const playerSprite = document.getElementById("player-sprite");
+  // Store the original animation class for restoration later
+  window.originalPlayerClass = playerSprite.classList.contains("float-animation") ? "float-animation" : "";
+  playerSprite.classList.remove("float-animation"); // Remove floating animation
   playerSprite.classList.add("attack-animation");
   
   // Add visual effect based on move type
@@ -1623,6 +1626,7 @@ function useMove(move) {
     // Remove animation
     setTimeout(() => {
       playerSprite.classList.remove("attack-animation");
+      if (window.originalPlayerClass) playerSprite.classList.add(window.originalPlayerClass);
       canAct = true;
     }, 1000);
     return;
@@ -1634,7 +1638,8 @@ function useMove(move) {
     setTimeout(() => endPlayerTurn(), 1000);
     
     // Remove animation
-    setTimeout(() => {
+      playerSprite.classList.remove("attack-animation");
+      if (window.originalPlayerClass) playerSprite.classList.add(window.originalPlayerClass);
       playerSprite.classList.remove("attack-animation");
       canAct = true;
     }, 1000);
@@ -1687,9 +1692,11 @@ function useMove(move) {
     } else {
       setTimeout(() => endPlayerTurn(), 1000);
     }
-    
-    // Remove animation
     playerSprite.classList.remove("attack-animation");
+    if (window.originalPlayerClass) playerSprite.classList.add(window.originalPlayerClass);
+    // Remove animation and restore floating
+    playerSprite.classList.remove("attack-animation");
+    if (window.originalPlayerClass) playerSprite.classList.add(window.originalPlayerClass);
     canAct = true;
   }, 1000);
 }
@@ -1708,7 +1715,10 @@ function executeOpponentMove(move) {
   playHitSound();
   
   // Attack animation
-  const opponentSprite = document.getElementById("opponent-sprite");
+  let opponentSprite = document.getElementById("opponent-sprite");
+  window.originalOpponentClass = opponentSprite.classList.contains("floatFlipped") ? "floatFlipped" : "";
+  // Already stored the original animation class for restoration later
+  opponentSprite.classList.remove("floatFlipped"); // Remove floating animation
   opponentSprite.classList.add("attack-animation-reverse");
   
   // Add visual effect based on move type
@@ -1793,6 +1803,7 @@ function executeOpponentMove(move) {
     // Remove animation
     setTimeout(() => {
       opponentSprite.classList.remove("attack-animation-reverse");
+      if (window.originalOpponentClass) opponentSprite.classList.add(window.originalOpponentClass);
     }, 1000);
     return;
   }
@@ -1803,7 +1814,8 @@ function executeOpponentMove(move) {
     setTimeout(() => endOpponentTurn(), 1000);
     
     // Remove animation
-    setTimeout(() => {
+      opponentSprite.classList.remove("attack-animation-reverse");
+      if (window.originalOpponentClass) opponentSprite.classList.add(window.originalOpponentClass);
       opponentSprite.classList.remove("attack-animation-reverse");
     }, 1000);
     return;
@@ -1855,7 +1867,8 @@ function executeOpponentMove(move) {
     } else {
       setTimeout(() => endOpponentTurn(), 1000);
     }
-    
+    opponentSprite.classList.remove("attack-animation-reverse");
+    if (window.originalOpponentClass) opponentSprite.classList.add(window.originalOpponentClass);
     // Remove animation
     opponentSprite.classList.remove("attack-animation-reverse");
   }, 1000);

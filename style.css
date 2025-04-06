@@ -460,12 +460,12 @@ body {
   will-change: transform, opacity, filter;
   filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.4));
   image-rendering: pixelated;
-  animation: floatRotate 2s ease-in-out infinite;
+  animation: float 2s ease-in-out infinite;
   transition: filter 0.3s ease, transform 0.3s ease;
 }
 #opponent-sprite {
   transform: scaleX(-1);
-  animation: floatFlippedRotate 2s ease-in-out infinite;
+  animation: floatFlipped 2s ease-in-out infinite;
 }
 
 /* Add slightly different animation timing to create variety */
@@ -489,7 +489,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: repeating-linear-gradient(90deg, 
+  background-image: repeating-linear-gradient(0deg, 
     transparent, 
     transparent 10px, 
     rgba(255, 255, 255, 0.5) 10px, 
@@ -960,7 +960,7 @@ body {
   0% { background-position: 0% 0%; opacity: 0; }
   15% { opacity: 1; }
   85% { opacity: 1; }
-  100% { background-position: 100% 0%; opacity: 0; }
+  100% { background-position: 0% 100%; opacity: 0; }
 }
 
 @keyframes criticalHit {
