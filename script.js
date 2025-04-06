@@ -754,21 +754,22 @@ const opponents = [
   },
   {
     id: 109,
-    name: "Smoker Jr",
-    sprite: "https://i.imgur.com/vdaAi7h.png",
+    name: "Functional Addict",
+    sprite: "https://i.imgur.com/G3xfSjU.png",
     hp: 190,
     attack: 120,
     defense: 130,
     speed: 150,
     critRate: 0.05,
-    type: "Air",
-    description: "Permanently hazy. Might forget what move it was using mid-battle.",
+    type: "Water",
+    description: "Runs on liquids that aren't always water. Surprisingly coherent.",
     moves: [
-      { name: "Cloud Cough", power: 40, accuracy: 100, type: "Air", pp: 15, maxPP: 15, effect: "lowerAccuracy" },
-      { name: "Bong Rip Blast", power: 45, accuracy: 95, type: "Fire", pp: 15, maxPP: 15, effect: "sleep" },
-      { name: "Smoke Screen Stunt", power: 0, accuracy: 100, type: "Normal", pp: 10, maxPP: 10, effect: "raiseDefense" }
+      { name: "Sip & Splash", power: 45, accuracy: 100, type: "Water", pp: 15, maxPP: 15, effect: "lowerAccuracy" },
+      { name: "Henny Haze", power: 60, accuracy: 90, type: "Dark", pp: 15, maxPP: 15, effect: "sleep" },
+      { name: "Sober Up Sis", power: 0, accuracy: 100, type: "Normal", pp: 10, maxPP: 10, effect: "raiseDefense" },
+      { name: "Liquid Courage", power: 70, accuracy: 80, type: "Water", pp: 10, maxPP: 10, effect: "none" }
     ],
-    ai: "defensive"
+    ai: "balanced"
   },
   {
     id: 110,
@@ -1212,23 +1213,27 @@ function populateCharacterSelection() {
 }
 
 function selectCharacter(character) {
-  if (playerTeam.length >= 3) {
-    showFloatingLog("You can only pick 3 YNs!");
-    return;
-  }
-  
-  // Play sound effect
-  playSuccessSound();
-  
   // Check if character is already selected
   if (playerTeam.some(c => c.id === character.id)) {
     // Remove from team if already selected
     playerTeam = playerTeam.filter(c => c.id !== character.id);
     document.querySelector(`.character-card[data-id="${character.id}"]`).classList.remove("selected");
+    
+    // Play sound effect
+    playSuccessSound();
   } else {
+    // Check if team is already full
+    if (playerTeam.length >= 3) {
+      showFloatingLog("You can only pick 3 YNs! Deselect one first.");
+      return;
+    }
+    
     // Add to team
     playerTeam.push(character);
     document.querySelector(`.character-card[data-id="${character.id}"]`).classList.add("selected");
+    
+    // Play sound effect
+    playSuccessSound();
   }
   
   updateTeamSlots();
