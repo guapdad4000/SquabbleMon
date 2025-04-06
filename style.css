@@ -89,7 +89,7 @@ body {
   box-shadow: 4px 4px 0px 0px var(--pixel-border);
   max-width: 90%;
   width: 750px;
-  height: 95vh; /* Using fixed height instead of max-height */
+  max-height: 90vh; /* Using max-height again but with a good limit */
   overflow-y: auto;
   color: var(--pixel-text-light);
 }
@@ -126,7 +126,7 @@ body {
   padding: 15px;
   background-color: rgba(0, 0, 0, 0.2);
   border: 2px solid var(--pixel-border);
-  max-height: 50vh; /* Increased height to show more characters */
+  height: 320px; /* Fixed height to fit well within the screen */
   overflow-y: auto;
 }
 .character-card {
@@ -1202,7 +1202,7 @@ body {
   #character-list {
     gap: 10px;
     padding: 10px;
-    max-height: 50vh; /* Maintain the increased height on tablet screens */
+    height: 300px; /* Adjusted for tablet screens */
   }
   
   .character-card {
@@ -1246,7 +1246,7 @@ body {
   #character-list {
     gap: 8px;
     padding: 8px;
-    max-height: 50vh; /* Maintain the increased height on mobile screens */
+    height: 280px; /* Adjusted for mobile screens */
   }
   
   .character-card {
