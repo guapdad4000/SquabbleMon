@@ -4,7 +4,7 @@ const characters = [
   {
     id: 1,
     name: "Rastamon",
-    sprite: "/images/mc-crazy-legs.png", // Using generated image for now
+    sprite: "mc-crazy-legs.png", // Using generated image for now
     hp: 200,
     attack: 150,
     defense: 130,
@@ -23,7 +23,7 @@ const characters = [
   {
     id: 2,
     name: "Fitness Bro",
-    sprite: "/images/dj-scratch.png", // Using generated image for now
+    sprite: "dj-scratch.png", // Using generated image for now
     hp: 230,
     attack: 170,
     defense: 130,
@@ -42,7 +42,7 @@ const characters = [
   {
     id: 3,
     name: "Techy",
-    sprite: "/images/graffiti-king.png", // Using generated image for now
+    sprite: "graffiti-king.png", // Using generated image for now
     hp: 170,
     attack: 150,
     defense: 150,
@@ -61,7 +61,7 @@ const characters = [
   {
     id: 4,
     name: "Cool Vibe YN",
-    sprite: "/images/beatbox-wizard.png", // Using generated image for now
+    sprite: "beatbox-wizard.png", // Using generated image for now
     hp: 190,
     attack: 170,
     defense: 130,
@@ -80,7 +80,7 @@ const characters = [
   {
     id: 5,
     name: "9-5 Homie",
-    sprite: "/images/flow-master.png", // Using generated image for now
+    sprite: "flow-master.png", // Using generated image for now
     hp: 210,
     attack: 130,
     defense: 150,
@@ -99,7 +99,7 @@ const characters = [
   {
     id: 6,
     name: "All Jokes Roaster",
-    sprite: "/images/street-styler.png", // Using generated image for now
+    sprite: "street-styler.png", // Using generated image for now
     hp: 180,
     attack: 170,
     defense: 110,
@@ -118,7 +118,7 @@ const characters = [
   {
     id: 7,
     name: "Closet Nerd",
-    sprite: "/images/boom-bap.png", // Using generated image for now
+    sprite: "boom-bap.png", // Using generated image for now
     hp: 200,
     attack: 140,
     defense: 100,
@@ -137,7 +137,7 @@ const characters = [
   {
     id: 8,
     name: "Dysfunctional YN",
-    sprite: "/images/mixtape-master.png", // Using generated image for now
+    sprite: "mixtape-master.png", // Using generated image for now
     hp: 160,
     attack: 190,
     defense: 90,
@@ -160,7 +160,7 @@ const opponents = [
   {
     id: 101,
     name: "Functional Addict",
-    sprite: "/images/copycat.png", // Using generated image for now
+    sprite: "copycat.png", // Using generated image for now
     hp: 200,
     attack: 150,
     defense: 100,
@@ -179,7 +179,7 @@ const opponents = [
   {
     id: 102,
     name: "Gamer Unemployed",
-    sprite: "/images/pop-sellout.png", // Using generated image for now
+    sprite: "pop-sellout.png", // Using generated image for now
     hp: 210,
     attack: 150,
     defense: 190,
@@ -198,7 +198,7 @@ const opponents = [
   {
     id: 103,
     name: "Houseless Hustler",
-    sprite: "/images/internet-troll.png", // Using generated image for now
+    sprite: "internet-troll.png", // Using generated image for now
     hp: 220,
     attack: 170,
     defense: 110,
@@ -217,7 +217,7 @@ const opponents = [
   {
     id: 104,
     name: "Night Stalker",
-    sprite: "/images/one-hit-wonder.png", // Using generated image for now
+    sprite: "one-hit-wonder.png", // Using generated image for now
     hp: 160,
     attack: 200,
     defense: 100,
@@ -236,7 +236,7 @@ const opponents = [
   {
     id: 105,
     name: "Techbro Rich",
-    sprite: "/images/mumble-rapper.png", // Using generated image for now
+    sprite: "mumble-rapper.png", // Using generated image for now
     hp: 180,
     attack: 180,
     defense: 120,
@@ -419,7 +419,7 @@ function populateCharacterSelection() {
     card.className = "character-card";
     card.dataset.id = character.id;
     card.innerHTML = `
-      <img src="${character.sprite}" alt="${character.name}">
+      <img src="public/images/${character.sprite}" alt="${character.name}">
       <p>${character.name}</p>
     `;
     card.addEventListener("click", () => selectCharacter(character));
@@ -461,7 +461,7 @@ function updateTeamSlots() {
   // Fill slots with selected characters
   playerTeam.forEach((character, index) => {
     if (index < slots.length) {
-      slots[index].innerHTML = `<img src="${character.sprite}" alt="${character.name}">`;
+      slots[index].innerHTML = `<img src="public/images/${character.sprite}" alt="${character.name}">`;
     }
   });
 }
@@ -531,12 +531,12 @@ function updateBattleUI() {
   // Update player character display
   document.getElementById("player-name").textContent = activePlayerCharacter.name;
   document.getElementById("player-hp").textContent = `${activePlayerCharacter.hp}/${playerTeam[playerTeam.findIndex(c => c.id === activePlayerCharacter.id)].hp}`;
-  document.getElementById("player-sprite").src = activePlayerCharacter.sprite;
+  document.getElementById("player-sprite").src = `public/images/${activePlayerCharacter.sprite}`;
   
   // Update opponent display
   document.getElementById("opponent-name").textContent = activeOpponent.name;
   document.getElementById("opponent-hp").textContent = `${activeOpponent.hp}/${opponents[opponentIndex].hp}`;
-  document.getElementById("opponent-sprite").src = activeOpponent.sprite;
+  document.getElementById("opponent-sprite").src = `public/images/${activeOpponent.sprite}`;
   
   // Update HP bars
   const playerMaxHP = playerTeam[playerTeam.findIndex(c => c.id === activePlayerCharacter.id)].hp;
@@ -1412,7 +1412,7 @@ function switchYN() {
     const option = document.createElement("div");
     option.className = `switch-option ${isFainted ? "fainted" : ""} ${isCurrentActive ? "current" : ""}`;
     option.innerHTML = `
-      <img src="${character.sprite}" alt="${character.name}">
+      <img src="public/images/${character.sprite}" alt="${character.name}">
       <p>${character.name}</p>
       <div class="hp-indicator">
         <div class="hp-indicator-fill" style="width: ${(character.hp / playerTeam[index].hp) * 100}%"></div>
