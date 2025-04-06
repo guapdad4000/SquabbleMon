@@ -1868,7 +1868,7 @@ function executeOpponentMove(move) {
       playerCharacterElement.appendChild(imposterHitElement);
       
       // The animation will handle the visual effects and automatically fade out
-      // Remove the element after the animation completes
+      // Remove the element after the animation completes (imposterHitEffect animation)
       setTimeout(() => {
         imposterHitElement.remove();
       }, 1500);
@@ -2969,6 +2969,9 @@ function showNextOpponentScreen(isFinalOpponent = false) {
   const continueButton = document.getElementById("continue-battle");
   const againButton = document.querySelector("#game-over button:not(#continue-battle)");
   
+  // Check if we've completed a full fade (3 battles)
+  const isFullFadeCompleted = battleCounter === 0;
+  
   // Customize the message based on whether this is the final opponent
   if (isFinalOpponent) {
     const remainingBattles = 3 - battleCounter;
@@ -2981,7 +2984,16 @@ function showNextOpponentScreen(isFinalOpponent = false) {
   document.getElementById("fade-counter").textContent = `Fades: ${fadeCount}`;
   document.getElementById("win-lose-gif").src = resultGifs.win[Math.floor(Math.random() * resultGifs.win.length)];
   
-  continueButton.style.display = "block";
+  // Only show the "Next Fade" button if player has completed a full fade (3 battles)
+  continueButton.style.display = isFullFadeCompleted ? "block" : "none";
+  continueButton.textContent = isFullFadeCompleted ? "Next Fade" : "Continue";
+  
+  // For battles within a fade, show the "Continue" button instead
+  if (!isFullFadeCompleted) {
+    continueButton.style.display = "block";
+    continueButton.textContent = "Continue";
+  }
+  
   againButton.style.display = "none";
   document.getElementById("share-buttons").style.display = "none";
   

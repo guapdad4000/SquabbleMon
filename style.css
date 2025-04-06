@@ -292,7 +292,7 @@ body {
   max-width: 750px;
   height: 600px;
   max-height: 650px;
-  background-size: contain;
+  background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
   border: 4px solid var(--pixel-border);
@@ -312,7 +312,19 @@ body {
   min-height: 320px;
   background-repeat: no-repeat;
   background-position: center center;
-  background-size: contain;
+  background-size: cover;
+}
+
+/* Horizontal line behind characters, in front of background */
+#horizontal-line {
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background-color: var(--pixel-border);
+  bottom: 25%;
+  left: 0;
+  z-index: 2; /* Above background (z-index: 1) but below character sprites (z-index: 10) */
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
 }
 #ui-overlay {
   position: absolute;
@@ -516,6 +528,27 @@ body {
 /* Status effect application animation */
 .status-bounce {
   animation: statusBounce 0.7s ease-out;
+}
+
+/* Imposter hit effect animation - updated */
+.imposter-hit-effect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 0, 0, 0.3);
+  box-shadow: 0 0 20px 5px rgba(255, 0, 0, 0.5);
+  border-radius: 10px;
+  pointer-events: none;
+  animation: imposterHitEffect 1.5s forwards;
+  z-index: 15;
+}
+
+@keyframes imposterHitEffect {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.1); box-shadow: 0 0 30px 8px rgba(255, 0, 0, 0.7); }
+  100% { opacity: 0; transform: scale(1.2); }
 }
 
 /* HP Bar Area Structure - Player ABOVE, Opponent BELOW */
@@ -1052,16 +1085,7 @@ body {
   object-fit: contain;
 }
 
-.imposter-hit-effect {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 10;
-  animation: imposterHit 1.5s ease-in-out;
-  pointer-events: none;
-}
+/* This is now handled by the updated version above using imposterHitEffect */
 
 @keyframes imposterHit {
   0% { box-shadow: inset 0 0 0 0 rgba(255, 0, 0, 0); background-color: rgba(255, 0, 0, 0); }
