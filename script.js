@@ -754,16 +754,15 @@ const attackAnimations = {
   "tech": "https://i.imgur.com/2hTPscl.gif",    // Leaf/plant effect
   "status": "https://i.imgur.com/HNQ2XDC.gif",  // Status/purple effect
   
-  // Keep original types for compatibility
-  "Fire": "https://i.imgur.com/W7q1AoR.gif",
-  "Water": "https://i.imgur.com/WqLGZHb.gif",
-  "Plant": "https://i.imgur.com/2hTPscl.gif",
-  "Electric": "https://i.imgur.com/Z6VXMwT.gif",
-  "Dark": "https://i.imgur.com/HNQ2XDC.gif",
-  "Air": "https://i.imgur.com/yaNJUVn.gif",
-  "Normal": "https://i.imgur.com/HNQ2XDC.gif",
-  "Rock": "https://i.imgur.com/Z8UgFb1.gif",
-  "Money": "https://i.imgur.com/xt.gif"
+  // Standard types 
+  "Fire": "https://i.imgur.com/W7q1AoR.gif",    // Fire animation
+  "Water": "https://i.imgur.com/WqLGZHb.gif",   // Water animation
+  "Plant": "https://i.imgur.com/2hTPscl.gif",   // Plant animation
+  "Electric": "https://i.imgur.com/Z6VXMwT.gif", // Electric animation
+  "Dark": "https://i.imgur.com/HNQ2XDC.gif",    // Dark animation
+  "Air": "https://i.imgur.com/yaNJUVn.gif",     // Air animation
+  "Normal": "https://i.imgur.com/B1tVuGQ.gif",  // Normal animation
+  "Rock": "https://i.imgur.com/Z8UgFb1.gif"     // Rock animation
 };
 
 // Status effect animations
@@ -780,8 +779,7 @@ const statusAnimations = {
   "paralysis": "https://i.imgur.com/fP0lG2M.gif", // Use dazed animation
   "sleep": "https://i.imgur.com/PpxuqBD.gif", // Use baked animation
   "poison": "https://i.imgur.com/7pIOdST.gif", // Use slimed animation
-  "heal": "https://i.imgur.com/684Bb2r.gif",
-  "buff": "https://i.imgur.com/XZ5L.gif"
+  "heal": "https://i.imgur.com/684Bb2r.gif"   // Healing animation
 };
 
 // Win/Lose GIFs
@@ -1514,11 +1512,18 @@ function useMove(move) {
   const opponentSprite = document.getElementById("opponent-sprite");
   
   // Create and display attack animation
-  if (attackAnimations[move.type]) {
+  console.log("Attack type:", move.type);
+  console.log("Available animations:", Object.keys(attackAnimations));
+  
+  // Get the appropriate animation based on type
+  const animationUrl = attackAnimations[move.type];
+  console.log("Animation URL:", animationUrl);
+  
+  if (animationUrl) {
     // Create animation element
     const attackAnimation = document.createElement("div");
     attackAnimation.className = "attack-effect";
-    attackAnimation.style.backgroundImage = `url(${attackAnimations[move.type]})`;
+    attackAnimation.style.backgroundImage = `url(${animationUrl})`;
     
     // Position the animation centered on the opponent sprite
     const opponentRect = opponentSprite.getBoundingClientRect();
@@ -1545,6 +1550,8 @@ function useMove(move) {
     setTimeout(() => {
       attackAnimation.remove();
     }, 1000);
+  } else {
+    console.log("No animation found for type:", move.type);
   }
   
   // Add a class based on the move type for visual feedback
@@ -1652,11 +1659,18 @@ function executeOpponentMove(move) {
   const playerSprite = document.getElementById("player-sprite");
   
   // Create and display attack animation
-  if (attackAnimations[move.type]) {
+  console.log("Opponent attack type:", move.type);
+  console.log("Available animations:", Object.keys(attackAnimations));
+  
+  // Get the appropriate animation based on type
+  const animationUrl = attackAnimations[move.type];
+  console.log("Animation URL for opponent:", animationUrl);
+  
+  if (animationUrl) {
     // Create animation element
     const attackAnimation = document.createElement("div");
     attackAnimation.className = "attack-effect";
-    attackAnimation.style.backgroundImage = `url(${attackAnimations[move.type]})`;
+    attackAnimation.style.backgroundImage = `url(${animationUrl})`;
     
     // Position the animation centered on the player sprite
     const playerRect = playerSprite.getBoundingClientRect();
@@ -1683,6 +1697,8 @@ function executeOpponentMove(move) {
     setTimeout(() => {
       attackAnimation.remove();
     }, 1000);
+  } else {
+    console.log("No animation found for opponent type:", move.type);
   }
   
   // Add a class based on the move type for visual feedback
