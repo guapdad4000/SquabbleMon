@@ -1520,14 +1520,23 @@ function useMove(move) {
     attackAnimation.className = "attack-effect";
     attackAnimation.style.backgroundImage = `url(${attackAnimations[move.type]})`;
     
-    // Position the animation near the opponent
+    // Position the animation centered on the opponent sprite
+    const opponentRect = opponentSprite.getBoundingClientRect();
+    const battleArenaRect = battleArena.getBoundingClientRect();
+    
+    // Calculate position relative to battle arena
+    const left = opponentRect.left - battleArenaRect.left + (opponentRect.width / 2) - 75;
+    const top = opponentRect.top - battleArenaRect.top + (opponentRect.height / 2) - 75;
+    
     attackAnimation.style.position = "absolute";
-    attackAnimation.style.left = `${opponentSprite.offsetLeft - 20}px`;
-    attackAnimation.style.top = `${opponentSprite.offsetTop - 20}px`;
+    attackAnimation.style.left = `${left}px`;
+    attackAnimation.style.top = `${top}px`;
     attackAnimation.style.width = "150px";
     attackAnimation.style.height = "150px";
-    attackAnimation.style.backgroundSize = "cover";
-    attackAnimation.style.zIndex = "10";
+    attackAnimation.style.backgroundSize = "contain";
+    attackAnimation.style.backgroundPosition = "center center";
+    attackAnimation.style.backgroundRepeat = "no-repeat";
+    attackAnimation.style.zIndex = "100";
     
     // Add to battle arena
     battleArena.appendChild(attackAnimation);
@@ -1649,14 +1658,23 @@ function executeOpponentMove(move) {
     attackAnimation.className = "attack-effect";
     attackAnimation.style.backgroundImage = `url(${attackAnimations[move.type]})`;
     
-    // Position the animation near the player
+    // Position the animation centered on the player sprite
+    const playerRect = playerSprite.getBoundingClientRect();
+    const battleArenaRect = battleArena.getBoundingClientRect();
+    
+    // Calculate position relative to battle arena
+    const left = playerRect.left - battleArenaRect.left + (playerRect.width / 2) - 75;
+    const top = playerRect.top - battleArenaRect.top + (playerRect.height / 2) - 75;
+    
     attackAnimation.style.position = "absolute";
-    attackAnimation.style.left = `${playerSprite.offsetLeft - 20}px`;
-    attackAnimation.style.top = `${playerSprite.offsetTop - 20}px`;
+    attackAnimation.style.left = `${left}px`;
+    attackAnimation.style.top = `${top}px`;
     attackAnimation.style.width = "150px";
     attackAnimation.style.height = "150px";
-    attackAnimation.style.backgroundSize = "cover";
-    attackAnimation.style.zIndex = "10";
+    attackAnimation.style.backgroundSize = "contain";
+    attackAnimation.style.backgroundPosition = "center center";
+    attackAnimation.style.backgroundRepeat = "no-repeat";
+    attackAnimation.style.zIndex = "100";
     
     // Add to battle arena
     battleArena.appendChild(attackAnimation);
@@ -1972,14 +1990,23 @@ function applyStatusEffect(character, statusType, duration, side) {
     statusAnimation.className = "status-effect";
     statusAnimation.style.backgroundImage = `url(${statusAnimations[statusType]})`;
     
-    // Position the animation on the character
+    // Position the animation centered on the character
+    const targetRect = targetSprite.getBoundingClientRect();
+    const battleArenaRect = battleArena.getBoundingClientRect();
+    
+    // Calculate position relative to battle arena
+    const left = targetRect.left - battleArenaRect.left + (targetRect.width / 2) - 60;
+    const top = targetRect.top - battleArenaRect.top + (targetRect.height / 2) - 60;
+    
     statusAnimation.style.position = "absolute";
-    statusAnimation.style.left = `${targetSprite.offsetLeft - 10}px`;
-    statusAnimation.style.top = `${targetSprite.offsetTop - 10}px`;
+    statusAnimation.style.left = `${left}px`;
+    statusAnimation.style.top = `${top}px`;
     statusAnimation.style.width = "120px";
     statusAnimation.style.height = "120px";
-    statusAnimation.style.backgroundSize = "cover";
-    statusAnimation.style.zIndex = "10";
+    statusAnimation.style.backgroundSize = "contain";
+    statusAnimation.style.backgroundPosition = "center center";
+    statusAnimation.style.backgroundRepeat = "no-repeat";
+    statusAnimation.style.zIndex = "100";
     
     // Add to battle arena
     battleArena.appendChild(statusAnimation);

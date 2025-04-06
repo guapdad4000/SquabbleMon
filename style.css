@@ -287,6 +287,9 @@ body {
   background: transparent;
   overflow: hidden;
   min-height: 320px;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
 }
 #ui-overlay {
   position: absolute;
