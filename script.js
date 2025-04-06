@@ -462,6 +462,139 @@ const characters = [
       { name: "Ramadan Strength", power: 0, accuracy: 100, type: "Normal", description: "Draws on spiritual discipline to boost all stats." },
       { name: "Hospitality Surprise", power: 75, accuracy: 80, type: "Normal", description: "Disarms opponent with kindness before striking." }
     ]
+  },
+  {
+    id: 24,
+    name: "Techbro Rich",
+    sprite: "https://i.imgur.com/eJpAcGt.png", 
+    hp: 180,
+    attack: 180,
+    defense: 120,
+    speed: 190,
+    critRate: 0.15,
+    type: "Electric",
+    status: "normal",
+    description: "Disrupting the Squabblemon scene, one NFT at a time. Very rich.",
+    moves: [
+      { name: "Tesla Taze", power: 55, accuracy: 90, type: "Electric", description: "Electric shock that may cause paralysis.", pp: 15, maxPp: 15 },
+      { name: "NFT Nuke", power: 85, accuracy: 70, type: "Normal", description: "Powerful attack with lower accuracy.", pp: 5, maxPp: 5 },
+      { name: "VC Funded Flex", power: 0, accuracy: 100, type: "Electric", description: "Raises speed with venture capital backing.", pp: 10, maxPp: 10 },
+      { name: "Crypto Crash", power: 70, accuracy: 80, type: "Dark", description: "Financial attack that can cause confusion.", pp: 10, maxPp: 10 }
+    ]
+  },
+  {
+    id: 25,
+    name: "Scammer",
+    sprite: "https://i.imgur.com/tvAPXl8.png", 
+    hp: 170,
+    attack: 150,
+    defense: 110,
+    speed: 190,
+    critRate: 0.15,
+    type: "Dark",
+    status: "normal",
+    description: "Probably not who they say they are. Watch your wallet.",
+    moves: [
+      { name: "Catfish Swipe", power: 50, accuracy: 95, type: "Dark", description: "Deceptive attack with good accuracy.", pp: 15, maxPp: 15 },
+      { name: "Cash App Cripple", power: 75, accuracy: 80, type: "Electric", description: "Financial attack that may cause paralysis.", pp: 10, maxPp: 10 },
+      { name: "Fake Link Flick", power: 5, accuracy: 100, type: "Dark", description: "Raises speed through deception.", pp: 10, maxPp: 10 },
+      { name: "Identity Theft", power: 65, accuracy: 85, type: "Dark", description: "Steals opponent's identity for extra damage.", pp: 10, maxPp: 10 }
+    ]
+  },
+  {
+    id: 26,
+    name: "Smoker Jr",
+    sprite: "https://i.imgur.com/vdaAi7h.png", 
+    hp: 190,
+    attack: 120,
+    defense: 130,
+    speed: 150,
+    critRate: 0.1,
+    type: "Air",
+    status: "normal",
+    description: "Permanently hazy. Might forget what move it was using mid-battle.",
+    moves: [
+      { name: "Cloud Cough", power: 40, accuracy: 100, type: "Air", description: "Smoky attack that may lower accuracy.", pp: 15, maxPp: 15 },
+      { name: "Bong Rip Blast", power: 45, accuracy: 95, type: "Fire", description: "Hazy attack that may cause sleep.", pp: 15, maxPp: 15 },
+      { name: "Smoke Screen Stunt", power: 0, accuracy: 100, type: "Normal", description: "Uses smoke to raise defense.", pp: 10, maxPp: 10 },
+      { name: "Dazed Confusion", power: 60, accuracy: 85, type: "Dark", description: "Confused attack that may cause confusion to both sides.", pp: 10, maxPp: 10 }
+    ]
+  },
+  {
+    id: 27,
+    name: "Suburban Kid",
+    sprite: "https://i.imgur.com/LKtVgCn.png", 
+    hp: 180,
+    attack: 130,
+    defense: 140,
+    speed: 200,
+    critRate: 0.1,
+    type: "Normal",
+    status: "normal",
+    description: "Just grilled. Enjoys well-maintained lawns and quiet evenings.",
+    moves: [
+      { name: "Lawnmower Lash", power: 50, accuracy: 95, type: "Plant", description: "Plant attack using lawn care tools.", pp: 15, maxPp: 15 },
+      { name: "BBQ Blaze", power: 55, accuracy: 85, type: "Fire", description: "Grilling attack that may cause burn.", pp: 10, maxPp: 10 },
+      { name: "Picket Fence", power: 0, accuracy: 100, type: "Normal", description: "Uses suburban defenses to boost defense.", pp: 10, maxPp: 10 },
+      { name: "HOA Citation", power: 45, accuracy: 100, type: "Normal", description: "Bureaucratic attack with perfect accuracy.", pp: 15, maxPp: 15 }
+    ]
+  },
+  {
+    id: 28,
+    name: "Bikelife YN",
+    sprite: "https://i.imgur.com/i6xU3C7.png", 
+    hp: 185,
+    attack: 150,
+    defense: 125,
+    speed: 190,
+    critRate: 0.15,
+    type: "Electric",
+    status: "normal",
+    description: "Swerving through traffic and battles. Speed is everything.",
+    moves: [
+      { name: "Wheelie Whip", power: 55, accuracy: 95, type: "Normal", description: "Trick attack with good accuracy.", pp: 15, maxPp: 15 },
+      { name: "Exhaust Burn", power: 60, accuracy: 90, type: "Fire", description: "Bike exhaust attack that may cause burn.", pp: 10, maxPp: 10 },
+      { name: "Ride Out", power: 0, accuracy: 100, type: "Electric", description: "Uses bike momentum to boost speed.", pp: 10, maxPp: 10 },
+      { name: "High-Speed Trick", power: 60, accuracy: 100, type: "Normal", description: "Impressive trick that lowers opponent's attack.", pp: 10, maxPp: 10 }
+    ]
+  },
+  {
+    id: 29,
+    name: "Hooper",
+    sprite: "https://i.imgur.com/nmL74YQ.png", 
+    hp: 210,
+    attack: 175,
+    defense: 140,
+    speed: 135,
+    critRate: 0.15,
+    type: "Fire",
+    status: "normal",
+    description: "Got handles and heart. Plays above the rim and talks trash.",
+    moves: [
+      { name: "Ankle Breaker Combo", power: 55, accuracy: 85, type: "Normal", description: "Quick moves that may lower opponent's speed.", pp: 15, maxPp: 15 },
+      { name: "Heat Check", power: 75, accuracy: 75, type: "Fire", description: "High-risk, high-reward scoring move.", pp: 10, maxPp: 10 },
+      { name: "Hoop Harder", power: 70, accuracy: 85, type: "Normal", description: "Aggressive dunk that may cause flinching.", pp: 10, maxPp: 10 },
+      { name: "Support Bunny", power: 0, accuracy: 100, type: "Normal", description: "Uses support to heal HP.", pp: 5, maxPp: 5 }
+    ]
+  },
+  {
+    id: 30,
+    name: "Live Streamer",
+    sprite: "https://i.imgur.com/3rCsqGF.png", 
+    hp: 175,
+    attack: 120,
+    defense: 115,
+    speed: 185,
+    critRate: 0.1,
+    type: "Electric",
+    status: "normal",
+    description: "'Yo, chat! Smash that like button!' Always online, never AFK.",
+    moves: [
+      { name: "Stan Submission", power: 40, accuracy: 100, type: "Normal", description: "Fan-powered attack with perfect accuracy.", pp: 20, maxPp: 20 },
+      { name: "Follower Frenzy", power: 10, accuracy: 100, type: "Normal", description: "Uses online clout to boost speed.", pp: 10, maxPp: 10 },
+      { name: "Donate Debuff", power: 50, accuracy: 90, type: "Dark", description: "Monetization attack that lowers defense.", pp: 10, maxPp: 10 },
+      { name: "Subscribe Spam", power: 55, accuracy: 85, type: "Electric", description: "Annoying notification attack with flinch chance.", pp: 15, maxPp: 15 }
+    ]
   }
 ];
 
