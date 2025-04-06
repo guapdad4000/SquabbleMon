@@ -257,9 +257,10 @@ body {
   position: absolute;
   bottom: 2px;
   right: 5px;
-  font-size: 0.6em;
-  opacity: 0.8;
+  font-size: 0.75em;
+  opacity: 0.9;
   color: var(--pixel-text);
+  font-weight: bold;
 }
 #items button img {
   width: 10px;

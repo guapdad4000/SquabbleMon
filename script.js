@@ -1110,6 +1110,11 @@ function resetBattleModifiers() {
 }
 
 function determineFirstTurn() {
+  // Always start with player on first turn of the battle
+  if (battleCounter === 0 && opponentIndex === 0) {
+    return "player";
+  }
+  
   // Calculate effective speed considering modifiers and status effects
   const playerSpeed = activePlayerCharacter.speed * playerStatModifiers.speed;
   const opponentSpeed = activeOpponent.speed * opponentStatModifiers.speed;
@@ -1832,6 +1837,11 @@ function executeOpponentMove(move) {
 }
 
 function calculateDamage(attacker, defender, move, attackerMods, defenderMods) {
+  // For status moves or moves with 0 power, return 0 damage
+  if (move.type === "status" || move.power === 0) {
+    return 0;
+  }
+  
   // Base damage calculation
   let damage = Math.floor((attacker.attack * attackerMods.attack * move.power) / 110);
   
@@ -1862,7 +1872,7 @@ function calculateDamage(attacker, defender, move, attackerMods, defenderMods) {
     showFloatingLog("CRITICAL HIT!");
   }
   
-  // Ensure minimum damage
+  // Ensure minimum damage for actual attack moves
   return Math.max(1, damage);
 }
 
