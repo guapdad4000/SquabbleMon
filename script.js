@@ -1546,6 +1546,7 @@ function useMove(move) {
   // Add visual effect based on move type
   const battleArena = document.getElementById("battle-arena");
   const opponentSprite = document.getElementById("opponent-sprite");
+  const playerSprite = document.getElementById("player-sprite");
   
   // Create speed lines effect for dynamic attacks
   if (move.power > 50) {
@@ -1560,7 +1561,9 @@ function useMove(move) {
   }
   
   // Make player sprite move forward when attacking
-  playerSprite.classList.add("attack-lunge");
+  if (playerSprite) {
+    playerSprite.classList.add("attack-lunge");
+  }
   // Apply attack animation
   setPlayerAnimation("attack");
   
@@ -1606,7 +1609,10 @@ function useMove(move) {
   
   // Remove lunge animation after a short delay
   setTimeout(() => {
-    playerSprite.classList.remove("attack-lunge");
+    const playerElement = document.getElementById("player-sprite");
+    if (playerElement) {
+      playerElement.classList.remove("attack-lunge");
+    }
   }, 300);
   
   // Add a class based on the move type for visual feedback
@@ -1720,6 +1726,7 @@ function executeOpponentMove(move) {
   // Add visual effect based on move type
   const battleArena = document.getElementById("battle-arena");
   const playerSprite = document.getElementById("player-sprite");
+  const opponentSprite = document.getElementById("opponent-sprite");
   
   // Create speed lines effect for powerful attacks
   if (move.power > 50) {
@@ -1735,7 +1742,9 @@ function executeOpponentMove(move) {
   }
   
   // Make opponent sprite move forward when attacking
-  opponentSprite.classList.add("attack-lunge-reverse");
+  if (opponentSprite) {
+    opponentSprite.classList.add("attack-lunge-reverse");
+  }
   // Apply attack animation
   setOpponentAnimation("attack");
   
@@ -1781,7 +1790,10 @@ function executeOpponentMove(move) {
   
   // Remove lunge animation after a short delay
   setTimeout(() => {
-    opponentSprite.classList.remove("attack-lunge-reverse");
+    const opponentElement = document.getElementById("opponent-sprite");
+    if (opponentElement) {
+      opponentElement.classList.remove("attack-lunge-reverse");
+    }
   }, 300);
   
   // Add a class based on the move type for visual feedback
@@ -1800,7 +1812,10 @@ function executeOpponentMove(move) {
     
     // Remove animation
     setTimeout(() => {
-      opponentSprite.classList.remove("attack-animation-reverse");
+      const opponentElement = document.getElementById("opponent-sprite");
+      if (opponentElement) {
+        opponentElement.classList.remove("attack-animation-reverse");
+      }
       setOpponentAnimation("default");
     }, 1000);
     return;
@@ -1813,7 +1828,10 @@ function executeOpponentMove(move) {
     
     // Remove animation
     setTimeout(() => {
-      opponentSprite.classList.remove("attack-animation-reverse");
+      const opponentElement = document.getElementById("opponent-sprite");
+      if (opponentElement) {
+        opponentElement.classList.remove("attack-animation-reverse");
+      }
       setOpponentAnimation("default");
     }, 1000);
     return;
@@ -1868,7 +1886,10 @@ function executeOpponentMove(move) {
       setTimeout(() => endOpponentTurn(), 1000);
     }
     // Remove animation
-    opponentSprite.classList.remove("attack-animation-reverse");
+    const opponentElement = document.getElementById("opponent-sprite");
+    if (opponentElement) {
+      opponentElement.classList.remove("attack-animation-reverse");
+    }
     setOpponentAnimation("default");
   }, 1000);
 }
