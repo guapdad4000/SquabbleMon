@@ -720,11 +720,10 @@ const items = {
   },
   crashdummy: {
     name: "Crash Dummy",
-    effect: "defUp",
-    value: 1.5,
-    duration: 2,
-    description: "Raises Defense by 50% for 2 turns",
-    icon: "🛡️"
+    effect: "imposter",
+    duration: 1,
+    description: "Sends out an imposter to take a hit for a turn",
+    icon: "🎭"
   }
 };
 
@@ -1855,21 +1854,63 @@ function executeOpponentMove(move) {
   
   // Apply damage
   setTimeout(() => {
-    activePlayerCharacter.hp = Math.max(0, activePlayerCharacter.hp - damage);
-    updateBattleUI();
+    // Check if player has an imposter (Crash Dummy) effect active
+    const hasImposterEffect = playerActiveItemEffects.some(effect => effect.effect === "imposter");
     
-    // Show damage in battle log
-    addToBattleLog(`${activeOpponent.name} dealt ${damage} damage to ${activePlayerCharacter.name}!`);
-    
-    // Show effectiveness message if applicable
-    const effectiveness = calculateTypeEffectiveness(move.type, activePlayerCharacter.type);
-    let message = `${damage} damage!`;
-    if (effectiveness > 1.2) {
-      message = `Super effective! ${damage} damage!`;
-    } else if (effectiveness < 0.8) {
-      message = `Not very effective... ${damage} damage.`;
+    if (hasImposterEffect) {
+      // The imposter (Crash Dummy) takes the hit instead
+      addToBattleLog("The Crash Dummy imposter took the hit instead!");
+      
+      // Show a visual effect for the imposter taking damage
+      const playerCharacterElement = document.getElementById("player-character");
+      const imposterHitElement = document.createElement("div");
+      imposterHitElement.className = "imposter-hit-effect";
+      imposterHitElement.style.position = "absolute";
+      imposterHitElement.style.top = "0";
+      imposterHitElement.style.left = "0";
+      imposterHitElement.style.width = "100%";
+      imposterHitElement.style.height = "100%";
+      imposterHitElement.style.backgroundColor = "rgba(255, 0, 0, 0.3)";
+      imposterHitElement.style.boxShadow = "0 0 20px 5px rgba(255, 0, 0, 0.5)";
+      imposterHitElement.style.borderRadius = "10px";
+      imposterHitElement.style.transition = "opacity 0.5s";
+      imposterHitElement.style.pointerEvents = "none";
+      playerCharacterElement.appendChild(imposterHitElement);
+      
+      // Fade out and remove the hit effect
+      setTimeout(() => {
+        imposterHitElement.style.opacity = "0";
+        setTimeout(() => {
+          imposterHitElement.remove();
+        }, 500);
+      }, 500);
+      
+      // Remove the imposter effect
+      playerActiveItemEffects = playerActiveItemEffects.filter(effect => effect.effect !== "imposter");
+      
+      addToBattleLog(`The Crash Dummy took ${damage} damage and shattered!`);
+      showFloatingLog("Crash Dummy shattered!");
+      
+      // Don't apply damage to the player
+      updateBattleUI();
+    } else {
+      // Normal damage process
+      activePlayerCharacter.hp = Math.max(0, activePlayerCharacter.hp - damage);
+      updateBattleUI();
+      
+      // Show damage in battle log
+      addToBattleLog(`${activeOpponent.name} dealt ${damage} damage to ${activePlayerCharacter.name}!`);
+      
+      // Show effectiveness message if applicable
+      const effectiveness = calculateTypeEffectiveness(move.type, activePlayerCharacter.type);
+      let message = `${damage} damage!`;
+      if (effectiveness > 1.2) {
+        message = `Super effective! ${damage} damage!`;
+      } else if (effectiveness < 0.8) {
+        message = `Not very effective... ${damage} damage.`;
+      }
+      showFloatingLog(message);
     }
-    showFloatingLog(message);
     
     // Apply potential hit effects (status changes, etc.)
     applyHitEffects(move, "opponent");
@@ -2647,8 +2688,8 @@ function useItem(itemType) {
       activePlayerCharacter.hp = Math.min(maxHp, activePlayerCharacter.hp + item.value);
       
       // Add visual healing effect
-      const playerSpriteElement = document.getElementById("player-sprite");
-      playerSpriteElement.classList.add("heal-effect");
+      const healingPlayerSprite = document.getElementById("player-sprite");
+      healingPlayerSprite.classList.add("heal-effect");
       
       // Create healing particles
       const battleArenaElement = document.getElementById("battle-arena");
@@ -2663,7 +2704,7 @@ function useItem(itemType) {
         healParticle.style.zIndex = "50";
         
         // Random positions around player
-        const playerRect = playerSpriteElement.getBoundingClientRect();
+        const playerRect = healingPlayerSprite.getBoundingClientRect();
         const battleArenaRect = battleArenaElement.getBoundingClientRect();
         
         const left = playerRect.left - battleArenaRect.left + Math.random() * playerRect.width;
@@ -2691,7 +2732,7 @@ function useItem(itemType) {
       
       // Remove heal effect class after animation completes
       setTimeout(() => {
-        playerSpriteElement.classList.remove("heal-effect");
+        healingPlayerSprite.classList.remove("heal-effect");
       }, 1500);
       
       addToBattleLog(`${activePlayerCharacter.name} recovered ${healAmount} HP!`);
@@ -2720,25 +2761,53 @@ function useItem(itemType) {
       }
       break;
       
-    case "defUp":
-      // Apply the stat modifier
-      playerStatModifiers.defense *= item.value;
-      addToBattleLog(`${activePlayerCharacter.name}'s Defense rose sharply!`);
-      showFloatingLog("DEF ↑↑");
+    case "imposter":
+      // Send out an imposter to take a hit for a turn
+      addToBattleLog(`${activePlayerCharacter.name} sent out a Crash Dummy imposter!`);
+      showFloatingLog("Imposter deployed!");
+      
+      // Add visual effect - create a duplicated character with slightly different appearance
+      const imposterPlayerSprite = document.getElementById("player-sprite");
+      if (imposterPlayerSprite) {
+        // Create the dummy element
+        const imposterElement = document.createElement("div");
+        imposterElement.className = "imposter-effect";
+        imposterElement.innerHTML = `<img src="${activePlayerCharacter.sprite}" alt="Imposter">`;
+        
+        // Style the imposter
+        imposterElement.style.position = "absolute";
+        imposterElement.style.zIndex = "6";
+        imposterElement.style.filter = "brightness(0.9) contrast(1.1) hue-rotate(15deg)";
+        imposterElement.style.transform = "translateX(-20px) scale(0.9)";
+        imposterElement.style.opacity = "0.85";
+        
+        // Add to the player's area
+        const playerContainer = document.getElementById("player-character");
+        playerContainer.appendChild(imposterElement);
+        
+        // Remove after visual effect completes
+        setTimeout(() => {
+          imposterElement.style.transform = "translateX(-40px) scale(0.8)";
+          imposterElement.style.opacity = "0.6";
+        }, 500);
+        
+        setTimeout(() => {
+          imposterElement.remove();
+        }, 2000);
+      }
       
       // Add to active effects with duration
       if (item.duration) {
-        // Remove any existing defense boost effects first to prevent stacking
-        playerActiveItemEffects = playerActiveItemEffects.filter(effect => effect.effect !== "defUp");
+        // Remove any existing imposter effects first to prevent stacking
+        playerActiveItemEffects = playerActiveItemEffects.filter(effect => effect.effect !== "imposter");
         
         // Add the new effect
         playerActiveItemEffects.push({
           itemType: itemType,
           effect: item.effect,
-          value: item.value,
           remainingDuration: item.duration
         });
-        addToBattleLog(`The effect will last for ${item.duration} turns.`);
+        addToBattleLog(`The Crash Dummy will take the next hit for ${activePlayerCharacter.name}!`);
       }
       break;
       
@@ -3020,13 +3089,13 @@ function healPlayerTeam() {
   
   // Apply visual heal effect to active player character
   if (activePlayerCharacter) {
-    const playerSpriteElement = document.getElementById("player-sprite");
-    if (playerSpriteElement) {
-      playerSpriteElement.classList.add("heal-effect");
+    const healTeamSprite = document.getElementById("player-sprite");
+    if (healTeamSprite) {
+      healTeamSprite.classList.add("heal-effect");
       
       // Remove heal effect class after animation completes
       setTimeout(() => {
-        playerSpriteElement.classList.remove("heal-effect");
+        healTeamSprite.classList.remove("heal-effect");
       }, 1500);
     }
   }
