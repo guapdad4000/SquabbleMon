@@ -552,6 +552,10 @@ let opponentStatusEffect = { type: "normal", duration: 0 };
 let itemUseCounts = { jcole: 2, nbayoungboy: 2, weed: 2, crashdummy: 1 };
 let canAct = true; // For preventing action during animations
 
+// Arrays to track active item effects
+let playerActiveItemEffects = []; // [{itemType: 'nbayoungboy', effect: 'atkUp', value: 1.3, remainingDuration: 3}]
+let opponentActiveItemEffects = [];
+
 // ================ INITIALIZATION ================
 // Initialize the game when the page loads
 document.addEventListener("DOMContentLoaded", initGame);
@@ -794,9 +798,18 @@ function startBattle() {
 function resetBattleModifiers() {
   playerStatModifiers = { attack: 1, defense: 1, speed: 1, accuracy: 1 };
   opponentStatModifiers = { attack: 1, defense: 1, speed: 1, accuracy: 1 };
+  
+  // Clear status effects
   playerStatusEffect = { type: "normal", duration: 0 };
   opponentStatusEffect = { type: "normal", duration: 0 };
+  
+  // Reset item counts
   itemUseCounts = { jcole: 2, nbayoungboy: 2, weed: 2, crashdummy: 1 };
+  
+  // Clear active item effects
+  playerActiveItemEffects = [];
+  opponentActiveItemEffects = [];
+  
   canAct = true;
 }
 
@@ -937,6 +950,9 @@ function processTurn() {
     // Process status effects at the start of player's turn
     processStatusEffects(activePlayerCharacter, playerStatusEffect, "player");
     
+    // Process active item effects at the start of player's turn
+    processActiveItemEffects("player");
+    
   } else {
     // Check for confusion (opponent's turn)
     if (opponentStatusEffect.type === "confused" && Math.random() < statusEffects.confused.value) {
@@ -948,11 +964,73 @@ function processTurn() {
     // Process status effects at the start of opponent's turn
     processStatusEffects(activeOpponent, opponentStatusEffect, "opponent");
     
+    // Process active item effects at the start of opponent's turn
+    processActiveItemEffects("opponent");
+    
     // AI chooses a move
     setTimeout(() => {
       const move = chooseOpponentMove();
       executeOpponentMove(move);
     }, 1000);
+  }
+}
+
+// Process active item effects and reduce their durations
+function processActiveItemEffects(side) {
+  if (side === "player") {
+    // Process player item effects
+    if (playerActiveItemEffects.length > 0) {
+      // Filter out any expired effects
+      const activeEffects = [];
+      
+      playerActiveItemEffects.forEach(effect => {
+        effect.remainingDuration--;
+        
+        if (effect.remainingDuration <= 0) {
+          // Effect has expired, remove the stat modifier
+          if (effect.effect === "atkUp") {
+            playerStatModifiers.attack /= effect.value;
+            addToBattleLog(`${activePlayerCharacter.name}'s Attack buff wore off.`);
+          } else if (effect.effect === "defUp") {
+            playerStatModifiers.defense /= effect.value;
+            addToBattleLog(`${activePlayerCharacter.name}'s Defense buff wore off.`);
+          }
+        } else {
+          // Effect is still active
+          activeEffects.push(effect);
+        }
+      });
+      
+      // Update the active effects array with only non-expired effects
+      playerActiveItemEffects = activeEffects;
+    }
+  } else {
+    // Process opponent item effects
+    if (opponentActiveItemEffects.length > 0) {
+      // Filter out any expired effects
+      const activeEffects = [];
+      
+      opponentActiveItemEffects.forEach(effect => {
+        effect.remainingDuration--;
+        
+        if (effect.remainingDuration <= 0) {
+          // Effect has expired, remove the stat modifier
+          if (effect.effect === "atkUp") {
+            opponentStatModifiers.attack /= effect.value;
+            addToBattleLog(`${activeOpponent.name}'s Attack buff wore off.`);
+          } else if (effect.effect === "defUp") {
+            opponentStatModifiers.defense /= effect.value;
+            addToBattleLog(`${activeOpponent.name}'s Defense buff wore off.`);
+          }
+        } else {
+          // Effect is still active
+          activeEffects.push(effect);
+        }
+      });
+      
+      // Update the active effects array with only non-expired effects
+      opponentActiveItemEffects = activeEffects;
+    }
   }
 }
 
@@ -1652,15 +1730,39 @@ function useItem(itemType) {
       break;
       
     case "atkUp":
+      // Apply the stat modifier
       playerStatModifiers.attack *= item.value;
       addToBattleLog(`${activePlayerCharacter.name}'s Attack rose sharply!`);
       showFloatingLog("ATK ↑↑");
+      
+      // Add to active effects with duration
+      if (item.duration) {
+        playerActiveItemEffects.push({
+          itemType: itemType,
+          effect: item.effect,
+          value: item.value,
+          remainingDuration: item.duration
+        });
+        addToBattleLog(`The effect will last for ${item.duration} turns.`);
+      }
       break;
       
     case "defUp":
+      // Apply the stat modifier
       playerStatModifiers.defense *= item.value;
       addToBattleLog(`${activePlayerCharacter.name}'s Defense rose sharply!`);
       showFloatingLog("DEF ↑↑");
+      
+      // Add to active effects with duration
+      if (item.duration) {
+        playerActiveItemEffects.push({
+          itemType: itemType,
+          effect: item.effect,
+          value: item.value,
+          remainingDuration: item.duration
+        });
+        addToBattleLog(`The effect will last for ${item.duration} turns.`);
+      }
       break;
       
     case "statusCure":

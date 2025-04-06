@@ -259,7 +259,7 @@ body {
   max-width: 750px;
   height: 600px;
   max-height: 650px;
-  background-size: 100% 100%; /* Changed from cover to fixed 100% x 100% */
+  background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
   border: 4px solid var(--pixel-border);
@@ -303,7 +303,7 @@ body {
 }
 #opponent-info-box {
   position: absolute;
-  bottom: 170px;
+  top: 95px;
   right: 10px;
   width: 180px;
   max-height: 90px;
@@ -370,7 +370,7 @@ body {
   left: 8%;
 }
 #opponent-platform {
-  top: 50%; /* Lowered */
+  top: 35%; /* Lowered further to fix position */
   right: 8%;
 }
 
@@ -389,9 +389,9 @@ body {
   left: 9%;
 }
 #opponent-area {
-  top: 15%;
+  top: 7%; /* Adjusted top further up */
   right: 9%;
-} /* Adjusted top */
+}
 
 /* Sprites */
 #player-sprite,
