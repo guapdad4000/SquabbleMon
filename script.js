@@ -1738,10 +1738,10 @@ function startBattle() {
   updateBattleUI();
   updateStatusIcons();
   
-  // Update move and item buttons for our new layout where both are visible by default
-  document.getElementById("action-container").style.display = "none";
-  document.getElementById("moves").style.display = "flex";
-  document.getElementById("items").style.display = "flex";
+  // Update move and item buttons - in our new layout, everything is visible by default
+  document.getElementById("moves").style.display = "grid";
+  document.getElementById("items").style.display = "grid";
+  document.getElementById("battle-log").style.display = "block";
   updateMoveButtons();
   updateItemButtons();
   
@@ -1874,31 +1874,57 @@ function updateStatusIcons() {
 }
 
 function updateMoveButtons() {
-  // In our new UI, moves are not shown as buttons
-  // Instead, use the first move when the player presses the action container section
-  const actionContainer = document.getElementById("action-container");
-  if (!actionContainer || !activePlayerCharacter || !activePlayerCharacter.moves) return;
+  // Update each move button with the correct move data
+  const movesContainer = document.getElementById("moves");
+  if (!movesContainer || !activePlayerCharacter || !activePlayerCharacter.moves) return;
   
-  // Clear any existing event listeners
-  const actionContainerClone = actionContainer.cloneNode(true);
-  actionContainer.parentNode.replaceChild(actionContainerClone, actionContainer);
+  // Get all move buttons
+  const moveButtons = movesContainer.querySelectorAll(".move-button");
   
-  // Set click event to use the first move
-  actionContainerClone.addEventListener("click", () => {
-    // Find the first available move with PP
-    const availableMove = activePlayerCharacter.moves.find(move => 
-      move && (move.pp === undefined || move.pp > 0)
-    );
-    
-    if (availableMove) {
-      useMove(availableMove);
+  // Update each button with the corresponding move
+  moveButtons.forEach((button, index) => {
+    if (index < activePlayerCharacter.moves.length) {
+      const move = activePlayerCharacter.moves[index];
+      
+      // Update button text
+      button.textContent = move.name;
+      
+      // Add PP count if applicable
+      if (move.pp !== undefined) {
+        button.textContent += ` ${move.pp}/${move.maxPp}`;
+      }
+      
+      // Add data for tooltips
+      button.dataset.move = JSON.stringify(move);
+      
+      // Style based on move type
+      button.className = "move-button";
+      
+      // If move has no PP left, disable the button
+      if (move.pp !== undefined && move.pp <= 0) {
+        button.disabled = true;
+        button.style.opacity = "0.5";
+        button.style.cursor = "not-allowed";
+      } else {
+        button.disabled = false;
+        button.style.opacity = "1";
+        button.style.cursor = "pointer";
+      }
+      
+      // Set click handler
+      button.onclick = () => useMove(move);
+      
+      // Show button
+      button.style.display = "block";
+      
+      // Add tooltip event listeners
+      button.addEventListener("mouseenter", showMoveTooltip);
+      button.addEventListener("mouseleave", hideMoveTooltip);
     } else {
-      showFloatingLog("No moves available!");
+      // Hide buttons for moves we don't have
+      button.style.display = "none";
     }
   });
-  
-  // Make it look clickable
-  actionContainerClone.style.cursor = "pointer";
   
   // Refresh navigation for mobile controls
   setTimeout(() => {

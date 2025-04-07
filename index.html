@@ -86,17 +86,40 @@
         </div>
       </div>
       <div id="battle-menu">
-        <!-- Just text ATTACK/ITEMS exactly like screenshot -->
-        <div id="action-container" onclick="useFirstMove()">
-          ATTACK/ITEMS
+        <!-- Moves section - 4 buttons for moves -->
+        <div id="moves">
+          <!-- Move buttons are generated in JavaScript, but we'll create a template -->
+          <button class="move-button" onclick="useMove(activePlayerCharacter.moves[0])">Move 1</button>
+          <button class="move-button" onclick="useMove(activePlayerCharacter.moves[1])">Move 2</button>
+          <button class="move-button" onclick="useMove(activePlayerCharacter.moves[2])">Move 3</button>
+          <button class="move-button" onclick="useMove(activePlayerCharacter.moves[3])">Move 4</button>
         </div>
         
-        <!-- Hidden divs for backwards compatibility with JavaScript -->
-        <div id="items" style="display:none"></div>
-        <div id="moves" style="display:none"></div>
-        <div id="battle-log" class="history-log" style="display:none"></div>
+        <!-- Items section -->
+        <div id="items">
+          <button class="item-button" onclick="useItem('jcole')">
+            <span class="item-icon">💿</span> J Cole CD
+          </button>
+          <button class="item-button" onclick="useItem('nbayoungboy')">
+            <span class="item-icon">🎵</span> NBA CD
+          </button>
+          <button class="item-button" onclick="useItem('weed')">
+            <span class="item-icon">🌿</span> Weed
+          </button>
+          <button class="item-button" onclick="useItem('crashdummy')">
+            <span class="item-icon">🔄</span> Dummy
+          </button>
+        </div>
         
-        <!-- Big orange SWITCH button like in screenshot -->
+        <!-- Battle log - show the actions history -->
+        <div id="battle-log">
+          <h3>Move Info:</h3>
+          <div id="move-info-text">
+            Select a move to see info
+          </div>
+        </div>
+        
+        <!-- Switch button styled like in screenshot -->
         <button id="toggle-switch" onclick="switchYN()">SWITCH</button>
       </div>
     </div>
