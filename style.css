@@ -755,15 +755,17 @@ body {
   text-align: center;
   font-size: 9px;
   font-weight: bold;
-  padding: 1px 0;
+  padding: 0 2px; /* Minimal horizontal padding */
   cursor: pointer;
   border-radius: 0;
-  height: 10px; /* Reduced to 10px as requested */
+  height: 5px; /* Ultra thin 5px buttons as requested */
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: fit-content; /* Make button width fit content */
+  margin: 0 auto; /* Center horizontally */
 }
 
 .move-button .pp-count {
@@ -790,14 +792,16 @@ body {
   text-align: center;
   font-size: 9px;
   font-weight: bold;
-  padding: 1px 0;
+  padding: 0 2px; /* Minimal horizontal padding */
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 0;
-  height: 10px; /* Reduced to 10px as requested */
+  height: 5px; /* Ultra thin 5px buttons as requested */
   position: relative;
+  width: fit-content; /* Make button width fit content */
+  margin: 0 auto; /* Center horizontally */
 }
 
 .item-icon {
@@ -816,10 +820,10 @@ body {
   border: none;
   text-align: center;
   font-size: 8px;
-  padding: 1px;
+  padding: 0 2px;
   font-weight: bold;
   cursor: pointer;
-  height: 10px; /* Matches other buttons */
+  height: 5px; /* Ultra thin 5px buttons as requested */
   width: 20px; /* Set to 20px as requested */
   margin-top: 0;
 }

@@ -1728,19 +1728,48 @@ function startBattle() {
   // Set maxHp for opponent
   activeOpponent.maxHp = activeOpponent.maxHp || activeOpponent.hp;
   
+  // Initialize moves with proper PP values
+  initializeMoves(playerTeam);
+  initializeMoves([activeOpponent]);
+  
   // Reset stat modifiers and status effects
   resetBattleModifiers();
   
-  // Update UI
+  // Function to ensure all moves have proper PP and maxPp values
+  function initializeMoves(characters) {
+    characters.forEach(character => {
+      if (character.moves) {
+        character.moves.forEach(move => {
+          // Set maxPp if not already set
+          if (move.maxPp === undefined && move.pp !== undefined) {
+            move.maxPp = move.pp;
+          }
+          // Set pp to maxPp if not already set
+          if (move.pp === undefined && move.maxPp !== undefined) {
+            move.pp = move.maxPp;
+          }
+          // Set default values if neither is set
+          if (move.pp === undefined && move.maxPp === undefined) {
+            move.pp = move.power > 0 ? 15 : 10; // Attack moves get 15 PP, status moves get 10 PP
+            move.maxPp = move.pp;
+          }
+        });
+      }
+    });
+  }
+  
+  // Update UI - make sure everything is initialized properly first
   updateBattleUI();
   updateStatusIcons();
   
-  // Update move and item buttons - in our new layout, everything is visible by default
+  // Update move and item buttons FIRST - always ensure these are populated before showing
+  updateMoveButtons();
+  updateItemButtons();
+  
+  // Make sure all elements are visible and properly displayed
   document.getElementById("moves").style.display = "grid";
   document.getElementById("items").style.display = "grid";
   document.getElementById("battle-log").style.display = "block";
-  updateMoveButtons();
-  updateItemButtons();
   
   // Determine first turn
   currentTurn = determineFirstTurn();
