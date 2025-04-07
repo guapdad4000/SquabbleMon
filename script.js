@@ -2418,10 +2418,7 @@ function useMove(move) {
     addToBattleLog(`${activePlayerCharacter.name}'s attack missed!`);
     showFloatingLog("MISSED!");
     
-    // Reset UI to action buttons
-    document.getElementById("moves").style.display = "none";
-    document.getElementById("items").style.display = "none";
-    document.getElementById("action-container").style.display = "flex";
+    // Keep UI as is - don't hide move and item buttons
     
     setTimeout(() => endPlayerTurn(), 600);
     
@@ -2438,10 +2435,7 @@ function useMove(move) {
   if (isHealingMove) {
     handleStatusMove(move, "player");
     
-    // Reset UI to action buttons
-    document.getElementById("moves").style.display = "none";
-    document.getElementById("items").style.display = "none";
-    document.getElementById("action-container").style.display = "flex";
+    // Keep battle UI as-is - don't hide moves or items
     
     setTimeout(() => endPlayerTurn(), 600);
     
@@ -2458,10 +2452,7 @@ function useMove(move) {
   if (move.type === "status") {
     handleStatusMove(move, "player");
     
-    // Reset UI to action buttons
-    document.getElementById("moves").style.display = "none";
-    document.getElementById("items").style.display = "none";
-    document.getElementById("action-container").style.display = "flex";
+    // Keep battle UI as-is - don't hide moves or items
     
     setTimeout(() => endPlayerTurn(), 600);
     
@@ -2515,10 +2506,7 @@ function useMove(move) {
       setOpponentAnimation("default");
     }, 1000);
     
-    // Reset UI to action buttons
-    document.getElementById("moves").style.display = "none";
-    document.getElementById("items").style.display = "none";
-    document.getElementById("action-container").style.display = "flex";
+    // Keep battle UI as-is - don't hide moves or items
     
     // Check if opponent fainted
     if (activeOpponent.hp <= 0) {
@@ -4157,10 +4145,7 @@ function continueBattle() {
   updateMoveButtons();
   updateItemButtons();
   
-  // Reset UI to action buttons
-  document.getElementById("moves").style.display = "none";
-  document.getElementById("items").style.display = "none";
-  document.getElementById("action-container").style.display = "flex";
+  // Keep battle UI as-is - don't hide moves or items
   
   // Start battle with next opponent
   if (battleCounter > 0) {
