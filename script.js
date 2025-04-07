@@ -764,10 +764,10 @@ const opponents = [
     type: "Water",
     description: "Runs on liquids that aren't always water. Surprisingly coherent.",
     moves: [
-      { name: "Sip & Splash", power: 45, accuracy: 100, type: "Water", pp: 15, maxPP: 15, effect: "lowerAccuracy" },
-      { name: "Henny Haze", power: 60, accuracy: 90, type: "Dark", pp: 15, maxPP: 15, effect: "sleep" },
-      { name: "Sober Up Sis", power: 0, accuracy: 100, type: "Normal", pp: 10, maxPP: 10, effect: "raiseDefense" },
-      { name: "Liquid Courage", power: 70, accuracy: 80, type: "Water", pp: 10, maxPP: 10, effect: "none" }
+      { name: "Sip & Splash", power: 45, accuracy: 100, type: "Water", pp: 15, maxPp: 15, effect: "lowerAccuracy" },
+      { name: "Henny Haze", power: 60, accuracy: 90, type: "Dark", pp: 15, maxPp: 15, effect: "sleep" },
+      { name: "Sober Up Sis", power: 0, accuracy: 100, type: "Normal", pp: 10, maxPp: 10, effect: "raiseDefense" },
+      { name: "Liquid Courage", power: 70, accuracy: 80, type: "Water", pp: 10, maxPp: 10, effect: "none" }
     ],
     ai: "balanced"
   },
@@ -783,10 +783,10 @@ const opponents = [
     type: "Poison",
     description: "Moves fast, thinks faster... maybe too fast. Always looking for the next score.",
     moves: [
-      { name: "Scrap Scramble", power: 40, accuracy: 100, type: "Poison", pp: 15, maxPP: 20, effect: "poison" },
-      { name: "Twitchy Takedown", power: 60, accuracy: 85, type: "Normal", pp: 15, maxPP: 15, effect: "none" },
-      { name: "Fiending Focus", power: 0, accuracy: 100, type: "Poison", pp: 10, maxPP: 10, effect: "raiseSpeed" },
-      { name: "Pookie Push", power: 60, accuracy: 100, type: "Rock", pp: 10, maxPP: 10, effect: "raiseEvasion" }
+      { name: "Scrap Scramble", power: 40, accuracy: 100, type: "Poison", pp: 15, maxPp: 20, effect: "poison" },
+      { name: "Twitchy Takedown", power: 60, accuracy: 85, type: "Normal", pp: 15, maxPp: 15, effect: "none" },
+      { name: "Fiending Focus", power: 0, accuracy: 100, type: "Poison", pp: 10, maxPp: 10, effect: "raiseSpeed" },
+      { name: "Pookie Push", power: 60, accuracy: 100, type: "Rock", pp: 10, maxPp: 10, effect: "raiseEvasion" }
     ],
     ai: "aggressive"
   },
@@ -802,9 +802,9 @@ const opponents = [
     type: "Dark",
     description: "Knows more about anime than you know about yourself. Don't ask.",
     moves: [
-      { name: "Manga Smack", power: 60, accuracy: 95, type: "Normal", pp: 15, maxPP: 15, effect: "none" },
-      { name: "Weeb Roast", power: 55, accuracy: 85, type: "Fire", pp: 10, maxPP: 10, effect: "burn" },
-      { name: "Anime Reference", power: 0, accuracy: 100, type: "Dark", pp: 10, maxPP: 10, effect: "raiseAttack" }
+      { name: "Manga Smack", power: 60, accuracy: 95, type: "Normal", pp: 15, maxPp: 15, effect: "none" },
+      { name: "Weeb Roast", power: 55, accuracy: 85, type: "Fire", pp: 10, maxPp: 10, effect: "burn" },
+      { name: "Anime Reference", power: 0, accuracy: 100, type: "Dark", pp: 10, maxPp: 10, effect: "raiseAttack" }
     ],
     ai: "defensive"
   },
@@ -820,9 +820,9 @@ const opponents = [
     type: "Water",
     description: "Smooth operator. Always hydrated and ready to slide into the DMs.",
     moves: [
-      { name: "Splash Dat Ass", power: 50, accuracy: 95, type: "Water", pp: 15, maxPP: 15, effect: "wet" },
-      { name: "Wave Check Fade", power: 70, accuracy: 85, type: "Water", pp: 10, maxPP: 10, effect: "sleep" },
-      { name: "Call Girls for Gang", power: 0, accuracy: 100, type: "Water", pp: 5, maxPP: 5, effect: "heal" }
+      { name: "Splash Dat Ass", power: 50, accuracy: 95, type: "Water", pp: 15, maxPp: 15, effect: "wet" },
+      { name: "Wave Check Fade", power: 70, accuracy: 85, type: "Water", pp: 10, maxPp: 10, effect: "sleep" },
+      { name: "Call Girls for Gang", power: 0, accuracy: 100, type: "Water", pp: 5, maxPp: 5, effect: "heal" }
     ],
     ai: "balanced"
   }
@@ -1895,7 +1895,7 @@ function updateMoveButtons() {
       if (move.pp !== undefined) {
         const ppCount = document.createElement('span');
         ppCount.className = 'pp-count';
-        ppCount.textContent = `${move.pp}/${move.maxPP}`;
+        ppCount.textContent = `${move.pp}/${move.maxPp}`;
         button.appendChild(ppCount);
       }
       
@@ -2045,7 +2045,7 @@ function showMoveTooltip(e) {
       <p>Type: ${moveData.type || 'Normal'}</p>
       <p>Power: ${moveData.power || 0}</p>
       <p>Accuracy: ${moveData.accuracy || 100}%</p>
-      <p>PP: ${moveData.pp || 0}/${moveData.maxPP || 0}</p>
+      <p>PP: ${moveData.pp || 0}/${moveData.maxPp || 0}</p>
       <p>${moveData.description || ""}</p>
     `;
   } catch (err) {

@@ -758,7 +758,7 @@ body {
   padding: 1px 0;
   cursor: pointer;
   border-radius: 0;
-  height: 15px; /* Reduced to 15px as requested */
+  height: 10px; /* Reduced to 10px as requested */
   position: relative;
   display: flex;
   flex-direction: column;
@@ -796,7 +796,7 @@ body {
   align-items: center;
   justify-content: center;
   border-radius: 0;
-  height: 15px; /* Reduced to 15px as requested */
+  height: 10px; /* Reduced to 10px as requested */
   position: relative;
 }
 
@@ -819,7 +819,7 @@ body {
   padding: 1px;
   font-weight: bold;
   cursor: pointer;
-  height: 15px; /* Matches other buttons */
+  height: 10px; /* Matches other buttons */
   width: 20px; /* Set to 20px as requested */
   margin-top: 0;
 }
