@@ -2052,6 +2052,15 @@ function setupMoveTooltips() {
     tooltip.style.display = "none";
     document.body.appendChild(tooltip);
   }
+  
+  // Add mouse event listeners to each move button
+  const moveButtons = document.querySelectorAll('.move-button');
+  if (moveButtons.length > 0) {
+    moveButtons.forEach(button => {
+      button.addEventListener("mouseenter", showMoveTooltip);
+      button.addEventListener("mouseleave", hideMoveTooltip);
+    });
+  }
 }
 
 function showMoveTooltip(e) {
@@ -2059,17 +2068,18 @@ function showMoveTooltip(e) {
   
   try {
     const moveData = JSON.parse(e.target.dataset.move);
+    if (!moveData) return;
     
-    // Use the new move-info-box instead of the floating tooltip
-    const moveInfoBox = document.getElementById("move-info-box");
-    if (!moveInfoBox || !moveData) return;
+    // Use floating tooltip on hover
+    const tooltip = document.getElementById("move-tooltip");
+    const rect = e.target.getBoundingClientRect();
     
-    // Hide battle log and show move info box
-    document.getElementById("battle-log").style.display = "none";
-    moveInfoBox.style.display = "block";
+    // Position the tooltip above the button
+    tooltip.style.left = `${rect.left + rect.width/2 - 125}px`; // Center tooltip
+    tooltip.style.top = `${rect.top - 10 - tooltip.offsetHeight}px`; // Position above with 10px gap
+    tooltip.style.display = "block";
     
-    moveInfoBox.innerHTML = `
-      <h3>Move Info:</h3>
+    tooltip.innerHTML = `
       <p><strong>${moveData.name || 'Unknown Move'}</strong></p>
       <p>Type: ${moveData.type || 'Normal'}</p>
       <p>Power: ${moveData.power || 0}</p>
@@ -2077,22 +2087,36 @@ function showMoveTooltip(e) {
       <p>PP: ${moveData.pp || 0}/${moveData.maxPp || 0}</p>
       <p>${moveData.description || ""}</p>
     `;
+    
+    // Also update the move-info-box for continued compatibility
+    const moveInfoBox = document.getElementById("move-info-box");
+    if (moveInfoBox) {
+      moveInfoBox.innerHTML = `
+        <h3>Move Info:</h3>
+        <p><strong>${moveData.name || 'Unknown Move'}</strong></p>
+        <p>Type: ${moveData.type || 'Normal'}</p>
+        <p>Power: ${moveData.power || 0}</p>
+        <p>Accuracy: ${moveData.accuracy || 100}%</p>
+        <p>PP: ${moveData.pp || 0}/${moveData.maxPp || 0}</p>
+        <p>${moveData.description || ""}</p>
+      `;
+    }
   } catch (err) {
     console.error("Error showing move tooltip:", err);
   }
 }
 
 function hideMoveTooltip() {
-  // Hide move info box and show battle log again
+  // Hide the tooltip
+  const tooltip = document.getElementById("move-tooltip");
+  if (tooltip) tooltip.style.display = "none";
+  
+  // Keep the move info box hidden and battle log visible
   const moveInfoBox = document.getElementById("move-info-box");
   if (moveInfoBox) moveInfoBox.style.display = "none";
   
-  const battleLog = document.getElementById("battle-log");
+  const battleLog = document.getElementById("battle-log-label");
   if (battleLog) battleLog.style.display = "block";
-  
-  // Also hide the tooltip if it exists
-  const tooltip = document.getElementById("move-tooltip");
-  if (tooltip) tooltip.style.display = "none";
 }
 
 // Character tooltip functions
