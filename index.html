@@ -86,14 +86,26 @@
       </div>
       <div id="battle-menu">
         <div id="action-container">
+          <button class="pixel-button action-button" onclick="showMoves()">ATTACK</button>
+          <button class="pixel-button action-button" onclick="showItems()">ITEMS</button>
+          <button id="toggle-switch" class="pixel-button action-button" onclick="switchYN()">SWITCH</button>
+        </div>
+        
+        <!-- Moves container, hidden by default -->
+        <div id="moves" style="display:none">
           <div class="section-divider">
             <span>MOVES</span>
           </div>
-          <div id="moves"></div>
+          <div class="moves-grid"></div>
+          <button class="pixel-button back-button" onclick="document.getElementById('moves').style.display = 'none'; document.getElementById('action-container').style.display = 'flex';">BACK</button>
+        </div>
+        
+        <!-- Items container, hidden by default -->
+        <div id="items" style="display:none">
           <div class="section-divider">
             <span>ITEMS</span>
           </div>
-          <div id="items">
+          <div class="items-grid">
             <button class="pixel-button" onclick="useItem('jcole')" title="Heals 30 HP with positive vibes">
               <span class="item-icon">💿</span> J Cole CD
             </button>
@@ -106,14 +118,8 @@
             <button class="pixel-button" onclick="useItem('crashdummy')" title="Raises Defense by 50% for 2 turns">
               <span class="item-icon">🛡️</span> Dummy
             </button>
-            <button
-              id="toggle-switch"
-              class="pixel-button"
-              onclick="switchYN()"
-            >
-              Switch
-            </button>
           </div>
+          <button class="pixel-button back-button" onclick="document.getElementById('items').style.display = 'none'; document.getElementById('action-container').style.display = 'flex';">BACK</button>
         </div>
         <div id="battle-log" class="history-log"></div>
       </div>
@@ -175,6 +181,23 @@
     </div>
     
     <div id="move-tooltip" style="display: none"></div>
+    
+    <!-- Mobile Controls -->
+    <div id="mobile-controls">
+      <div id="dpad">
+        <button id="dpad-up" class="dpad-button">▲</button>
+        <div class="middle-row">
+          <button id="dpad-left" class="dpad-button">◀</button>
+          <div class="dpad-center"></div>
+          <button id="dpad-right" class="dpad-button">▶</button>
+        </div>
+        <button id="dpad-down" class="dpad-button">▼</button>
+      </div>
+      <div id="action-buttons">
+        <button id="b-button" class="action-button">B</button>
+        <button id="a-button" class="action-button">A</button>
+      </div>
+    </div>
 
     <script src="animations.js"></script>
     <script src="script.js"></script>

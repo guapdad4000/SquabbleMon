@@ -1034,7 +1034,266 @@ let opponentActiveItemEffects = [];
 // ================ INITIALIZATION ================
 // Initialize the game when the page loads
 
-document.addEventListener("DOMContentLoaded", initGame);
+// Mobile controls functionality
+function initMobileControls() {
+  // Get all the buttons
+  const dpadUp = document.getElementById("dpad-up");
+  const dpadDown = document.getElementById("dpad-down");
+  const dpadLeft = document.getElementById("dpad-left");
+  const dpadRight = document.getElementById("dpad-right");
+  const aButton = document.getElementById("a-button");
+  const bButton = document.getElementById("b-button");
+  
+  // Navigation state
+  let currentFocus = null;
+  let navItems = [];
+  let navIndex = -1;
+  
+  // Game state tracking
+  let currentScreen = "selection"; // selection, battle, switch
+  
+  // Helper to update the current screen
+  function updateCurrentScreen() {
+    if (document.getElementById("selection-screen").style.display !== "none") {
+      currentScreen = "selection";
+    } else if (document.getElementById("battle-screen").style.display !== "none") {
+      currentScreen = "battle";
+    } else if (document.getElementById("switch-screen").style.display !== "none") {
+      currentScreen = "switch";
+    } else if (document.getElementById("simple-switch-prompt").style.display !== "none") {
+      currentScreen = "simple-switch";
+    } else if (document.getElementById("game-over").style.display !== "none") {
+      currentScreen = "game-over";
+    }
+  }
+  
+  // Get available navigation items based on current screen
+  function getNavItems() {
+    updateCurrentScreen();
+    
+    switch (currentScreen) {
+      case "selection":
+        return Array.from(document.querySelectorAll(".character-card:not(.selected)"));
+      case "battle":
+        if (document.getElementById("moves").style.display !== "none") {
+          return Array.from(document.querySelectorAll("#moves button:not(:disabled)"));
+        } else if (document.getElementById("items").style.display !== "none") {
+          return Array.from(document.querySelectorAll("#items button:not(:disabled)"));
+        } else {
+          return Array.from(document.querySelectorAll("#action-container button:not(:disabled)"));
+        }
+      case "switch":
+        return Array.from(document.querySelectorAll(".switch-option:not(.fainted):not(.current)"));
+      case "simple-switch":
+        return Array.from(document.querySelectorAll("#simple-switch-prompt button"));
+      case "game-over":
+        return Array.from(document.querySelectorAll("#game-over button:not([style*='display: none'])"));
+      default:
+        return [];
+    }
+  }
+  
+  // Helper function to add visual focus to an element
+  function addFocus(element) {
+    if (currentFocus) {
+      currentFocus.style.outline = "none";
+      currentFocus.style.boxShadow = "none";
+    }
+    
+    if (element) {
+      element.style.outline = "2px solid white";
+      element.style.boxShadow = "0 0 0 4px rgba(255, 255, 255, 0.5)";
+      currentFocus = element;
+      
+      // Ensure the element is visible
+      if (typeof element.scrollIntoView === 'function') {
+        element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+  }
+  
+  // Initialize navigation
+  function initNav() {
+    navItems = getNavItems();
+    
+    if (navItems.length > 0) {
+      navIndex = 0;
+      addFocus(navItems[navIndex]);
+    } else {
+      navIndex = -1;
+      currentFocus = null;
+    }
+  }
+  
+  // Event handlers for D-pad buttons
+  dpadUp.addEventListener("click", () => {
+    // Always refresh the nav items in case the UI has changed
+    navItems = getNavItems();
+    if (navItems.length === 0) return;
+    
+    // Initialize if not already done
+    if (navIndex === -1) {
+      initNav();
+      return;
+    }
+    
+    // Different behavior based on screen
+    if (currentScreen === "selection") {
+      // In character selection, go up a row (assume characters are in a grid)
+      const cardsPerRow = Math.floor(document.getElementById("character-list").clientWidth / navItems[0].clientWidth);
+      navIndex = Math.max(0, navIndex - cardsPerRow);
+    } else {
+      // Simple up movement
+      navIndex = Math.max(0, navIndex - 1);
+    }
+    
+    addFocus(navItems[navIndex]);
+  });
+  
+  dpadDown.addEventListener("click", () => {
+    // Always refresh the nav items in case the UI has changed
+    navItems = getNavItems();
+    if (navItems.length === 0) return;
+    
+    // Initialize if not already done
+    if (navIndex === -1) {
+      initNav();
+      return;
+    }
+    
+    // Different behavior based on screen
+    if (currentScreen === "selection") {
+      // In character selection, go down a row (assume characters are in a grid)
+      const cardsPerRow = Math.floor(document.getElementById("character-list").clientWidth / navItems[0].clientWidth);
+      navIndex = Math.min(navItems.length - 1, navIndex + cardsPerRow);
+    } else {
+      // Simple down movement
+      navIndex = Math.min(navItems.length - 1, navIndex + 1);
+    }
+    
+    addFocus(navItems[navIndex]);
+  });
+  
+  dpadLeft.addEventListener("click", () => {
+    // Always refresh the nav items in case the UI has changed
+    navItems = getNavItems();
+    if (navItems.length === 0) return;
+    
+    // Initialize if not already done
+    if (navIndex === -1) {
+      initNav();
+      return;
+    }
+    
+    // Move left
+    navIndex = Math.max(0, navIndex - 1);
+    addFocus(navItems[navIndex]);
+  });
+  
+  dpadRight.addEventListener("click", () => {
+    // Always refresh the nav items in case the UI has changed
+    navItems = getNavItems();
+    if (navItems.length === 0) return;
+    
+    // Initialize if not already done
+    if (navIndex === -1) {
+      initNav();
+      return;
+    }
+    
+    // Move right
+    navIndex = Math.min(navItems.length - 1, navIndex + 1);
+    addFocus(navItems[navIndex]);
+  });
+  
+  // A button (select/confirm)
+  aButton.addEventListener("click", () => {
+    if (currentFocus) {
+      currentFocus.click();
+      
+      // Reset and wait a moment to re-initialize navigation after screen changes
+      setTimeout(() => {
+        navItems = getNavItems();
+        if (navItems.length > 0) {
+          navIndex = 0;
+          addFocus(navItems[navIndex]);
+        } else {
+          navIndex = -1;
+          currentFocus = null;
+        }
+      }, 300);
+    }
+  });
+  
+  // B button (back/cancel)
+  bButton.addEventListener("click", () => {
+    updateCurrentScreen();
+    
+    // Different behavior based on screen
+    switch (currentScreen) {
+      case "battle":
+        // If in move or item selection, go back to main battle actions
+        if (document.getElementById("moves").style.display !== "none") {
+          document.getElementById("moves").style.display = "none";
+          document.getElementById("action-container").style.display = "flex";
+          initNav();
+        } else if (document.getElementById("items").style.display !== "none") {
+          document.getElementById("items").style.display = "none";
+          document.getElementById("action-container").style.display = "flex";
+          initNav();
+        }
+        break;
+      case "switch":
+        // Cancel switch if possible
+        const cancelBtn = document.querySelector("#switch-screen button");
+        if (cancelBtn && cancelBtn.style.display !== "none") {
+          cancelBtn.click();
+        }
+        break;
+      case "simple-switch":
+        // Select "No" on the simple switch prompt
+        const noBtn = document.querySelectorAll("#simple-switch-prompt button")[1];
+        if (noBtn) {
+          noBtn.click();
+        }
+        break;
+    }
+  });
+  
+  // Initialize navigation on page load and when screens change
+  const screens = ["selection-screen", "battle-screen", "switch-screen", "simple-switch-prompt", "game-over"];
+  
+  // Use MutationObserver to detect when screens are shown/hidden
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.attributeName === 'style' && 
+          mutation.target.style.display !== mutation.oldValue) {
+        setTimeout(initNav, 100); // Small delay to let the UI update
+      }
+    });
+  });
+  
+  // Observe all screens for display changes
+  screens.forEach(screenId => {
+    const el = document.getElementById(screenId);
+    if (el) {
+      observer.observe(el, { 
+        attributes: true, 
+        attributeFilter: ['style'],
+        attributeOldValue: true
+      });
+    }
+  });
+  
+  // Initial navigation setup
+  initNav();
+}
+
+// Initialize the game and mobile controls when the page loads
+document.addEventListener("DOMContentLoaded", function() {
+  initGame();
+  initMobileControls();
+});
 
 // Audio Functions
 function initAudio() {
@@ -1428,7 +1687,7 @@ function updateStatusIcons() {
 }
 
 function updateMoveButtons() {
-  const movesContainer = document.getElementById("moves");
+  const movesContainer = document.querySelector("#moves .moves-grid");
   if (!movesContainer || !activePlayerCharacter || !activePlayerCharacter.moves) return;
   
   movesContainer.innerHTML = "";
@@ -1463,7 +1722,7 @@ function updateMoveButtons() {
 }
 
 function updateItemButtons() {
-  const itemButtons = document.querySelectorAll("#items button:not(#toggle-switch)");
+  const itemButtons = document.querySelectorAll("#items .items-grid button");
   if (!itemButtons || itemButtons.length === 0) return;
   
   itemButtons.forEach(button => {
@@ -1491,6 +1750,31 @@ function updateFadeDisplay() {
     const remaining = 3 - battleCounter;
     fadeDisplay.textContent += ` (${remaining} more battle${remaining !== 1 ? 's' : ''} to complete fade)`;
   }
+}
+
+// Functions to toggle between moves, items and main battle menu
+function showMoves() {
+  if (!canAct || currentTurn !== "player") return;
+  
+  // Hide action buttons and show moves
+  document.getElementById("action-container").style.display = "none";
+  document.getElementById("items").style.display = "none";
+  document.getElementById("moves").style.display = "flex";
+  
+  // Update move buttons with current PP
+  updateMoveButtons();
+}
+
+function showItems() {
+  if (!canAct || currentTurn !== "player") return;
+  
+  // Hide action buttons and show items
+  document.getElementById("action-container").style.display = "none";
+  document.getElementById("moves").style.display = "none"; 
+  document.getElementById("items").style.display = "flex";
+  
+  // Update item buttons
+  updateItemButtons();
 }
 
 function setupMoveTooltips() {
@@ -1889,6 +2173,12 @@ function useMove(move) {
     // Miss
     addToBattleLog(`${activePlayerCharacter.name}'s attack missed!`);
     showFloatingLog("MISSED!");
+    
+    // Reset UI to action buttons
+    document.getElementById("moves").style.display = "none";
+    document.getElementById("items").style.display = "none";
+    document.getElementById("action-container").style.display = "flex";
+    
     setTimeout(() => endPlayerTurn(), 600);
     
     // Remove animation
@@ -1903,6 +2193,12 @@ function useMove(move) {
   // Check if this is a healing move
   if (isHealingMove) {
     handleStatusMove(move, "player");
+    
+    // Reset UI to action buttons
+    document.getElementById("moves").style.display = "none";
+    document.getElementById("items").style.display = "none";
+    document.getElementById("action-container").style.display = "flex";
+    
     setTimeout(() => endPlayerTurn(), 600);
     
     // Remove animation
@@ -1917,6 +2213,12 @@ function useMove(move) {
   // Handle status moves differently
   if (move.type === "status") {
     handleStatusMove(move, "player");
+    
+    // Reset UI to action buttons
+    document.getElementById("moves").style.display = "none";
+    document.getElementById("items").style.display = "none";
+    document.getElementById("action-container").style.display = "flex";
+    
     setTimeout(() => endPlayerTurn(), 600);
     
     // Remove animation
@@ -1968,6 +2270,11 @@ function useMove(move) {
       opponentSprite.classList.remove("shake-animation");
       setOpponentAnimation("default");
     }, 1000);
+    
+    // Reset UI to action buttons
+    document.getElementById("moves").style.display = "none";
+    document.getElementById("items").style.display = "none";
+    document.getElementById("action-container").style.display = "flex";
     
     // Check if opponent fainted
     if (activeOpponent.hp <= 0) {
@@ -3198,6 +3505,10 @@ function useItem(itemType) {
   // Update UI
   updateBattleUI();
   
+  // Hide items panel and show action buttons
+  document.getElementById("items").style.display = "none";
+  document.getElementById("action-container").style.display = "flex";
+  
   // End turn
   setTimeout(() => endPlayerTurn(), 600);
 }
@@ -3305,6 +3616,11 @@ function confirmSwitch(index) {
   updateStatusIcons();
   updateMoveButtons();
   
+  // Make sure action buttons are visible after switching
+  document.getElementById("moves").style.display = "none";
+  document.getElementById("items").style.display = "none";
+  document.getElementById("action-container").style.display = "flex";
+  
   // Check if this was after an opponent switch/faint
   if (isForced || (currentTurn === "player" && canAct)) {
     // Start the next turn after a brief delay
@@ -3327,6 +3643,11 @@ function cancelSwitch() {
   
   // Otherwise, hide the switch screen
   document.getElementById("switch-screen").style.display = "none";
+  
+  // Make sure action buttons are visible after canceling switch
+  document.getElementById("moves").style.display = "none";
+  document.getElementById("items").style.display = "none";
+  document.getElementById("action-container").style.display = "flex";
   
   // If this was after an opponent switch, proceed with the battle
   if (currentTurn === "player" && canAct) {
@@ -3392,6 +3713,11 @@ function handleSimpleSwitchYes() {
 function handleSimpleSwitchNo() {
   // Hide the simple switch prompt
   document.getElementById("simple-switch-prompt").style.display = "none";
+  
+  // Make sure the action buttons are visible
+  document.getElementById("moves").style.display = "none";
+  document.getElementById("items").style.display = "none";
+  document.getElementById("action-container").style.display = "flex";
   
   // Add a message to the battle log
   addToBattleLog(`${activePlayerCharacter.name} stays in the battle!`);
@@ -3554,6 +3880,11 @@ function continueBattle() {
   updateStatusIcons();
   updateMoveButtons();
   updateItemButtons();
+  
+  // Reset UI to action buttons
+  document.getElementById("moves").style.display = "none";
+  document.getElementById("items").style.display = "none";
+  document.getElementById("action-container").style.display = "flex";
   
   // Start battle with next opponent
   if (battleCounter > 0) {

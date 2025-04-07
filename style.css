@@ -684,11 +684,34 @@ body {
   padding-right: 10px;
   border-right: 2px solid var(--pixel-border);
 }
-#moves {
+
+.action-button {
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+  background-color: var(--pixel-primary);
+  border-color: var(--pixel-primary-dark);
+  width: 100%;
+}
+#moves, #items {
+  display: none;
+  flex-direction: column;
+  width: 100%;
+  padding: 10px;
+}
+
+.moves-grid, .items-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 5px;
   margin-bottom: 10px;
+}
+
+.back-button {
+  margin-top: 5px;
+  background-color: var(--pixel-bg-light);
+  color: var(--pixel-text);
 }
 
 .section-divider {
@@ -708,11 +731,7 @@ body {
   font-size: 0.7em;
   transform: translateY(50%);
 }
-#items {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 5px;
-}
+/* Items grid styling is in the combined selector above */
 #battle-log {
   flex: 1;
   overflow-y: auto;
@@ -1207,11 +1226,115 @@ body {
   100% { box-shadow: inset 0 0 0 0 rgba(186, 104, 200, 0); background-color: rgba(186, 104, 200, 0); }
 }
 
+/* Mobile Controls */
+#mobile-controls {
+  position: fixed;
+  bottom: 10px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+  pointer-events: none; /* Make the container transparent to clicks */
+  z-index: 9999;
+  display: none; /* Hide by default, only show on small screens */
+}
+
+#dpad {
+  display: grid;
+  grid-template-rows: 1fr 1fr 1fr;
+  grid-template-columns: 1fr;
+  gap: 5px;
+  width: 120px;
+  height: 120px;
+  pointer-events: auto; /* Make buttons clickable */
+}
+
+.middle-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.dpad-center {
+  width: 40px;
+  height: 40px;
+  background-color: var(--pixel-bg-dark);
+  border: 2px solid var(--pixel-border);
+  border-radius: 5px;
+}
+
+.dpad-button {
+  width: 40px;
+  height: 40px;
+  background-color: var(--pixel-bg-dark);
+  color: var(--pixel-text-light);
+  border: 2px solid var(--pixel-border);
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+#dpad-up { 
+  justify-self: center;
+}
+
+#dpad-down {
+  justify-self: center;
+}
+
+#action-buttons {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 10px;
+  pointer-events: auto; /* Make buttons clickable */
+}
+
+.action-button {
+  width: 60px;
+  height: 60px;
+  background-color: var(--pixel-bg-dark);
+  color: var(--pixel-text-light);
+  border: 2px solid var(--pixel-border);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+#a-button {
+  background-color: var(--pixel-accent);
+}
+
+#b-button {
+  background-color: var(--pixel-accent-alt);
+}
+
+.action-button:active, .dpad-button:active {
+  transform: scale(0.95);
+  opacity: 0.8;
+}
+
 /* Media Queries for Different Screen Sizes */
 @media (max-width: 768px) {
   body {
     padding: 5px;
     font-size: 8px;
+    padding-bottom: 150px; /* Add padding at the bottom for the D-pad */
+  }
+  
+  #mobile-controls {
+    display: flex; /* Show on mobile screens */
   }
   
   #selection-screen {
@@ -1260,6 +1383,7 @@ body {
 @media (max-width: 480px) {
   body {
     font-size: 7px;
+    padding-bottom: 150px; /* Add padding at the bottom for the D-pad */
   }
   
   #selection-screen {
