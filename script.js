@@ -1116,18 +1116,22 @@ function initMobileControls() {
     switch (e.key) {
       case 'ArrowUp':
         handleDpadUp();
+        playSwitchSound(); // Add navigation sound feedback
         e.preventDefault();
         break;
       case 'ArrowDown':
         handleDpadDown();
+        playSwitchSound(); // Add navigation sound feedback
         e.preventDefault();
         break;
       case 'ArrowLeft':
         handleDpadLeft();
+        playSwitchSound(); // Add navigation sound feedback
         e.preventDefault();
         break;
       case 'ArrowRight':
         handleDpadRight();
+        playSwitchSound(); // Add navigation sound feedback
         e.preventDefault();
         break;
     }
@@ -1139,10 +1143,12 @@ function initMobileControls() {
       case 'Enter':
       case ' ': // Space bar
         handleAButton();
+        playSuccessSound(); // Add selection sound feedback
         e.preventDefault();
         break;
       case 'Escape':
         handleBButton();
+        playSwitchSound(); // Add back/cancel sound feedback
         e.preventDefault();
         break;
     }
@@ -1178,15 +1184,13 @@ function initMobileControls() {
         const characters = Array.from(document.querySelectorAll(".character-card"));
         return startButton && !startButton.disabled ? [...characters, startButton] : characters;
       case "battle":
-        // Check which battle menu is active
-        if (document.getElementById("moves").style.display !== "none") {
-          return Array.from(document.querySelectorAll("#moves button:not(:disabled)"));
-        } else if (document.getElementById("items").style.display !== "none") {
-          return Array.from(document.querySelectorAll("#items button:not(:disabled)"));
-        } else {
-          // Default to action buttons
-          return Array.from(document.querySelectorAll("#action-container button:not(:disabled)"));
-        }
+        // Get both moves and items for a unified navigation
+        const moveButtons = Array.from(document.querySelectorAll("#moves button:not(:disabled)"));
+        const itemButtons = Array.from(document.querySelectorAll("#items button:not(:disabled)"));
+        const switchButton = document.getElementById("toggle-switch");
+        
+        // Include all interactive elements in the battle screen
+        return [...moveButtons, ...itemButtons, switchButton];
       case "switch":
         return Array.from(document.querySelectorAll(".switch-option:not(.fainted):not(.current)"));
       case "simple-switch":
