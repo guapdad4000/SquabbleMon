@@ -1231,7 +1231,8 @@ body {
 
 /* Mobile Controls */
 #mobile-controls-container {
-  width: 100%;
+  width: 95vw;
+  max-width: 750px;
   height: 180px; /* Reduced height */
   margin: 0;
   padding: 0;
@@ -1356,7 +1357,9 @@ body {
   
   #mobile-controls-container {
     display: block !important; /* Show the controls container on mobile, force with !important */
-    margin-top: 0;
+    margin: 0 auto;
+    width: 95vw;
+    max-width: 750px;
     height: 240px;
     visibility: visible !important;
     opacity: 1 !important;
@@ -1417,6 +1420,9 @@ body {
   
   #mobile-controls-container {
     height: 200px; /* Smaller height for mobile phones */
+    width: 95vw;
+    max-width: 480px;
+    margin: 0 auto;
     border-top: 4px solid #555;
     border-left: none;
     border-right: none;
@@ -1452,29 +1458,15 @@ body {
   }
   
   #battle-menu {
-    min-height: 150px;
+    min-height: 120px;
     flex-direction: column;
-    padding: 5px;
-    background-color: rgba(0, 0, 0, 0.9);
   }
   
   #action-container {
     border-right: none;
     border-bottom: 2px solid var(--pixel-border);
-    padding: 5px;
-    width: 100%;
-    flex: 1 0 100%;
-    margin-bottom: 5px;
-  }
-  
-  .action-button {
-    margin-bottom: 5px;
-    font-size: 18px;
-    padding: 15px 5px;
-    background-color: #4CAF50;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-    letter-spacing: 1px;
+    padding-right: 0;
+    padding-bottom: 5px;
   }
   
   #battle-log {

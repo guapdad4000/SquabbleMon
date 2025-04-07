@@ -1175,8 +1175,15 @@ function initMobileControls() {
       case "selection":
         return Array.from(document.querySelectorAll(".character-card:not(.selected)"));
       case "battle":
-        // Always return the action buttons in battle screen
-        return Array.from(document.querySelectorAll("#action-container button:not(:disabled)"));
+        // Check which battle menu is active
+        if (document.getElementById("moves").style.display !== "none") {
+          return Array.from(document.querySelectorAll("#moves button:not(:disabled)"));
+        } else if (document.getElementById("items").style.display !== "none") {
+          return Array.from(document.querySelectorAll("#items button:not(:disabled)"));
+        } else {
+          // Default to action buttons
+          return Array.from(document.querySelectorAll("#action-container button:not(:disabled)"));
+        }
       case "switch":
         return Array.from(document.querySelectorAll(".switch-option:not(.fainted):not(.current)"));
       case "simple-switch":
@@ -1210,13 +1217,16 @@ function initMobileControls() {
   // Initialize navigation
   function initNav() {
     navItems = getNavItems();
+    console.log("initNav called, found", navItems.length, "navigable items");
     
     if (navItems.length > 0) {
       navIndex = 0;
       addFocus(navItems[navIndex]);
+      console.log("Focus set to:", navItems[navIndex].textContent || "unnamed element");
     } else {
       navIndex = -1;
       currentFocus = null;
+      console.log("No navigable items found");
     }
   }
   
@@ -1371,6 +1381,9 @@ function initMobileControls() {
   // Initialize navigation on page load and when screens change
   const screens = ["selection-screen", "battle-screen", "switch-screen", "simple-switch-prompt", "game-over"];
   
+  // Also observe battle menu containers
+  const menuElements = ["action-container", "moves", "items"];
+  
   // Use MutationObserver to detect when screens are shown/hidden
   const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
@@ -1384,6 +1397,18 @@ function initMobileControls() {
   // Observe all screens for display changes
   screens.forEach(screenId => {
     const el = document.getElementById(screenId);
+    if (el) {
+      observer.observe(el, { 
+        attributes: true, 
+        attributeFilter: ['style'],
+        attributeOldValue: true
+      });
+    }
+  });
+  
+  // Also observe battle menu containers
+  menuElements.forEach(menuId => {
+    const el = document.getElementById(menuId);
     if (el) {
       observer.observe(el, { 
         attributes: true, 
@@ -1827,6 +1852,14 @@ function updateMoveButtons() {
     
     movesContainer.appendChild(moveButton);
   });
+  
+  // Refresh navigation for mobile controls after buttons are added
+  setTimeout(() => {
+    if (typeof initNav === 'function') {
+      console.log("Refreshing navigation after move buttons update");
+      initNav();
+    }
+  }, 50);
 }
 
 function updateItemButtons() {
@@ -1845,6 +1878,14 @@ function updateItemButtons() {
     
     button.disabled = itemUseCounts[itemType] <= 0;
   });
+  
+  // Refresh navigation for mobile controls after item buttons are updated
+  setTimeout(() => {
+    if (typeof initNav === 'function') {
+      console.log("Refreshing navigation after item buttons update");
+      initNav();
+    }
+  }, 50);
 }
 
 function updateFadeDisplay() {
@@ -1871,6 +1912,14 @@ function showMoves() {
   
   // Update move buttons with current PP
   updateMoveButtons();
+  
+  // Refresh navigation for mobile controls
+  setTimeout(() => {
+    // Use the initNav function from mobile controls
+    if (typeof initNav === 'function') {
+      initNav();
+    }
+  }, 50);
 }
 
 function showItems() {
@@ -1883,6 +1932,14 @@ function showItems() {
   
   // Update item buttons
   updateItemButtons();
+  
+  // Refresh navigation for mobile controls
+  setTimeout(() => {
+    // Use the initNav function from mobile controls
+    if (typeof initNav === 'function') {
+      initNav();
+    }
+  }, 50);
 }
 
 function setupMoveTooltips() {
@@ -3693,6 +3750,14 @@ function switchYN() {
   }
   
   switchScreen.style.display = "block";
+  
+  // Initialize navigation for mobile controls
+  setTimeout(() => {
+    if (typeof initNav === 'function') {
+      console.log("Refreshing navigation after switch screen display");
+      initNav();
+    }
+  }, 50);
 }
 
 function confirmSwitch(index) {
@@ -3806,6 +3871,14 @@ function showSimpleSwitchPrompt() {
   
   // Show the popup
   document.getElementById("simple-switch-prompt").style.display = "block";
+  
+  // Initialize navigation for mobile controls
+  setTimeout(() => {
+    if (typeof initNav === 'function') {
+      console.log("Refreshing navigation after simple switch prompt display");
+      initNav();
+    }
+  }, 50);
 }
 
 // Function to handle "Yes" response to switch prompt
@@ -3933,6 +4006,14 @@ function showNextOpponentScreen(isFinalOpponent = false) {
   document.getElementById("share-buttons").style.display = "none";
   
   gameOverScreen.style.display = "block";
+  
+  // Initialize navigation for mobile controls
+  setTimeout(() => {
+    if (typeof initNav === 'function') {
+      console.log("Refreshing navigation after next opponent screen display");
+      initNav();
+    }
+  }, 50);
 }
 
 function showGameOver(playerWon) {
@@ -3959,6 +4040,14 @@ function showGameOver(playerWon) {
   
   gameOverScreen.style.display = "block";
   gameActive = false;
+  
+  // Initialize navigation for mobile controls
+  setTimeout(() => {
+    if (typeof initNav === 'function') {
+      console.log("Refreshing navigation after game over screen display");
+      initNav();
+    }
+  }, 50);
 }
 
 function continueBattle() {

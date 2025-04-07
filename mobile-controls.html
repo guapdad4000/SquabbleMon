@@ -39,7 +39,8 @@
       grid-template-columns: repeat(3, 1fr);
       gap: 2px;
       width: 65%;
-      height: 140px;
+      max-width: 180px;
+      aspect-ratio: 1 / 1;
       margin-left: 5px;
     }
     
@@ -97,16 +98,19 @@
       flex-direction: column;
       justify-content: center;
       gap: 15px;
-      margin-right: 10px;
-      width: 30%;
+      margin-right: 20px;
+      width: 25%;
+      max-width: 120px;
     }
     
     .action-button {
-      width: 70px;
-      height: 70px;
+      width: 90%;
+      aspect-ratio: 1 / 1;
+      max-width: 70px;
+      max-height: 70px;
       border-radius: 50%;
       border: 3px solid rgba(255, 255, 255, 0.2);
-      font-size: 24px;
+      font-size: clamp(16px, 5vw, 24px);
       font-weight: bold;
       display: flex;
       justify-content: center;
@@ -173,8 +177,17 @@
         key: key
       };
       console.log("Message object:", message);
-      window.parent.postMessage(message, window.location.origin);
-      console.log("Message sent to origin:", window.location.origin);
+      
+      // Try to send to specific origin first
+      try {
+        window.parent.postMessage(message, window.location.origin);
+        console.log("Message sent to origin:", window.location.origin);
+      } catch (e) {
+        console.warn("Error sending to specific origin, trying wildcard:", e);
+        // Fallback to wildcard origin
+        window.parent.postMessage(message, "*");
+        console.log("Message sent with wildcard origin");
+      }
     }
 
     // D-pad buttons

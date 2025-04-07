@@ -87,8 +87,8 @@
       </div>
       <div id="battle-menu">
         <div id="action-container">
-          <button class="pixel-button action-button" onclick="useMove(activePlayerCharacter.moves[0])">ATTACK</button>
-          <button class="pixel-button action-button" onclick="useItem('jcole')">ITEMS</button>
+          <button class="pixel-button action-button" onclick="showMoves()">ATTACK</button>
+          <button class="pixel-button action-button" onclick="showItems()">ITEMS</button>
           <button id="toggle-switch" class="pixel-button action-button" onclick="switchYN()">SWITCH</button>
         </div>
         
@@ -98,7 +98,7 @@
             <span>MOVES</span>
           </div>
           <div class="moves-grid"></div>
-          <button class="pixel-button back-button" onclick="document.getElementById('moves').style.display = 'none'; document.getElementById('action-container').style.display = 'flex';">BACK</button>
+          <button class="pixel-button back-button" onclick="document.getElementById('moves').style.display = 'none'; document.getElementById('action-container').style.display = 'flex'; setTimeout(() => { if (typeof initNav === 'function') initNav(); }, 50);">BACK</button>
         </div>
         
         <!-- Items container, hidden by default -->
@@ -120,7 +120,7 @@
               <span class="item-icon">🛡️</span> Dummy
             </button>
           </div>
-          <button class="pixel-button back-button" onclick="document.getElementById('items').style.display = 'none'; document.getElementById('action-container').style.display = 'flex';">BACK</button>
+          <button class="pixel-button back-button" onclick="document.getElementById('items').style.display = 'none'; document.getElementById('action-container').style.display = 'flex'; setTimeout(() => { if (typeof initNav === 'function') initNav(); }, 50);">BACK</button>
         </div>
         <div id="battle-log" class="history-log"></div>
       </div>
