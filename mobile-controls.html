@@ -27,7 +27,7 @@
       justify-content: space-between;
       align-items: center;
       padding: 10px;
-      height: 150px;
+      height: 140px; /* Match the D-pad height + some padding */
       width: 100%;
       box-sizing: border-box;
       background-color: #1a1a1a;
@@ -40,14 +40,14 @@
       grid-template-rows: repeat(3, 1fr);
       grid-template-columns: repeat(3, 1fr);
       gap: 2px;
-      width: 45%;
-      max-width: 120px; /* Smaller D-pad */
-      aspect-ratio: 1 / 1;
+      width: 120px; /* Fixed width */
+      height: 120px; /* Fixed height */
       margin-left: 15px;
       background-color: #1a1a1a;
       border: 1px solid #333;
       border-radius: 4px;
       padding: 2px;
+      box-sizing: border-box; /* Include padding in size */
     }
     
     .dpad-button {
