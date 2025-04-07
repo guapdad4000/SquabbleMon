@@ -752,14 +752,14 @@ body {
 .move-button {
   background-color: #4bdb88; /* Light green from screenshot */
   color: black;
-  border: none;
+  border: 2px solid #37a866; /* Add border for more pixelated look */
   text-align: center;
-  font-size: 9px;
+  font-size: 11px; /* Increased from 9px */
   font-weight: bold;
   padding: 2px 5px; /* Slightly more padding */
   cursor: pointer;
   border-radius: 0;
-  height: 8px; /* Slightly taller for desktop */
+  height: 10px; /* Increased from 8px */
   position: relative;
   display: flex;
   flex-direction: row; /* Changed to row to place PP on same line */
@@ -767,13 +767,18 @@ body {
   justify-content: space-between; /* Space between name and PP */
   width: 95%; /* Almost full width of grid cell */
   margin: 1px auto; /* Small margin between buttons */
+  font-family: 'Press Start 2P', monospace; /* More pixelated font */
+  letter-spacing: -1px; /* Tighten letter spacing */
+  text-transform: uppercase; /* All caps for retro feel */
+  box-shadow: 2px 2px 0px rgba(0,0,0,0.3); /* Add shadow for depth */
 }
 
 .move-button .pp-count {
-  font-size: 8px; /* Increased from 7px */
+  font-size: 10px; /* Increased from 8px */
   color: #333;
   line-height: 1;
   margin-left: 4px; /* Add some space between name and PP */
+  font-weight: bold;
 }
 
 /* Items section with item buttons */
@@ -787,9 +792,9 @@ body {
 .item-button {
   background-color: #4bdb88; /* Light green from screenshot */
   color: black;
-  border: none;
+  border: 2px solid #37a866; /* Add border for more pixelated look */
   text-align: center;
-  font-size: 9px;
+  font-size: 11px; /* Increased from 9px */
   font-weight: bold;
   padding: 2px 5px; /* Slightly more padding */
   cursor: pointer;
@@ -797,10 +802,14 @@ body {
   align-items: center;
   justify-content: center;
   border-radius: 0;
-  height: 8px; /* Slightly taller for desktop */
+  height: 10px; /* Increased from 8px */
   position: relative;
   width: 95%; /* Almost full width of grid cell */
   margin: 1px auto; /* Small margin between buttons */
+  font-family: 'Press Start 2P', monospace; /* More pixelated font */
+  letter-spacing: -1px; /* Tighten letter spacing */
+  text-transform: uppercase; /* All caps for retro feel */
+  box-shadow: 2px 2px 0px rgba(0,0,0,0.3); /* Add shadow for depth */
 }
 
 .item-icon {
@@ -811,24 +820,27 @@ body {
 /* Removed grid positioning for toggle-switch as it's now part of action-container */
 #toggle-switch {
   position: absolute;
-  bottom: 5px;
-  right: 5px; /* Position on the right instead of center */
+  top: -15px; /* Position above battle log instead of bottom */
+  right: 5px; /* Position on the right */
   transform: none; /* Remove transform */
   background-color: #FF9900;
   color: white;
-  border: none;
+  border: 2px solid #CC7700; /* Add border for more visibility */
   text-align: center;
-  font-size: 8px;
-  padding: 2px 5px;
+  font-size: 10px; /* Increased from 8px */
+  padding: 3px 8px; /* Increased padding */
   font-weight: bold;
   cursor: pointer;
-  height: 8px; /* Match other buttons */
-  width: 28px; /* Slightly wider */
+  height: 12px; /* Increased from 8px */
+  width: 35px; /* Increased from 28px */
   margin-top: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 50; /* Ensure it appears above other elements */
+  font-family: 'Press Start 2P', monospace; /* More pixelated font */
+  letter-spacing: -1px; /* Tighten letter spacing */
+  box-shadow: 2px 2px 0px #000; /* Add shadow for depth */
 }
 
 .action-button {
