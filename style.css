@@ -672,14 +672,22 @@ body {
 #battle-menu {
   background-color: #292929;
   width: 100%;
-  display: grid;
-  grid-template-rows: auto auto auto;
-  grid-template-columns: 1fr 1fr;
-  gap: 4px;
   padding: 4px;
   position: relative;
   z-index: 10;
   max-height: 220px; /* Limit height to prevent overflow */
+}
+
+.battle-menu-grid {
+  display: grid;
+  grid-template-columns: 1fr 200px;
+  gap: 4px;
+}
+
+.battle-menu-left {
+  display: grid;
+  grid-template-rows: auto auto auto;
+  gap: 4px;
 }
 
 /* Action Container for Battle Controls */
@@ -693,25 +701,29 @@ body {
 }
 
 #battle-log {
-  grid-column: 2;
-  grid-row: 1 / span 3;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 200px;
+  height: 100%;
   background-color: #292929;
   color: white;
   padding: 6px;
   font-size: 10px;
   border: 1px solid #444;
-  max-height: 110px;
   overflow-y: auto;
+  z-index: 100;
+  display: none; /* We'll control this with JavaScript */
 }
 
 #move-info-box {
-  grid-column: 2;
-  grid-row: 1 / span 3;
   background-color: #292929;
   color: white;
   padding: 8px;
   font-size: 12px;
   border: 1px solid #444;
+  height: 100%;
+  overflow-y: auto;
 }
 
 /* Moves section with 4 move buttons */
@@ -846,17 +858,21 @@ body {
   transform: translateY(50%);
 }
 /* Items grid styling is in the combined selector above */
+.battle-menu-right {
+  position: relative;
+}
+
 #battle-log {
-  flex: 1;
-  overflow-y: auto;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.7);
   border: 2px solid #4a4a4a;
   padding: 8px;
-  color: var(--pixel-text-light);
+  color: white;
   font-size: 0.8em;
   line-height: 1.4;
   scrollbar-width: thin;
   scrollbar-color: #666 #333;
+  height: 100%;
+  overflow-y: auto;
 }
 #battle-log::-webkit-scrollbar {
   width: 6px;

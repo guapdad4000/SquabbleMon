@@ -91,45 +91,53 @@
           <!-- This is kept for compatibility, but we don't use it in the new UI -->
         </div>
 
-        <!-- Moves section - 4 buttons for moves -->
-        <div id="moves">
-          <!-- Move buttons are generated in JavaScript, but we'll create a template -->
-          <button class="move-button" onclick="useMove(activePlayerCharacter.moves[0])">Move 1</button>
-          <button class="move-button" onclick="useMove(activePlayerCharacter.moves[1])">Move 2</button>
-          <button class="move-button" onclick="useMove(activePlayerCharacter.moves[2])">Move 3</button>
-          <button class="move-button" onclick="useMove(activePlayerCharacter.moves[3])">Move 4</button>
+        <div class="battle-menu-grid">
+          <!-- Left column for moves and items -->
+          <div class="battle-menu-left">
+            <!-- Moves section - 4 buttons for moves -->
+            <div id="moves">
+              <!-- Move buttons are generated in JavaScript, but we'll create a template -->
+              <button class="move-button" onclick="useMove(activePlayerCharacter.moves[0])">Move 1</button>
+              <button class="move-button" onclick="useMove(activePlayerCharacter.moves[1])">Move 2</button>
+              <button class="move-button" onclick="useMove(activePlayerCharacter.moves[2])">Move 3</button>
+              <button class="move-button" onclick="useMove(activePlayerCharacter.moves[3])">Move 4</button>
+            </div>
+            
+            <!-- Items section -->
+            <div id="items">
+              <button class="item-button" onclick="useItem('jcole')">
+                <span class="item-icon">💿</span> J Cole CD
+              </button>
+              <button class="item-button" onclick="useItem('nbayoungboy')">
+                <span class="item-icon">🎵</span> NBA CD
+              </button>
+              <button class="item-button" onclick="useItem('weed')">
+                <span class="item-icon">🌿</span> Weed
+              </button>
+              <button class="item-button" onclick="useItem('crashdummy')">
+                <span class="item-icon">🔄</span> Dummy
+              </button>
+            </div>
+            
+            <!-- Switch button styled like in screenshot -->
+            <button id="toggle-switch" onclick="switchYN()">SWITCH</button>
+          </div>
+          
+          <!-- Right column for battle log -->
+          <div class="battle-menu-right">
+            <!-- Battle log -->
+            <div id="battle-log">
+              <h3>Battle Log:</h3>
+              <!-- Log entries will be added here -->
+            </div>
+            
+            <!-- Move info box (initially hidden) -->
+            <div id="move-info-box" style="display: none;">
+              <h3>Move Info:</h3>
+              <!-- Move details will be filled dynamically -->
+            </div>
+          </div>
         </div>
-        
-        <!-- Items section -->
-        <div id="items">
-          <button class="item-button" onclick="useItem('jcole')">
-            <span class="item-icon">💿</span> J Cole CD
-          </button>
-          <button class="item-button" onclick="useItem('nbayoungboy')">
-            <span class="item-icon">🎵</span> NBA CD
-          </button>
-          <button class="item-button" onclick="useItem('weed')">
-            <span class="item-icon">🌿</span> Weed
-          </button>
-          <button class="item-button" onclick="useItem('crashdummy')">
-            <span class="item-icon">🔄</span> Dummy
-          </button>
-        </div>
-        
-        <!-- Battle log and Move Info Box -->
-        <div id="battle-log">
-          <h3>Battle Log:</h3>
-          <!-- Log entries will be added here -->
-        </div>
-        
-        <!-- Move info box (initially hidden) -->
-        <div id="move-info-box" style="display: none;">
-          <h3>Move Info:</h3>
-          <!-- Move details will be filled dynamically -->
-        </div>
-        
-        <!-- Switch button styled like in screenshot -->
-        <button id="toggle-switch" onclick="switchYN()">SWITCH</button>
       </div>
     </div>
 
