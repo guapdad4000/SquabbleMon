@@ -675,15 +675,15 @@ body {
   padding: 2px;
   position: relative;
   z-index: 10;
-  max-height: 130px; /* Further reduced height */
+  max-height: 130px; /* Fixed at 130px as requested */
   display: grid;
   grid-template-columns: 2fr 1fr; /* Adjusted ratio to give more space to moves/items */
-  grid-template-rows: auto auto auto;
+  grid-template-rows: auto auto;
   grid-template-areas:
     "moves battle-log"
-    "items battle-log"
-    "switch switch";
+    "items battle-log";
   gap: 1px; /* Even smaller gap */
+  box-sizing: border-box; /* Ensure padding is included in height */
 }
 
 /* Action Container for Battle Controls */
@@ -758,7 +758,7 @@ body {
   padding: 1px 0;
   cursor: pointer;
   border-radius: 0;
-  height: 22px; /* Further reduced height */
+  height: 15px; /* Reduced to 15px as requested */
   position: relative;
   display: flex;
   flex-direction: column;
@@ -767,11 +767,12 @@ body {
 }
 
 .move-button .pp-count {
-  font-size: 8px;
+  font-size: 7px;
   position: absolute;
-  bottom: 1px;
-  right: 3px;
+  bottom: 0;
+  right: 2px;
   color: #333;
+  line-height: 1;
 }
 
 /* Items section with item buttons */
@@ -795,7 +796,7 @@ body {
   align-items: center;
   justify-content: center;
   border-radius: 0;
-  height: 22px; /* Further reduced height */
+  height: 15px; /* Reduced to 15px as requested */
   position: relative;
 }
 
@@ -806,17 +807,21 @@ body {
 /* Switch button styled like in screenshot */
 /* Removed grid positioning for toggle-switch as it's now part of action-container */
 #toggle-switch {
-  grid-area: switch;
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
   background-color: #FF9900;
   color: white;
   border: none;
   text-align: center;
-  font-size: 10px;
-  padding: 2px;
+  font-size: 8px;
+  padding: 1px;
   font-weight: bold;
   cursor: pointer;
-  height: 22px; /* Even smaller height */
-  margin-top: 1px;
+  height: 15px; /* Matches other buttons */
+  width: 20px; /* Set to 20px as requested */
+  margin-top: 0;
 }
 
 .action-button {
