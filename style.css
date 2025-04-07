@@ -1239,8 +1239,9 @@ body {
   position: fixed;
   bottom: 0;
   left: 0;
-  z-index: 1000;
-  background-color: #1a1a1a;
+  right: 0;
+  z-index: 9999; /* Ensure it's above everything else */
+  background-color: rgba(26, 26, 26, 0.95);
 }
 
 #mobile-controls-frame {
@@ -1348,9 +1349,11 @@ body {
   }
   
   #mobile-controls-container {
-    display: block; /* Show the controls container on mobile */
+    display: block !important; /* Show the controls container on mobile, force with !important */
     margin-top: 0;
     height: 240px;
+    visibility: visible !important;
+    opacity: 1 !important;
   }
   
   #mobile-controls {
@@ -1413,6 +1416,10 @@ body {
     border-right: none;
     border-bottom: none;
     border-radius: 0;
+    display: block !important; /* Ensure visibility even for small screens */
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 9999 !important; /* Higher z-index to ensure it's above everything */
   }
   
   #selection-screen {

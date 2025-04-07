@@ -1036,6 +1036,22 @@ let opponentActiveItemEffects = [];
 
 // Mobile controls functionality
 function initMobileControls() {
+  console.log("Initializing mobile controls");
+  
+  // Force display of mobile controls for mobile devices
+  if (window.innerWidth <= 768) {
+    document.getElementById("mobile-controls-container").style.display = "block";
+    console.log("Mobile device detected, showing controls");
+    
+    // Ensure the iframe is loaded properly
+    const iframe = document.getElementById("mobile-controls-frame");
+    iframe.onload = function() {
+      console.log("Mobile controls iframe loaded");
+    };
+  } else {
+    console.log("Desktop device detected, hiding mobile controls");
+  }
+  
   // Shared navigation state
   let currentFocus = null;
   let navItems = [];
