@@ -672,10 +672,10 @@ body {
 #battle-menu {
   background-color: #292929;
   width: 100%;
-  padding: 4px;
+  padding: 2px;
   position: relative;
   z-index: 10;
-  max-height: 155px; /* Reduced height to match reference image */
+  max-height: 130px; /* Further reduced height */
   display: grid;
   grid-template-columns: 2fr 1fr; /* Adjusted ratio to give more space to moves/items */
   grid-template-rows: auto auto auto;
@@ -683,7 +683,7 @@ body {
     "moves battle-log"
     "items battle-log"
     "switch switch";
-  gap: 2px; /* Reduced gap */
+  gap: 1px; /* Even smaller gap */
 }
 
 /* Action Container for Battle Controls */
@@ -704,12 +704,12 @@ body {
   grid-area: battle-log;
   background-color: #292929;
   color: white;
-  padding: 4px;
+  padding: 2px;
   font-size: 9px;
   border: 1px solid #444;
   overflow-y: auto;
   height: 100%;
-  min-height: 70px;
+  min-height: 55px;
 }
 
 #battle-log-label h3 {
@@ -753,12 +753,12 @@ body {
   color: black;
   border: none;
   text-align: center;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: bold;
-  padding: 2px 1px;
+  padding: 1px 0;
   cursor: pointer;
   border-radius: 0;
-  height: 25px; /* Reduced height */
+  height: 22px; /* Further reduced height */
   position: relative;
   display: flex;
   flex-direction: column;
@@ -787,15 +787,15 @@ body {
   color: black;
   border: none;
   text-align: center;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: bold;
-  padding: 2px 1px;
+  padding: 1px 0;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 0;
-  height: 25px; /* Reduced height */
+  height: 22px; /* Further reduced height */
   position: relative;
 }
 
@@ -811,12 +811,12 @@ body {
   color: white;
   border: none;
   text-align: center;
-  font-size: 12px;
-  padding: 4px;
+  font-size: 10px;
+  padding: 2px;
   font-weight: bold;
   cursor: pointer;
-  height: 28px; /* Reduced height */
-  margin-top: 2px;
+  height: 22px; /* Even smaller height */
+  margin-top: 1px;
 }
 
 .action-button {
