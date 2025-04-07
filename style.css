@@ -676,17 +676,13 @@ body {
   position: relative;
   z-index: 10;
   max-height: 220px; /* Limit height to prevent overflow */
-}
-
-.battle-menu-grid {
   display: grid;
-  grid-template-columns: 1fr 200px;
-  gap: 4px;
-}
-
-.battle-menu-left {
-  display: grid;
+  grid-template-columns: 1fr 1fr;
   grid-template-rows: auto auto auto;
+  grid-template-areas:
+    "moves battle-log"
+    "items battle-log"
+    "switch switch";
   gap: 4px;
 }
 
@@ -701,19 +697,34 @@ body {
 }
 
 #battle-log {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 200px;
-  height: 100%;
+  display: none; /* We'll control this with JavaScript */
+}
+
+#battle-log-label {
+  grid-area: battle-log;
   background-color: #292929;
   color: white;
   padding: 6px;
   font-size: 10px;
   border: 1px solid #444;
   overflow-y: auto;
-  z-index: 100;
-  display: none; /* We'll control this with JavaScript */
+  height: 100%;
+}
+
+#battle-log-label h3 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #4bdb88;
+  text-transform: uppercase;
+}
+
+#battle-log-text {
+  font-size: 10px;
+  line-height: 1.4;
+  height: 100%;
+  overflow-y: auto;
 }
 
 #move-info-box {
@@ -728,8 +739,7 @@ body {
 
 /* Moves section with 4 move buttons */
 #moves {
-  grid-column: 1;
-  grid-row: 1;
+  grid-area: moves;
   display: grid;
   grid-template-rows: auto auto;
   grid-template-columns: 1fr 1fr;
@@ -764,8 +774,7 @@ body {
 
 /* Items section with item buttons */
 #items {
-  grid-column: 1;
-  grid-row: 2;
+  grid-area: items;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 4px;
@@ -795,6 +804,7 @@ body {
 /* Switch button styled like in screenshot */
 /* Removed grid positioning for toggle-switch as it's now part of action-container */
 #toggle-switch {
+  grid-area: switch;
   background-color: #FF9900;
   color: white;
   border: none;
@@ -803,8 +813,6 @@ body {
   padding: 6px;
   font-weight: bold;
   cursor: pointer;
-  grid-column: 1;
-  grid-row: 3;
   height: 32px;
   margin-top: 4px;
 }

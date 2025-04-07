@@ -4242,14 +4242,21 @@ function restartGame() {
 }
 
 function addToBattleLog(text) {
-  const battleLogElement = document.getElementById("battle-log");
-  const entry = document.createElement("div");
-  entry.className = "log-entry";
-  entry.textContent = text;
-  battleLogElement.appendChild(entry);
+  // Update the battle log text in the new battle-log-label
+  const battleLogTextElement = document.getElementById("battle-log-text");
+  battleLogTextElement.textContent = text;
   
-  // Auto-scroll to bottom
-  battleLogElement.scrollTop = battleLogElement.scrollHeight;
+  // Also keep the old battle log for compatibility
+  const battleLogElement = document.getElementById("battle-log");
+  if (battleLogElement) {
+    const entry = document.createElement("div");
+    entry.className = "log-entry";
+    entry.textContent = text;
+    battleLogElement.appendChild(entry);
+    
+    // Auto-scroll to bottom
+    battleLogElement.scrollTop = battleLogElement.scrollHeight;
+  }
   
   // Also store in array for history
   battleLog.push(text);
