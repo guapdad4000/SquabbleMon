@@ -1038,15 +1038,28 @@ let opponentActiveItemEffects = [];
 function initMobileControls() {
   console.log("Initializing mobile controls");
   
-  // Force display of mobile controls for mobile devices
-  if (window.innerWidth <= 768) {
-    document.getElementById("mobile-controls-container").style.display = "block";
-    console.log("Mobile device detected, showing controls");
+  // Check if the device is mobile using a more reliable way (user agent)
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+  
+  if (isMobile) {
+    // Force display of mobile controls for mobile devices
+    const mobileContainer = document.getElementById("mobile-controls-container");
+    mobileContainer.style.display = "block";
+    mobileContainer.style.visibility = "visible";
+    mobileContainer.style.opacity = "1";
+    mobileContainer.style.zIndex = "9999";
+    
+    console.log("Mobile device detected, showing controls:", mobileContainer);
     
     // Ensure the iframe is loaded properly
     const iframe = document.getElementById("mobile-controls-frame");
+    iframe.style.display = "block";
+    iframe.style.visibility = "visible";
+    iframe.style.height = "100%";
+    iframe.style.width = "100%";
+    
     iframe.onload = function() {
-      console.log("Mobile controls iframe loaded");
+      console.log("Mobile controls iframe loaded successfully");
     };
   } else {
     console.log("Desktop device detected, hiding mobile controls");
