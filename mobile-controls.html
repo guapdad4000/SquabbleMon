@@ -185,10 +185,14 @@
   <script>
     // Function to send key events to parent window using postMessage
     function sendKeyPress(key) {
-      window.parent.postMessage({
+      console.log("Sending keypress:", key);
+      const message = {
         type: 'keypress',
         key: key
-      }, window.location.origin);
+      };
+      console.log("Message object:", message);
+      window.parent.postMessage(message, window.location.origin);
+      console.log("Message sent to origin:", window.location.origin);
     }
 
     // D-pad buttons

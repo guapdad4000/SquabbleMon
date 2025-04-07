@@ -1236,6 +1236,11 @@ body {
   border-radius: 8px;
   overflow: hidden;
   display: none; /* Hide by default, will be shown on mobile via media queries */
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+  background-color: #1a1a1a;
 }
 
 #mobile-controls-frame {
@@ -1339,12 +1344,12 @@ body {
   body {
     padding: 5px;
     font-size: 8px;
-    padding-bottom: 20px; /* Reduced padding as controls are now in an iframe */
+    padding-bottom: 250px; /* Added space at the bottom for the control panel */
   }
   
   #mobile-controls-container {
     display: block; /* Show the controls container on mobile */
-    margin-top: 15px;
+    margin-top: 0;
     height: 240px;
   }
   
@@ -1398,11 +1403,16 @@ body {
 @media (max-width: 480px) {
   body {
     font-size: 7px;
-    padding-bottom: 20px; /* Reduced padding as controls are now in an iframe */
+    padding-bottom: 210px; /* Added space at the bottom for the control panel */
   }
   
   #mobile-controls-container {
     height: 200px; /* Smaller height for mobile phones */
+    border-top: 4px solid #555;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    border-radius: 0;
   }
   
   #selection-screen {

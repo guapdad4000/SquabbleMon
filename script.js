@@ -1045,12 +1045,18 @@ function initMobileControls() {
   // Message handler from iframe
   window.addEventListener('message', function(event) {
     // Security check
-    if (event.origin !== window.location.origin) return;
+    if (event.origin !== window.location.origin) {
+      console.log("Origin mismatch:", event.origin, window.location.origin);
+      return;
+    }
+    
+    console.log("Received message:", event.data);
     
     const keyData = event.data;
     if (!keyData || !keyData.type) return;
     
     if (keyData.type === 'keypress') {
+      console.log("Processing keypress:", keyData.key);
       // Handle virtual D-pad and button controls from iframe
       switch (keyData.key) {
         case 'ArrowUp':
