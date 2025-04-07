@@ -2349,7 +2349,14 @@ function useMove(move) {
   // Update move buttons to reflect PP change
   updateMoveButtons();
   
-  addToBattleLog(`${activePlayerCharacter.name} used ${move.name}!`);
+  // Enhance the move name for display if we have the BattleDialogue module
+  let displayMoveName = move.name;
+  if (window.BattleDialogue) {
+    displayMoveName = window.BattleDialogue.enhanceMoveName(move);
+  }
+  
+  // Add to battle log with dialogue
+  addToBattleLog(`${activePlayerCharacter.name} used ${displayMoveName}!`, 'attack', {}, activePlayerCharacter);
   
   // Check if this is a damage move or a status/healing move
   const isZeroDamageMove = move.power === 0 || move.type === "status";
@@ -2473,7 +2480,7 @@ function useMove(move) {
   const effectiveAccuracy = move.accuracy * playerStatModifiers.accuracy;
   if (Math.random() * 100 > effectiveAccuracy) {
     // Miss
-    addToBattleLog(`${activePlayerCharacter.name}'s attack missed!`);
+    addToBattleLog(`${activePlayerCharacter.name}'s attack missed!`, 'attack', { effectiveness: 'miss' }, activePlayerCharacter);
     showFloatingLog("MISSED!");
     
     // Keep UI as is - don't hide move and item buttons
@@ -2537,8 +2544,14 @@ function useMove(move) {
     activeOpponent.hp = Math.max(0, activeOpponent.hp - damage);
     updateBattleUI();
     
-    // Show damage in battle log
-    addToBattleLog(`${activePlayerCharacter.name} dealt ${damage} damage to ${activeOpponent.name}!`);
+    // Show damage in battle log with reaction
+    const effectivenessValue = calculateTypeEffectiveness(move.type, activeOpponent.type);
+    const damageContext = {
+      damage: damage,
+      effectiveness: effectivenessValue > 1.2 ? 'critical' : (effectivenessValue < 0.8 ? 'weak' : 'normal')
+    };
+    
+    addToBattleLog(`${activePlayerCharacter.name} dealt ${damage} damage to ${activeOpponent.name}!`, 'hit-reaction', damageContext, activeOpponent);
     
     // Show effectiveness message if applicable
     const effectiveness = calculateTypeEffectiveness(move.type, activeOpponent.type);
@@ -2587,7 +2600,13 @@ function executeOpponentMove(move) {
     move.pp--;
   }
   
-  addToBattleLog(`${activeOpponent.name} used ${move.name}!`);
+  // Enhance the move name for display if we have the BattleDialogue module
+  let displayMoveName = move.name;
+  if (window.BattleDialogue) {
+    displayMoveName = window.BattleDialogue.enhanceMoveName(move);
+  }
+  
+  addToBattleLog(`${activeOpponent.name} used ${displayMoveName}!`, 'attack', {}, activeOpponent);
   
   // Check if this is a damage move or a status/healing move
   const isZeroDamageMove = move.power === 0 || move.type === "status";
@@ -2712,7 +2731,7 @@ function executeOpponentMove(move) {
   const effectiveAccuracy = move.accuracy * opponentStatModifiers.accuracy;
   if (Math.random() * 100 > effectiveAccuracy) {
     // Miss
-    addToBattleLog(`${activeOpponent.name}'s attack missed!`);
+    addToBattleLog(`${activeOpponent.name}'s attack missed!`, 'attack', { effectiveness: 'miss' }, activeOpponent);
     showFloatingLog("MISSED!");
     setTimeout(() => endOpponentTurn(), 600);
     
@@ -2806,8 +2825,14 @@ function executeOpponentMove(move) {
       activePlayerCharacter.hp = Math.max(0, activePlayerCharacter.hp - damage);
       updateBattleUI();
       
-      // Show damage in battle log
-      addToBattleLog(`${activeOpponent.name} dealt ${damage} damage to ${activePlayerCharacter.name}!`);
+      // Show damage in battle log with reaction
+      const effectivenessValue = calculateTypeEffectiveness(move.type, activePlayerCharacter.type);
+      const damageContext = {
+        damage: damage,
+        effectiveness: effectivenessValue > 1.2 ? 'critical' : (effectivenessValue < 0.8 ? 'weak' : 'normal')
+      };
+      
+      addToBattleLog(`${activeOpponent.name} dealt ${damage} damage to ${activePlayerCharacter.name}!`, 'hit-reaction', damageContext, activePlayerCharacter);
       
       // Show effectiveness message if applicable
       const effectiveness = calculateTypeEffectiveness(move.type, activePlayerCharacter.type);
@@ -2881,7 +2906,7 @@ function calculateDamage(attacker, defender, move, attackerMods, defenderMods) {
   // Critical hit (based on attacker's critRate, typically 10-20%)
   if (Math.random() < attacker.critRate) {
     damage = Math.floor(damage * 1.3); // Reduced from 1.5 for balance
-    addToBattleLog("A critical hit!");
+    addToBattleLog("A critical hit!", 'critical-hit', {}, attacker === activePlayerCharacter ? activeOpponent : activePlayerCharacter);
     showFloatingLog("CRITICAL HIT!");
     
     // Add critical hit visual effect
@@ -4294,17 +4319,31 @@ function restartGame() {
   updateFadeDisplay();
 }
 
-function addToBattleLog(text) {
+function addToBattleLog(text, dialogueType = null, context = {}, character = null) {
+  // Add urban slang flavor if dialogue type is provided and BattleDialogue is loaded
+  let displayText = text;
+  
+  if (dialogueType && window.BattleDialogue) {
+    // Generate urban dialogue based on the dialogue type and context
+    const urbanDialogue = window.BattleDialogue.generateBattleDialogue(dialogueType, context);
+    
+    // Format dialogue with character-specific styling
+    const formattedDialogue = window.BattleDialogue.formatDialogue(character, urbanDialogue);
+    
+    // Add the original message plus the urban dialogue
+    displayText = `${text} ${formattedDialogue}`;
+  }
+  
   // Update the battle log text in the new battle-log-label
   const battleLogTextElement = document.getElementById("battle-log-text");
-  battleLogTextElement.textContent = text;
+  battleLogTextElement.textContent = displayText;
   
   // Also keep the old battle log for compatibility
   const battleLogElement = document.getElementById("battle-log");
   if (battleLogElement) {
     const entry = document.createElement("div");
     entry.className = "log-entry";
-    entry.textContent = text;
+    entry.textContent = displayText;
     battleLogElement.appendChild(entry);
     
     // Auto-scroll to bottom
@@ -4312,7 +4351,7 @@ function addToBattleLog(text) {
   }
   
   // Also store in array for history
-  battleLog.push(text);
+  battleLog.push(displayText);
 }
 
 function showFloatingLog(text, duration = 2000) {
