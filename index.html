@@ -86,48 +86,29 @@
         </div>
       </div>
       <div id="battle-menu">
-        <!-- Hidden action container - we're showing moves/items by default -->
+        <!-- Left side: Attack/Items label -->
         <div id="action-container">
-          <button class="pixel-button action-button" onclick="showMoves()">ATTACK</button>
-          <button class="pixel-button action-button" onclick="showItems()">ITEMS</button>
+          ATTACK/ITEMS
         </div>
         
-        <!-- Moves container, visible by default now -->
-        <div id="moves" style="display:flex">
-          <div class="section-divider">
-            <span>MOVES</span>
-          </div>
-          <div class="moves-grid"></div>
-          <!-- Back button only shows when needed in battle -->
-          <button class="pixel-button back-button" style="display:none" onclick="document.getElementById('moves').style.display = 'none'; document.getElementById('items').style.display = 'none'; document.getElementById('action-container').style.display = 'flex'; setTimeout(() => { if (typeof initNav === 'function') initNav(); }, 50);">BACK</button>
+        <!-- Right side: Item buttons -->
+        <div id="items">
+          <button class="pixel-button" onclick="useItem('jcole')" style="background-color: #4DEA7B; border: 2px solid #2CA85B; color: black; height: 40px; font-weight: bold;">
+            <span class="item-icon">💿</span> J Cole CD
+          </button>
+          <button class="pixel-button" onclick="useItem('nbayoungboy')" style="background-color: #4DEA7B; border: 2px solid #2CA85B; color: black; height: 40px; font-weight: bold;">
+            <span class="item-icon">🎵</span> NBA CD
+          </button>
         </div>
         
-        <!-- Items container, visible by default now -->
-        <div id="items" style="display:flex">
-          <div class="section-divider">
-            <span>ITEMS</span>
-          </div>
-          <div class="items-grid">
-            <button class="pixel-button" onclick="useItem('jcole')" title="Heals 30 HP with positive vibes">
-              <span class="item-icon">💿</span> J Cole CD
-            </button>
-            <button class="pixel-button" onclick="useItem('nbayoungboy')" title="Raises Attack by 30% for 3 turns">
-              <span class="item-icon">🎵</span> NBA CD
-            </button>
-            <button class="pixel-button" onclick="useItem('weed')" title="Cures status effects and gives slight HP boost">
-              <span class="item-icon">🌿</span> Weed
-            </button>
-            <button class="pixel-button" onclick="useItem('crashdummy')" title="Raises Defense by 50% for 2 turns">
-              <span class="item-icon">🛡️</span> Dummy
-            </button>
-          </div>
-        </div>
+        <!-- Hidden moves container (not needed in new layout) -->
+        <div id="moves" style="display:none"></div>
         
-        <!-- Battle log positioned to the right -->
-        <div id="battle-log" class="history-log"></div>
+        <!-- Hidden battle log (not in screenshot) -->
+        <div id="battle-log" class="history-log" style="display:none"></div>
         
-        <!-- Switch button positioned at the bottom -->
-        <button id="toggle-switch" class="pixel-button action-button" onclick="switchYN()">SWITCH</button>
+        <!-- Switch button positioned in the middle -->
+        <button id="toggle-switch" onclick="switchYN()">SWITCH</button>
       </div>
     </div>
 

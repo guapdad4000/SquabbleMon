@@ -1858,40 +1858,33 @@ function updateStatusIcons() {
 }
 
 function updateMoveButtons() {
-  const movesContainer = document.querySelector("#moves .moves-grid");
-  if (!movesContainer || !activePlayerCharacter || !activePlayerCharacter.moves) return;
+  // In our new UI, moves are not shown as buttons
+  // Instead, use the first move when the player presses the action container section
+  const actionContainer = document.getElementById("action-container");
+  if (!actionContainer || !activePlayerCharacter || !activePlayerCharacter.moves) return;
   
-  movesContainer.innerHTML = "";
+  // Clear any existing event listeners
+  const actionContainerClone = actionContainer.cloneNode(true);
+  actionContainer.parentNode.replaceChild(actionContainerClone, actionContainer);
   
-  activePlayerCharacter.moves.forEach(move => {
-    if (!move) return;
+  // Set click event to use the first move
+  actionContainerClone.addEventListener("click", () => {
+    // Find the first available move with PP
+    const availableMove = activePlayerCharacter.moves.find(move => 
+      move && (move.pp === undefined || move.pp > 0)
+    );
     
-    // If move doesn't have PP values, set default ones
-    if (move.pp === undefined) {
-      move.pp = move.power > 0 ? 10 : 5; // Attack moves get 10 PP, status moves get 5 PP
+    if (availableMove) {
+      useMove(availableMove);
+    } else {
+      showFloatingLog("No moves available!");
     }
-    if (move.maxPp === undefined) {
-      move.maxPp = move.pp;
-    }
-    
-    const moveButton = document.createElement("button");
-    moveButton.className = "pixel-button";
-    moveButton.innerHTML = `${move.name || "Unknown Move"} <span class="pp-counter">${move.pp}/${move.maxPp}</span>`;
-    moveButton.dataset.move = JSON.stringify(move);
-    moveButton.addEventListener("click", () => useMove(move));
-    moveButton.addEventListener("mouseover", showMoveTooltip);
-    moveButton.addEventListener("mouseout", hideMoveTooltip);
-    
-    // Disable the button if PP is zero
-    if (move.pp <= 0) {
-      moveButton.disabled = true;
-      moveButton.title = "No PP remaining";
-    }
-    
-    movesContainer.appendChild(moveButton);
   });
   
-  // Refresh navigation for mobile controls after buttons are added
+  // Make it look clickable
+  actionContainerClone.style.cursor = "pointer";
+  
+  // Refresh navigation for mobile controls
   setTimeout(() => {
     if (typeof initNav === 'function') {
       console.log("Refreshing navigation after move buttons update");
@@ -1901,9 +1894,11 @@ function updateMoveButtons() {
 }
 
 function updateItemButtons() {
-  const itemButtons = document.querySelectorAll("#items .items-grid button");
+  // In our new UI, item buttons are fixed and styled directly in the HTML
+  const itemButtons = document.querySelectorAll("#items button");
   if (!itemButtons || itemButtons.length === 0) return;
   
+  // Update button states based on available items
   itemButtons.forEach(button => {
     const onclickAttr = button.getAttribute("onclick");
     if (!onclickAttr) return;
@@ -1914,10 +1909,18 @@ function updateItemButtons() {
     const itemType = match[1];
     if (!itemUseCounts[itemType] && itemUseCounts[itemType] !== 0) return;
     
+    // Disable if item is used up and style it differently
     button.disabled = itemUseCounts[itemType] <= 0;
+    if (itemUseCounts[itemType] <= 0) {
+      button.style.opacity = "0.5";
+      button.style.cursor = "not-allowed";
+    } else {
+      button.style.opacity = "1";
+      button.style.cursor = "pointer";
+    }
   });
   
-  // Refresh navigation for mobile controls after item buttons are updated
+  // Refresh navigation for mobile controls
   setTimeout(() => {
     if (typeof initNav === 'function') {
       console.log("Refreshing navigation after item buttons update");
@@ -1939,22 +1942,21 @@ function updateFadeDisplay() {
   }
 }
 
-// Functions to toggle between battle menu views
+// Functions to set up battle menu
 function showMoves() {
   if (!canAct || currentTurn !== "player") return;
   
-  // Our new layout shows both moves and items directly
-  document.getElementById("action-container").style.display = "none";
-  document.getElementById("moves").style.display = "flex";
-  document.getElementById("items").style.display = "flex";
+  // In our new simplified UI, we don't toggle between views
+  // Everything is always visible, so just make sure all containers are shown
+  document.getElementById("action-container").style.display = "flex";
+  document.getElementById("items").style.display = "grid";
   
-  // Update move and item buttons
+  // Update buttons and actions
   updateMoveButtons();
   updateItemButtons();
   
   // Refresh navigation for mobile controls
   setTimeout(() => {
-    // Use the initNav function from mobile controls
     if (typeof initNav === 'function') {
       initNav();
     }
@@ -1962,7 +1964,7 @@ function showMoves() {
 }
 
 function showItems() {
-  // Both moves and items are always shown in the new layout
+  // In our new UI, we don't have separate views - both sections are always shown
   showMoves();
 }
 

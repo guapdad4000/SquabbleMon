@@ -670,53 +670,58 @@ body {
   background-color: var(--pixel-bg-dark);
   border-top: 4px solid var(--pixel-border);
   width: 100%;
-  display: flex;
-  flex-direction: row;
-  min-height: 160px;
-  padding: 10px;
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: 1fr 1fr;
+  min-height: 120px;
+  padding: 5px;
   position: relative;
   z-index: 10;
 }
 
 #battle-log {
-  order: 2;
-  width: 35%;
-  margin-left: 10px;
-  height: 100%;
-  max-height: none;
-  border-left: 2px solid var(--pixel-border);
-  padding-left: 10px;
+  display: none; /* Hide the battle log as per screenshot */
 }
 
 #action-container {
-  display: none; /* Hide the action container - we'll show moves/items directly */
-}
-
-#moves, #items {
-  order: 1;
-  width: 65%;
   display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  gap: 10px;
-  padding: 5px 0;
-  border-right: none;
+  align-items: center;
+  justify-content: center;
+  grid-column: 1;
+  grid-row: 1;
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 5px;
 }
 
-/* Switch button positioned at the bottom of the screen */
+#items {
+  grid-column: 2;
+  grid-row: 1;
+  display: grid;
+  grid-template-rows: auto auto;
+  gap: 5px;
+  padding: 5px;
+}
+
+#moves {
+  display: none; /* Hide the separate moves section */
+}
+
+/* Switch button positioned in the middle */
 #toggle-switch {
-  position: absolute;
-  bottom: 5px;
-  left: 30%;
-  transform: translateX(-50%);
-  z-index: 100;
-  width: 120px;
+  width: 150px;
+  height: 60px;
   margin: 0 auto;
   background-color: #FF9900;
   color: white;
   border: 2px solid #FF7700;
   text-align: center;
-  border-radius: 4px;
+  border-radius: 2px;
+  font-size: 20px;
+  line-height: 60px;
+  font-weight: bold;
 }
 
 .action-button {
