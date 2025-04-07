@@ -1173,7 +1173,10 @@ function initMobileControls() {
     
     switch (currentScreen) {
       case "selection":
-        return Array.from(document.querySelectorAll(".character-card:not(.selected)"));
+        // Include the start battle button when it's not disabled
+        const startButton = document.getElementById("start-battle");
+        const characters = Array.from(document.querySelectorAll(".character-card:not(.selected)"));
+        return startButton && !startButton.disabled ? [...characters, startButton] : characters;
       case "battle":
         // Check which battle menu is active
         if (document.getElementById("moves").style.display !== "none") {

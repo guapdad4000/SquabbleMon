@@ -1419,9 +1419,12 @@ body {
   }
   
   #mobile-controls-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
     height: 200px; /* Smaller height for mobile phones */
-    width: 95vw;
-    max-width: 480px;
+    width: 100vw;
     margin: 0 auto;
     border-top: 4px solid #555;
     border-left: none;
@@ -1436,21 +1439,31 @@ body {
   
   #selection-screen {
     padding: 10px;
+    margin-bottom: 50px;
   }
   
   #character-list {
     gap: 8px;
     padding: 8px;
-    height: 380px; /* Increased height to fit all characters on mobile screens */
+    height: 280px; /* Reduced height to show start button */
+    overflow-y: scroll;
   }
   
   .character-card {
-    flex-basis: 65px;
+    flex-basis: 60px;
   }
   
   .character-card img {
     width: 40px;
     height: 40px;
+  }
+  
+  #team-preview {
+    margin-top: 10px;
+  }
+  
+  #start-battle {
+    margin-top: 5px;
   }
   
   #battle-screen {
@@ -1459,19 +1472,24 @@ body {
   
   #battle-menu {
     min-height: 120px;
-    flex-direction: column;
+    flex-direction: row; /* Keep row layout for battle menu */
   }
   
   #action-container {
-    border-right: none;
-    border-bottom: 2px solid var(--pixel-border);
-    padding-right: 0;
-    padding-bottom: 5px;
+    flex: 0 0 45%;
+    padding-right: 5px;
+    border-right: 2px solid var(--pixel-border);
+  }
+  
+  .action-button {
+    margin-bottom: 3px;
+    padding: 8px 5px;
+    font-size: 12px;
   }
   
   #battle-log {
-    margin-left: 0;
-    margin-top: 5px;
+    flex: 1;
+    margin-left: 5px;
     max-height: 80px;
   }
   
@@ -1489,5 +1507,10 @@ body {
   #player-sprite,
   #opponent-sprite {
     height: 120px;
+  }
+  
+  /* Make moves and items column layout */
+  .moves-grid, .items-grid {
+    grid-template-columns: 1fr;
   }
 }
