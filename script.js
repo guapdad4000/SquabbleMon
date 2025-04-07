@@ -1580,6 +1580,22 @@ function toggleSound() {
   }
 }
 
+// Function to use the first available move when user clicks ATTACK/ITEMS
+function useFirstMove() {
+  const playerCharacter = playerTeam[currentPlayerCharacter];
+  
+  // Find the first usable move
+  if (playerCharacter && playerCharacter.moves && playerCharacter.moves.length > 0) {
+    // Get the first move
+    const firstMove = playerCharacter.moves[0];
+    
+    // Use it if we're not in a locked state
+    if (!turnInProgress && !waitingForSwitch) {
+      useMove(firstMove);
+    }
+  }
+}
+
 function initGame() {
   populateCharacterSelection();
   setupMoveTooltips();

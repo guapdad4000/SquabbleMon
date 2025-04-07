@@ -670,11 +670,11 @@ body {
   background-color: var(--pixel-bg-dark);
   border-top: 4px solid var(--pixel-border);
   width: 100%;
-  display: grid;
-  grid-template-rows: auto;
-  grid-template-columns: 1fr 1fr;
-  min-height: 120px;
-  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100px;
+  padding: 10px;
   position: relative;
   z-index: 10;
 }
@@ -687,41 +687,40 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  grid-column: 1;
-  grid-row: 1;
-  font-size: 14px;
+  width: 100%;
+  font-size: 18px;
   font-weight: bold;
   text-transform: uppercase;
   text-align: center;
   padding: 5px;
+  color: white;
+  margin-bottom: 10px;
+  cursor: pointer;
 }
 
 #items {
-  grid-column: 2;
-  grid-row: 1;
-  display: grid;
-  grid-template-rows: auto auto;
-  gap: 5px;
-  padding: 5px;
+  display: none; /* Hide item buttons - not in new screenshot */
 }
 
 #moves {
   display: none; /* Hide the separate moves section */
 }
 
-/* Switch button positioned in the middle */
+/* Switch button styled like in screenshot */
 #toggle-switch {
-  width: 150px;
+  width: 180px;
   height: 60px;
   margin: 0 auto;
   background-color: #FF9900;
   color: white;
-  border: 2px solid #FF7700;
+  border: none;
   text-align: center;
-  border-radius: 2px;
-  font-size: 20px;
+  border-radius: 0px;
+  font-size: 24px;
   line-height: 60px;
   font-weight: bold;
+  box-shadow: 0 3px 5px rgba(0,0,0,0.2);
+  cursor: pointer;
 }
 
 .action-button {

@@ -86,28 +86,17 @@
         </div>
       </div>
       <div id="battle-menu">
-        <!-- Left side: Attack/Items label -->
-        <div id="action-container">
+        <!-- Just text ATTACK/ITEMS exactly like screenshot -->
+        <div id="action-container" onclick="useFirstMove()">
           ATTACK/ITEMS
         </div>
         
-        <!-- Right side: Item buttons -->
-        <div id="items">
-          <button class="pixel-button" onclick="useItem('jcole')" style="background-color: #4DEA7B; border: 2px solid #2CA85B; color: black; height: 40px; font-weight: bold;">
-            <span class="item-icon">💿</span> J Cole CD
-          </button>
-          <button class="pixel-button" onclick="useItem('nbayoungboy')" style="background-color: #4DEA7B; border: 2px solid #2CA85B; color: black; height: 40px; font-weight: bold;">
-            <span class="item-icon">🎵</span> NBA CD
-          </button>
-        </div>
-        
-        <!-- Hidden moves container (not needed in new layout) -->
+        <!-- Hidden divs for backwards compatibility with JavaScript -->
+        <div id="items" style="display:none"></div>
         <div id="moves" style="display:none"></div>
-        
-        <!-- Hidden battle log (not in screenshot) -->
         <div id="battle-log" class="history-log" style="display:none"></div>
         
-        <!-- Switch button positioned in the middle -->
+        <!-- Big orange SWITCH button like in screenshot -->
         <button id="toggle-switch" onclick="switchYN()">SWITCH</button>
       </div>
     </div>
