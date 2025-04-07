@@ -1175,13 +1175,8 @@ function initMobileControls() {
       case "selection":
         return Array.from(document.querySelectorAll(".character-card:not(.selected)"));
       case "battle":
-        if (document.getElementById("moves").style.display !== "none") {
-          return Array.from(document.querySelectorAll("#moves button:not(:disabled)"));
-        } else if (document.getElementById("items").style.display !== "none") {
-          return Array.from(document.querySelectorAll("#items button:not(:disabled)"));
-        } else {
-          return Array.from(document.querySelectorAll("#action-container button:not(:disabled)"));
-        }
+        // Always return the action buttons in battle screen
+        return Array.from(document.querySelectorAll("#action-container button:not(:disabled)"));
       case "switch":
         return Array.from(document.querySelectorAll(".switch-option:not(.fainted):not(.current)"));
       case "simple-switch":
@@ -1309,17 +1304,31 @@ function initMobileControls() {
   // Action button handlers
   function handleAButton() {
     if (currentFocus) {
+      const currentScreenBefore = currentScreen;
+      const currentNavIndex = navIndex; // Store current index
+      
+      // Click the element
       currentFocus.click();
       
-      // Reset and wait a moment to re-initialize navigation after screen changes
+      // Re-initialize navigation after screen changes, but maintain position if possible
       setTimeout(() => {
         navItems = getNavItems();
-        if (navItems.length > 0) {
-          navIndex = 0;
-          addFocus(navItems[navIndex]);
+        
+        // Only reset index to 0 if we've changed screens or there are no items
+        if (currentScreenBefore !== currentScreen || navItems.length === 0) {
+          if (navItems.length > 0) {
+            navIndex = 0;
+            addFocus(navItems[navIndex]);
+          } else {
+            navIndex = -1;
+            currentFocus = null;
+          }
         } else {
-          navIndex = -1;
-          currentFocus = null;
+          // Try to maintain position
+          navIndex = Math.min(currentNavIndex, navItems.length - 1);
+          if (navIndex >= 0 && navItems.length > 0) {
+            addFocus(navItems[navIndex]);
+          }
         }
       }, 300);
     }
