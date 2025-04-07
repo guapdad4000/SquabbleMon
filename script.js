@@ -1883,12 +1883,20 @@ function updateMoveButtons() {
     if (index < activePlayerCharacter.moves.length) {
       const move = activePlayerCharacter.moves[index];
       
-      // Update button text
-      button.textContent = move.name;
+      // Clear any existing content
+      button.innerHTML = '';
+      
+      // Create the move name element
+      const moveNameElement = document.createElement('span');
+      moveNameElement.textContent = move.name;
+      button.appendChild(moveNameElement);
       
       // Add PP count if applicable
       if (move.pp !== undefined) {
-        button.textContent += ` ${move.pp}/${move.maxPP}`;
+        const ppCount = document.createElement('span');
+        ppCount.className = 'pp-count';
+        ppCount.textContent = `${move.pp}/${move.maxPP}`;
+        button.appendChild(ppCount);
       }
       
       // Add data for tooltips
