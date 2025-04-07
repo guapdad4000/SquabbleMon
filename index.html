@@ -182,22 +182,12 @@
     
     <div id="move-tooltip" style="display: none"></div>
     
-    <!-- Mobile Controls -->
-    <div id="mobile-controls">
-      <div id="dpad">
-        <button id="dpad-up" class="dpad-button">▲</button>
-        <div class="middle-row">
-          <button id="dpad-left" class="dpad-button">◀</button>
-          <div class="dpad-center"></div>
-          <button id="dpad-right" class="dpad-button">▶</button>
-        </div>
-        <button id="dpad-down" class="dpad-button">▼</button>
-      </div>
-      <div id="action-buttons">
-        <button id="b-button" class="action-button">B</button>
-        <button id="a-button" class="action-button">A</button>
-      </div>
+    <!-- Mobile Controls Iframe -->
+    <div id="mobile-controls-container">
+      <iframe id="mobile-controls-frame" src="mobile-controls.html" frameborder="0"></iframe>
     </div>
+    
+    
 
     <script src="animations.js"></script>
     <script src="script.js"></script>

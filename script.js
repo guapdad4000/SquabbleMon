@@ -1036,21 +1036,86 @@ let opponentActiveItemEffects = [];
 
 // Mobile controls functionality
 function initMobileControls() {
-  // Get all the buttons
-  const dpadUp = document.getElementById("dpad-up");
-  const dpadDown = document.getElementById("dpad-down");
-  const dpadLeft = document.getElementById("dpad-left");
-  const dpadRight = document.getElementById("dpad-right");
-  const aButton = document.getElementById("a-button");
-  const bButton = document.getElementById("b-button");
-  
-  // Navigation state
+  // Shared navigation state
   let currentFocus = null;
   let navItems = [];
   let navIndex = -1;
+  let currentScreen = "selection"; // selection, battle, switch, simple-switch, game-over
   
-  // Game state tracking
-  let currentScreen = "selection"; // selection, battle, switch
+  // Message handler from iframe
+  window.addEventListener('message', function(event) {
+    // Security check
+    if (event.origin !== window.location.origin) return;
+    
+    const keyData = event.data;
+    if (!keyData || !keyData.type) return;
+    
+    if (keyData.type === 'keypress') {
+      // Handle virtual D-pad and button controls from iframe
+      switch (keyData.key) {
+        case 'ArrowUp':
+          handleDpadUp();
+          break;
+        case 'ArrowDown':
+          handleDpadDown();
+          break;
+        case 'ArrowLeft':
+          handleDpadLeft();
+          break;
+        case 'ArrowRight':
+          handleDpadRight();
+          break;
+        case 'A':
+          handleAButton();
+          break;
+        case 'B':
+          handleBButton();
+          break;
+      }
+    }
+  });
+  
+  // Keyboard handlers for desktop users
+  function handleKeyboardNavigation(e) {
+    // Only handle navigation keys
+    switch (e.key) {
+      case 'ArrowUp':
+        handleDpadUp();
+        e.preventDefault();
+        break;
+      case 'ArrowDown':
+        handleDpadDown();
+        e.preventDefault();
+        break;
+      case 'ArrowLeft':
+        handleDpadLeft();
+        e.preventDefault();
+        break;
+      case 'ArrowRight':
+        handleDpadRight();
+        e.preventDefault();
+        break;
+    }
+  }
+  
+  function handleKeyboardAction(e) {
+    // Handle action keys (Enter = A button, Escape = B button)
+    switch (e.key) {
+      case 'Enter':
+      case ' ': // Space bar
+        handleAButton();
+        e.preventDefault();
+        break;
+      case 'Escape':
+        handleBButton();
+        e.preventDefault();
+        break;
+    }
+  }
+  
+  // Add keyboard event listeners for desktop users
+  document.addEventListener('keydown', handleKeyboardNavigation);
+  document.addEventListener('keyup', handleKeyboardAction);
   
   // Helper to update the current screen
   function updateCurrentScreen() {
@@ -1125,8 +1190,8 @@ function initMobileControls() {
     }
   }
   
-  // Event handlers for D-pad buttons
-  dpadUp.addEventListener("click", () => {
+  // D-pad handlers
+  function handleDpadUp() {
     // Always refresh the nav items in case the UI has changed
     navItems = getNavItems();
     if (navItems.length === 0) return;
@@ -1148,9 +1213,9 @@ function initMobileControls() {
     }
     
     addFocus(navItems[navIndex]);
-  });
+  }
   
-  dpadDown.addEventListener("click", () => {
+  function handleDpadDown() {
     // Always refresh the nav items in case the UI has changed
     navItems = getNavItems();
     if (navItems.length === 0) return;
@@ -1172,9 +1237,9 @@ function initMobileControls() {
     }
     
     addFocus(navItems[navIndex]);
-  });
+  }
   
-  dpadLeft.addEventListener("click", () => {
+  function handleDpadLeft() {
     // Always refresh the nav items in case the UI has changed
     navItems = getNavItems();
     if (navItems.length === 0) return;
@@ -1188,9 +1253,9 @@ function initMobileControls() {
     // Move left
     navIndex = Math.max(0, navIndex - 1);
     addFocus(navItems[navIndex]);
-  });
+  }
   
-  dpadRight.addEventListener("click", () => {
+  function handleDpadRight() {
     // Always refresh the nav items in case the UI has changed
     navItems = getNavItems();
     if (navItems.length === 0) return;
@@ -1204,10 +1269,10 @@ function initMobileControls() {
     // Move right
     navIndex = Math.min(navItems.length - 1, navIndex + 1);
     addFocus(navItems[navIndex]);
-  });
+  }
   
-  // A button (select/confirm)
-  aButton.addEventListener("click", () => {
+  // Action button handlers
+  function handleAButton() {
     if (currentFocus) {
       currentFocus.click();
       
@@ -1223,10 +1288,9 @@ function initMobileControls() {
         }
       }, 300);
     }
-  });
+  }
   
-  // B button (back/cancel)
-  bButton.addEventListener("click", () => {
+  function handleBButton() {
     updateCurrentScreen();
     
     // Different behavior based on screen
@@ -1258,7 +1322,7 @@ function initMobileControls() {
         }
         break;
     }
-  });
+  }
   
   // Initialize navigation on page load and when screens change
   const screens = ["selection-screen", "battle-screen", "switch-screen", "simple-switch-prompt", "game-over"];
