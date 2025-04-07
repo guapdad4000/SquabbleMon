@@ -1210,6 +1210,36 @@ function initMobileControls() {
       element.style.boxShadow = "0 0 0 4px rgba(255, 255, 255, 0.5)";
       currentFocus = element;
       
+      // Special handling for start-battle button - make it more noticeable
+      if (element.id === "start-battle") {
+        // Make sure it's visible in the viewport
+        document.getElementById("selection-screen").scrollTop = 
+          document.getElementById("selection-screen").scrollHeight;
+        
+        // Apply special styling and animation
+        element.style.outline = "3px solid yellow";
+        element.style.boxShadow = "0 0 10px rgba(255, 255, 0, 0.7)";
+        
+        // Use our more noticeable pulse animation
+        element.style.animation = "pulseHighlight 1.2s infinite";
+        element.style.position = "relative";
+        element.style.zIndex = "10";
+        
+        // Create a floating indicator pointing to the button if it's ready
+        if (!element.disabled) {
+          showFloatingLog("Select this button to start the battle!", 2000);
+        }
+      } else if (currentScreen === "selection") {
+        // Remove effects from start button when not focused
+        const startBtn = document.getElementById("start-battle");
+        if (startBtn) {
+          startBtn.style.animation = "";
+          startBtn.style.outline = "none";
+          startBtn.style.boxShadow = "none";
+          startBtn.style.zIndex = "1";
+        }
+      }
+      
       // Ensure the element is visible
       if (typeof element.scrollIntoView === 'function') {
         element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -4196,15 +4226,20 @@ function addToBattleLog(text) {
   battleLog.push(text);
 }
 
-function showFloatingLog(text) {
+function showFloatingLog(text, duration = 2000) {
   const floatingLog = document.getElementById("floating-log");
   floatingLog.textContent = text;
   floatingLog.classList.add("visible");
   
-  // Hide after a delay
-  setTimeout(() => {
+  // Clear any existing timeout
+  if (window.floatingLogTimeout) {
+    clearTimeout(window.floatingLogTimeout);
+  }
+  
+  // Hide after the specified duration (default 2000ms)
+  window.floatingLogTimeout = setTimeout(() => {
     floatingLog.classList.remove("visible");
-  }, 2000);
+  }, duration);
 }
 
 function share(platform) {
