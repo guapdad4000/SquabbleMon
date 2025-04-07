@@ -1173,9 +1173,9 @@ function initMobileControls() {
     
     switch (currentScreen) {
       case "selection":
-        // Include the start battle button when it's not disabled
+        // Include ALL character cards (including selected ones) and the start button
         const startButton = document.getElementById("start-battle");
-        const characters = Array.from(document.querySelectorAll(".character-card:not(.selected)"));
+        const characters = Array.from(document.querySelectorAll(".character-card"));
         return startButton && !startButton.disabled ? [...characters, startButton] : characters;
       case "battle":
         // Check which battle menu is active

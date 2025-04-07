@@ -706,9 +706,10 @@ body {
 
 .moves-grid, .items-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr; /* Single column for better mobile display */
   gap: 5px;
   margin-bottom: 10px;
+  width: 100%;
 }
 
 .back-button {
@@ -1509,8 +1510,14 @@ body {
     height: 120px;
   }
   
-  /* Make moves and items column layout */
+  /* Make battle menu components more visible */
   .moves-grid, .items-grid {
     grid-template-columns: 1fr;
+    width: 100%;
+  }
+  
+  .move-button, .item-button {
+    width: 100%;
+    margin-bottom: 5px;
   }
 }
