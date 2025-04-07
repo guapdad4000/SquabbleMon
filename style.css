@@ -690,9 +690,12 @@ body {
   font-size: 14px;
   font-weight: bold;
   text-transform: uppercase;
-  background-color: var(--pixel-primary);
-  border-color: var(--pixel-primary-dark);
+  background-color: #4CAF50;
+  border-color: #2e7d32;
   width: 100%;
+  padding: 12px 5px;
+  color: white;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7);
 }
 #moves, #items {
   display: none;
@@ -1449,16 +1452,29 @@ body {
   }
   
   #battle-menu {
-    min-height: 120px;
+    min-height: 150px;
     flex-direction: column;
+    padding: 5px;
+    background-color: rgba(0, 0, 0, 0.9);
   }
   
   #action-container {
     border-right: none;
     border-bottom: 2px solid var(--pixel-border);
-    padding-right: 0;
-    padding-bottom: 5px;
+    padding: 5px;
+    width: 100%;
+    flex: 1 0 100%;
     margin-bottom: 5px;
+  }
+  
+  .action-button {
+    margin-bottom: 5px;
+    font-size: 18px;
+    padding: 15px 5px;
+    background-color: #4CAF50;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    letter-spacing: 1px;
   }
   
   #battle-log {
