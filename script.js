@@ -1934,17 +1934,33 @@ function updateFadeDisplay() {
   }
 }
 
-// Functions to toggle between moves, items and main battle menu
+// Functions to toggle between battle menu views
 function showMoves() {
   if (!canAct || currentTurn !== "player") return;
   
-  // Hide action buttons and show moves
+  // Hide action buttons and show moves & items with divider
   document.getElementById("action-container").style.display = "none";
-  document.getElementById("items").style.display = "none";
   document.getElementById("moves").style.display = "flex";
+  document.getElementById("items").style.display = "flex";
   
-  // Update move buttons with current PP
+  // Update move and item buttons
   updateMoveButtons();
+  updateItemButtons();
+  
+  // Add a divider between moves and items if it doesn't exist
+  const movesElement = document.getElementById("moves");
+  if (!document.querySelector('.moves-items-divider')) {
+    const divider = document.createElement('div');
+    divider.className = 'section-divider moves-items-divider';
+    const span = document.createElement('span');
+    span.textContent = 'ITEMS';
+    divider.appendChild(span);
+    
+    // Add divider at the end of moves section
+    if (movesElement.lastElementChild) {
+      movesElement.insertBefore(divider, null);
+    }
+  }
   
   // Refresh navigation for mobile controls
   setTimeout(() => {
@@ -1956,23 +1972,8 @@ function showMoves() {
 }
 
 function showItems() {
-  if (!canAct || currentTurn !== "player") return;
-  
-  // Hide action buttons and show items
-  document.getElementById("action-container").style.display = "none";
-  document.getElementById("moves").style.display = "none"; 
-  document.getElementById("items").style.display = "flex";
-  
-  // Update item buttons
-  updateItemButtons();
-  
-  // Refresh navigation for mobile controls
-  setTimeout(() => {
-    // Use the initNav function from mobile controls
-    if (typeof initNav === 'function') {
-      initNav();
-    }
-  }, 50);
+  // Now just calls the showMoves function since we're displaying both together
+  showMoves();
 }
 
 function setupMoveTooltips() {

@@ -21,118 +21,132 @@
       user-select: none;
     }
     
-    /* Controls container */
+    /* Controls container - Teenage Engineering inspired */
     #mobile-controls {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 10px;
-      height: 160px;
+      height: 150px;
       width: 100%;
       box-sizing: border-box;
+      background-color: #1a1a1a;
+      border-top: 1px solid #333;
     }
     
-    /* D-pad styles */
+    /* D-pad styles - smaller, more minimal */
     #dpad {
       display: grid;
       grid-template-rows: repeat(3, 1fr);
       grid-template-columns: repeat(3, 1fr);
       gap: 2px;
-      width: 65%;
-      max-width: 180px;
+      width: 45%;
+      max-width: 140px;
       aspect-ratio: 1 / 1;
-      margin-left: 5px;
+      margin-left: 15px;
+      background-color: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 4px;
+      padding: 2px;
     }
     
     .dpad-button {
-      background-color: #444;
-      border: 2px solid #666;
-      border-radius: 5px;
-      color: white;
-      font-size: 24px;
+      background-color: #222;
+      border: 1px solid #444;
+      color: #f5f5f5;
+      font-size: 18px;
       display: flex;
       justify-content: center;
       align-items: center;
       touch-action: manipulation;
+      transition: all 0.08s ease;
     }
     
     .dpad-button:active {
-      background-color: #666;
-      transform: scale(0.95);
+      background-color: #FFB900;
+      color: #000;
+      transform: scale(0.97);
     }
     
     #dpad-up {
       grid-column: 2;
       grid-row: 1;
-      border-radius: 8px 8px 0 0;
+      border-radius: 2px 2px 0 0;
     }
     
     #dpad-left {
       grid-column: 1;
       grid-row: 2;
-      border-radius: 8px 0 0 8px;
+      border-radius: 2px 0 0 2px;
     }
     
     .dpad-center {
       grid-column: 2;
       grid-row: 2;
-      background-color: #333;
-      border-radius: 5px;
+      background-color: #111;
+      border-radius: 2px;
+      border: 1px solid #333;
     }
     
     #dpad-right {
       grid-column: 3;
       grid-row: 2;
-      border-radius: 0 8px 8px 0;
+      border-radius: 0 2px 2px 0;
     }
     
     #dpad-down {
       grid-column: 2;
       grid-row: 3;
-      border-radius: 0 0 8px 8px;
+      border-radius: 0 0 2px 2px;
     }
     
-    /* Action buttons */
+    /* Action buttons - diagonal layout */
     #action-buttons {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
       gap: 15px;
       margin-right: 20px;
-      width: 25%;
-      max-width: 120px;
+      width: 35%;
+      max-width: 140px;
+      transform: rotate(45deg);
     }
     
     .action-button {
-      width: 90%;
+      width: 100%;
       aspect-ratio: 1 / 1;
-      max-width: 70px;
-      max-height: 70px;
-      border-radius: 50%;
-      border: 3px solid rgba(255, 255, 255, 0.2);
-      font-size: clamp(16px, 5vw, 24px);
+      max-width: 60px;
+      max-height: 60px;
+      border-radius: 4px;
+      border: 1px solid #444;
+      font-size: 18px;
       font-weight: bold;
       display: flex;
       justify-content: center;
       align-items: center;
-      text-shadow: 0 1px 1px rgba(0, 0, 0, 0.7);
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+      transform: rotate(-45deg);
       touch-action: manipulation;
     }
     
     #a-button {
-      background-color: #3CB371;
-      color: white;
+      background-color: #FFB900; /* Teenage Engineering yellow */
+      color: #000;
+      grid-column: 2;
+      grid-row: 2;
+      box-shadow: 0 2px 5px rgba(255, 185, 0, 0.3);
     }
     
     #b-button {
-      background-color: #DC3545;
-      color: white;
+      background-color: #FF4C4C; /* Teenage Engineering red */
+      color: #fff;
+      grid-column: 1;
+      grid-row: 1;
+      box-shadow: 0 2px 5px rgba(255, 76, 76, 0.3);
     }
     
     .action-button:active {
-      transform: scale(0.95);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+      transform: rotate(-45deg) scale(0.92);
+      box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
     }
     
     /* Instructions */

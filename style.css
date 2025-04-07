@@ -671,7 +671,7 @@ body {
   border-top: 4px solid var(--pixel-border);
   width: 100%;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   min-height: 160px;
   padding: 10px;
   position: relative;
@@ -679,22 +679,21 @@ body {
 }
 
 #battle-log {
-  order: 1;
-  width: 100%;
-  margin-left: 0;
-  max-height: 70px;
-  margin-bottom: 10px;
-  border-bottom: 2px solid var(--pixel-border);
-  padding-bottom: 5px;
+  order: 2;
+  width: 35%;
+  margin-left: 10px;
+  height: 100%;
+  max-height: none;
+  border-left: 2px solid var(--pixel-border);
+  padding-left: 10px;
 }
 
-#action-container {
-  order: 2;
-  width: 100%;
+#action-container, #moves, #items {
+  order: 1;
+  width: 65%;
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-evenly;
+  flex-direction: column;
+  justify-content: flex-start;
   gap: 10px;
   padding: 5px 0;
   border-right: none;
@@ -715,8 +714,9 @@ body {
 #moves, #items {
   display: none;
   flex-direction: column;
-  width: 100%;
+  width: 65%;
   padding: 10px;
+  order: 1;
 }
 
 .moves-grid, .items-grid {
@@ -763,11 +763,6 @@ body {
   color: var(--pixel-text-light);
   font-size: 0.8em;
   line-height: 1.4;
-  margin-left: 0;
-  margin-bottom: 10px;
-  max-height: 70px;
-  width: 100%;
-  order: 1;
   scrollbar-width: thin;
   scrollbar-color: #666 #333;
 }
@@ -1261,10 +1256,10 @@ body {
 #mobile-controls-container {
   width: 95vw;
   max-width: 750px;
-  height: 180px; /* Reduced height */
+  height: 150px; /* Reduced height for TE style */
   margin: 0;
   padding: 0;
-  border-top: 3px solid #555;
+  border-top: 1px solid #333;
   border-left: none;
   border-right: none;
   border-bottom: none;
@@ -1276,7 +1271,7 @@ body {
   left: 0;
   right: 0;
   z-index: 9999; /* Ensure it's above everything else */
-  background-color: rgba(20, 20, 20, 0.95);
+  background-color: #1a1a1a; /* Matches TE style */
 }
 
 #mobile-controls-frame {
@@ -1388,7 +1383,7 @@ body {
     margin: 0 auto;
     width: 95vw;
     max-width: 750px;
-    height: 240px;
+    height: 150px;
     visibility: visible !important;
     opacity: 1 !important;
   }
@@ -1443,7 +1438,7 @@ body {
 @media (max-width: 480px) {
   body {
     font-size: 7px;
-    padding-bottom: 210px; /* Added space at the bottom for the control panel */
+    padding-bottom: 160px; /* Reduced space at the bottom for smaller TE-style controls */
   }
   
   #mobile-controls-container {
@@ -1451,10 +1446,10 @@ body {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 200px; /* Smaller height for mobile phones */
+    height: 150px; /* Smaller height for TE style */
     width: 100vw;
     margin: 0 auto;
-    border-top: 4px solid #555;
+    border-top: 1px solid #333;
     border-left: none;
     border-right: none;
     border-bottom: none;
