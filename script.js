@@ -1387,16 +1387,9 @@ function initMobileControls() {
     // Different behavior based on screen
     switch (currentScreen) {
       case "battle":
-        // If in move or item selection, go back to main battle actions
-        if (document.getElementById("moves").style.display !== "none") {
-          document.getElementById("moves").style.display = "none";
-          document.getElementById("action-container").style.display = "flex";
-          initNav();
-        } else if (document.getElementById("items").style.display !== "none") {
-          document.getElementById("items").style.display = "none";
-          document.getElementById("action-container").style.display = "flex";
-          initNav();
-        }
+        // In our new UI, we don't need to toggle between views
+        // Everything is always visible
+        // This is kept for compatibility with the navigation system
         break;
       case "switch":
         // Cancel switch if possible
@@ -1895,7 +1888,7 @@ function updateMoveButtons() {
       
       // Add PP count if applicable
       if (move.pp !== undefined) {
-        button.textContent += ` ${move.pp}/${move.maxPp}`;
+        button.textContent += ` ${move.pp}/${move.maxPP}`;
       }
       
       // Add data for tooltips
@@ -1994,7 +1987,7 @@ function showMoves() {
   
   // In our new simplified UI, we don't toggle between views
   // Everything is always visible, so just make sure all containers are shown
-  document.getElementById("action-container").style.display = "flex";
+  document.getElementById("moves").style.display = "grid";
   document.getElementById("items").style.display = "grid";
   
   // Update buttons and actions
@@ -2044,7 +2037,7 @@ function showMoveTooltip(e) {
       <p>Type: ${moveData.type || 'Normal'}</p>
       <p>Power: ${moveData.power || 0}</p>
       <p>Accuracy: ${moveData.accuracy || 100}%</p>
-      <p>PP: ${moveData.pp || 0}/${moveData.maxPp || 0}</p>
+      <p>PP: ${moveData.pp || 0}/${moveData.maxPP || 0}</p>
       <p>${moveData.description || ""}</p>
     `;
   } catch (err) {
@@ -3741,9 +3734,8 @@ function useItem(itemType) {
   // Update UI
   updateBattleUI();
   
-  // Hide items panel and show action buttons
-  document.getElementById("items").style.display = "none";
-  document.getElementById("action-container").style.display = "flex";
+  // In our new UI, both moves and items are always visible
+  // This is kept for compatibility
   
   // End turn
   setTimeout(() => endPlayerTurn(), 600);
@@ -3860,10 +3852,8 @@ function confirmSwitch(index) {
   updateStatusIcons();
   updateMoveButtons();
   
-  // Make sure action buttons are visible after switching
-  document.getElementById("moves").style.display = "none";
-  document.getElementById("items").style.display = "none";
-  document.getElementById("action-container").style.display = "flex";
+  // In our new UI, both moves and items are always visible
+  // This is kept for compatibility with the navigation system
   
   // Check if this was after an opponent switch/faint
   if (isForced || (currentTurn === "player" && canAct)) {
@@ -3888,10 +3878,8 @@ function cancelSwitch() {
   // Otherwise, hide the switch screen
   document.getElementById("switch-screen").style.display = "none";
   
-  // Make sure action buttons are visible after canceling switch
-  document.getElementById("moves").style.display = "none";
-  document.getElementById("items").style.display = "none";
-  document.getElementById("action-container").style.display = "flex";
+  // In our new UI, both moves and items are always visible
+  // This is kept for compatibility with the navigation system
   
   // If this was after an opponent switch, proceed with the battle
   if (currentTurn === "player" && canAct) {
@@ -3966,10 +3954,8 @@ function handleSimpleSwitchNo() {
   // Hide the simple switch prompt
   document.getElementById("simple-switch-prompt").style.display = "none";
   
-  // Make sure the action buttons are visible
-  document.getElementById("moves").style.display = "none";
-  document.getElementById("items").style.display = "none";
-  document.getElementById("action-container").style.display = "flex";
+  // In our new UI, both moves and items are always visible
+  // This is kept for compatibility with the navigation system
   
   // Add a message to the battle log
   addToBattleLog(`${activePlayerCharacter.name} stays in the battle!`);

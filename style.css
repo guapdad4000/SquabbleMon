@@ -255,12 +255,15 @@ body {
 
 .pp-counter {
   position: absolute;
-  bottom: 2px;
-  right: 5px;
-  font-size: 0.75em;
+  bottom: 1px;
+  right: 3px;
+  font-size: 0.65em;
   opacity: 0.9;
   color: var(--pixel-text);
   font-weight: bold;
+  background-color: rgba(255, 255, 255, 0.6);
+  padding: 1px 2px;
+  border-radius: 2px;
 }
 #items button img {
   width: 10px;
@@ -676,6 +679,17 @@ body {
   padding: 4px;
   position: relative;
   z-index: 10;
+  max-height: 220px; /* Limit height to prevent overflow */
+}
+
+/* Action Container for Battle Controls */
+#action-container {
+  grid-column: 1;
+  grid-row: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 20;
 }
 
 #battle-log {
@@ -715,11 +729,13 @@ body {
   color: black;
   border: none;
   text-align: center;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: bold;
-  padding: 8px 4px;
+  padding: 6px 2px;
   cursor: pointer;
   border-radius: 0;
+  height: 36px;
+  position: relative;
 }
 
 /* Items section with item buttons */
@@ -736,14 +752,16 @@ body {
   color: black;
   border: none;
   text-align: center;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: bold;
-  padding: 8px 4px;
+  padding: 6px 2px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 0;
+  height: 36px;
+  position: relative;
 }
 
 .item-icon {
@@ -751,9 +769,8 @@ body {
 }
 
 /* Switch button styled like in screenshot */
+/* Removed grid positioning for toggle-switch as it's now part of action-container */
 #toggle-switch {
-  grid-column: 1;
-  grid-row: 3;
   background-color: #FF9900;
   color: white;
   border: none;
