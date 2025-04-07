@@ -688,7 +688,11 @@ body {
   padding-left: 10px;
 }
 
-#action-container, #moves, #items {
+#action-container {
+  display: none; /* Hide the action container - we'll show moves/items directly */
+}
+
+#moves, #items {
   order: 1;
   width: 65%;
   display: flex;
@@ -697,6 +701,22 @@ body {
   gap: 10px;
   padding: 5px 0;
   border-right: none;
+}
+
+/* Switch button positioned at the bottom of the screen */
+#toggle-switch {
+  position: absolute;
+  bottom: 5px;
+  left: 30%;
+  transform: translateX(-50%);
+  z-index: 100;
+  width: 120px;
+  margin: 0 auto;
+  background-color: #FF9900;
+  color: white;
+  border: 2px solid #FF7700;
+  text-align: center;
+  border-radius: 4px;
 }
 
 .action-button {
@@ -711,13 +731,7 @@ body {
   color: white;
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7);
 }
-#moves, #items {
-  display: none;
-  flex-direction: column;
-  width: 65%;
-  padding: 10px;
-  order: 1;
-}
+/* We're keeping only the first definition */
 
 .moves-grid, .items-grid {
   display: grid;

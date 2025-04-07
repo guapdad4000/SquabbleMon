@@ -1721,6 +1721,11 @@ function startBattle() {
   // Update UI
   updateBattleUI();
   updateStatusIcons();
+  
+  // Update move and item buttons for our new layout where both are visible by default
+  document.getElementById("action-container").style.display = "none";
+  document.getElementById("moves").style.display = "flex";
+  document.getElementById("items").style.display = "flex";
   updateMoveButtons();
   updateItemButtons();
   
@@ -1938,7 +1943,7 @@ function updateFadeDisplay() {
 function showMoves() {
   if (!canAct || currentTurn !== "player") return;
   
-  // Hide action buttons and show moves & items with divider
+  // Our new layout shows both moves and items directly
   document.getElementById("action-container").style.display = "none";
   document.getElementById("moves").style.display = "flex";
   document.getElementById("items").style.display = "flex";
@@ -1946,21 +1951,6 @@ function showMoves() {
   // Update move and item buttons
   updateMoveButtons();
   updateItemButtons();
-  
-  // Add a divider between moves and items if it doesn't exist
-  const movesElement = document.getElementById("moves");
-  if (!document.querySelector('.moves-items-divider')) {
-    const divider = document.createElement('div');
-    divider.className = 'section-divider moves-items-divider';
-    const span = document.createElement('span');
-    span.textContent = 'ITEMS';
-    divider.appendChild(span);
-    
-    // Add divider at the end of moves section
-    if (movesElement.lastElementChild) {
-      movesElement.insertBefore(divider, null);
-    }
-  }
   
   // Refresh navigation for mobile controls
   setTimeout(() => {
@@ -1972,7 +1962,7 @@ function showMoves() {
 }
 
 function showItems() {
-  // Now just calls the showMoves function since we're displaying both together
+  // Both moves and items are always shown in the new layout
   showMoves();
 }
 

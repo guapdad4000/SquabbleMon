@@ -100,23 +100,21 @@
       border-radius: 0 0 2px 2px;
     }
     
-    /* Action buttons - diagonal layout */
+    /* Action buttons - vertical stack layout with A on top, B on bottom */
     #action-buttons {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: 1fr 1fr;
-      gap: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px; /* Reduced spacing between buttons */
       margin-right: 20px;
       width: 35%;
-      max-width: 140px;
-      transform: rotate(45deg);
+      max-width: 120px;
     }
     
     .action-button {
       width: 100%;
       aspect-ratio: 1 / 1;
-      max-width: 60px;
-      max-height: 60px;
+      max-width: 55px;
+      max-height: 55px;
       border-radius: 4px;
       border: 1px solid #444;
       font-size: 18px;
@@ -124,28 +122,27 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      transform: rotate(-45deg);
       touch-action: manipulation;
     }
     
     #a-button {
       background-color: #FFB900; /* Teenage Engineering yellow */
       color: #000;
-      grid-column: 2;
-      grid-row: 2;
+      order: 1; /* Put A at the top */
       box-shadow: 0 2px 5px rgba(255, 185, 0, 0.3);
+      margin-left: auto; /* Push to right side */
     }
     
     #b-button {
       background-color: #FF4C4C; /* Teenage Engineering red */
       color: #fff;
-      grid-column: 1;
-      grid-row: 1;
+      order: 2; /* Put B at the bottom */
       box-shadow: 0 2px 5px rgba(255, 76, 76, 0.3);
+      margin-left: auto; /* Push to right side */
     }
     
     .action-button:active {
-      transform: rotate(-45deg) scale(0.92);
+      transform: scale(0.92);
       box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
     }
     
@@ -173,8 +170,8 @@
       <button id="dpad-down" class="dpad-button">▼</button>
     </div>
     <div id="action-buttons">
-      <button id="b-button" class="action-button">B</button>
       <button id="a-button" class="action-button">A</button>
+      <button id="b-button" class="action-button">B</button>
     </div>
   </div>
   

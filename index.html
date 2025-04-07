@@ -86,23 +86,27 @@
         </div>
       </div>
       <div id="battle-menu">
+        <!-- Hidden action container - we're showing moves/items by default -->
         <div id="action-container">
           <button class="pixel-button action-button" onclick="showMoves()">ATTACK</button>
           <button class="pixel-button action-button" onclick="showItems()">ITEMS</button>
-          <button id="toggle-switch" class="pixel-button action-button" onclick="switchYN()">SWITCH</button>
         </div>
         
-        <!-- Moves container, hidden by default -->
-        <div id="moves" style="display:none">
+        <!-- Moves container, visible by default now -->
+        <div id="moves" style="display:flex">
           <div class="section-divider">
             <span>MOVES</span>
           </div>
           <div class="moves-grid"></div>
-          <button class="pixel-button back-button" onclick="document.getElementById('moves').style.display = 'none'; document.getElementById('items').style.display = 'none'; document.getElementById('action-container').style.display = 'flex'; setTimeout(() => { if (typeof initNav === 'function') initNav(); }, 50);">BACK</button>
+          <!-- Back button only shows when needed in battle -->
+          <button class="pixel-button back-button" style="display:none" onclick="document.getElementById('moves').style.display = 'none'; document.getElementById('items').style.display = 'none'; document.getElementById('action-container').style.display = 'flex'; setTimeout(() => { if (typeof initNav === 'function') initNav(); }, 50);">BACK</button>
         </div>
         
-        <!-- Items container, hidden by default -->
-        <div id="items" style="display:none">
+        <!-- Items container, visible by default now -->
+        <div id="items" style="display:flex">
+          <div class="section-divider">
+            <span>ITEMS</span>
+          </div>
           <div class="items-grid">
             <button class="pixel-button" onclick="useItem('jcole')" title="Heals 30 HP with positive vibes">
               <span class="item-icon">💿</span> J Cole CD
@@ -118,7 +122,12 @@
             </button>
           </div>
         </div>
+        
+        <!-- Battle log positioned to the right -->
         <div id="battle-log" class="history-log"></div>
+        
+        <!-- Switch button positioned at the bottom -->
+        <button id="toggle-switch" class="pixel-button action-button" onclick="switchYN()">SWITCH</button>
       </div>
     </div>
 
