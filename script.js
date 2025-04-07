@@ -4324,30 +4324,64 @@ function addToBattleLog(text, dialogueType = null, context = {}, character = nul
   let displayText = text;
   
   if (dialogueType && window.BattleDialogue) {
-    // Generate urban dialogue based on the dialogue type and context
-    const urbanDialogue = window.BattleDialogue.generateBattleDialogue(dialogueType, context);
-    
-    // Format dialogue with character-specific styling
-    const formattedDialogue = window.BattleDialogue.formatDialogue(character, urbanDialogue);
-    
-    // Add the original message plus the urban dialogue
-    displayText = `${text} ${formattedDialogue}`;
+    try {
+      // Generate urban dialogue based on the dialogue type and context
+      const urbanDialogue = window.BattleDialogue.generateBattleDialogue(dialogueType, context);
+      
+      // Format dialogue with character-specific styling
+      const formattedDialogue = window.BattleDialogue.formatDialogue(character, urbanDialogue);
+      
+      // Add the original message plus the urban dialogue
+      displayText = `${text}\n${formattedDialogue}`;
+    } catch (error) {
+      console.log("Error generating battle dialogue:", error);
+      // Keep the original text if there's an error
+    }
   }
   
-  // Update the battle log text in the new battle-log-label
-  const battleLogTextElement = document.getElementById("battle-log-text");
-  battleLogTextElement.textContent = displayText;
+  // Create a timestamp for the entry
+  const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'}).replace(/AM|PM/, '');
   
-  // Also keep the old battle log for compatibility
+  // Format the entry with timestamp and maintain multiline formatting
+  const formattedEntry = `[${timestamp}] ${displayText}`;
+  
+  // Update the battle log text element with the new entry and preserve previous entries
+  const battleLogTextElement = document.getElementById("battle-log-text");
+  
+  // If there's existing content, add line breaks to clearly separate entries
+  if (battleLogTextElement.textContent.trim() !== "") {
+    battleLogTextElement.textContent = battleLogTextElement.textContent + "\n\n" + formattedEntry;
+  } else {
+    battleLogTextElement.textContent = formattedEntry;
+  }
+  
+  // Keep only the last 15 entries to prevent overflow, but respect multiline entries
+  const logEntries = battleLogTextElement.textContent.split("\n\n");
+  if (logEntries.length > 15) {
+    battleLogTextElement.textContent = logEntries.slice(logEntries.length - 15).join("\n\n");
+  }
+  
+  // Auto-scroll battle log text to the newest entry
+  battleLogTextElement.scrollTop = battleLogTextElement.scrollHeight;
+  
+  // Also keep the old battle log for compatibility and browsing history
   const battleLogElement = document.getElementById("battle-log");
   if (battleLogElement) {
     const entry = document.createElement("div");
     entry.className = "log-entry";
-    entry.textContent = displayText;
+    
+    // Use innerHTML to preserve line breaks in the log entry
+    entry.innerHTML = displayText.replace(/\n/g, "<br>");
+    
     battleLogElement.appendChild(entry);
     
     // Auto-scroll to bottom
     battleLogElement.scrollTop = battleLogElement.scrollHeight;
+    
+    // Limit entries to prevent excessive memory usage (keep last 50 entries)
+    while (battleLogElement.children.length > 50) {
+      battleLogElement.removeChild(battleLogElement.children[0]);
+    }
   }
   
   // Also store in array for history

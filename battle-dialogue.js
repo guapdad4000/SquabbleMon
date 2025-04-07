@@ -30,7 +30,13 @@ const attackPhrases = {
     "All gas, no brakes!",
     "Stay in your lane!",
     "Straight disrespectful with that move!",
-    "Just like that!"
+    "Just like that!",
+    "We really outside with these moves!",
+    "That's just facts!",
+    "This attack is hitting different!",
+    "No printer, just fax!",
+    "Talk to 'em!",
+    "It's giving power moves!"
   ],
   critical: [
     "SHEESH! That's a violation!",
@@ -41,7 +47,13 @@ const attackPhrases = {
     "Caught 'em lacking!",
     "That's a big yikes!",
     "On God, that was brutal!",
-    "Cleared them like my browser history!"
+    "Cleared them like my browser history!",
+    "DEAD. STRAIGHT UP DEAD!",
+    "That hit was BUSSIN BUSSIN!",
+    "THAT'S A VIOLATION AND A HALF!",
+    "RIP in the chat!",
+    "That's what you call a critical hit!",
+    "Sent them to the shadow realm!"
   ],
   weak: [
     "That ain't it, chief...",
@@ -52,7 +64,25 @@ const attackPhrases = {
     "They eating that like a snack!",
     "Need to come harder than that!",
     "Not even close to enough!",
-    "That's giving bare minimum energy."
+    "That's giving bare minimum energy.",
+    "Down bad with that weak attack!",
+    "Putting no numbers on the board!",
+    "My grandma hits harder than that!",
+    "Call that a paper cut at best!",
+    "You can't be serious with that!",
+    "I know they ain't just try that weak move!"
+  ],
+  miss: [
+    "Swing and a miss!",
+    "Not even close!",
+    "Couldn't hit the broad side of a barn!",
+    "Air ball! AIR BALL!",
+    "You need glasses or something?",
+    "That move ghosted you!",
+    "Matrix dodged that one!",
+    "That's embarrassing!",
+    "Whiffed it completely!",
+    "Big yikes on that aim!"
   ]
 };
 
@@ -222,14 +252,19 @@ function getRandomPhrase(phraseArray) {
 
 // Generate dialogue for battle actions
 function generateBattleDialogue(action, context = {}) {
+  // Ensure context is an object
+  context = context || {};
+  
   switch (action) {
     case 'battle-start':
       return getRandomPhrase(battleStartPhrases);
       
     case 'attack':
-      if (context.effectiveness === 'critical' || context.isCritical) {
+      if (context.missed || context.effectiveness === 'miss') {
+        return getRandomPhrase(attackPhrases.miss);
+      } else if (context.effectiveness === 'critical' || context.isCritical) {
         return getRandomPhrase(attackPhrases.critical);
-      } else if (context.effectiveness === 'weak' || context.damage < 10) {
+      } else if (context.effectiveness === 'weak' || (context.damage !== undefined && context.damage < 10)) {
         return getRandomPhrase(attackPhrases.weak);
       } else {
         return getRandomPhrase(attackPhrases.normal);
@@ -238,7 +273,7 @@ function generateBattleDialogue(action, context = {}) {
     case 'hit-reaction':
       if (context.effectiveness === 'critical' || context.isCritical) {
         return getRandomPhrase(hitReactionPhrases.critical);
-      } else if (context.effectiveness === 'resisted' || context.damage < 5) {
+      } else if (context.effectiveness === 'resisted' || (context.damage !== undefined && context.damage < 5)) {
         return getRandomPhrase(hitReactionPhrases.resisted);
       } else {
         return getRandomPhrase(hitReactionPhrases.normal);
@@ -263,53 +298,131 @@ function generateBattleDialogue(action, context = {}) {
       }
       return getRandomPhrase(buffPhrases.attackUp); // Default to attack
       
+    case 'miss':
+      return getRandomPhrase(attackPhrases.miss);
+    
+    case 'switch':
+      return "Switching it up! New challenger approaching!";
+    
+    case 'item-use':
+      return "Using that item strategically!";
+      
     case 'victory':
       return getRandomPhrase(victoryPhrases);
       
     case 'defeat':
       return getRandomPhrase(defeatPhrases);
       
+    case 'faint':
+      return "Completely bodied! Down for the count!";
+      
     default:
       return "Let's go!"; // Default phrase
   }
 }
 
+// Character actions based on type
+const characterActions = {
+  tech: [
+    "*adjusts glasses*",
+    "*types rapidly*",
+    "*scrolls through phone*",
+    "*hacks the mainframe*",
+    "*pushes up glasses*"
+  ],
+  hiphop: [
+    "*drops mic*",
+    "*spins on head*",
+    "*does the shoot dance*",
+    "*makes it rain*",
+    "*hits the woah*"
+  ],
+  street: [
+    "*throws up gang sign*",
+    "*mean mugs*",
+    "*flexes*",
+    "*pops collar*",
+    "*does the two-step*"
+  ],
+  urban: [
+    "*poses*",
+    "*flips hair*",
+    "*struts*",
+    "*snaps fingers*",
+    "*straightens fit*"
+  ]
+};
+
 // Character-specific dialogue formatting
 function formatDialogue(character, dialogue) {
   if (!character) return dialogue;
   
+  // Get random action for character type
+  const getRandomAction = (type) => {
+    if (!characterActions[type]) return '';
+    const actions = characterActions[type];
+    return actions[Math.floor(Math.random() * actions.length)];
+  };
+  
   // For certain character types, we can modify the dialogue style
-  switch(character.type) {
-    case 'tech':
-      return `"${dialogue}" *adjusts glasses*`;
-    case 'hiphop':
-      return `"${dialogue}" *drops mic*`;
-    case 'street':
-      return `"${dialogue}" *throws up gang sign*`;
-    case 'urban':
-      return `"${dialogue}" *poses*`;
-    default:
-      return `"${dialogue}"`;
+  if (character.type && characterActions[character.type]) {
+    const action = getRandomAction(character.type);
+    return `"${dialogue}" ${action}`;
   }
+  
+  return `"${dialogue}"`;
 }
+
+// Move type descriptions
+const moveTypeDescriptions = {
+  street: [
+    "[Street Certified]",
+    "[Hood Classic]",
+    "[Street Cred]",
+    "[Block Hot]",
+    "[Streets Talking]"
+  ],
+  hiphop: [
+    "[Bars]",
+    "[Straight Fire]",
+    "[Mic Drop]",
+    "[Flow Master]",
+    "[Beat Killer]"
+  ],
+  tech: [
+    "[Tech]",
+    "[Digital]",
+    "[Algorithm]",
+    "[Megabyte]",
+    "[Cyber]"
+  ],
+  urban: [
+    "[Urban Legend]",
+    "[City Style]",
+    "[Metropolitan]",
+    "[Downtown]",
+    "[Urban Jungle]"
+  ]
+};
 
 // Add character flavor to move descriptions
 function enhanceMoveName(move) {
   if (!move) return '';
   
+  // Get random description for move type
+  const getRandomDesc = (type) => {
+    if (!moveTypeDescriptions[type]) return '';
+    const descriptions = moveTypeDescriptions[type];
+    return descriptions[Math.floor(Math.random() * descriptions.length)];
+  };
+  
   // Add urban flavor to move names for display purposes
-  switch(move.type) {
-    case 'street':
-      return `${move.name} [Street Certified]`;
-    case 'hiphop':
-      return `${move.name} [Bars]`;
-    case 'tech':
-      return `${move.name} [Tech]`;
-    case 'urban':
-      return `${move.name} [Urban Legend]`;
-    default:
-      return move.name;
+  if (move.type && moveTypeDescriptions[move.type]) {
+    const typeDesc = getRandomDesc(move.type);
+    return `${move.name} ${typeDesc}`;
   }
+  
+  return move.name;
 }
 
 // Export functions
