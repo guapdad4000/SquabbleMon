@@ -32,10 +32,10 @@
       box-sizing: border-box;
       background-color: rgba(26, 26, 26, 0.85);
       border-top: 2px solid #444;
-      position: absolute;
+      position: fixed; /* Changed from absolute to fixed */
       bottom: 0;
       left: 0;
-      z-index: 1000; /* Ensure it's above game elements */
+      z-index: 10000; /* Increased to ensure it's above all elements */
     }
     
     /* D-pad styles - smaller, more minimal */
@@ -109,7 +109,7 @@
     #action-buttons {
       display: flex;
       flex-direction: column;
-      gap: 4px; /* Minimal spacing between buttons */
+      gap: 8px; /* Increased spacing between buttons */
       margin-right: 20px;
       width: 35%;
       max-width: 100px;
@@ -153,8 +153,8 @@
     
     /* Instructions */
     .mobile-instructions {
-      position: absolute;
-      bottom: 90px; /* Positioned above the controls */
+      position: fixed; /* Changed from absolute to fixed */
+      bottom: 120px; /* Moved higher up above the controls */
       left: 0;
       right: 0;
       text-align: center;
@@ -164,6 +164,7 @@
       padding: 4px;
       border-top: 1px solid #444;
       border-bottom: 1px solid #444;
+      z-index: 10000; /* Increased to match other elements */
     }
   </style>
 </head>
@@ -221,9 +222,9 @@
     document.getElementById('dpad-right').addEventListener('mousedown', () => sendKeyPress('ArrowRight'));
     document.getElementById('dpad-right').addEventListener('touchstart', () => sendKeyPress('ArrowRight'));
 
-    // Action buttons
-    document.getElementById('a-button').addEventListener('mousedown', () => sendKeyPress('A'));
-    document.getElementById('a-button').addEventListener('touchstart', () => sendKeyPress('A'));
+    // Action buttons - A button sends Enter key for NPC interactions
+    document.getElementById('a-button').addEventListener('mousedown', () => sendKeyPress('Enter'));
+    document.getElementById('a-button').addEventListener('touchstart', () => sendKeyPress('Enter'));
 
     document.getElementById('b-button').addEventListener('mousedown', () => sendKeyPress('B'));
     document.getElementById('b-button').addEventListener('touchstart', () => sendKeyPress('B'));

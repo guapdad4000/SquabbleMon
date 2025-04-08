@@ -2,14 +2,15 @@
 #overworld-container {
   position: relative;
   width: 100%;
-  height: 100vh;
+  height: calc(100vh - 160px); /* Reduced height to leave room for mobile controls */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   background: linear-gradient(to bottom, #1a1a2e 0%, #222 100%);
-  overflow: hidden;
+  overflow: auto; /* Changed from hidden to auto to allow scrolling if needed */
   font-family: 'Press Start 2P', monospace;
+  padding-bottom: 20px; /* Add padding at bottom to ensure content isn't cut off */
 }
 
 /* Add a backdrop for pixel style theme */
@@ -36,8 +37,10 @@
 
 #map-container {
   position: relative;
-  width: 640px;
-  height: 640px;
+  width: 95%;
+  max-width: 640px;
+  height: 95%;
+  max-height: 640px;
   border: 8px solid #333;
   background-color: #111;
   overflow: hidden;
@@ -45,6 +48,7 @@
   box-shadow: 0 0 30px rgba(0,0,0,0.5);
   border-radius: 4px;
   margin: 20px auto;
+  transform: scale(0.9); /* Scale down slightly to fit better on smaller screens */
 }
 
 .map-tile {
@@ -286,8 +290,8 @@
 }
 
 #dialogue-box {
-  position: absolute;
-  bottom: 30px;
+  position: fixed; /* Changed from absolute to fixed */
+  bottom: 150px; /* Increased to leave room for mobile controls */
   left: 50%;
   transform: translateX(-50%);
   width: 80%;
@@ -299,7 +303,7 @@
   color: white;
   font-family: 'Press Start 2P', monospace;
   font-size: 14px;
-  z-index: 100;
+  z-index: 9999; /* Increased z-index to ensure it appears above other elements */
   box-shadow: 0 5px 15px rgba(0,0,0,0.7);
   animation: dialoguePulse 2s infinite alternate;
   transition: all 0.3s ease;
