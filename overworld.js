@@ -49,7 +49,7 @@ const STARTER_HOOD_NPCS = [
     name: 'OG Ras',
     x: 3,
     y: 3,
-    sprite: 'https://i.imgur.com/dZWWrrs.png',
+    sprite: './public/sprites/og_ras.png',
     direction: 'down',
     lines: [
       "Ayo, youngblood.",
@@ -60,7 +60,7 @@ const STARTER_HOOD_NPCS = [
     character: {
       // Character template for battle
       name: 'OG Ras',
-      sprite: 'https://i.imgur.com/dZWWrrs.png',
+      sprite: './public/sprites/og_ras.png',
       type: 'Fire',
       level: 5,
       hp: 110,
@@ -81,7 +81,7 @@ const STARTER_HOOD_NPCS = [
     name: 'Lil Brick',
     x: 11,
     y: 3,
-    sprite: 'https://i.imgur.com/YeMI4sr.png',
+    sprite: './public/sprites/lil_brick.png',
     direction: 'left',
     lines: [
       "Yo what's good?",
@@ -97,7 +97,7 @@ const STARTER_HOOD_NPCS = [
     name: 'Street Runner',
     x: 3,
     y: 7,
-    sprite: 'https://i.imgur.com/T0hOs6U.png',
+    sprite: './public/sprites/street_runner.png',
     direction: 'right',
     lines: [
       "These streets ain't safe no more.",
@@ -162,12 +162,17 @@ function initOverworld(selectedCharacter) {
     // Initialize player movement state for animations
     player.isMoving = false;
     
-    // Set player sprite from selected character
-    if (selectedCharacter && selectedCharacter.sprite) {
-      player.sprite = selectedCharacter.sprite;
+    // Store the selected character ID/name, but don't use their sprite for movement
+    if (selectedCharacter && selectedCharacter.id) {
+      player.characterId = selectedCharacter.id;
+      player.characterName = selectedCharacter.name;
+      // Set player.sprite to null to use the ninja sprite for overworld movement
+      player.sprite = null;
     } else {
-      console.warn("No character sprite provided, using default");
-      player.sprite = 'https://i.imgur.com/m7Rup7S.png'; // Default sprite
+      console.warn("No character provided, using default");
+      player.characterId = 0;
+      player.characterName = "Unknown";
+      player.sprite = null;
     }
     
     // First, hide other screens
@@ -645,8 +650,9 @@ function updatePlayerPosition() {
       // Use the player's isMoving state for animation
       const isMoving = player.isMoving || false;
       
-      // Update sprite with direction and animation state - pass character sprite
-      window.SpriteManager.updatePlayerSprite(playerSprite, player.direction, isMoving, player.sprite);
+      // Update sprite with direction and animation state - but don't pass character sprite
+      // to ensure we use the ninja animation sprites instead
+      window.SpriteManager.updatePlayerSprite(playerSprite, player.direction, isMoving, null);
     } else {
       // Fallback to basic sprite handling if sprite manager isn't loaded
       console.warn("SpriteManager not available, using fallback sprite handling");
@@ -1106,12 +1112,12 @@ function createRandomOpponent(zone) {
   const name = namePool[Math.floor(Math.random() * namePool.length)];
   const type = types[Math.floor(Math.random() * types.length)];
   
-  // Generate sprite (using a consistent seed for same enemy types)
+  // Use local sprite options for random enemies
   const spriteOptions = [
-    'https://i.imgur.com/dZWWrrs.png',
-    'https://i.imgur.com/YeMI4sr.png',
-    'https://i.imgur.com/T0hOs6U.png',
-    'https://i.imgur.com/fEPAiIJ.png'
+    './public/sprites/og_ras.png',
+    './public/sprites/lil_brick.png',
+    './public/sprites/street_runner.png',
+    './public/sprites/default_npc.png'
   ];
   const sprite = spriteOptions[Math.floor(Math.random() * spriteOptions.length)];
   
