@@ -1110,12 +1110,96 @@ function startNpcBattle(npc) {
     console.log("Starting NPC battle with NPC:", npc.name);
     
     // Instead of using the NPC as a character in the battle, we'll create a random team 
-    // from the characters list to battle against
+    // from predefined characters
     
-    // Create a random opponent team based on character list
-    if (!window.characters || window.characters.length === 0) {
-      console.error("No characters available for battle team");
-      return;
+    // Define characters if window.characters isn't available
+    let battleCharacters = [];
+    if (window.characters && window.characters.length > 0) {
+      battleCharacters = window.characters;
+    } else {
+      // Fallback characters for battles
+      battleCharacters = [
+        {
+          id: "battle1",
+          name: "DJ Scratch",
+          sprite: "public/dj-scratch.png",
+          type: "Electric",
+          hp: 120,
+          attack: 80,
+          defense: 60,
+          speed: 100,
+          moves: [
+            { name: "Turntable Scratch", type: "Electric", power: 50, pp: 15, maxPp: 15, description: "A scratching attack that deals damage" },
+            { name: "Bass Drop", type: "Electric", power: 70, pp: 10, maxPp: 10, description: "A powerful sound attack" },
+            { name: "Mix Tape", type: "Normal", power: 40, pp: 20, maxPp: 20, description: "A normal attack with decent power" },
+            { name: "Energize", type: "Electric", power: 0, pp: 10, maxPp: 10, effect: 'buff', stat: 'speed', amount: 1.5, description: "Increases the user's speed" }
+          ]
+        },
+        {
+          id: "battle2",
+          name: "Graffiti King",
+          sprite: "public/graffiti-king.png",
+          type: "Poison",
+          hp: 150,
+          attack: 90,
+          defense: 70,
+          speed: 70,
+          moves: [
+            { name: "Spray Paint", type: "Poison", power: 50, pp: 15, maxPp: 15, description: "A poison spray attack" },
+            { name: "Wall Art", type: "Normal", power: 60, pp: 15, maxPp: 15, description: "A powerful normal attack" },
+            { name: "Tag", type: "Poison", power: 40, pp: 20, maxPp: 20, effect: 'status', status: 'poison', chance: 0.3, description: "May poison the opponent" },
+            { name: "Masterpiece", type: "Poison", power: 80, pp: 5, maxPp: 5, description: "A devastating poison attack" }
+          ]
+        },
+        {
+          id: "battle3",
+          name: "MC Crazy Legs",
+          sprite: "public/mc-crazy-legs.png",
+          type: "Fighting",
+          hp: 140,
+          attack: 100,
+          defense: 65,
+          speed: 90,
+          moves: [
+            { name: "Breakdance", type: "Fighting", power: 60, pp: 15, maxPp: 15, description: "A dancing fighting attack" },
+            { name: "Pop and Lock", type: "Fighting", power: 50, pp: 20, maxPp: 20, effect: 'debuff', stat: 'defense', amount: 0.8, description: "Lowers opponent's defense" },
+            { name: "Headspin", type: "Fighting", power: 70, pp: 10, maxPp: 10, description: "A powerful fighting attack" },
+            { name: "Freestyle", type: "Normal", power: 40, pp: 20, maxPp: 20, description: "A normal attack with decent power" }
+          ]
+        },
+        {
+          id: "battle4",
+          name: "Beat Box Wizard",
+          sprite: "public/beatbox-wizard.png",
+          type: "Psychic",
+          hp: 130,
+          attack: 85,
+          defense: 70,
+          speed: 85,
+          moves: [
+            { name: "Sound Wave", type: "Psychic", power: 55, pp: 15, maxPp: 15, description: "A psychic sound attack" },
+            { name: "Mind Beat", type: "Psychic", power: 65, pp: 10, maxPp: 10, description: "A powerful psychic attack" },
+            { name: "Beat Drop", type: "Normal", power: 45, pp: 20, maxPp: 20, description: "A normal sound attack" },
+            { name: "Flow State", type: "Psychic", power: 0, pp: 10, maxPp: 10, effect: 'buff', stat: 'attack', amount: 1.4, description: "Increases the user's attack" }
+          ]
+        },
+        {
+          id: "battle5",
+          name: "Flow Master",
+          sprite: "public/flow-master.png",
+          type: "Water",
+          hp: 135,
+          attack: 75,
+          defense: 80,
+          speed: 95,
+          moves: [
+            { name: "Lyrical Flow", type: "Water", power: 50, pp: 15, maxPp: 15, description: "A flowing water attack" },
+            { name: "Splash Verse", type: "Water", power: 60, pp: 10, maxPp: 10, description: "A powerful water attack" },
+            { name: "Rhyme Scheme", type: "Normal", power: 45, pp: 20, maxPp: 20, description: "A normal attack with decent power" },
+            { name: "Deep Current", type: "Water", power: 0, pp: 10, maxPp: 10, effect: 'buff', stat: 'defense', amount: 1.5, description: "Increases the user's defense" }
+          ]
+        }
+      ];
     }
     
     // Determine difficulty based on NPC's level (if any)
@@ -1123,7 +1207,7 @@ function startNpcBattle(npc) {
     const difficultyFactor = npcLevel / 5;
     
     // Create a shuffled copy of the characters to pick from
-    const shuffledCharacters = [...window.characters].sort(() => 0.5 - Math.random());
+    const shuffledCharacters = [...battleCharacters].sort(() => 0.5 - Math.random());
     
     // Pick 3 random characters for the opponent team
     const opponentTeam = [];
