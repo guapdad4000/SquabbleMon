@@ -2307,14 +2307,21 @@ function updateBattleUI() {
   
   // Make sure sprite paths are correct and exist
   const playerSprite = document.getElementById("player-sprite");
-  playerSprite.src = activePlayerCharacter.sprite;
+  // Fix sprite path - remove './public/' prefix if it exists
+  let playerSpritePath = activePlayerCharacter.sprite;
+  if (playerSpritePath && playerSpritePath.startsWith('./public/')) {
+    playerSpritePath = playerSpritePath.replace('./public/', 'public/');
+  }
+  playerSprite.src = playerSpritePath;
   playerSprite.onerror = function() {
-    console.error("Failed to load player sprite:", activePlayerCharacter.sprite);
-    // Try with a fallback path format
-    if (!activePlayerCharacter.sprite.startsWith('./public/')) {
-      const fallbackPath = './public/' + activePlayerCharacter.sprite;
-      console.log("Trying fallback player sprite path:", fallbackPath);
-      playerSprite.src = fallbackPath;
+    console.error("Failed to load player sprite:", playerSpritePath);
+    // Try to fix common path errors
+    if (playerSpritePath && !playerSpritePath.startsWith('http')) {
+      if (!playerSpritePath.startsWith('public/')) {
+        const fallbackPath = 'public/' + playerSpritePath;
+        console.log("Trying fallback player sprite path:", fallbackPath);
+        playerSprite.src = fallbackPath;
+      }
     }
   };
   
@@ -2324,14 +2331,21 @@ function updateBattleUI() {
   
   // Handle opponent sprite with error handling
   const opponentSprite = document.getElementById("opponent-sprite");
-  opponentSprite.src = activeOpponent.sprite;
+  // Fix sprite path - remove './public/' prefix if it exists
+  let opponentSpritePath = activeOpponent.sprite;
+  if (opponentSpritePath && opponentSpritePath.startsWith('./public/')) {
+    opponentSpritePath = opponentSpritePath.replace('./public/', 'public/');
+  }
+  opponentSprite.src = opponentSpritePath;
   opponentSprite.onerror = function() {
-    console.error("Failed to load opponent sprite:", activeOpponent.sprite);
-    // Try with a fallback path format
-    if (!activeOpponent.sprite.startsWith('./public/')) {
-      const fallbackPath = './public/' + activeOpponent.sprite;
-      console.log("Trying fallback opponent sprite path:", fallbackPath);
-      opponentSprite.src = fallbackPath;
+    console.error("Failed to load opponent sprite:", opponentSpritePath);
+    // Try to fix common path errors
+    if (opponentSpritePath && !opponentSpritePath.startsWith('http')) {
+      if (!opponentSpritePath.startsWith('public/')) {
+        const fallbackPath = 'public/' + opponentSpritePath;
+        console.log("Trying fallback opponent sprite path:", fallbackPath);
+        opponentSprite.src = fallbackPath;
+      }
     }
   };
   

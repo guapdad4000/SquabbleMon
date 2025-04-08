@@ -53,7 +53,7 @@ const STARTER_HOOD_NPCS = [
     name: 'OG Ras',
     x: 3,
     y: 3,
-    sprite: './public/sprites/og_ras.png',
+    sprite: 'public/sprites/og_ras.png',
     direction: 'down',
     lines: [
       "Ayo, youngblood.",
@@ -64,7 +64,7 @@ const STARTER_HOOD_NPCS = [
     character: {
       // Character template for battle
       name: 'OG Ras',
-      sprite: './public/sprites/og_ras.png',
+      sprite: 'public/sprites/og_ras.png',
       type: 'Fire',
       level: 5,
       hp: 110,
@@ -85,7 +85,7 @@ const STARTER_HOOD_NPCS = [
     name: 'Lil Brick',
     x: 11,
     y: 3,
-    sprite: './public/sprites/lil_brick.png',
+    sprite: 'public/sprites/lil_brick.png',
     direction: 'left',
     lines: [
       "Yo what's good?",
@@ -101,7 +101,7 @@ const STARTER_HOOD_NPCS = [
     name: 'Street Runner',
     x: 3,
     y: 7,
-    sprite: './public/sprites/street_runner.png',
+    sprite: 'public/sprites/street_runner.png',
     direction: 'right',
     lines: [
       "These streets ain't safe no more.",
@@ -385,7 +385,7 @@ function renderMap() {
         
         // Use the new tileset with proper sprite positions
         // The tileset is organized in a 4x4 grid with different tiles
-        const tilesetUrl = './public/images/tileset.png';
+        const tilesetUrl = 'public/images/tileset.png';
         
         // These offset values are based on the tileset image where each tile is 64x64 pixels
         // The new tileset has 16 tiles in a 4x4 grid
