@@ -8,7 +8,11 @@ const SHOP_TYPES = {
   CORNER_STORE: 'cornerStore',
   THE_TRAP: 'theTrap',
   CLOUT_DEALER: 'cloutDealer',
-  POP_UP_VAN: 'popUpVan'
+  POP_UP_VAN: 'popUpVan',
+  
+  // New shops for expanded map
+  TRAP_HOUSE: 'trapHouse',
+  MOMMA_KITCHEN: 'mommaKitchen'
 };
 
 // Create a basic shop inventory based on type
@@ -46,6 +50,19 @@ function createShopInventory(shopType) {
       shop.markup = 0.8; // Discounted items but random quality
       shop.restockTimer = -1; // One-time shop, moves locations
       break;
+      
+    // New shop types for expanded areas
+    case SHOP_TYPES.TRAP_HOUSE:
+      shop.items = getTrapHouseItems();
+      shop.markup = 1.8; // Higher prices for powerful items
+      shop.restockTimer = 12; // Restocks less frequently
+      break;
+      
+    case SHOP_TYPES.MOMMA_KITCHEN:
+      shop.items = getMommaKitchenItems();
+      shop.markup = 0.7; // Discount because it's family
+      shop.restockTimer = 3; // Restocks very frequently
+      break;
   }
   
   return shop;
@@ -62,6 +79,10 @@ function getShopName(shopType) {
       return "Clout Dealer";
     case SHOP_TYPES.POP_UP_VAN:
       return "Pop-Up Van";
+    case SHOP_TYPES.TRAP_HOUSE:
+      return "Trap House Essentials";
+    case SHOP_TYPES.MOMMA_KITCHEN:
+      return "Big Momma's Kitchen";
     default:
       return "Unknown Shop";
   }
@@ -261,6 +282,175 @@ function getPopUpVanItems() {
   return items;
 }
 
+// Trap House inventory (powerful but expensive combat items with drawbacks)
+function getTrapHouseItems() {
+  return [
+    {
+      id: 'glock',
+      name: 'Glock',
+      type: 'gear',
+      slot: 'weapon',
+      effect: { stat: 'attack', value: 20 },
+      drawback: { stat: 'speed', value: -5 },
+      price: 500,
+      description: 'Increases Attack by 20 but decreases Speed by 5',
+      icon: '🔫',
+      stock: 1,
+      showOnCharacter: true
+    },
+    {
+      id: 'bulletproof_vest',
+      name: 'Bulletproof Vest',
+      type: 'gear',
+      slot: 'armor',
+      effect: { stat: 'defense', value: 30 },
+      drawback: { stat: 'speed', value: -10 },
+      price: 650,
+      description: 'Increases Defense by 30 but decreases Speed by 10',
+      icon: '🦺',
+      stock: 1,
+      showOnCharacter: true
+    },
+    {
+      id: 'codeine_syrup',
+      name: 'Codeine Syrup',
+      type: 'consumable',
+      effect: 'statBoost',
+      boostStat: 'defense',
+      boostValue: 2.0,
+      duration: 5,
+      drawback: { stat: 'speed', value: 0.5 },
+      price: 200,
+      description: 'Doubles Defense but halves Speed for 5 turns',
+      icon: '🍇',
+      stock: 3
+    },
+    {
+      id: 'trap_pack',
+      name: 'Trap Pack',
+      type: 'consumable',
+      effect: 'fullRestore',
+      price: 300,
+      description: 'Fully restores HP and clears all status conditions',
+      icon: '💊',
+      stock: 2
+    },
+    {
+      id: 'money_counter',
+      name: 'Money Counter',
+      type: 'gear',
+      slot: 'accessory',
+      effect: { stat: 'moneyBoost', value: 20 },
+      price: 450,
+      description: 'Increases money earned from battles by 20%',
+      icon: '💵',
+      stock: 1,
+      showOnCharacter: true
+    },
+    {
+      id: 'burner_phone',
+      name: 'Burner Phone',
+      type: 'consumable',
+      effect: 'escape',
+      price: 100,
+      description: 'Guarantees escape from any battle',
+      icon: '📱',
+      stock: 3
+    }
+  ];
+}
+
+// Momma's Kitchen inventory (healing and support items)
+function getMommaKitchenItems() {
+  return [
+    {
+      id: 'soul_food',
+      name: 'Soul Food',
+      type: 'consumable',
+      effect: 'healing',
+      hpBoost: 100,
+      price: 50,
+      description: "Restores 100 HP with Momma's special recipe",
+      icon: '🍗',
+      stock: 10
+    },
+    {
+      id: 'sweet_potato_pie',
+      name: 'Sweet Potato Pie',
+      type: 'consumable',
+      effect: 'statBoost',
+      boostStat: 'attack',
+      boostValue: 1.3,
+      duration: 5,
+      price: 70,
+      description: 'Increases Attack by 30% for 5 turns',
+      icon: '🥧',
+      stock: 5
+    },
+    {
+      id: 'collard_greens',
+      name: 'Collard Greens',
+      type: 'consumable',
+      effect: 'statBoost',
+      boostStat: 'defense',
+      boostValue: 1.3,
+      duration: 5,
+      price: 70,
+      description: 'Increases Defense by 30% for 5 turns',
+      icon: '🥬',
+      stock: 5
+    },
+    {
+      id: 'secret_sauce',
+      name: 'Secret Sauce',
+      type: 'consumable',
+      effect: 'statBoost',
+      boostStat: 'speed',
+      boostValue: 1.3,
+      duration: 5,
+      price: 70,
+      description: 'Increases Speed by 30% for 5 turns',
+      icon: '🍯',
+      stock: 5
+    },
+    {
+      id: 'family_recipe',
+      name: 'Family Recipe',
+      type: 'consumable',
+      effect: 'teamBoost',
+      boostStat: 'all',
+      boostValue: 1.1,
+      duration: 3,
+      price: 150,
+      description: 'Increases all stats by 10% for the whole team for 3 turns',
+      icon: '📝',
+      stock: 2
+    },
+    {
+      id: 'mamas_blessing',
+      name: "Mama's Blessing",
+      type: 'consumable',
+      effect: 'revive',
+      hpPercent: 50,
+      price: 200,
+      description: 'Revives a fainted character with 50% HP',
+      icon: '🙏',
+      stock: 1
+    },
+    {
+      id: 'home_cooking',
+      name: 'Home Cooking',
+      type: 'consumable',
+      effect: 'fullRestore',
+      statusCure: true,
+      price: 150,
+      description: 'Fully restores HP and clears all status conditions',
+      icon: '🍲',
+      stock: 3
+    }
+  ];
+}
+
 // Buy an item from a shop
 function buyItem(shop, itemId, playerInventory, quantity = 1) {
   if (!shop || !itemId || !playerInventory) return { success: false, message: "Invalid parameters" };
@@ -422,6 +612,10 @@ function getRestockTime(shopType) {
       return 15; // 15 battles/days
     case SHOP_TYPES.POP_UP_VAN:
       return -1; // Never restocks, one-time only
+    case SHOP_TYPES.TRAP_HOUSE:
+      return 12; // 12 battles/days
+    case SHOP_TYPES.MOMMA_KITCHEN:
+      return 3; // 3 battles/days - Momma's always cooking!
     default:
       return 10;
   }

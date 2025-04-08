@@ -10,7 +10,13 @@ const ZONE_TYPES = window.ZONE_TYPES || {
   THE_TRAP: 'theTrap',
   THE_BLOCK: 'theBlock',
   RICH_SUBURBIA: 'richSuburbia',
-  BACK_ALLEY_ARENA: 'backAlleyArena'
+  BACK_ALLEY_ARENA: 'backAlleyArena',
+  
+  // New expanded zones
+  TRAP_HOUSE: 'trapHouse',
+  MOMMA_HOUSE: 'mommaHouse',
+  OPPS_HOOD: 'oppsHood',
+  FADE_PARK: 'fadePark'
 };
 
 // Make ZONE_TYPES available globally
@@ -123,7 +129,521 @@ const STARTER_HOOD_NPCS = [
 // Door connections to other zones or buildings
 const STARTER_HOOD_DOORS = [
   { x: 4, y: 11, leadsTo: 'cornerStore', entranceX: 7, entranceY: 5 },
-  { x: 6, y: 14, leadsTo: 'theTrap', entranceX: 7, entranceY: 1 }
+  { x: 6, y: 14, leadsTo: 'theTrap', entranceX: 7, entranceY: 1 },
+  // New doors to our expanded zones
+  { x: 2, y: 14, leadsTo: ZONE_TYPES.TRAP_HOUSE, entranceX: 7, entranceY: 1 },
+  { x: 12, y: 14, leadsTo: ZONE_TYPES.MOMMA_HOUSE, entranceX: 7, entranceY: 1 },
+  { x: 10, y: 1, leadsTo: ZONE_TYPES.OPPS_HOOD, entranceX: 7, entranceY: 13 },
+  { x: 3, y: 1, leadsTo: ZONE_TYPES.FADE_PARK, entranceX: 7, entranceY: 13 }
+];
+
+// THE TRAP HOUSE - Map and NPCs
+const TRAP_HOUSE_MAP = [
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 1],
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+  [1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1],
+  [1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1],
+  [1, 0, 0, 1, 0, 0, 5, 0, 5, 0, 0, 1, 0, 0, 1],
+  [1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1],
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+  [1, 0, 0, 1, 0, 0, 5, 0, 0, 0, 0, 1, 0, 0, 1],
+  [1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1],
+  [1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1],
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+  [1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1]
+];
+
+const TRAP_HOUSE_NPCS = [
+  {
+    id: 'trap_dealer',
+    name: 'Trap Dealer',
+    x: 6,
+    y: 5,
+    sprite: 'public/sprites/trap_dealer.png',
+    direction: 'down',
+    lines: [
+      "Welcome to the trap house.",
+      "I got all the goods you need to survive the streets.",
+      "Whatchu need today?"
+    ],
+    opensShop: true,
+    shopType: 'trapHouse'
+  },
+  {
+    id: 'trap_guard',
+    name: 'Trap Guard',
+    x: 8,
+    y: 5,
+    sprite: 'public/sprites/trap_guard.png',
+    direction: 'left',
+    lines: [
+      "You better have business here.",
+      "Don't make me test you in these streets.",
+      "Step wrong and we got problems."
+    ],
+    triggersBattle: true,
+    character: {
+      name: 'Trap Guard',
+      sprite: 'public/sprites/trap_guard.png',
+      type: 'Dark',
+      level: 8,
+      hp: 150,
+      maxHp: 150,
+      attack: 65,
+      defense: 50,
+      speed: 40,
+      moves: [
+        { name: 'Glock Shot', type: 'Dark', power: 50, pp: 10, maxPp: 10, description: 'A powerful ranged attack' },
+        { name: 'Street Intimidation', type: 'Dark', power: 0, pp: 5, maxPp: 5, effect: 'debuff', stat: 'attack', amount: 0.7, description: 'Severely lowers opponent Attack' },
+        { name: 'Trap House Rules', type: 'Dark', power: 40, pp: 15, maxPp: 15, effect: 'status', status: 'poison', chance: 0.3, description: 'May poison the opponent' },
+        { name: 'Bulletproof', type: 'Steel', power: 0, pp: 5, maxPp: 5, effect: 'buff', stat: 'defense', amount: 1.5, description: 'Significantly raises Defense' }
+      ]
+    }
+  },
+  {
+    id: 'trap_kingpin',
+    name: 'Trap Kingpin',
+    x: 6,
+    y: 9,
+    sprite: 'public/sprites/trap_kingpin.png',
+    direction: 'up',
+    lines: [
+      "So you made it this far into my trap?",
+      "You either brave or stupid.",
+      "Let's see if you got what it takes to survive here."
+    ],
+    triggersBattle: true,
+    character: {
+      name: 'Trap Kingpin',
+      sprite: 'public/sprites/trap_kingpin.png',
+      type: 'Psychic',
+      level: 12,
+      hp: 180,
+      maxHp: 180,
+      attack: 75,
+      defense: 60,
+      speed: 55,
+      moves: [
+        { name: 'Mind Games', type: 'Psychic', power: 60, pp: 10, maxPp: 10, description: 'A powerful mental attack' },
+        { name: 'Street Connect', type: 'Psychic', power: 0, pp: 5, maxPp: 5, effect: 'buff', stat: 'speed', amount: 1.5, description: 'Significantly raises Speed' },
+        { name: 'Hood Politics', type: 'Dark', power: 50, pp: 10, maxPp: 10, effect: 'debuff', stat: 'defense', amount: 0.8, description: 'Deals damage and lowers Defense' },
+        { name: 'Trap Lord', type: 'Psychic', power: 70, pp: 5, maxPp: 5, description: 'An extremely powerful attack' }
+      ]
+    }
+  }
+];
+
+const TRAP_HOUSE_DOORS = [
+  { x: 7, y: 1, leadsTo: ZONE_TYPES.STARTER_HOOD, entranceX: 2, entranceY: 13 },
+  { x: 7, y: 14, leadsTo: ZONE_TYPES.STARTER_HOOD, entranceX: 6, entranceY: 13 }
+];
+
+// MOMMA'S HOUSE - Map and NPCs
+const MOMMA_HOUSE_MAP = [
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 1],
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+  [1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1],
+  [1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1],
+  [1, 0, 0, 0, 1, 0, 5, 0, 0, 0, 1, 0, 0, 0, 1],
+  [1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1],
+  [1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1],
+  [1, 0, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1],
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+  [1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1]
+];
+
+const MOMMA_HOUSE_NPCS = [
+  {
+    id: 'momma',
+    name: 'Big Momma',
+    x: 6,
+    y: 6,
+    sprite: 'public/sprites/big_momma.png',
+    direction: 'down',
+    lines: [
+      "Baby, you look hungry! Let me fix you a plate.",
+      "I got some healing food for you to take on your journey.",
+      "Don't forget to eat and keep your strength up out there."
+    ],
+    opensShop: true,
+    shopType: 'mommaKitchen',
+    givesHeal: true
+  }
+];
+
+const MOMMA_HOUSE_DOORS = [
+  { x: 7, y: 1, leadsTo: ZONE_TYPES.STARTER_HOOD, entranceX: 12, entranceY: 13 },
+  { x: 7, y: 14, leadsTo: ZONE_TYPES.STARTER_HOOD, entranceX: 12, entranceY: 13 }
+];
+
+// THE OPPS HOOD - Map and NPCs
+const OPPS_HOOD_MAP = [
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1],
+  [1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 1],
+  [1, 3, 0, 5, 0, 0, 0, 0, 0, 0, 0, 5, 0, 3, 1],
+  [1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 1],
+  [1, 3, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 3, 1],
+  [1, 3, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 3, 1],
+  [1, 3, 0, 0, 0, 1, 1, 5, 1, 1, 0, 0, 0, 3, 1],
+  [1, 3, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 3, 1],
+  [1, 3, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 3, 1],
+  [1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 1],
+  [1, 3, 0, 5, 0, 0, 0, 0, 0, 0, 0, 5, 0, 3, 1],
+  [1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 1],
+  [1, 3, 3, 3, 3, 3, 3, 4, 3, 3, 3, 3, 3, 3, 1],
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+];
+
+const OPPS_HOOD_NPCS = [
+  {
+    id: 'opp_leader',
+    name: 'Opp Leader',
+    x: 7,
+    y: 7,
+    sprite: 'public/sprites/opp_leader.png',
+    direction: 'down',
+    lines: [
+      "You in the wrong hood, fool.",
+      "This our territory. You better bounce.",
+      "Or we can settle this right now."
+    ],
+    triggersBattle: true,
+    character: {
+      name: 'Opp Leader',
+      sprite: 'public/sprites/opp_leader.png',
+      type: 'Fighting',
+      level: 15,
+      hp: 200,
+      maxHp: 200,
+      attack: 85,
+      defense: 70,
+      speed: 65,
+      moves: [
+        { name: 'Opp Pack', type: 'Fighting', power: 70, pp: 10, maxPp: 10, description: 'A devastating physical attack' },
+        { name: 'Gang Gang', type: 'Dark', power: 0, pp: 5, maxPp: 5, effect: 'buff', stat: 'attack', amount: 1.5, description: 'Significantly raises Attack' },
+        { name: 'Drive By', type: 'Steel', power: 80, pp: 5, maxPp: 5, description: 'An extremely powerful ranged attack' },
+        { name: 'Opps K', type: 'Fighting', power: 60, pp: 10, maxPp: 10, effect: 'status', status: 'paralysis', chance: 0.3, description: 'May paralyze the opponent' }
+      ]
+    }
+  },
+  {
+    id: 'opp_soldier1',
+    name: 'Opp Soldier',
+    x: 3,
+    y: 3,
+    sprite: 'public/sprites/opp_soldier.png',
+    direction: 'right',
+    lines: [
+      "On sight! On sight!",
+      "We don't play around here.",
+      "Let's get it poppin'!"
+    ],
+    triggersBattle: true,
+    character: {
+      name: 'Opp Soldier',
+      sprite: 'public/sprites/opp_soldier.png',
+      type: 'Dark',
+      level: 10,
+      hp: 160,
+      maxHp: 160,
+      attack: 70,
+      defense: 55,
+      speed: 60,
+      moves: [
+        { name: 'Stick Talk', type: 'Dark', power: 55, pp: 15, maxPp: 15, description: 'A threatening attack' },
+        { name: 'Street Tactics', type: 'Dark', power: 0, pp: 10, maxPp: 10, effect: 'buff', stat: 'speed', amount: 1.3, description: 'Raises Speed' },
+        { name: 'Set Trippin', type: 'Fighting', power: 45, pp: 15, maxPp: 15, effect: 'debuff', stat: 'defense', amount: 0.8, description: 'Deals damage and lowers Defense' },
+        { name: 'Ambush', type: 'Dark', power: 60, pp: 10, maxPp: 10, description: 'A powerful surprise attack' }
+      ]
+    }
+  },
+  {
+    id: 'opp_soldier2',
+    name: 'Opp Soldier',
+    x: 11,
+    y: 3,
+    sprite: 'public/sprites/opp_soldier2.png',
+    direction: 'left',
+    lines: [
+      "You lost or something?",
+      "Wrong turn, homie.",
+      "This gonna hurt you more than me."
+    ],
+    triggersBattle: true,
+    character: {
+      name: 'Opp Soldier',
+      sprite: 'public/sprites/opp_soldier2.png',
+      type: 'Fire',
+      level: 10,
+      hp: 155,
+      maxHp: 155,
+      attack: 75,
+      defense: 50,
+      speed: 65,
+      moves: [
+        { name: 'Heat Wave', type: 'Fire', power: 60, pp: 10, maxPp: 10, description: 'A scorching attack that may burn' },
+        { name: 'Hood Swagger', type: 'Dark', power: 0, pp: 10, maxPp: 10, effect: 'buff', stat: 'attack', amount: 1.3, description: 'Raises Attack' },
+        { name: 'Flame Up', type: 'Fire', power: 50, pp: 15, maxPp: 15, effect: 'status', status: 'burn', chance: 0.3, description: 'May burn the opponent' },
+        { name: 'Block Party', type: 'Normal', power: 45, pp: 15, maxPp: 15, description: 'A solid hit' }
+      ]
+    }
+  },
+  {
+    id: 'opp_soldier3',
+    name: 'Opp Soldier',
+    x: 3,
+    y: 11,
+    sprite: 'public/sprites/opp_soldier3.png',
+    direction: 'right',
+    lines: [
+      "End of the line for you.",
+      "Ain't no way out now.",
+      "Time to catch these hands."
+    ],
+    triggersBattle: true,
+    character: {
+      name: 'Opp Soldier',
+      sprite: 'public/sprites/opp_soldier3.png',
+      type: 'Electric',
+      level: 10,
+      hp: 150,
+      maxHp: 150,
+      attack: 65,
+      defense: 60,
+      speed: 70,
+      moves: [
+        { name: 'Shock Value', type: 'Electric', power: 55, pp: 15, maxPp: 15, description: 'A shocking attack' },
+        { name: 'Charged Up', type: 'Electric', power: 0, pp: 10, maxPp: 10, effect: 'buff', stat: 'speed', amount: 1.3, description: 'Raises Speed' },
+        { name: 'Live Wire', type: 'Electric', power: 50, pp: 15, maxPp: 15, effect: 'status', status: 'paralysis', chance: 0.3, description: 'May paralyze the opponent' },
+        { name: 'Static Shock', type: 'Electric', power: 60, pp: 10, maxPp: 10, description: 'A powerful electrical attack' }
+      ]
+    }
+  },
+  {
+    id: 'opp_soldier4',
+    name: 'Opp Soldier',
+    x: 11,
+    y: 11,
+    sprite: 'public/sprites/opp_soldier4.png',
+    direction: 'left',
+    lines: [
+      "You walked into the wrong situation.",
+      "No mercy in these streets.",
+      "It's fade on sight!"
+    ],
+    triggersBattle: true,
+    character: {
+      name: 'Opp Soldier',
+      sprite: 'public/sprites/opp_soldier4.png',
+      type: 'Water',
+      level: 10,
+      hp: 165,
+      maxHp: 165,
+      attack: 60,
+      defense: 65,
+      speed: 55,
+      moves: [
+        { name: 'Drip Too Hard', type: 'Water', power: 55, pp: 15, maxPp: 15, description: 'A forceful water attack' },
+        { name: 'Ice Cold', type: 'Water', power: 0, pp: 10, maxPp: 10, effect: 'buff', stat: 'defense', amount: 1.3, description: 'Raises Defense' },
+        { name: 'Flood The Block', type: 'Water', power: 70, pp: 5, maxPp: 5, description: 'An extremely powerful water attack' },
+        { name: 'Wave Check', type: 'Water', power: 45, pp: 15, maxPp: 15, effect: 'debuff', stat: 'speed', amount: 0.8, description: 'Deals damage and lowers Speed' }
+      ]
+    }
+  }
+];
+
+const OPPS_HOOD_DOORS = [
+  { x: 7, y: 13, leadsTo: ZONE_TYPES.STARTER_HOOD, entranceX: 10, entranceY: 2 }
+];
+
+// FADE PARK - Map and NPCs
+const FADE_PARK_MAP = [
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1],
+  [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1],
+  [1, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 1],
+  [1, 2, 2, 0, 5, 0, 0, 0, 0, 0, 5, 0, 2, 2, 1],
+  [1, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 1],
+  [1, 2, 2, 0, 0, 0, 1, 1, 1, 0, 0, 0, 2, 2, 1],
+  [1, 2, 2, 0, 0, 1, 1, 5, 1, 1, 0, 0, 2, 2, 1],
+  [1, 2, 2, 0, 0, 0, 1, 1, 1, 0, 0, 0, 2, 2, 1],
+  [1, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 1],
+  [1, 2, 2, 0, 5, 0, 0, 0, 0, 0, 5, 0, 2, 2, 1],
+  [1, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 1],
+  [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1],
+  [1, 2, 2, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 2, 1],
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+];
+
+const FADE_PARK_NPCS = [
+  {
+    id: 'park_champion',
+    name: 'Park Champion',
+    x: 7,
+    y: 7,
+    sprite: 'public/sprites/park_champion.png',
+    direction: 'down',
+    lines: [
+      "This park is where legends are made.",
+      "I'm the undefeated champion of Fade Park.",
+      "Step up if you're ready to be humbled."
+    ],
+    triggersBattle: true,
+    character: {
+      name: 'Park Champion',
+      sprite: 'public/sprites/park_champion.png',
+      type: 'Grass',
+      level: 18,
+      hp: 220,
+      maxHp: 220,
+      attack: 90,
+      defense: 80,
+      speed: 85,
+      moves: [
+        { name: 'Fade Run', type: 'Fighting', power: 80, pp: 10, maxPp: 10, description: 'A devastating physical attack' },
+        { name: 'Park Status', type: 'Grass', power: 0, pp: 5, maxPp: 5, effect: 'buff', stat: 'attack', amount: 1.5, description: 'Significantly raises Attack' },
+        { name: 'City Nature', type: 'Grass', power: 70, pp: 10, maxPp: 10, effect: 'status', status: 'sleep', chance: 0.3, description: 'May put the opponent to sleep' },
+        { name: 'Champion Style', type: 'Normal', power: 90, pp: 5, maxPp: 5, description: 'The champion\'s signature move' }
+      ]
+    }
+  },
+  {
+    id: 'park_challenger1',
+    name: 'Park Challenger',
+    x: 4,
+    y: 4,
+    sprite: 'public/sprites/park_challenger1.png',
+    direction: 'right',
+    lines: [
+      "You look strong. Let's battle!",
+      "I'm training to take on the Park Champion.",
+      "Show me what you got!"
+    ],
+    triggersBattle: true,
+    character: {
+      name: 'Park Challenger',
+      sprite: 'public/sprites/park_challenger1.png',
+      type: 'Normal',
+      level: 12,
+      hp: 170,
+      maxHp: 170,
+      attack: 65,
+      defense: 65,
+      speed: 65,
+      moves: [
+        { name: 'Quick Strike', type: 'Normal', power: 50, pp: 20, maxPp: 20, description: 'A fast, reliable attack' },
+        { name: 'Park Training', type: 'Normal', power: 0, pp: 10, maxPp: 10, effect: 'buff', stat: 'speed', amount: 1.3, description: 'Raises Speed' },
+        { name: 'Body Slam', type: 'Normal', power: 65, pp: 10, maxPp: 10, effect: 'status', status: 'paralysis', chance: 0.2, description: 'May paralyze the opponent' },
+        { name: 'Challenger Spirit', type: 'Fighting', power: 60, pp: 10, maxPp: 10, description: 'A powerful fighting spirit attack' }
+      ]
+    }
+  },
+  {
+    id: 'park_challenger2',
+    name: 'Park Challenger',
+    x: 10,
+    y: 4,
+    sprite: 'public/sprites/park_challenger2.png',
+    direction: 'left',
+    lines: [
+      "This is my training ground.",
+      "I come here every day to get stronger.",
+      "Let me show you my progress!"
+    ],
+    triggersBattle: true,
+    character: {
+      name: 'Park Challenger',
+      sprite: 'public/sprites/park_challenger2.png',
+      type: 'Flying',
+      level: 12,
+      hp: 165,
+      maxHp: 165,
+      attack: 70,
+      defense: 60,
+      speed: 75,
+      moves: [
+        { name: 'Air Slash', type: 'Flying', power: 55, pp: 15, maxPp: 15, description: 'A quick aerial attack' },
+        { name: 'Wind Rush', type: 'Flying', power: 0, pp: 10, maxPp: 10, effect: 'buff', stat: 'speed', amount: 1.4, description: 'Significantly raises Speed' },
+        { name: 'Sky Drop', type: 'Flying', power: 70, pp: 10, maxPp: 10, description: 'A powerful attack from above' },
+        { name: 'Breeze Through', type: 'Flying', power: 45, pp: 15, maxPp: 15, effect: 'debuff', stat: 'defense', amount: 0.8, description: 'Deals damage and lowers Defense' }
+      ]
+    }
+  },
+  {
+    id: 'park_challenger3',
+    name: 'Park Challenger',
+    x: 4,
+    y: 10,
+    sprite: 'public/sprites/park_challenger3.png',
+    direction: 'right',
+    lines: [
+      "I heard you've been winning battles.",
+      "Let's see if the rumors are true.",
+      "Give me your best shot!"
+    ],
+    triggersBattle: true,
+    character: {
+      name: 'Park Challenger',
+      sprite: 'public/sprites/park_challenger3.png',
+      type: 'Rock',
+      level: 12,
+      hp: 180,
+      maxHp: 180,
+      attack: 75,
+      defense: 80,
+      speed: 50,
+      moves: [
+        { name: 'Rock Throw', type: 'Rock', power: 60, pp: 15, maxPp: 15, description: 'A solid rock attack' },
+        { name: 'Concrete Jungle', type: 'Rock', power: 0, pp: 10, maxPp: 10, effect: 'buff', stat: 'defense', amount: 1.4, description: 'Significantly raises Defense' },
+        { name: 'Stone Edge', type: 'Rock', power: 75, pp: 5, maxPp: 5, description: 'A devastating rock attack' },
+        { name: 'Ground Game', type: 'Ground', power: 65, pp: 10, maxPp: 10, effect: 'status', status: 'confusion', chance: 0.2, description: 'May confuse the opponent' }
+      ]
+    }
+  },
+  {
+    id: 'park_challenger4',
+    name: 'Park Challenger',
+    x: 10,
+    y: 10,
+    sprite: 'public/sprites/park_challenger4.png',
+    direction: 'left',
+    lines: [
+      "People come to Fade Park to prove themselves.",
+      "I'm here to be the best there ever was.",
+      "Show me if you have what it takes!"
+    ],
+    triggersBattle: true,
+    character: {
+      name: 'Park Challenger',
+      sprite: 'public/sprites/park_challenger4.png',
+      type: 'Ice',
+      level: 12,
+      hp: 160,
+      maxHp: 160,
+      attack: 70,
+      defense: 65,
+      speed: 70,
+      moves: [
+        { name: 'Ice Punch', type: 'Ice', power: 55, pp: 15, maxPp: 15, description: 'A freezing punch attack' },
+        { name: 'Cold Heart', type: 'Ice', power: 0, pp: 10, maxPp: 10, effect: 'buff', stat: 'attack', amount: 1.3, description: 'Raises Attack' },
+        { name: 'Frost Bite', type: 'Ice', power: 60, pp: 10, maxPp: 10, effect: 'status', status: 'freeze', chance: 0.2, description: 'May freeze the opponent' },
+        { name: 'Icy Wind', type: 'Ice', power: 55, pp: 15, maxPp: 15, effect: 'debuff', stat: 'speed', amount: 0.8, description: 'Deals damage and lowers Speed' }
+      ]
+    }
+  }
+];
+
+const FADE_PARK_DOORS = [
+  { x: 7, y: 13, leadsTo: ZONE_TYPES.STARTER_HOOD, entranceX: 3, entranceY: 2 }
 ];
 
 // Player state in overworld
@@ -1777,6 +2297,28 @@ function changeZone(zoneName, entranceX, entranceY) {
       currentMap = STARTER_HOOD_MAP;
       currentNpcs = STARTER_HOOD_NPCS.filter(npc => npc.id === 'npc2'); // Only the shop keeper
       currentDoors = [{ x: 7, y: 13, leadsTo: ZONE_TYPES.STARTER_HOOD, entranceX: 4, entranceY: 12 }];
+      break;
+    // New zones
+    case ZONE_TYPES.TRAP_HOUSE:
+      currentMap = TRAP_HOUSE_MAP;
+      currentNpcs = TRAP_HOUSE_NPCS;
+      currentDoors = TRAP_HOUSE_DOORS;
+      break;
+    case ZONE_TYPES.MOMMA_HOUSE:
+      currentMap = MOMMA_HOUSE_MAP;
+      currentNpcs = MOMMA_HOUSE_NPCS;
+      currentDoors = MOMMA_HOUSE_DOORS;
+      break;
+    case ZONE_TYPES.OPPS_HOOD:
+      currentMap = OPPS_HOOD_MAP;
+      currentNpcs = OPPS_HOOD_NPCS;
+      currentDoors = OPPS_HOOD_DOORS;
+      player.inTrapZone = true; // Make this a dangerous zone with high encounter rate
+      break;
+    case ZONE_TYPES.FADE_PARK:
+      currentMap = FADE_PARK_MAP;
+      currentNpcs = FADE_PARK_NPCS;
+      currentDoors = FADE_PARK_DOORS;
       break;
     default:
       // Default back to starter hood
