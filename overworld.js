@@ -869,6 +869,19 @@ function initOverworld(selectedCharacter) {
     // Play overworld music
     playOverworldMusic();
     
+    // Expose critical game variables for the emergency fix controls
+    window.player = player;
+    window.currentMap = currentMap;
+    window.currentNpcs = currentNpcs;
+    window.currentDoors = currentDoors;
+    window.dialogueBox = dialogueBox;
+    
+    // Initialize emergency controls if available
+    if (window.emergencyControls && typeof window.emergencyControls.initFix === 'function') {
+      console.log("Initializing emergency overworld controls");
+      window.emergencyControls.initFix();
+    }
+    
     console.log("Overworld initialization complete");
   } catch (error) {
     console.error("Error initializing overworld:", error);
