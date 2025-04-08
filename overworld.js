@@ -379,13 +379,22 @@ function renderMap() {
         tile.dataset.y = y;
         tile.dataset.type = tileType;
         
-        // Tile image mapping
-        const tileImages = {
-          [TILE_TYPES.WALKABLE]: './public/images/concrete.png',
-          [TILE_TYPES.BLOCKED]: './public/images/wall.png',
-          [TILE_TYPES.GRASS]: './public/images/grass.png',
-          [TILE_TYPES.TRAP_ZONE]: './public/images/trap.png',
-          [TILE_TYPES.DOOR]: './public/images/door.png'
+        // Use the new tileset with proper sprite positions
+        // The tileset is organized in a 4x4 grid with different tiles
+        const tilesetUrl = './public/images/tileset.png';
+        
+        // These offset values are based on the tileset image where each tile is 64x64 pixels
+        // The new tileset has 16 tiles in a 4x4 grid
+        // First row: concrete, concrete with cracks, dark concrete, line, grass
+        // Second row: dirt, dirt path, stone wall, grass/dirt edge
+        // Third row: grass with small dirt spots, increasing sizes
+        // Fourth row: More grass/dirt patterns, stone path
+        const tileOffsets = {
+          [TILE_TYPES.WALKABLE]: { x: 0, y: 0 },      // Concrete (top-left)
+          [TILE_TYPES.BLOCKED]: { x: 2, y: 1 },       // Stone wall (3rd column, 2nd row)
+          [TILE_TYPES.GRASS]: { x: 3, y: 0 },         // Grass (top-right)
+          [TILE_TYPES.TRAP_ZONE]: { x: 0, y: 1 },     // Dirt (2nd row, 1st column)
+          [TILE_TYPES.DOOR]: { x: 2, y: 3 }           // Stone path (3rd column, 4th row)
         };
         
         // Apply tile-specific styles
@@ -422,12 +431,19 @@ function renderMap() {
             tileCounts.unknown++;
         }
         
-        // Apply background image if available
-        const tileImage = tileImages[tileType];
-        if (tileImage) {
-          tile.style.backgroundImage = `url('${tileImage}')`;
-          tile.style.backgroundSize = 'cover';
-          tile.style.backgroundPosition = 'center';
+        // Apply the tileset background with proper sprite coordinates
+        const tileOffset = tileOffsets[tileType];
+        if (tileOffset) {
+          // Calculate background position using the tileset coordinates
+          // Each tile is 64x64 pixels in a 4x4 grid
+          const bgPosX = -(tileOffset.x * 64);
+          const bgPosY = -(tileOffset.y * 64);
+          
+          // Apply the tileset as background image with the correct positioning
+          tile.style.backgroundImage = `url('${tilesetUrl}')`;
+          tile.style.backgroundSize = '256px 256px'; // Total tileset size (4*64 x 4*64)
+          tile.style.backgroundPosition = `${bgPosX}px ${bgPosY}px`;
+          tile.style.backgroundRepeat = 'no-repeat';
         }
         
         // Add to fragment instead of directly to DOM
