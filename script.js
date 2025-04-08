@@ -2293,9 +2293,14 @@ function startBattle() {
   updateItemButtons();
   
   // Make sure all elements are visible and properly displayed
-  document.getElementById("moves").style.display = "grid";
-  document.getElementById("items").style.display = "grid";
-  document.getElementById("battle-log").style.display = "block";
+  const movesElement = document.getElementById("moves");
+  const itemsElement = document.getElementById("items");
+  const battleLogElement = document.getElementById("battle-log");
+  
+  // Safely update display properties with null checks
+  if (movesElement) movesElement.style.display = "grid";
+  if (itemsElement) itemsElement.style.display = "grid";
+  if (battleLogElement) battleLogElement.style.display = "block";
   
   // Determine first turn
   currentTurn = determineFirstTurn();

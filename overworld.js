@@ -1106,29 +1106,67 @@ function advanceDialogue() {
 
 // Trigger a battle with an NPC
 function startNpcBattle(npc) {
-  // Set up opponent using NPC character data
-  window.activeOpponent = npc.character;
-  
-  // Hide overworld and show battle screen
-  overworldContainer.style.display = 'none';
-  
-  // Start battle
-  window.startBattle();
+  try {
+    // Set up opponent using NPC character data
+    window.activeOpponent = npc.character;
+    
+    // Hide overworld and show battle screen
+    const overworldContainer = document.getElementById('overworld-container');
+    if (overworldContainer) {
+      overworldContainer.style.display = 'none';
+    } else {
+      console.warn("Overworld container not found, continuing with battle");
+    }
+    
+    // Make sure mobile controls are hidden for battle
+    const mobileContainer = document.getElementById('mobile-controls-container');
+    if (mobileContainer) {
+      mobileContainer.style.display = 'none';
+    }
+    
+    // Start battle
+    if (typeof window.startBattle === 'function') {
+      window.startBattle();
+    } else {
+      console.error("startBattle function not found on window object");
+    }
+  } catch (error) {
+    console.error("Error starting NPC battle:", error);
+  }
 }
 
 // Trigger a random encounter in a trap zone
 function triggerRandomEncounter() {
-  // Create a random opponent based on the current zone
-  const randomOpponent = createRandomOpponent(currentZone);
-  
-  // Set the active opponent
-  window.activeOpponent = randomOpponent;
-  
-  // Hide overworld and show battle screen
-  overworldContainer.style.display = 'none';
-  
-  // Start battle
-  window.startBattle();
+  try {
+    // Create a random opponent based on the current zone
+    const randomOpponent = createRandomOpponent(currentZone);
+    
+    // Set the active opponent
+    window.activeOpponent = randomOpponent;
+    
+    // Hide overworld and show battle screen
+    const overworldContainer = document.getElementById('overworld-container');
+    if (overworldContainer) {
+      overworldContainer.style.display = 'none';
+    } else {
+      console.warn("Overworld container not found, continuing with battle");
+    }
+    
+    // Make sure mobile controls are hidden for battle
+    const mobileContainer = document.getElementById('mobile-controls-container');
+    if (mobileContainer) {
+      mobileContainer.style.display = 'none';
+    }
+    
+    // Start battle
+    if (typeof window.startBattle === 'function') {
+      window.startBattle();
+    } else {
+      console.error("startBattle function not found on window object");
+    }
+  } catch (error) {
+    console.error("Error triggering random encounter:", error);
+  }
 }
 
 // Create a random opponent based on zone
@@ -1427,42 +1465,59 @@ function completeQuest(quest) {
 
 // Return to overworld after battle
 function returnToOverworld(battleWon = true) {
-  console.log("Overworld: Returning from battle, victory:", battleWon);
-  
-  // If battle was a random encounter and player won, increment quest counters
-  if (battleWon && player.inTrapZone) {
-    updateQuestProgress('defeat', 'trapZone');
+  try {
+    console.log("Overworld: Returning from battle, victory:", battleWon);
+    
+    // If battle was a random encounter and player won, increment quest counters
+    if (battleWon && player.inTrapZone) {
+      updateQuestProgress('defeat', 'trapZone');
+    }
+    
+    // Check if container exists, if not, create it
+    if (!document.getElementById('overworld-container')) {
+      console.log("Overworld container not found, creating it");
+      createOverworldUI();
+    }
+    
+    // Get the overworld container after ensuring it exists
+    const overworldContainer = document.getElementById('overworld-container');
+    
+    // Hide battle screen
+    const battleScreen = document.getElementById('battle-screen');
+    if (battleScreen) {
+      battleScreen.style.display = 'none';
+    }
+    
+    // Hide game over screen
+    const gameOverScreen = document.getElementById('game-over');
+    if (gameOverScreen) {
+      gameOverScreen.style.display = 'none';
+    }
+    
+    // Show mobile controls if they exist
+    const mobileContainer = document.getElementById('mobile-controls-container');
+    if (mobileContainer) {
+      mobileContainer.style.display = 'block';
+    }
+    
+    // Show overworld
+    if (overworldContainer) {
+      overworldContainer.style.display = 'flex';
+      
+      // Update player display
+      updatePlayerPosition();
+      
+      // Reset the map and NPCs
+      renderMap();
+    } else {
+      console.error("Failed to find overworld container even after create attempt");
+    }
+    
+    // Switch music back to overworld
+    playOverworldMusic();
+  } catch (error) {
+    console.error("Error returning to overworld:", error);
   }
-  
-  // Check if container exists, if not, create it
-  if (!document.getElementById('overworld-container')) {
-    console.log("Overworld container not found, creating it");
-    createOverworldUI();
-  }
-  
-  // Hide battle screen
-  const battleScreen = document.getElementById('battle-screen');
-  if (battleScreen) {
-    battleScreen.style.display = 'none';
-  }
-  
-  // Hide game over screen
-  const gameOverScreen = document.getElementById('game-over');
-  if (gameOverScreen) {
-    gameOverScreen.style.display = 'none';
-  }
-  
-  // Show overworld
-  overworldContainer.style.display = 'flex';
-  
-  // Update player display
-  updatePlayerPosition();
-  
-  // Reset the map and NPCs
-  renderMap();
-  
-  // Switch music back to overworld
-  playOverworldMusic();
 }
 
 // Play overworld music
