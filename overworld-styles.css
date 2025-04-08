@@ -253,6 +253,7 @@
   to { transform: translateY(-3px); }
 }
 
+/* Direction-based player sprites */
 .facing-up {
   /* Reset previous transforms but maintain animations */
   transform: translateY(0) scale(1);
@@ -262,18 +263,12 @@
   transform: translateY(0) scale(1);
 }
 .facing-left {
-  transform: scaleX(-1);
-  /* Add a small rotation for walking effect */
-  animation: leftRightWalk 0.6s infinite alternate;
+  /* Use natural sprite facing direction */
+  transform: translateY(0) scale(1);
 }
 .facing-right {
-  /* Add a small rotation for walking effect */
-  animation: leftRightWalk 0.6s infinite alternate;
-}
-
-@keyframes leftRightWalk {
-  from { transform: rotate(-2deg); }
-  to { transform: rotate(2deg); }
+  /* Use natural sprite facing direction */
+  transform: translateY(0) scale(1);
 }
 
 #dialogue-box {

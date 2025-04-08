@@ -153,6 +153,15 @@ function initOverworld(selectedCharacter) {
   console.log("Initializing overworld with character:", selectedCharacter);
   
   try {
+    // Preload sprites if sprite manager exists
+    if (window.SpriteManager && window.SpriteManager.preloadSprites) {
+      console.log("Preloading character sprite assets");
+      window.SpriteManager.preloadSprites();
+    }
+    
+    // Initialize player movement state for animations
+    player.isMoving = false;
+    
     // Set player sprite from selected character
     if (selectedCharacter && selectedCharacter.sprite) {
       player.sprite = selectedCharacter.sprite;
@@ -549,47 +558,56 @@ function renderNpcs() {
         npcElement.dataset.npcId = npcData.id;
         npcElement.dataset.npcName = npcData.name;
         
-        // Add visual cues for interactive NPCs
-        if (npcData.triggersBattle) {
-          npcElement.classList.add('battle-npc');
-        } else if (npcData.opensShop) {
-          npcElement.classList.add('shop-npc');
-        } else if (npcData.givesQuest) {
-          npcElement.classList.add('quest-npc');
+        // Use sprite manager if available
+        if (window.SpriteManager && window.SpriteManager.updateNpcSprite) {
+          npcFragment.appendChild(npcElement);
+          window.SpriteManager.updateNpcSprite(npcElement, npcData);
+        } else {
+          // Legacy sprite handling if sprite manager isn't loaded
+          console.log("Using legacy NPC sprite rendering");
+          
+          // Add visual cues for interactive NPCs
+          if (npcData.triggersBattle) {
+            npcElement.classList.add('battle-npc');
+          } else if (npcData.opensShop) {
+            npcElement.classList.add('shop-npc');
+          } else if (npcData.givesQuest) {
+            npcElement.classList.add('quest-npc');
+          }
+          
+          // Create tooltip with NPC name
+          const tooltip = document.createElement('div');
+          tooltip.className = 'npc-tooltip';
+          tooltip.textContent = npcData.name;
+          npcElement.appendChild(tooltip);
+          
+          // Set NPC appearance
+          const npcImg = document.createElement('img');
+          npcImg.src = npcData.sprite;
+          npcImg.alt = npcData.name;
+          npcImg.className = `facing-${npcData.direction}`;
+          
+          // Error handling for sprite loading
+          npcImg.onerror = function() {
+            console.warn(`Failed to load sprite for NPC: ${npcData.name}`);
+            // Use SVG fallback
+            npcElement.innerHTML = `
+              <svg width="64" height="64" viewBox="0 0 64 64" style="image-rendering: pixelated;">
+                <rect x="18" y="12" width="28" height="40" fill="#aaa" />
+                <rect x="14" y="24" width="36" height="16" fill="#aaa" />
+                <circle cx="24" cy="26" r="4" fill="#000" />
+                <circle cx="40" cy="26" r="4" fill="#000" />
+                <rect x="28" y="38" width="8" height="2" fill="#000" />
+                <text x="32" y="58" text-anchor="middle" font-size="10" fill="#fff">${npcData.name}</text>
+              </svg>
+            `;
+          };
+          
+          npcElement.appendChild(npcImg);
+          npcFragment.appendChild(npcElement);
         }
         
-        // Create tooltip with NPC name
-        const tooltip = document.createElement('div');
-        tooltip.className = 'npc-tooltip';
-        tooltip.textContent = npcData.name;
-        npcElement.appendChild(tooltip);
-        
-        // Set NPC appearance
-        const npcImg = document.createElement('img');
-        npcImg.src = npcData.sprite;
-        npcImg.alt = npcData.name;
-        npcImg.className = `facing-${npcData.direction}`;
-        
-        // Error handling for sprite loading
-        npcImg.onerror = function() {
-          console.warn(`Failed to load sprite for NPC: ${npcData.name}`);
-          // Use SVG fallback
-          npcElement.innerHTML = `
-            <svg width="64" height="64" viewBox="0 0 64 64" style="image-rendering: pixelated;">
-              <rect x="18" y="12" width="28" height="40" fill="#aaa" />
-              <rect x="14" y="24" width="36" height="16" fill="#aaa" />
-              <circle cx="24" cy="26" r="4" fill="#000" />
-              <circle cx="40" cy="26" r="4" fill="#000" />
-              <rect x="28" y="38" width="8" height="2" fill="#000" />
-              <text x="32" y="58" text-anchor="middle" font-size="10" fill="#fff">${npcData.name}</text>
-            </svg>
-          `;
-        };
-        
-        npcElement.appendChild(npcImg);
-        npcFragment.appendChild(npcElement);
-        
-        // Store reference to the element
+        // Store reference to the element and data
         npcs.push({
           data: npcData,
           element: npcElement
@@ -611,7 +629,7 @@ function renderNpcs() {
 // Update player position on the map
 function updatePlayerPosition() {
   try {
-    console.log("Updating player position:", player.x, player.y, player.direction);
+    console.log("Updating player position:", player.x, player.y, player.direction, "isMoving:", player.isMoving);
     
     if (!playerSprite) {
       console.error("Player sprite element not found in updatePlayerPosition");
@@ -622,31 +640,43 @@ function updatePlayerPosition() {
     playerSprite.style.left = `${player.x * tileSize}px`;
     playerSprite.style.top = `${player.y * tileSize}px`;
     
-    // Update player sprite direction
-    playerSprite.className = `facing-${player.direction}`;
-    
-    // Set sprite image if not already set
-    if (!playerSprite.querySelector('img')) {
-      console.log("Adding player sprite image:", player.sprite);
+    // Check if sprite manager is available
+    if (window.SpriteManager) {
+      // Use the player's isMoving state for animation
+      const isMoving = player.isMoving || false;
       
-      if (!player.sprite) {
-        console.warn("No player sprite URL defined, using default");
-        player.sprite = 'https://i.imgur.com/m7Rup7S.png'; // Default sprite
-      }
-      
-      const img = document.createElement('img');
-      img.src = player.sprite;
-      img.alt = 'Player';
-      img.style.width = '100%';
-      img.style.height = '100%';
-      img.style.objectFit = 'contain';
-      playerSprite.appendChild(img);
+      // Update sprite with direction and animation state
+      window.SpriteManager.updatePlayerSprite(playerSprite, player.direction, isMoving);
     } else {
-      // Update existing sprite image if needed
-      const img = playerSprite.querySelector('img');
-      if (img.src !== player.sprite) {
-        console.log("Updating player sprite image to:", player.sprite);
+      // Fallback to basic sprite handling if sprite manager isn't loaded
+      console.warn("SpriteManager not available, using fallback sprite handling");
+      
+      // Update player sprite direction
+      playerSprite.className = `facing-${player.direction}`;
+      
+      // Set sprite image if not already set
+      if (!playerSprite.querySelector('img')) {
+        console.log("Adding player sprite image:", player.sprite);
+        
+        if (!player.sprite) {
+          console.warn("No player sprite URL defined, using default");
+          player.sprite = 'https://i.imgur.com/m7Rup7S.png'; // Default sprite
+        }
+        
+        const img = document.createElement('img');
         img.src = player.sprite;
+        img.alt = 'Player';
+        img.style.width = '100%';
+        img.style.height = '100%';
+        img.style.objectFit = 'contain';
+        playerSprite.appendChild(img);
+      } else {
+        // Update existing sprite image if needed
+        const img = playerSprite.querySelector('img');
+        if (img.src !== player.sprite) {
+          console.log("Updating player sprite image to:", player.sprite);
+          img.src = player.sprite;
+        }
       }
     }
     
@@ -748,8 +778,18 @@ function movePlayer(direction) {
     return false;
   }
   
+  // Set player as moving (for animation)
+  player.isMoving = true;
+  
   // Update player position on screen
   updatePlayerPosition();
+  
+  // After a short delay, set player as not moving (stop animation)
+  setTimeout(() => {
+    player.isMoving = false;
+    updatePlayerPosition();
+  }, 250); // Animation lasts for 250ms
+  
   return true;
 }
 
