@@ -2162,3 +2162,29 @@ body {
     text-shadow: 0 0 15px #ff00ff, 0 0 30px #ff00ff, 0 0 40px #ff00ff;
   }
 }
+
+/* Battle effect animation */
+.battle-effect {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  z-index: 100;
+  top: 40%;
+  transform: translateY(-50%);
+  pointer-events: none; /* Ensure effects don't block interaction */
+  animation: effectPulse 0.5s infinite alternate;
+}
+
+@keyframes effectPulse {
+  from {
+    opacity: 0.8;
+    transform: translateY(-50%) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) scale(1.05);
+  }
+}

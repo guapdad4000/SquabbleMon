@@ -3008,9 +3008,19 @@ function processActiveItemEffects(side) {
           if (effect.effect === "atkUp") {
             playerStatModifiers.attack /= effect.value;
             addToBattleLog(`${activePlayerCharacter.name}'s Attack buff wore off.`);
+            
+            // Apply "buff expiring" animation if animation function exists
+            if (typeof applyBuffAnimation === 'function') {
+              applyBuffAnimation("dark", "player");
+            }
           } else if (effect.effect === "defUp") {
             playerStatModifiers.defense /= effect.value;
             addToBattleLog(`${activePlayerCharacter.name}'s Defense buff wore off.`);
+            
+            // Apply "buff expiring" animation if animation function exists
+            if (typeof applyBuffAnimation === 'function') {
+              applyBuffAnimation("water", "player");
+            }
           }
         } else {
           // Effect is still active
@@ -3035,9 +3045,19 @@ function processActiveItemEffects(side) {
           if (effect.effect === "atkUp") {
             opponentStatModifiers.attack /= effect.value;
             addToBattleLog(`${activeOpponent.name}'s Attack buff wore off.`);
+            
+            // Apply "buff expiring" animation if animation function exists
+            if (typeof applyBuffAnimation === 'function') {
+              applyBuffAnimation("dark", "opponent");
+            }
           } else if (effect.effect === "defUp") {
             opponentStatModifiers.defense /= effect.value;
             addToBattleLog(`${activeOpponent.name}'s Defense buff wore off.`);
+            
+            // Apply "buff expiring" animation if animation function exists
+            if (typeof applyBuffAnimation === 'function') {
+              applyBuffAnimation("water", "opponent");
+            }
           }
         } else {
           // Effect is still active
@@ -4575,6 +4595,13 @@ function useItem(itemType) {
       addToBattleLog(`${activePlayerCharacter.name}'s Attack rose sharply!`);
       showFloatingLog("ATK ↑↑");
       
+      // Apply buff animation
+      if (typeof applyBuffAnimation === 'function') {
+        // Use the item type to determine buff type - default to "dark" for nbayoungboy
+        const buffType = itemType === "nbayoungboy" ? "dark" : "normal";
+        applyBuffAnimation(buffType, "player");
+      }
+      
       // Add to active effects with duration
       if (item.duration) {
         // Remove any existing attack boost effects first to prevent stacking
@@ -4653,6 +4680,11 @@ function useItem(itemType) {
         playerStatusEffect.duration = 0;
         updateStatusIcons();
         
+        // Apply status cure animation
+        if (typeof applyBuffAnimation === 'function') {
+          applyBuffAnimation("water", "player"); // Using water-type animation for cure effect
+        }
+        
         // Small HP recovery bonus
         // Make sure maxHp is set
         activePlayerCharacter.maxHp = activePlayerCharacter.maxHp || activePlayerCharacter.hp;
@@ -4661,6 +4693,11 @@ function useItem(itemType) {
         const cureHealAmount = Math.floor(activePlayerCharacter.maxHp * 0.1);
         activePlayerCharacter.hp = Math.min(activePlayerCharacter.maxHp, activePlayerCharacter.hp + cureHealAmount);
         addToBattleLog(`${activePlayerCharacter.name} recovered ${cureHealAmount} HP!`);
+        
+        // Apply small heal animation after the status cure
+        if (typeof applyHealAnimation === 'function') {
+          setTimeout(() => applyHealAnimation("player"), 300);
+        }
       } else {
         addToBattleLog(`It had no effect...`);
         showFloatingLog("No effect");

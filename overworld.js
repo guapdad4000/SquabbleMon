@@ -1229,12 +1229,12 @@ function startNpcBattle(npc) {
     if (window.characters && window.characters.length > 0) {
       battleCharacters = window.characters;
     } else {
-      // Fallback characters for battles - use characters from our actual game data
+      // Fallback characters for battles - use characters from our actual game data with proper image links
       battleCharacters = [
         {
           id: "battle1",
           name: "Rastamon",
-          sprite: "public/sprites/rastamon.png",
+          sprite: "https://i.imgur.com/dZWWrrs.png", // Updated rasta image link
           type: "Plant",
           hp: 200,
           attack: 150,
@@ -1250,7 +1250,7 @@ function startNpcBattle(npc) {
         {
           id: "battle2",
           name: "Fitness Bro",
-          sprite: "public/sprites/fitness.png",
+          sprite: "https://i.imgur.com/YeMI4sr.png", // Updated fitness image link
           type: "Fire",
           hp: 230,
           attack: 170,
@@ -1266,7 +1266,7 @@ function startNpcBattle(npc) {
         {
           id: "battle3",
           name: "Techy",
-          sprite: "https://i.imgur.com/m7Rup7S.png",
+          sprite: "https://i.imgur.com/VVa9pm9.png", // Updated techy image link
           type: "Electric",
           hp: 170,
           attack: 150,
@@ -1282,7 +1282,7 @@ function startNpcBattle(npc) {
         {
           id: "battle4",
           name: "Cool Vibe YN",
-          sprite: "https://i.imgur.com/2n71aSJ.png",
+          sprite: "https://i.imgur.com/2n71aSJ.png", // Cool vibe image
           type: "Water",
           hp: 190,
           attack: 170,
@@ -1298,7 +1298,7 @@ function startNpcBattle(npc) {
         {
           id: "battle5",
           name: "9-5 Homie",
-          sprite: "https://i.imgur.com/UkE9crR.png",
+          sprite: "https://i.imgur.com/UkE9crR.png", // 9-5 homie image
           type: "Rock",
           hp: 210,
           attack: 130,
@@ -1309,6 +1309,54 @@ function startNpcBattle(npc) {
             { name: "Overtime Overload", type: "Electric", power: 65, pp: 10, maxPp: 10, effect: 'status', status: 'paralysis', chance: 0.3, description: "Stressful attack that may cause paralysis." },
             { name: "PTO Prayer", type: "Normal", power: 0, pp: 5, maxPp: 5, effect: 'heal', amount: 45, description: "Healing move that gives a much-needed break." },
             { name: "Monday Mayhem", type: "Rock", power: 55, pp: 10, maxPp: 10, description: "Rock-solid attack fueled by beginning-of-week dread." }
+          ]
+        },
+        {
+          id: "battle6",
+          name: "All Jokes YN",
+          sprite: "https://i.imgur.com/9hFTFQt.png", // All jokes image
+          type: "Normal",
+          hp: 180,
+          attack: 140,
+          defense: 120,
+          speed: 160,
+          moves: [
+            { name: "Punchline", type: "Normal", power: 55, pp: 15, maxPp: 15, description: "Lands a killer joke that hits hard." },
+            { name: "Roast Session", type: "Fire", power: 65, pp: 10, maxPp: 10, effect: 'status', status: 'burn', chance: 0.3, description: "Brutal roast that may burn the opponent." },
+            { name: "Self Deprecation", type: "Normal", power: 0, pp: 5, maxPp: 5, effect: 'buff', stat: 'attack', amount: 1.5, description: "Makes fun of self to boost confidence and attack." },
+            { name: "Callback", type: "Normal", power: 70, pp: 10, maxPp: 10, description: "References an earlier joke for devastating effect." }
+          ]
+        },
+        {
+          id: "battle7",
+          name: "Closet Nerd",
+          sprite: "https://i.imgur.com/knA2Yxz.png", // Closet nerd image
+          type: "Psychic",
+          hp: 165,
+          attack: 160,
+          defense: 140,
+          speed: 150,
+          moves: [
+            { name: "Secret Knowledge", type: "Psychic", power: 60, pp: 15, maxPp: 15, description: "Uses hidden intelligence for a powerful attack." },
+            { name: "Anime Reference", type: "Normal", power: 50, pp: 10, maxPp: 10, effect: 'status', status: 'confusion', chance: 0.3, description: "Confuses opponent with obscure references." },
+            { name: "Well Actually", type: "Psychic", power: 45, pp: 15, maxPp: 15, effect: 'debuff', stat: 'defense', amount: 0.7, description: "Corrects opponent, lowering their defense." },
+            { name: "Glasses Adjustment", type: "Normal", power: 0, pp: 5, maxPp: 5, effect: 'buff', stat: 'accuracy', amount: 1.5, description: "Dramatically adjusts glasses to improve accuracy." }
+          ]
+        },
+        {
+          id: "battle8",
+          name: "Functional Addict",
+          sprite: "https://i.imgur.com/G3xfSjU.png", // Functional addict image
+          type: "Dark",
+          hp: 195,
+          attack: 180,
+          defense: 110,
+          speed: 170,
+          moves: [
+            { name: "Quick Fix", type: "Dark", power: 65, pp: 15, maxPp: 15, description: "Gets a boost that increases attack power." },
+            { name: "Manic Episode", type: "Dark", power: 80, pp: 10, maxPp: 10, effect: 'recoil', amount: 0.2, description: "Powerful but causes recoil damage." },
+            { name: "Withdrawal", type: "Normal", power: 0, pp: 5, maxPp: 5, effect: 'heal', amount: 30, description: "Recovers HP through sheer willpower." },
+            { name: "Double Life", type: "Dark", power: 50, pp: 10, maxPp: 10, effect: 'status', status: 'confusion', chance: 0.4, description: "Confuses opponent with erratic behavior." }
           ]
         }
       ];
@@ -1541,14 +1589,23 @@ function createRandomOpponent(zone) {
   const name = namePool[Math.floor(Math.random() * namePool.length)];
   const type = types[Math.floor(Math.random() * types.length)];
   
-  // Use local sprite options for random enemies - make sure paths are correct
+  // Use external sprite options for better character variety
   const spriteOptions = [
-    'sprites/og_ras.png',
-    'sprites/lil_brick.png',
-    'sprites/street_runner.png',
-    'sprites/default_npc.png',
-    'sprites/rastamon.png',
-    'sprites/fitness.png'
+    'https://i.imgur.com/dZWWrrs.png', // rasta
+    'https://i.imgur.com/YeMI4sr.png', // fitness
+    'https://i.imgur.com/VVa9pm9.png', // techy
+    'https://i.imgur.com/2n71aSJ.png', // vibe
+    'https://i.imgur.com/UkE9crR.png', // 9-5
+    'https://i.imgur.com/9hFTFQt.png', // all jokes
+    'https://i.imgur.com/knA2Yxz.png', // closet nerd
+    'https://i.imgur.com/yA0lUbo.png', // dysfunctional
+    'https://i.imgur.com/G3xfSjU.png', // functional addict
+    'https://i.imgur.com/b5pnt7o.png', // gamer unemployed
+    'https://i.imgur.com/vFvQKap.png', // gamer
+    'https://i.imgur.com/LRVrieF.png', // homeless yn
+    'https://i.imgur.com/Kwe1HpA.png', // serial yn
+    'https://i.imgur.com/1SuHgnZ.png', // earthy
+    'https://i.imgur.com/GmlKf6u.png'  // techbro rich
   ];
   // Ensure paths are standardized
   const sprite = spriteOptions[Math.floor(Math.random() * spriteOptions.length)];
