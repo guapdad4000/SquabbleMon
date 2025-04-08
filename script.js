@@ -1484,36 +1484,83 @@ function selectGameMode(mode) {
 function startExploreMode() {
   console.log("Starting explore mode...");
   
-  // Check if we have at least one character
-  if (playerTeam.length === 0) {
-    alert("Select at least one character to explore");
-    return;
-  }
-  
-  // Hide selection screen
-  document.getElementById('selection-screen').style.display = 'none';
-  
-  // Make sure overworld container exists
-  let overworldContainer = document.getElementById('overworld-container');
-  if (!overworldContainer) {
-    console.log("Creating overworld container");
-    overworldContainer = document.createElement('div');
-    overworldContainer.id = 'overworld-container';
-    document.body.appendChild(overworldContainer);
-  }
-  
-  // Show overworld container
-  overworldContainer.style.display = 'flex';
-  
-  // Initialize overworld with the first character in team
-  if (window.OverworldSystem && typeof window.OverworldSystem.initOverworld === 'function') {
-    window.OverworldSystem.initOverworld(playerTeam[0]);
-  } else {
-    console.error("Overworld system not found or not initialized properly");
-    alert("Overworld system not available. Please try again.");
+  try {
+    // Check if we have at least one character
+    if (playerTeam.length === 0) {
+      alert("Select at least one character to explore");
+      return;
+    }
     
-    // Show selection screen again if overworld fails to load
-    document.getElementById('selection-screen').style.display = 'flex';
+    // Hide selection screen
+    const selectionScreen = document.getElementById('selection-screen');
+    if (selectionScreen) {
+      selectionScreen.style.display = 'none';
+    }
+    
+    // Make sure the overworld.js script is loaded
+    if (!window.OverworldSystem) {
+      console.log("Loading overworld script...");
+      
+      // Load the overworld.js script if it's not already loaded
+      if (!document.querySelector('script[src*="overworld.js"]')) {
+        const overworldScript = document.createElement('script');
+        overworldScript.src = 'overworld.js';
+        document.head.appendChild(overworldScript);
+        
+        // Wait for script to load before continuing
+        overworldScript.onload = function() {
+          console.log("Overworld script loaded, initializing...");
+          continueToOverworld();
+        };
+        
+        overworldScript.onerror = function() {
+          console.error("Failed to load overworld script");
+          alert("Failed to load overworld. Please try again.");
+          if (selectionScreen) selectionScreen.style.display = 'flex';
+        };
+        
+        return; // Exit function and wait for script to load
+      }
+    }
+    
+    // Continue to overworld immediately if script is already loaded
+    continueToOverworld();
+    
+  } catch (error) {
+    console.error("Error starting explore mode:", error);
+    alert("An error occurred. Please try again.");
+    const selectionScreen = document.getElementById('selection-screen');
+    if (selectionScreen) selectionScreen.style.display = 'flex';
+  }
+  
+  // Helper function to continue to overworld after script is loaded
+  function continueToOverworld() {
+    try {
+      // Make sure overworld container exists
+      let overworldContainer = document.getElementById('overworld-container');
+      if (!overworldContainer) {
+        console.log("Creating overworld container");
+        overworldContainer = document.createElement('div');
+        overworldContainer.id = 'overworld-container';
+        document.body.appendChild(overworldContainer);
+      }
+      
+      // Initialize overworld with the first character in team
+      if (window.OverworldSystem && typeof window.OverworldSystem.initOverworld === 'function') {
+        console.log("Initializing overworld with character:", playerTeam[0]);
+        window.OverworldSystem.initOverworld(playerTeam[0]);
+      } else {
+        console.error("Overworld system not found or not initialized properly");
+        throw new Error("Overworld system not available");
+      }
+    } catch (error) {
+      console.error("Error entering overworld:", error);
+      alert("Overworld system not available. Please try again.");
+      
+      // Show selection screen again if overworld fails to load
+      const selectionScreen = document.getElementById('selection-screen');
+      if (selectionScreen) selectionScreen.style.display = 'flex';
+    }
   }
 }
 
@@ -1521,33 +1568,98 @@ function startExploreMode() {
 function returnToOverworld(battleWon = true) {
   console.log("Returning to overworld...");
   
-  // Only do this in story mode
-  if (currentGameMode !== 'story') return;
-  
-  // Hide battle screen
-  document.getElementById('battle-screen').style.display = 'none';
-  
-  // Hide game over screen if it's visible
-  const gameOverScreen = document.getElementById('game-over');
-  if (gameOverScreen) {
-    gameOverScreen.style.display = 'none';
+  try {
+    // Only do this in story mode
+    if (currentGameMode !== 'story') {
+      console.log("Not in story mode, skipping return to overworld");
+      return;
+    }
+    
+    // Hide battle screen
+    const battleScreen = document.getElementById('battle-screen');
+    if (battleScreen) {
+      battleScreen.style.display = 'none';
+    }
+    
+    // Hide game over screen if it's visible
+    const gameOverScreen = document.getElementById('game-over');
+    if (gameOverScreen) {
+      gameOverScreen.style.display = 'none';
+    }
+    
+    // Make sure overworld container exists
+    let overworldContainer = document.getElementById('overworld-container');
+    if (!overworldContainer) {
+      console.log("Creating overworld container");
+      overworldContainer = document.createElement('div');
+      overworldContainer.id = 'overworld-container';
+      document.body.appendChild(overworldContainer);
+    }
+    
+    // Make sure the overworld.js script is loaded
+    if (!window.OverworldSystem) {
+      console.log("Loading overworld script...");
+      
+      // Load the overworld.js script if it's not already loaded
+      if (!document.querySelector('script[src*="overworld.js"]')) {
+        const overworldScript = document.createElement('script');
+        overworldScript.src = 'overworld.js';
+        document.head.appendChild(overworldScript);
+        
+        // Wait for script to load before continuing
+        overworldScript.onload = function() {
+          console.log("Overworld script loaded, continuing to overworld");
+          continueReturnToOverworld();
+        };
+        
+        overworldScript.onerror = function() {
+          console.error("Failed to load overworld script");
+          alert("Failed to return to overworld. Please try again.");
+        };
+        
+        return; // Exit function and wait for script to load
+      }
+    }
+    
+    // Continue to overworld immediately if script is already loaded
+    continueReturnToOverworld();
+    
+  } catch (error) {
+    console.error("Error returning to overworld:", error);
   }
   
-  // Make sure overworld container exists
-  let overworldContainer = document.getElementById('overworld-container');
-  if (!overworldContainer) {
-    console.log("Creating overworld container");
-    overworldContainer = document.createElement('div');
-    overworldContainer.id = 'overworld-container';
-    document.body.appendChild(overworldContainer);
-  }
-  
-  // Show overworld container
-  overworldContainer.style.display = 'flex';
-  
-  // Re-initialize overworld with updated state after battle
-  if (window.OverworldSystem && typeof window.OverworldSystem.returnToOverworld === 'function') {
-    window.OverworldSystem.returnToOverworld(battleWon);
+  // Helper function to continue to overworld after script is loaded
+  function continueReturnToOverworld() {
+    try {
+      // Show overworld container
+      let overworldContainer = document.getElementById('overworld-container');
+      if (overworldContainer) {
+        overworldContainer.style.display = 'flex';
+      }
+      
+      // Re-initialize overworld with updated state after battle
+      if (window.OverworldSystem && typeof window.OverworldSystem.returnToOverworld === 'function') {
+        console.log("Calling overworld system's returnToOverworld function");
+        window.OverworldSystem.returnToOverworld(battleWon);
+      } else {
+        console.error("Overworld system or returnToOverworld function not found");
+        if (window.OverworldSystem && typeof window.OverworldSystem.initOverworld === 'function') {
+          // Fall back to re-initializing if return function isn't available
+          console.log("Falling back to re-initializing overworld");
+          window.OverworldSystem.initOverworld(playerTeam[0]);
+        } else {
+          throw new Error("Could not reinitialize overworld");
+        }
+      }
+    } catch (error) {
+      console.error("Error in continueReturnToOverworld:", error);
+      // Show selection screen if returning to overworld fails completely
+      const selectionScreen = document.getElementById('selection-screen');
+      if (selectionScreen) {
+        selectionScreen.style.display = 'flex';
+      }
+      alert("Error returning to overworld. Returning to selection screen.");
+    }
   }
 }
 

@@ -150,40 +150,59 @@ let npcs = [];
 
 // Initialize overworld after character selection
 function initOverworld(selectedCharacter) {
-  // Set player sprite from selected character
-  player.sprite = selectedCharacter.sprite;
+  console.log("Initializing overworld with character:", selectedCharacter);
   
-  // Hide battle screen and show overworld
-  document.getElementById('battle-screen').style.display = 'none';
-  document.getElementById('character-selection').style.display = 'none';
-  
-  // Create overworld container if it doesn't exist
-  if (!document.getElementById('overworld-container')) {
-    createOverworldUI();
-  } else {
-    overworldContainer = document.getElementById('overworld-container');
-    mapContainer = document.getElementById('map-container');
-    playerSprite = document.getElementById('player-sprite');
-    dialogueBox = document.getElementById('dialogue-box');
+  try {
+    // Set player sprite from selected character
+    player.sprite = selectedCharacter.sprite;
+    
+    // Hide battle screen and show overworld
+    const battleScreen = document.getElementById('battle-screen');
+    if (battleScreen) battleScreen.style.display = 'none';
+    
+    const charSelection = document.getElementById('character-selection');
+    if (charSelection) charSelection.style.display = 'none';
+    
+    // Create overworld container if it doesn't exist
+    if (!document.getElementById('overworld-container')) {
+      console.log("Creating new overworld UI");
+      createOverworldUI();
+    } else {
+      console.log("Using existing overworld UI");
+      overworldContainer = document.getElementById('overworld-container');
+      mapContainer = document.getElementById('map-container');
+      playerSprite = document.getElementById('player-sprite');
+      dialogueBox = document.getElementById('dialogue-box');
+    }
+    
+    // Make sure all UI elements are defined
+    if (!overworldContainer) {
+      console.error("Overworld container not initialized!");
+      return;
+    }
+    
+    // Display overworld
+    overworldContainer.style.display = 'flex';
+    
+    // Set up player position
+    updatePlayerPosition();
+    
+    // Set up NPCs
+    renderNpcs();
+    
+    // Set up keyboard controls
+    setupOverworldControls();
+    
+    // Set up mobile controls for touchscreens
+    setupMobileOverworldControls();
+    
+    // Play overworld music
+    playOverworldMusic();
+    
+    console.log("Overworld initialization complete");
+  } catch (error) {
+    console.error("Error initializing overworld:", error);
   }
-  
-  // Display overworld
-  overworldContainer.style.display = 'flex';
-  
-  // Set up player position
-  updatePlayerPosition();
-  
-  // Set up NPCs
-  renderNpcs();
-  
-  // Set up keyboard controls
-  setupOverworldControls();
-  
-  // Set up mobile controls for touchscreens
-  setupMobileOverworldControls();
-  
-  // Play overworld music
-  playOverworldMusic();
 }
 
 // Create UI elements for overworld
@@ -420,78 +439,98 @@ function setupOverworldControls() {
 
 // Handle keyboard input
 function handleKeyPress(e) {
-  // Only process movement if dialogue is not active
-  if (dialogueBox.style.display === 'none') {
-    switch (e.key) {
-      case 'ArrowUp':
-      case 'w':
-      case 'W':
-        movePlayer('up');
-        break;
-      case 'ArrowDown':
-      case 's':
-      case 'S':
-        movePlayer('down');
-        break;
-      case 'ArrowLeft':
-      case 'a':
-      case 'A':
-        movePlayer('left');
-        break;
-      case 'ArrowRight':
-      case 'd':
-      case 'D':
-        movePlayer('right');
-        break;
-      case ' ':
-      case 'Enter':
-        // Interact with NPC or object in front of player
-        interactWithFacingTile();
-        break;
+  try {
+    // Check if dialogueBox exists and is initialized
+    if (!dialogueBox) {
+      console.error("Dialogue box not found in handleKeyPress");
+      return;
     }
-  } else if (e.key === ' ' || e.key === 'Enter') {
-    // Advance dialogue when space or enter is pressed
-    advanceDialogue();
+    
+    // Only process movement if dialogue is not active
+    if (dialogueBox.style.display === 'none') {
+      switch (e.key) {
+        case 'ArrowUp':
+        case 'w':
+        case 'W':
+          movePlayer('up');
+          break;
+        case 'ArrowDown':
+        case 's':
+        case 'S':
+          movePlayer('down');
+          break;
+        case 'ArrowLeft':
+        case 'a':
+        case 'A':
+          movePlayer('left');
+          break;
+        case 'ArrowRight':
+        case 'd':
+        case 'D':
+          movePlayer('right');
+          break;
+        case ' ':
+        case 'Enter':
+          // Interact with NPC or object in front of player
+          interactWithFacingTile();
+          break;
+      }
+    } else if (e.key === ' ' || e.key === 'Enter') {
+      // Advance dialogue when space or enter is pressed
+      advanceDialogue();
+    }
+  } catch (error) {
+    console.error("Error handling key press:", error);
   }
 }
 
 // Set up mobile controls for overworld
 function setupMobileOverworldControls() {
-  const mobileControls = document.getElementById('mobile-controls-container');
-  
-  // Update the mobile controls to work with overworld
-  if (mobileControls) {
-    // Make sure mobile controls are visible on overworld
-    mobileControls.style.display = 'block';
+  try {
+    const mobileControls = document.getElementById('mobile-controls-container');
     
-    // The mobile controls use an iframe, so we need to communicate with it
-    window.addEventListener('message', (event) => {
-      if (event.data.type === 'mobileControl') {
-        switch (event.data.button) {
-          case 'up':
-            movePlayer('up');
-            break;
-          case 'down':
-            movePlayer('down');
-            break;
-          case 'left':
-            movePlayer('left');
-            break;
-          case 'right':
-            movePlayer('right');
-            break;
-          case 'a':
-            interactWithFacingTile();
-            break;
-          case 'b':
-            // Can be used for cancelling dialogue or interactions
-            if (dialogueBox.style.display !== 'none') {
-              dialogueBox.style.display = 'none';
+    // Update the mobile controls to work with overworld
+    if (mobileControls) {
+      // Make sure mobile controls are visible on overworld
+      mobileControls.style.display = 'block';
+      
+      // The mobile controls use an iframe, so we need to communicate with it
+      window.addEventListener('message', (event) => {
+        try {
+          if (event.data && event.data.type === 'mobileControl') {
+            switch (event.data.button) {
+              case 'up':
+                movePlayer('up');
+                break;
+              case 'down':
+                movePlayer('down');
+                break;
+              case 'left':
+                movePlayer('left');
+                break;
+              case 'right':
+                movePlayer('right');
+                break;
+              case 'a':
+                interactWithFacingTile();
+                break;
+              case 'b':
+                // Can be used for cancelling dialogue or interactions
+                if (dialogueBox && dialogueBox.style && dialogueBox.style.display !== 'none') {
+                  dialogueBox.style.display = 'none';
+                }
+                break;
             }
-            break;
+          }
+        } catch (error) {
+          console.error("Error in mobile control event handler:", error);
         }
-      }
-    });
+      });
+    } else {
+      console.log("Mobile controls container not found, mobile controls will not be available");
+    }
+  } catch (error) {
+    console.error("Error setting up mobile controls:", error);
   }
 }
 
@@ -548,54 +587,91 @@ let currentDialogue = null;
 let currentDialogueLine = 0;
 
 function startDialogue(npc) {
-  dialogueBox.style.display = 'block';
-  document.getElementById('dialogue-name').textContent = npc.name;
-  
-  currentDialogue = npc;
-  currentDialogueLine = 0;
-  
-  // Show first line of dialogue
-  document.getElementById('dialogue-text').textContent = npc.lines[currentDialogueLine];
-  
-  // Play dialogue sound
-  playSwitchSound();
+  try {
+    if (!dialogueBox) {
+      console.error("Dialogue box element not found!");
+      return;
+    }
+    
+    dialogueBox.style.display = 'block';
+    
+    const nameElement = document.getElementById('dialogue-name');
+    if (nameElement) {
+      nameElement.textContent = npc.name;
+    } else {
+      console.error("Dialogue name element not found!");
+    }
+    
+    currentDialogue = npc;
+    currentDialogueLine = 0;
+    
+    // Show first line of dialogue
+    const textElement = document.getElementById('dialogue-text');
+    if (textElement) {
+      textElement.textContent = npc.lines[currentDialogueLine];
+    } else {
+      console.error("Dialogue text element not found!");
+    }
+    
+    // Play dialogue sound
+    if (typeof playSwitchSound === 'function') {
+      playSwitchSound();
+    } else {
+      console.warn("Switch sound function not available");
+    }
+  } catch (error) {
+    console.error("Error starting dialogue:", error);
+  }
 }
 
 // Advance to next dialogue line or end dialogue
 function advanceDialogue() {
-  if (!currentDialogue) return;
-  
-  currentDialogueLine++;
-  
-  // Check if we've reached the end of dialogue
-  if (currentDialogueLine >= currentDialogue.lines.length) {
-    // End dialogue
-    dialogueBox.style.display = 'none';
+  try {
+    if (!currentDialogue) return;
     
-    // Check for battle trigger
-    if (currentDialogue.triggersBattle) {
-      startNpcBattle(currentDialogue);
+    currentDialogueLine++;
+    
+    // Check if we've reached the end of dialogue
+    if (currentDialogueLine >= currentDialogue.lines.length) {
+      // End dialogue
+      if (dialogueBox && dialogueBox.style) {
+        dialogueBox.style.display = 'none';
+      }
+      
+      // Check for battle trigger
+      if (currentDialogue.triggersBattle) {
+        startNpcBattle(currentDialogue);
+      }
+      
+      // Check for shop opening
+      if (currentDialogue.opensShop && typeof openShop === 'function') {
+        openShop(gameShops[currentDialogue.shopType]);
+      }
+      
+      // Check for quest giving
+      if (currentDialogue.givesQuest) {
+        giveQuest(currentDialogue.quest);
+      }
+      
+      currentDialogue = null;
+      return;
     }
     
-    // Check for shop opening
-    if (currentDialogue.opensShop) {
-      openShop(gameShops[currentDialogue.shopType]);
+    // Show next line
+    const textElement = document.getElementById('dialogue-text');
+    if (textElement) {
+      textElement.textContent = currentDialogue.lines[currentDialogueLine];
+    } else {
+      console.error("Dialogue text element not found!");
     }
     
-    // Check for quest giving
-    if (currentDialogue.givesQuest) {
-      giveQuest(currentDialogue.quest);
+    // Play dialogue sound
+    if (typeof playSwitchSound === 'function') {
+      playSwitchSound();
     }
-    
-    currentDialogue = null;
-    return;
+  } catch (error) {
+    console.error("Error advancing dialogue:", error);
   }
-  
-  // Show next line
-  document.getElementById('dialogue-text').textContent = currentDialogue.lines[currentDialogueLine];
-  
-  // Play dialogue sound
-  playSwitchSound();
 }
 
 // Trigger a battle with an NPC
