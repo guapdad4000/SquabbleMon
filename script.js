@@ -2534,10 +2534,18 @@ function startBattle() {
   // Add to battle log
   addToBattleLog(`Battle started! ${activePlayerCharacter.name} vs ${activeOpponent.name}!`);
   
-  // Start the first turn after a short delay
-  setTimeout(() => {
-    processTurn();
-  }, 1000);
+  // For story mode (overworld) battles, don't auto-process the turn, wait for player input
+  if (window.currentGameMode === 'story') {
+    console.log("Story mode battle started, waiting for player input");
+    // Don't auto-process the turn, let player choose first
+    updateBattleUI(); // Just update UI once more
+  } else {
+    // Only in Fade mode do we auto-process the first turn
+    console.log("Fade mode battle started, processing first turn automatically");
+    setTimeout(() => {
+      processTurn();
+    }, 1000);
+  }
 }
 
 function resetBattleModifiers() {

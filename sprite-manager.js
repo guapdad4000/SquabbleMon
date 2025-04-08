@@ -237,26 +237,70 @@ function updateNpcSprite(npcElement, npcData) {
 /**
  * Helper function to get sprite URL - handles different sprite formats
  * @param {string} spritePath - Path to the sprite
- * @returns {string} - Resolved sprite URL
+ * @returns {string} - Resolved sprite URL using imgur URLs
  */
 function getGameSpriteUrl(spritePath) {
-  // If it's a URL, return as is
-  if (spritePath && (spritePath.startsWith('http://') || spritePath.startsWith('https://'))) {
+  // Default sprite if none is provided
+  if (!spritePath || typeof spritePath !== 'string') {
+    console.warn("Missing or invalid sprite path in getGameSpriteUrl");
+    return 'https://i.imgur.com/YeMI4sr.png'; // Default to Fitness Bro
+  }
+  
+  // If it's already an imgur URL, return as is
+  if (spritePath.includes('imgur.com')) {
+    console.log(`Using existing imgur URL: ${spritePath}`);
     return spritePath;
   }
   
-  // Fix paths starting with ./public/ to use public/ instead
-  if (spritePath && spritePath.startsWith('./public/')) {
-    return spritePath.replace('./public/', 'public/');
-  }
-  
-  // If it starts with public/ or has file extension, use as is
-  if (spritePath && (spritePath.startsWith('public/') || spritePath.includes('.'))) {
+  // For other URLs, leave as is
+  if (spritePath.startsWith('http://') || spritePath.startsWith('https://')) {
+    console.log(`Using non-imgur URL: ${spritePath}`);
     return spritePath;
   }
   
-  // Otherwise assume it's a character selection sprite
-  return `public/sprites/${spritePath}.png`;
+  // For local paths, map to imgur URLs
+  console.log(`Converting local path to imgur URL: ${spritePath}`);
+  
+  // Map common character types to known working imgur URLs
+  if (spritePath.includes('og_ras') || spritePath.includes('rasta')) {
+    return 'https://i.imgur.com/dZWWrrs.png';
+  } else if (spritePath.includes('brick') || spritePath.includes('fitness') || spritePath.includes('workout')) {
+    return 'https://i.imgur.com/YeMI4sr.png';
+  } else if (spritePath.includes('tech') || spritePath.includes('computer')) {
+    return 'https://i.imgur.com/VVa9pm9.png';
+  } else if (spritePath.includes('cool') || spritePath.includes('vibe')) {
+    return 'https://i.imgur.com/2n71aSJ.png';
+  } else if (spritePath.includes('trap')) {
+    return 'https://i.imgur.com/Kwe1HpA.png'; // Serial YN as trap character
+  } else if (spritePath.includes('guard')) {
+    return 'https://i.imgur.com/G3xfSjU.png'; // Functional addict as guard
+  } else if (spritePath.includes('kingpin')) {
+    return 'https://i.imgur.com/GmlKf6u.png'; // Rich techbro as kingpin
+  } else if (spritePath.includes('momma') || spritePath.includes('kitchen')) {
+    return 'https://i.imgur.com/vFvQKap.png'; // Gamer YN as momma (not perfect but works)
+  } else if (spritePath.includes('opp')) {
+    return 'https://i.imgur.com/9hFTFQt.png'; // All jokes as Opp
+  } else if (spritePath.includes('back') || spritePath.includes('fwd') || 
+             spritePath.includes('right') || spritePath.includes('left')) {
+    // For player movement sprites, still use the originals as is
+    // These are movement frames and need special handling
+    
+    // Fix paths starting with ./public/ to use public/ instead
+    if (spritePath.startsWith('./public/')) {
+      return spritePath.replace('./public/', 'public/');
+    }
+    
+    // Ensure it starts with public/ if needed
+    if (!spritePath.startsWith('public/')) {
+      return 'public/' + spritePath;
+    }
+    
+    return spritePath;
+  }
+  
+  // Default fallback - use fitness bro for anything we can't map
+  console.log(`Using fallback imgur URL for sprite: ${spritePath}`);
+  return 'https://i.imgur.com/YeMI4sr.png';
 }
 
 // Export the sprite manager functions

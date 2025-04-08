@@ -22,15 +22,20 @@ const ZONE_TYPES = window.ZONE_TYPES || {
 // Make ZONE_TYPES available globally
 window.ZONE_TYPES = ZONE_TYPES;
 
-// Tile types for collision and interaction
-const TILE_TYPES = {
-  WALKABLE: 0,
-  BLOCKED: 1,
-  GRASS: 2,
-  TRAP_ZONE: 3,
-  DOOR: 4,
-  NPC: 5
-};
+// Tile types for collision and interaction - only create if not already defined
+if (typeof window.TILE_TYPES === 'undefined') {
+  window.TILE_TYPES = {
+    WALKABLE: 0,
+    BLOCKED: 1,
+    GRASS: 2,
+    TRAP_ZONE: 3,
+    DOOR: 4,
+    NPC: 5
+  };
+}
+
+// Use window.TILE_TYPES consistently
+const TILE_TYPES = window.TILE_TYPES;
 
 // Map data structure (will be larger in final implementation)
 // 0 = walkable, 1 = blocked, 2 = grass, 3 = trap zone, 4 = door, 5 = NPC
