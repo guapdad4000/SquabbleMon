@@ -613,7 +613,7 @@ const characters = [
 ];
 
 // Enemy (Opponent) data
-const opponents = [
+let opponents = [
   {
     id: 101,
     name: "Functional Addict",
@@ -3556,19 +3556,34 @@ function executeOpponentMove(move) {
 }
 
 function calculateDamage(attacker, defender, move, attackerMods, defenderMods) {
+  // Add safety checks
+  if (!attacker || !defender || !move || !attackerMods || !defenderMods) {
+    console.error("Missing required parameters in calculateDamage:", { attacker, defender, move, attackerMods, defenderMods });
+    return 0;
+  }
+  
   // For status moves or moves with 0 power, return 0 damage
   if (move.type === "status" || move.power === 0) {
     return 0;
   }
   
-  // Base damage calculation
-  let damage = Math.floor((attacker.attack * attackerMods.attack * move.power) / 110);
+  // Set defaults for missing properties with safety checks
+  const attackerAttack = attacker.attack || 50;
+  const defenderDefense = defender.defense || 50;
+  const movePower = move.power || 40;
+  const attackerModAttack = attackerMods && attackerMods.attack ? attackerMods.attack : 1;
+  const defenderModDefense = defenderMods && defenderMods.defense ? defenderMods.defense : 1;
+  
+  // Base damage calculation with safety
+  let damage = Math.floor((attackerAttack * attackerModAttack * movePower) / 110);
   
   // Apply defense reduction - increased defender impact for balance
-  damage = Math.floor(damage / (defender.defense * defenderMods.defense / 40));
+  damage = Math.floor(damage / (defenderDefense * defenderModDefense / 40));
   
-  // Apply type effectiveness with balanced multipliers
-  const effectiveness = calculateTypeEffectiveness(move.type, defender.type);
+  // Apply type effectiveness with balanced multipliers (with safety check)
+  const defenderType = defender.type || 'Normal';
+  const moveType = move.type || 'Normal';
+  const effectiveness = calculateTypeEffectiveness(moveType, defenderType);
   damage = Math.floor(damage * effectiveness);
   
   // Add random factor (85-100% of calculated damage) for variation
@@ -3576,10 +3591,18 @@ function calculateDamage(attacker, defender, move, attackerMods, defenderMods) {
   
   // Cap damage to prevent one-hit KOs (max 60% of defender's max HP)
   let maxHP = 0;
-  if (defender === activePlayerCharacter) {
-    maxHP = playerTeam[playerTeam.findIndex(c => c.id === defender.id)].hp;
-  } else {
-    maxHP = opponents[opponentIndex].hp;
+  try {
+    if (defender === activePlayerCharacter && playerTeam) {
+      const playerIndex = playerTeam.findIndex(c => c && c.id === defender.id);
+      maxHP = playerIndex >= 0 ? playerTeam[playerIndex].hp : defender.hp || 100;
+    } else if (opponents && opponentIndex >= 0 && opponentIndex < opponents.length) {
+      maxHP = opponents[opponentIndex].hp || defender.hp || 100;
+    } else {
+      maxHP = defender.hp || defender.maxHp || 100;
+    }
+  } catch (error) {
+    console.error("Error determining max HP:", error);
+    maxHP = defender.hp || defender.maxHp || 100;
   }
   const maxDamage = Math.floor(maxHP * 0.6);
   damage = Math.min(damage, maxDamage);
