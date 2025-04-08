@@ -645,8 +645,8 @@ function updatePlayerPosition() {
       // Use the player's isMoving state for animation
       const isMoving = player.isMoving || false;
       
-      // Update sprite with direction and animation state
-      window.SpriteManager.updatePlayerSprite(playerSprite, player.direction, isMoving);
+      // Update sprite with direction and animation state - pass character sprite
+      window.SpriteManager.updatePlayerSprite(playerSprite, player.direction, isMoving, player.sprite);
     } else {
       // Fallback to basic sprite handling if sprite manager isn't loaded
       console.warn("SpriteManager not available, using fallback sprite handling");

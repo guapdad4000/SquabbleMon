@@ -1581,6 +1581,15 @@ function startExploreMode() {
         return; // Exit and let the onload handler continue
       }
       
+      // Make sure the selected character has sprite information
+      if (playerTeam[0] && window.SpriteManager) {
+        // If no sprite is set, use the character image as sprite
+        if (!playerTeam[0].sprite) {
+          playerTeam[0].sprite = playerTeam[0].image;
+          console.log("Setting sprite from character image:", playerTeam[0].sprite);
+        }
+      }
+      
       // Initialize overworld with the first character in team
       console.log("Initializing overworld with character:", playerTeam[0]);
       window.OverworldSystem.initOverworld(playerTeam[0]);
@@ -1704,6 +1713,16 @@ function returnToOverworld(battleWon = true) {
           // Try to reset any state in the overworld system first
           if (window.OverworldSystem.ZONE_TYPES) {
             console.log("Using default zone: STARTER_HOOD");
+            
+            // Make sure the selected character has sprite information
+            if (playerTeam[0] && window.SpriteManager) {
+              // If no sprite is set, use the character image as sprite
+              if (!playerTeam[0].sprite) {
+                playerTeam[0].sprite = playerTeam[0].image;
+                console.log("Setting sprite from character image:", playerTeam[0].sprite);
+              }
+            }
+            
             window.OverworldSystem.initOverworld(playerTeam[0]);
           } else {
             console.error("Overworld system seems incomplete");

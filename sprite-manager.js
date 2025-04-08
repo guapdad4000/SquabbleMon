@@ -3,23 +3,24 @@
  * Handles loading and animation of player and NPC sprites
  */
 
+// Use local sprites from public folder
 // Main character sprite set (ninja character with directional animations)
 const NINJA_CHARACTER_SPRITES = {
   down: [
-    'https://i.postimg.cc/W4rWTcgH/fwd-1.png',
-    'https://i.postimg.cc/W4n2zLkY/fwd-2.png'
+    './public/sprites/fwd 1.png',
+    './public/sprites/fwd 2.png'
   ],
   up: [
-    'https://i.postimg.cc/FKn0RmS5/back-1.png',
-    'https://i.postimg.cc/qRB1bwkC/back-2.png'
+    './public/sprites/back 1.png',
+    './public/sprites/back 2.png'
   ],
   left: [
-    'https://i.postimg.cc/RhyCm3sn/left-1.png',
-    'https://i.postimg.cc/85WGcKkm/left-2.png'
+    './public/sprites/left 1.png', 
+    './public/sprites/left 2.png'
   ],
   right: [
-    'https://i.postimg.cc/1z9X0JFM/right-1.png',
-    'https://i.postimg.cc/rFhqqVsX/right-2.png'
+    './public/sprites/right 1.png',
+    './public/sprites/right 2.png'
   ]
 };
 
@@ -64,7 +65,7 @@ function preloadSprites() {
  * @param {string} direction - The direction the player is facing
  * @param {boolean} isMoving - Whether the player is currently moving
  */
-function updatePlayerSprite(playerElement, direction, isMoving = false) {
+function updatePlayerSprite(playerElement, direction, isMoving = false, characterSprite = null) {
   if (!playerElement) {
     console.error("Player element not found in updatePlayerSprite");
     return;
@@ -77,6 +78,31 @@ function updatePlayerSprite(playerElement, direction, isMoving = false) {
   
   // Update direction class
   playerElement.className = `facing-${direction}`;
+  
+  // If character has a specific sprite, use that instead of directional sprites
+  if (characterSprite) {
+    console.log("Using character-specific sprite:", characterSprite);
+    
+    // Clear any existing image
+    while (playerElement.firstChild) {
+      playerElement.removeChild(playerElement.firstChild);
+    }
+    
+    // Get the resolved sprite URL
+    const spriteUrl = getGameSpriteUrl(characterSprite);
+    console.log("Resolved sprite URL:", spriteUrl);
+    
+    // Add the character's sprite
+    const img = document.createElement('img');
+    img.src = spriteUrl;
+    img.alt = 'Player';
+    img.style.width = '100%';
+    img.style.height = '100%';
+    img.style.objectFit = 'contain';
+    playerElement.appendChild(img);
+    
+    return;
+  }
   
   // Get sprite frames for this direction
   const frames = NINJA_CHARACTER_SPRITES[direction];
@@ -93,9 +119,12 @@ function updatePlayerSprite(playerElement, direction, isMoving = false) {
           playerElement.removeChild(playerElement.firstChild);
         }
         
+        // Get resolved sprite URL
+        const spriteUrl = getGameSpriteUrl(frames[currentFrame]);
+        
         // Add the current frame
         const img = document.createElement('img');
-        img.src = frames[currentFrame];
+        img.src = spriteUrl;
         img.alt = 'Player';
         img.style.width = '100%';
         img.style.height = '100%';
@@ -122,8 +151,11 @@ function updatePlayerSprite(playerElement, direction, isMoving = false) {
       playerElement.removeChild(playerElement.firstChild);
     }
     
+    // Get resolved sprite URL
+    const spriteUrl = getGameSpriteUrl(frames[0]);
+    
     const img = document.createElement('img');
-    img.src = frames[0]; // Use first frame when standing still
+    img.src = spriteUrl; // Use first frame when standing still
     img.alt = 'Player';
     img.style.width = '100%';
     img.style.height = '100%';
@@ -143,8 +175,12 @@ function updateNpcSprite(npcElement, npcData) {
     return;
   }
   
-  // Get sprite URL for this NPC
-  const spriteUrl = npcData.sprite || NPC_SPRITES[npcData.name] || NPC_SPRITES['Default'];
+  // Get base sprite URL for this NPC
+  const baseUrl = npcData.sprite || NPC_SPRITES[npcData.name] || NPC_SPRITES['Default'];
+  
+  // Resolve the sprite URL
+  const spriteUrl = getGameSpriteUrl(baseUrl);
+  console.log(`NPC ${npcData.name} sprite URL:`, spriteUrl);
   
   // Set up NPC image
   const img = npcElement.querySelector('img');
@@ -185,11 +221,32 @@ function updateNpcSprite(npcElement, npcData) {
   }
 }
 
+/**
+ * Helper function to get sprite URL - handles different sprite formats
+ * @param {string} spritePath - Path to the sprite
+ * @returns {string} - Resolved sprite URL
+ */
+function getGameSpriteUrl(spritePath) {
+  // If it's a URL, return as is
+  if (spritePath && (spritePath.startsWith('http://') || spritePath.startsWith('https://'))) {
+    return spritePath;
+  }
+  
+  // If it starts with public or has file extension, use as is
+  if (spritePath && (spritePath.startsWith('./public/') || spritePath.includes('.'))) {
+    return spritePath;
+  }
+  
+  // Otherwise assume it's a character selection sprite
+  return `./public/sprites/${spritePath}.png`;
+}
+
 // Export the sprite manager functions
 window.SpriteManager = {
   preloadSprites,
   updatePlayerSprite,
   updateNpcSprite,
+  getGameSpriteUrl,
   NINJA_CHARACTER_SPRITES,
   NPC_SPRITES
 };
