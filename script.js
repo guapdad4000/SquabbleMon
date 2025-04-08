@@ -33,6 +33,8 @@ let audioInitialized = false; // Track if audio is initialized
 // Animation functions are now loaded from animations.js
 
 // ================ GAME DATA ================
+// Game mode tracking
+let currentGameMode = null; // Will be set to 'fade' or 'story'
 // Character data with battle info
 const characters = [
   {
@@ -1846,6 +1848,15 @@ console.log("Exposing essential functions to window object:",
   "selectGameMode, startExploreMode, openShop, closeShop, startBattle, returnToOverworld");
 
 document.addEventListener("DOMContentLoaded", function() {
+  // Reset any potentially lingering window state from previous sessions
+  console.log("DOMContentLoaded: Resetting game state");
+  
+  // Clear active opponent to prevent auto-battle starts
+  if (window.activeOpponent) {
+    console.log("Clearing previously set active opponent:", window.activeOpponent.name);
+    window.activeOpponent = null;
+  }
+  
   // Initialize audio but wait for user interaction to play
   initAudio();
   
@@ -2070,7 +2081,16 @@ function populateCharacterSelection() {
   
   console.log("Available characters:", characters);
   
-  characters.forEach(character => {
+  // Filter out any NPC characters that might have been accidentally added
+  // Only show characters with valid IDs (numerical IDs from the characters array)
+  const playerCharacters = characters.filter(character => {
+    // Ensure it's a valid player character with a numeric ID
+    return character && typeof character.id === 'number';
+  });
+  
+  console.log("Filtered player characters:", playerCharacters.length);
+  
+  playerCharacters.forEach(character => {
     console.log(`Processing character: ${character.name}`, character);
     console.log(`Character sprite path: ${character.sprite}`);
     
@@ -2191,9 +2211,24 @@ function startBattle() {
     window.activeOpponent = opponents[0];
   }
   
-  // Ensure we have a team
-  if (playerTeam.length !== 3) {
-    console.error("Player team not properly initialized, needs 3 characters");
+  // Ensure we have a team of exactly 3 characters before starting battle
+  if (!playerTeam || playerTeam.length !== 3) {
+    console.error("Player team not properly initialized, needs exactly 3 characters");
+    showFloatingLog("Please select 3 characters before starting battle");
+    
+    // Return to appropriate screen based on game mode to prevent battle from starting
+    if (currentGameMode === 'story') {
+      if (document.getElementById('overworld-container')) {
+        document.getElementById('overworld-container').style.display = 'block';
+      } else {
+        document.getElementById('selection-screen').style.display = 'flex';
+      }
+    } else {
+      // Default to selection screen in Fade mode
+      document.getElementById('selection-screen').style.display = 'flex';
+    }
+    
+    document.getElementById('battle-screen').style.display = 'none';
     return;
   }
   
