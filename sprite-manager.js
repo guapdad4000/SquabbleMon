@@ -26,10 +26,10 @@ const NINJA_CHARACTER_SPRITES = {
 
 // NPC character sprites
 const NPC_SPRITES = {
-  'OG Ras': 'https://i.imgur.com/dZWWrrs.png',
-  'Lil Brick': 'https://i.imgur.com/YeMI4sr.png',
-  'Street Runner': 'https://i.imgur.com/T0hOs6U.png',
-  'Default': 'https://i.imgur.com/m7Rup7S.png'
+  'OG Ras': './public/sprites/og_ras.png',
+  'Lil Brick': './public/sprites/lil_brick.png',
+  'Street Runner': './public/sprites/street_runner.png',
+  'Default': './public/sprites/default_npc.png'
 };
 
 // Animation timers for each character

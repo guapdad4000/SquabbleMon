@@ -28,7 +28,8 @@ const characters = [
   {
     id: 1,
     name: "Rastamon",
-    sprite: "https://i.imgur.com/OH3B6YT.png", 
+    sprite: "./public/sprites/rastamon.png", 
+    image: "./public/sprites/rastamon.png", 
     hp: 200,
     attack: 150,
     defense: 130,
@@ -47,7 +48,8 @@ const characters = [
   {
     id: 2,
     name: "Fitness Bro",
-    sprite: "https://i.imgur.com/YeMI4sr.png", 
+    sprite: "./public/sprites/fitness.png", 
+    image: "./public/sprites/fitness.png", 
     hp: 230,
     attack: 170,
     defense: 130,
@@ -936,12 +938,12 @@ const items = {
 
 // Background images for battle scenes
 const battleBackgrounds = [
-  "https://i.imgur.com/cefa76T.png", // Original background
-  "https://i.imgur.com/ivJoNSj.png", // Original background
-  "https://i.imgur.com/pEs4HJ5.jpeg", // New wallpaper
-  "https://i.imgur.com/VTeIMuN.png", // New wallpaper
-  "https://i.imgur.com/LhIaHVy.png", // New wallpaper
-  "https://i.imgur.com/OdKFwva.png"  // New wallpaper
+  "./public/backgrounds/bg1.png", // Original background
+  "./public/backgrounds/bg2.png", // Original background
+  "./public/backgrounds/bg3.png", // New wallpaper
+  "./public/backgrounds/bg4.png", // New wallpaper
+  "./public/backgrounds/bg5.png", // New wallpaper
+  "./public/backgrounds/bg6.png"  // New wallpaper
 ];
 
 // Type images from provided URLs
@@ -1041,27 +1043,50 @@ function initMobileControls() {
   // Check if the device is mobile using a more reliable way (user agent)
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
   
+  // Control container and iframe references
+  const mobileContainer = document.getElementById("mobile-controls-container");
+  const iframe = document.getElementById("mobile-controls-frame");
+  
   if (isMobile) {
-    // Force display of mobile controls for mobile devices
-    const mobileContainer = document.getElementById("mobile-controls-container");
-    mobileContainer.style.display = "block";
-    mobileContainer.style.visibility = "visible";
-    mobileContainer.style.opacity = "1";
-    mobileContainer.style.zIndex = "9999";
+    // Only show mobile controls in overworld or selection modes, hide in battle
+    const isInBattle = document.getElementById("battle-screen").style.display !== "none";
     
-    console.log("Mobile device detected, showing controls:", mobileContainer);
-    
-    // Ensure the iframe is loaded properly
-    const iframe = document.getElementById("mobile-controls-frame");
-    iframe.style.display = "block";
-    iframe.style.visibility = "visible";
-    iframe.style.height = "100%";
-    iframe.style.width = "100%";
-    
-    iframe.onload = function() {
-      console.log("Mobile controls iframe loaded successfully");
-    };
+    if (isInBattle) {
+      // Hide mobile controls during battles
+      if (mobileContainer) {
+        mobileContainer.style.display = "none";
+        mobileContainer.style.visibility = "hidden";
+      }
+      console.log("Battle mode detected, hiding d-pad controls");
+    } else {
+      // Show mobile controls for overworld and selection screens
+      if (mobileContainer) {
+        mobileContainer.style.display = "block";
+        mobileContainer.style.visibility = "visible";
+        mobileContainer.style.opacity = "1";
+        mobileContainer.style.zIndex = "9999";
+        
+        console.log("Mobile device detected, showing controls:", mobileContainer);
+        
+        // Ensure the iframe is loaded properly
+        if (iframe) {
+          iframe.style.display = "block";
+          iframe.style.visibility = "visible";
+          iframe.style.height = "100%";
+          iframe.style.width = "100%";
+          
+          iframe.onload = function() {
+            console.log("Mobile controls iframe loaded successfully");
+          };
+        }
+      }
+    }
   } else {
+    // Hide controls for desktop
+    if (mobileContainer) {
+      mobileContainer.style.display = "none";
+      mobileContainer.style.visibility = "hidden";
+    }
     console.log("Desktop device detected, hiding mobile controls");
   }
   
@@ -1628,6 +1653,14 @@ function returnToOverworld(battleWon = true) {
       gameOverScreen.style.display = 'none';
     }
     
+    // Show mobile controls for overworld navigation
+    const mobileContainer = document.getElementById("mobile-controls-container");
+    if (mobileContainer) {
+      mobileContainer.style.display = "block";
+      mobileContainer.style.visibility = "visible";
+      mobileContainer.style.opacity = "1";
+    }
+    
     // Make sure overworld container exists
     let overworldContainer = document.getElementById('overworld-container');
     if (!overworldContainer) {
@@ -2033,6 +2066,13 @@ function startBattle() {
   const overworldContainer = document.getElementById("overworld-container");
   if (overworldContainer) {
     overworldContainer.style.display = "none";
+  }
+  
+  // Hide mobile controls during battle
+  const mobileContainer = document.getElementById("mobile-controls-container");
+  if (mobileContainer) {
+    mobileContainer.style.display = "none";
+    mobileContainer.style.visibility = "hidden";
   }
   
   // Start battle music
