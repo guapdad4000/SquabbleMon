@@ -623,9 +623,15 @@ function renderNpcs() {
           tooltip.textContent = npcData.name;
           npcElement.appendChild(tooltip);
           
-          // Set NPC appearance
+          // Set NPC appearance with fixed sprite path
           const npcImg = document.createElement('img');
-          npcImg.src = npcData.sprite;
+          console.log("NPC " + npcData.name + " sprite URL:", npcData.sprite);
+          // Ensure the sprite path is correct
+          let spritePath = npcData.sprite;
+          if (spritePath.startsWith('./public/')) {
+            spritePath = spritePath.replace('./public/', 'public/');
+          }
+          npcImg.src = spritePath;
           npcImg.alt = npcData.name;
           npcImg.className = `facing-${npcData.direction}`;
           
@@ -1067,8 +1073,9 @@ function advanceDialogue() {
       }
       
       // Check for shop opening
-      if (currentDialogue.opensShop && typeof openShop === 'function') {
-        openShop(gameShops[currentDialogue.shopType]);
+      if (currentDialogue.opensShop && typeof openShop === 'function' && typeof window.gameShops !== 'undefined') {
+        // Use window.gameShops to ensure we access the global shop data that's properly initialized
+        openShop(window.gameShops[currentDialogue.shopType]);
       }
       
       // Check for quest giving

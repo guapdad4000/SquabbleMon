@@ -1999,8 +1999,25 @@ function useFirstMove() {
 // Global player inventory
 let playerInventory;
 
-// Global shops
-let gameShops = {};
+// Global shops - Define before exposing to window
+let gameShops = {
+  cornerStore: {
+    name: "Corner Store",
+    items: [
+      { id: "potion", name: "Health Potion", price: 10, description: "Restores 50 HP", effect: { type: "heal", value: 50 } },
+      { id: "revive", name: "Revive Kit", price: 30, description: "Revives a fainted character", effect: { type: "revive", value: 30 } },
+      { id: "energy_drink", name: "Energy Drink", price: 25, description: "Increases Speed", effect: { type: "statBoost", stat: "speed", value: 1.5, duration: 3 } }
+    ]
+  },
+  trapShop: {
+    name: "The Trap",
+    items: [
+      { id: "smoke_bomb", name: "Smoke Bomb", price: 15, description: "Lowers opponent accuracy", effect: { type: "debuff", stat: "accuracy", value: 0.7, duration: 3 } },
+      { id: "brass_knuckles", name: "Brass Knuckles", price: 40, description: "Raises Attack", effect: { type: "statBoost", stat: "attack", value: 1.4, duration: 3 } },
+      { id: "kevlar", name: "Kevlar Vest", price: 60, description: "Raises Defense", effect: { type: "statBoost", stat: "defense", value: 1.5, duration: 3 } }
+    ]
+  }
+};
 
 function initGame() {
   populateCharacterSelection();
