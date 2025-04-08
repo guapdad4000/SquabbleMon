@@ -2279,6 +2279,14 @@ function startBattle() {
   if (window.playerTeam && Array.isArray(window.playerTeam) && window.playerTeam.length > 0) {
     console.log("Found window.playerTeam, syncing with local playerTeam:", window.playerTeam);
     playerTeam = window.playerTeam;
+    
+    // Ensure all player sprites are standardized
+    playerTeam.forEach(character => {
+      if (character.sprite) {
+        character.sprite = standardizeSpritePath(character.sprite);
+        console.log(`Standardized player sprite: ${character.name} → ${character.sprite}`);
+      }
+    });
   } else if (playerTeam && playerTeam.length > 0) {
     // Or sync window.playerTeam with local playerTeam
     console.log("Setting window.playerTeam from local playerTeam:", playerTeam);
@@ -2293,6 +2301,12 @@ function startBattle() {
     console.log("Using opponent from overworld:", window.activeOpponent);
     // Update our active opponent in the opponent list
     opponents[0] = window.activeOpponent;
+    
+    // Ensure the opponent sprite is standardized
+    if (opponents[0].sprite) {
+      opponents[0].sprite = standardizeSpritePath(opponents[0].sprite);
+      console.log(`Standardized opponent sprite: ${opponents[0].name} → ${opponents[0].sprite}`);
+    }
   } else {
     console.warn("No active opponent set, using a default opponent");
     // Create a default opponent if none is set

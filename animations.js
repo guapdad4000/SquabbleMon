@@ -195,16 +195,19 @@ function applyBuffAnimation(buffType, user) {
       }
     }
     
-    // Apply the special effect animation based on buff type
-    applyVisualEffectGif(buffAnimationType, user);
-    
-    // Apply character animation
+    // For player, apply visual effect. For opponent, don't show buff effects as requested
     if (user === "player") {
+      // Apply the special effect animation based on buff type
+      applyVisualEffectGif(buffAnimationType, user);
+      
+      // Apply animation for player
       setPlayerAnimation("glow");
-      setTimeout(() => setPlayerAnimation("default"), 500);
+      setTimeout(() => setPlayerAnimation("default"), 400); // Reduced timing for faster battles
     } else {
+      // For opponent - only apply the character animation, not the visual effect
+      console.log(`Opponent buff applied (${buffAnimationType}) but visual effect skipped`);
       setOpponentAnimation("glow");
-      setTimeout(() => setOpponentAnimation("default"), 500);
+      setTimeout(() => setOpponentAnimation("default"), 400); // Reduced timing for faster battles
     }
   } catch (error) {
     console.error("Error in applyBuffAnimation:", error);
@@ -217,10 +220,10 @@ function applyHealAnimation(user) {
     // Apply healing animation to character (reduced animation time)
     if (user === "player") {
       setPlayerAnimation("heal");
-      setTimeout(() => setPlayerAnimation("default"), 800);
+      setTimeout(() => setPlayerAnimation("default"), 600); // Even shorter time for faster battles
     } else {
       setOpponentAnimation("heal");
-      setTimeout(() => setOpponentAnimation("default"), 800);
+      setTimeout(() => setOpponentAnimation("default"), 600); // Even shorter time for faster battles
     }
     
     // Add character-specific healing effect if applicable
@@ -246,19 +249,19 @@ function applyCriticalHitAnimation(user) {
     // Apply critical hit animation to character
     if (user === "player") {
       setPlayerAnimation("criticalHit");
-      setTimeout(() => setPlayerAnimation("default"), 500);
+      setTimeout(() => setPlayerAnimation("default"), 400); // Faster animation
     } else {
       setOpponentAnimation("criticalHit");
-      setTimeout(() => setOpponentAnimation("default"), 500);
+      setTimeout(() => setOpponentAnimation("default"), 400); // Faster animation
     }
     
     // Add a special explosion effect for critical hits
     applyVisualEffectGif("explosion", user);
     
-    // Show "hands" effect for critical hits (like throwing hands)
+    // Show "hands" effect for critical hits (like throwing hands) - faster secondary effect
     setTimeout(() => {
       applyVisualEffectGif("hands", user);
-    }, 300);
+    }, 200); // Reduced delay for faster battles
   } catch (error) {
     console.error("Error in applyCriticalHitAnimation:", error);
   }
@@ -297,10 +300,10 @@ function handleStatusEffectAnimation(effectType, target) {
     // Apply the animation to the character
     if (target === "player") {
       setPlayerAnimation(animationType);
-      setTimeout(() => setPlayerAnimation("default"), 500);
+      setTimeout(() => setPlayerAnimation("default"), 400); // Faster status animations
     } else {
       setOpponentAnimation(animationType);
-      setTimeout(() => setOpponentAnimation("default"), 500);
+      setTimeout(() => setOpponentAnimation("default"), 400); // Faster status animations
     }
     
     // Apply visual effect based on status type
@@ -532,6 +535,13 @@ function applyMoveAnimation(moveType, user) {
 // Apply a visual effect GIF based on move type
 function applyVisualEffectGif(moveType, user) {
   try {
+    // Check if this is a buff effect being applied to opponent - skip applying visual effects
+    const isBuff = moveType.toLowerCase().includes('buff');
+    if (isBuff && user === 'opponent') {
+      console.log("Skipping buff visual effect for opponent:", moveType);
+      return; // Don't apply buff effects to opponents as requested
+    }
+    
     const effectDiv = document.createElement('div');
     effectDiv.className = 'battle-effect';
     
@@ -778,12 +788,12 @@ function applyVisualEffectGif(moveType, user) {
     if (battleScreen) {
       battleScreen.appendChild(effectDiv);
       
-      // Remove after animation completes - reduced time to 1500ms for faster battles
+      // Remove after animation completes - reduced time to 1200ms for even faster battles
       setTimeout(() => {
         if (effectDiv && effectDiv.parentNode) {
           effectDiv.parentNode.removeChild(effectDiv);
         }
-      }, 1500);
+      }, 1200);
     } else {
       console.warn("Battle screen not found, cannot add visual effect");
     }
