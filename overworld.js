@@ -683,19 +683,33 @@ function initOverworld(selectedCharacter) {
       window.SpriteManager.preloadSprites();
     }
     
-    // Initialize player movement state for animations
-    player.isMoving = false;
+    // Create player object if it doesn't exist
+    if (!player) {
+      player = {
+        x: 7,
+        y: 7,
+        direction: 'down',
+        isMoving: false,
+        characterId: 0,
+        characterName: 'Player',
+        stepCount: 0,
+        inTrapZone: false,
+        hasInitialPosition: false
+      };
+    } else {
+      // Initialize player movement state for animations
+      player.isMoving = false;
+    }
     
     // Store the selected character ID/name, but don't use their sprite for movement
     if (selectedCharacter && selectedCharacter.id) {
       player.characterId = selectedCharacter.id;
       player.characterName = selectedCharacter.name;
-      // Set player.sprite to null to use the ninja sprite for overworld movement
-      player.sprite = null;
+      player.characterSprite = selectedCharacter.sprite;
       
       // Check if there's a window.playerTeam and make it accessible when battles start
       if (window.playerTeam && Array.isArray(window.playerTeam) && window.playerTeam.length > 0) {
-        console.log("Player team found in window object:", window.playerTeam);
+        console.log("Player team found in window object:", window.playerTeam.length, "characters");
         
         // Make sure selected character is in the team
         const hasSelectedCharacter = window.playerTeam.some(char => 
@@ -716,20 +730,22 @@ function initOverworld(selectedCharacter) {
       if (!window.playerTeam || window.playerTeam.length === 0) {
         console.error("Player team is still empty after initialization attempt");
         window.playerTeam = [{
-          id: "default1",
-          name: "Default Character",
-          hp: 100,
-          maxHp: 100,
-          attack: 20,
-          defense: 20,
-          speed: 20,
-          type: "normal",
-          sprite: "public/sprites/default_player.png",
+          id: "rastamon",
+          name: "Rastamon",
+          hp: 200,
+          maxHp: 200,
+          attack: 150,
+          defense: 130,
+          speed: 130,
+          type: "Plant",
+          sprite: "https://i.imgur.com/dZWWrrs.png",
           moves: [
-            { name: "Basic Attack", power: 20, type: "normal", description: "A basic attack" }
+            { name: "Blunt Force", type: "Plant", power: 50, pp: 15, maxPp: 15, description: "Plant-type whip attack with dreadlocks." },
+            { name: "Hotbox", type: "Fire", power: 30, pp: 10, maxPp: 10, effect: 'status', status: 'confusion', chance: 0.3, description: "May confuse the opponent" },
+            { name: "Irie Recharge", type: "Plant", power: 0, pp: 5, maxPp: 5, effect: 'heal', amount: 40, description: "Healing move that restores HP." }
           ]
         }];
-        console.warn("Using default character as fallback for player team");
+        console.warn("Using Rastamon character as fallback for player team");
       }
       
       // Ensure character sprites are properly standardized
@@ -742,7 +758,13 @@ function initOverworld(selectedCharacter) {
       console.warn("No character provided, using default");
       player.characterId = 0;
       player.characterName = "Unknown";
-      player.sprite = null;
+      
+      // Try to get a character from the player team
+      if (window.playerTeam && window.playerTeam.length > 0) {
+        player.characterId = window.playerTeam[0].id;
+        player.characterName = window.playerTeam[0].name;
+        player.characterSprite = window.playerTeam[0].sprite;
+      }
     }
     
     // First, hide other screens
@@ -799,6 +821,19 @@ function initOverworld(selectedCharacter) {
       player.x = 7; // Starting X position
       player.y = 7; // Starting Y position
       player.hasInitialPosition = true;
+    }
+    
+    // Safety check - ensure player position is within map bounds
+    if (currentMap && currentMap.length > 0) {
+      if (player.y >= currentMap.length) {
+        player.y = currentMap.length - 2;
+      }
+      if (player.x >= currentMap[0].length) {
+        player.x = currentMap[0].length - 2;
+      }
+      if (player.y < 1) player.y = 1;
+      if (player.x < 1) player.x = 1;
+      console.log("Player position after bounds check:", player.x, player.y);
     }
     
     // Render the map
@@ -1264,9 +1299,29 @@ function updatePlayerPosition() {
   try {
     console.log("Updating player position:", player.x, player.y, player.direction, "isMoving:", player.isMoving);
     
+    // Safety check - ensure currentMap exists and is valid
+    if (!currentMap || !Array.isArray(currentMap) || currentMap.length === 0) {
+      console.error("Current map is invalid or not initialized in updatePlayerPosition");
+      return;
+    }
+    
+    // Safety check - ensure player position is valid
+    if (player.x < 0 || player.y < 0 || player.y >= currentMap.length || player.x >= currentMap[0].length) {
+      console.error("Player position is outside map bounds in updatePlayerPosition:", player.x, player.y);
+      // Fix player position
+      player.x = Math.min(Math.max(1, player.x), currentMap[0].length - 2);
+      player.y = Math.min(Math.max(1, player.y), currentMap.length - 2);
+      console.log("Corrected player position to:", player.x, player.y);
+    }
+    
     if (!playerSprite) {
       console.error("Player sprite element not found in updatePlayerPosition");
-      return;
+      // Try to recover by getting player sprite from DOM
+      playerSprite = document.getElementById('player-sprite');
+      if (!playerSprite) {
+        console.error("Could not recover player sprite element");
+        return;
+      }
     }
     
     const tileSize = 64;
@@ -1274,19 +1329,18 @@ function updatePlayerPosition() {
     playerSprite.style.top = `${player.y * tileSize}px`;
     
     // Check if sprite manager is available
-    if (window.SpriteManager) {
+    if (window.SpriteManager && typeof window.SpriteManager.updatePlayerSprite === 'function') {
       // Use the player's isMoving state for animation
       const isMoving = player.isMoving || false;
       
-      // Update sprite with direction and animation state - but don't pass character sprite
-      // to ensure we use the ninja animation sprites instead
-      window.SpriteManager.updatePlayerSprite(playerSprite, player.direction, isMoving, null);
+      // Update sprite with direction and animation state
+      window.SpriteManager.updatePlayerSprite(playerSprite, player.direction, isMoving, player.characterSprite);
     } else {
       // Fallback to basic sprite handling if sprite manager isn't loaded
       console.warn("SpriteManager not available, using fallback sprite handling");
       
       // Update player sprite direction
-      playerSprite.className = `facing-${player.direction}`;
+      playerSprite.className = `player-sprite facing-${player.direction}`;
       
       // Set sprite image if not already set
       if (!playerSprite.querySelector('img')) {
@@ -1294,7 +1348,14 @@ function updatePlayerPosition() {
         
         if (!player.sprite) {
           console.warn("No player sprite URL defined, using default");
-          player.sprite = 'https://i.imgur.com/m7Rup7S.png'; // Default sprite
+          
+          // Use a character sprite from window.playerTeam if available
+          if (window.playerTeam && window.playerTeam.length > 0 && window.playerTeam[0].sprite) {
+            player.sprite = window.playerTeam[0].sprite;
+            console.log("Using sprite from player team:", player.sprite);
+          } else {
+            player.sprite = 'https://i.imgur.com/m7Rup7S.png'; // Default fallback sprite
+          }
         }
         
         const img = document.createElement('img');
@@ -1307,7 +1368,7 @@ function updatePlayerPosition() {
       } else {
         // Update existing sprite image if needed
         const img = playerSprite.querySelector('img');
-        if (img.src !== player.sprite) {
+        if (img.src !== player.sprite && player.sprite) {
           console.log("Updating player sprite image to:", player.sprite);
           img.src = player.sprite;
         }
@@ -1389,6 +1450,22 @@ function movePlayer(direction) {
   let newX = player.x;
   let newY = player.y;
   
+  // Safety check - ensure currentMap exists and is valid
+  if (!currentMap || !Array.isArray(currentMap) || currentMap.length === 0) {
+    console.error("Current map is invalid or not initialized");
+    return false;
+  }
+  
+  // Ensure player position is valid before trying to move
+  if (player.x < 0 || player.y < 0 || player.y >= currentMap.length || player.x >= currentMap[0].length) {
+    console.error("Player position is outside map bounds:", player.x, player.y);
+    // Reset to a safe position
+    player.x = Math.min(Math.max(1, player.x), currentMap[0].length - 2);
+    player.y = Math.min(Math.max(1, player.y), currentMap.length - 2);
+    updatePlayerPosition();
+    return false;
+  }
+  
   switch (direction) {
     case 'up':
       if (player.y > 0) newY--;
@@ -1408,8 +1485,15 @@ function movePlayer(direction) {
       break;
   }
   
+  // Safety check - ensure the new position is within bounds
+  if (newY < 0 || newY >= currentMap.length || newX < 0 || newX >= currentMap[0].length) {
+    console.error("New position would be outside map bounds:", newX, newY);
+    canMove = false;
+  }
+  
   // Check for collision with blocked tiles
   if (canMove && currentMap[newY][newX] === TILE_TYPES.BLOCKED) {
+    console.log(`Tile at (${newX},${newY}) is blocked`);
     canMove = false;
   }
   
@@ -1417,6 +1501,7 @@ function movePlayer(direction) {
   if (canMove) {
     const npcAtPosition = currentNpcs.find(npc => npc.x === newX && npc.y === newY);
     if (npcAtPosition) {
+      console.log(`NPC ${npcAtPosition.name} is blocking at (${newX},${newY})`);
       canMove = false;
     }
   }
