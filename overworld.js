@@ -705,7 +705,10 @@ function initOverworld(selectedCharacter) {
     if (selectedCharacter && selectedCharacter.id) {
       player.characterId = selectedCharacter.id;
       player.characterName = selectedCharacter.name;
+      // Only store character sprite for battle, not for overworld
       player.characterSprite = selectedCharacter.sprite;
+      // Set player.sprite to a fixed overworld sprite
+      player.sprite = 'public/sprites/player_overworld.png';
       
       // Check if there's a window.playerTeam and make it accessible when battles start
       if (window.playerTeam && Array.isArray(window.playerTeam) && window.playerTeam.length > 0) {
@@ -1333,8 +1336,10 @@ function updatePlayerPosition() {
       // Use the player's isMoving state for animation
       const isMoving = player.isMoving || false;
       
-      // Update sprite with direction and animation state
-      window.SpriteManager.updatePlayerSprite(playerSprite, player.direction, isMoving, player.characterSprite);
+      // Use a fixed player sprite for overworld, not character-specific
+      const overworldSprite = 'public/sprites/player_overworld.png';
+      console.log("Using fixed overworld sprite rather than character-specific sprite");
+      window.SpriteManager.updatePlayerSprite(playerSprite, player.direction, isMoving, null);
     } else {
       // Fallback to basic sprite handling if sprite manager isn't loaded
       console.warn("SpriteManager not available, using fallback sprite handling");

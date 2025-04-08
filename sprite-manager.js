@@ -80,9 +80,13 @@ function updatePlayerSprite(playerElement, direction, isMoving = false, characte
   // Update direction class
   playerElement.className = `facing-${direction}`;
   
-  // If character has a specific sprite, use that instead of directional sprites
-  if (characterSprite) {
-    console.log("Using character-specific sprite:", characterSprite);
+  // Determine if we're in a battle or overworld
+  const inBattle = document.getElementById('battle-screen') && 
+                  document.getElementById('battle-screen').style.display !== 'none';
+  
+  // In battle, use character-specific sprite if provided
+  if (inBattle && characterSprite) {
+    console.log("Using character-specific sprite in battle:", characterSprite);
     
     // Clear any existing image
     while (playerElement.firstChild) {
@@ -103,6 +107,14 @@ function updatePlayerSprite(playerElement, direction, isMoving = false, characte
     playerElement.appendChild(img);
     
     return;
+  }
+  
+  // In overworld, always use the standard player sprite
+  if (!inBattle) {
+    console.log("Using standard overworld player sprite rather than character-specific sprite");
+    // Use the ninja character sprite set (directional animations)
+    
+    // Continue to the rest of the function for directional sprite handling
   }
   
   // Get sprite frames for this direction
