@@ -2659,6 +2659,37 @@ function startBattle() {
   });
   
   // Debug sprite paths before creating the active player character
+  // Make sure the debug function exists
+  if (typeof window.debugSpritePaths !== 'function') {
+    console.warn("debugSpritePaths function not found, creating it now");
+    window.debugSpritePaths = function(playerTeam, opponentTeam) {
+      console.group("💥 BATTLE SPRITE DIAGNOSTICS");
+      
+      // Debug player team sprites
+      console.log("=== PLAYER TEAM SPRITES ===");
+      if (Array.isArray(playerTeam)) {
+        playerTeam.forEach((char, index) => {
+          console.log(`Player ${index} (${char.name || 'unnamed'}): ${char.sprite || 'NO SPRITE'}`);
+        });
+      } else {
+        console.warn("Player team is not an array:", playerTeam);
+      }
+      
+      // Debug opponent team sprites
+      console.log("=== OPPONENT TEAM SPRITES ===");
+      if (Array.isArray(opponentTeam)) {
+        opponentTeam.forEach((char, index) => {
+          console.log(`Opponent ${index} (${char.name || 'unnamed'}): ${char.sprite || 'NO SPRITE'}`);
+        });
+      } else {
+        console.warn("Opponent team is not an array:", opponentTeam);
+      }
+      
+      console.groupEnd();
+    };
+  }
+  
+  // Call the debug function
   window.debugSpritePaths(playerTeam, window.activeOpponentTeam || opponents);
   
   // Deep clone to avoid reference issues

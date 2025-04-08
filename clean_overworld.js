@@ -767,8 +767,11 @@ const NewOverworldSystem = (function() {
   function standardizeSpritePath(spritePath) {
     if (!spritePath) return "https://i.imgur.com/YeMI4sr.png"; // Default sprite
     
+    console.log("Standardizing sprite path:", spritePath);
+    
     // Already a URL
     if (spritePath.startsWith('http')) {
+      console.log("Path is already a URL, keeping as is");
       return spritePath;
     }
     
@@ -783,10 +786,12 @@ const NewOverworldSystem = (function() {
       }
     }
     
-    // Fallback to known sprite mappings
+    // Comprehensive fallback mappings for all character types
     const spriteMap = {
+      // Common NPC types
       'default': 'https://i.imgur.com/YeMI4sr.png',
       'rasta': 'https://i.imgur.com/dZWWrrs.png',
+      'rastamon': 'https://i.imgur.com/dZWWrrs.png',
       'fitness': 'https://i.imgur.com/YeMI4sr.png',
       'karen': 'https://i.imgur.com/KVEOAYh.png',
       'dealer': 'https://i.imgur.com/UkE9crR.png',
@@ -794,10 +799,47 @@ const NewOverworldSystem = (function() {
       'mom': 'https://i.imgur.com/fgArxwB.png',
       'hood_kid': 'https://i.imgur.com/G3xfSjU.png',
       'beat_boxer': 'https://i.imgur.com/2n71aSJ.png',
-      'hacker_kid': 'https://i.imgur.com/m7Rup7S.png'
+      'hacker_kid': 'https://i.imgur.com/m7Rup7S.png',
+      
+      // Character types from the main game
+      'Fitness Bro': 'https://i.imgur.com/YeMI4sr.png',
+      'Rastamon': 'https://i.imgur.com/dZWWrrs.png',
+      'Techy': 'https://i.imgur.com/VVa9pm9.png',
+      'Cool Vibe YN': 'https://i.imgur.com/2n71aSJ.png',
+      '9-5 Homie': 'https://i.imgur.com/UkE9crR.png',
+      'All Jokes YN': 'https://i.imgur.com/9hFTFQt.png',
+      'Closet Nerd': 'https://i.imgur.com/knA2Yxz.png',
+      'Functional Addict': 'https://i.imgur.com/G3xfSjU.png',
+      'Dysfunctional YN': 'https://i.imgur.com/yA0lUbo.png',
+      'Gamer YN': 'https://i.imgur.com/vFvQKap.png'
     };
     
-    return spriteMap[spritePath] || spriteMap['default'];
+    // Check for a direct match first
+    if (spriteMap[spritePath]) {
+      console.log(`Direct sprite mapping found for "${spritePath}":`, spriteMap[spritePath]);
+      return spriteMap[spritePath];
+    }
+    
+    // Try case-insensitive matching (convert keys to lowercase for comparison)
+    const lowercasePath = spritePath.toLowerCase();
+    for (const [key, url] of Object.entries(spriteMap)) {
+      if (key.toLowerCase() === lowercasePath) {
+        console.log(`Case-insensitive sprite match for "${spritePath}":`, url);
+        return url;
+      }
+    }
+    
+    // Check if input contains any known character type as a substring
+    for (const [key, url] of Object.entries(spriteMap)) {
+      if (lowercasePath.includes(key.toLowerCase())) {
+        console.log(`Partial sprite match for "${spritePath}" contains "${key}":`, url);
+        return url;
+      }
+    }
+    
+    // Still no match, return default with warning
+    console.warn(`No sprite mapping found for "${spritePath}", using default sprite`);
+    return spriteMap['default'];
   }
 
   /**
@@ -1273,24 +1315,49 @@ const NewOverworldSystem = (function() {
     
     // Create opponent based on NPC
     const npcLevel = npc.level || 5;
+    
+    // Create proper opponent structure for battle system
     const opponent = {
       name: npc.name,
       type: "npc",
       level: npcLevel,
-      sprite: npc.sprite
+      sprite: npc.sprite,
+      hp: 100 + (npcLevel * 10), // Scale HP with level
+      attack: 80 + (npcLevel * 5),
+      defense: 80 + (npcLevel * 5),
+      speed: 80 + (npcLevel * 5),
+      critRate: 0.1,
+      status: "normal"
     };
     
-    // Hide overworld container
-    overworldContainer.style.display = 'none';
+    // Add moves based on sprite/type
+    const moveType = npc.sprite === "fitness" ? "Fire" : 
+                     npc.sprite === "rasta" ? "Grass" : 
+                     npc.sprite === "karen" ? "Water" : 
+                     npc.sprite === "dealer" ? "Dark" : "Normal";
     
-    // Start battle with the parent window's battle function
-    if (typeof window.startBattle === 'function') {
-      window.startBattle([opponent]);
-    } else {
-      console.error("Battle function not found");
-      alert("Can't start battle - battle function not found.");
-      // Return to overworld
-      overworldContainer.style.display = 'block';
+    // Add some basic moves
+    opponent.moves = [
+      { name: "Street Punch", power: 40, accuracy: 95, type: "Normal", description: "A basic street fighting move." },
+      { name: "Hood Kick", power: 50, accuracy: 85, type: moveType, description: `A ${moveType.toLowerCase()}-infused kick.` },
+      { name: "Mean Mug", power: 0, accuracy: 100, type: "Normal", description: "Glares at opponent, lowering their defense." },
+      { name: "Trash Talk", power: 30, accuracy: 90, type: "Dark", description: "Verbal attack that may cause confusion." }
+    ];
+    
+    // Show battle confirmation dialog
+    if (confirm(`${npc.name} wants to fade! Ready?`)) {
+      // Hide overworld container
+      overworldContainer.style.display = 'none';
+      
+      // Start battle with the parent window's battle function
+      if (typeof window.startBattle === 'function') {
+        window.startBattle([opponent]);
+      } else {
+        console.error("Battle function not found");
+        alert("Can't start battle - battle function not found.");
+        // Return to overworld
+        overworldContainer.style.display = 'block';
+      }
     }
   }
 
@@ -1341,24 +1408,51 @@ const NewOverworldSystem = (function() {
     const opponentTypes = ['rasta', 'fitness', 'karen'];
     const randomType = opponentTypes[Math.floor(Math.random() * opponentTypes.length)];
     
+    // Create proper opponent structure for battle system
+    const typeName = randomType.charAt(0).toUpperCase() + randomType.slice(1);
     const opponent = {
-      name: `Wild ${randomType.charAt(0).toUpperCase() + randomType.slice(1)}`,
+      name: `Wild ${typeName}`,
       type: randomType,
       level: opponentLevel,
-      sprite: randomType
+      sprite: randomType,
+      hp: 100 + (opponentLevel * 10), // Scale HP with level
+      attack: 80 + (opponentLevel * 5),
+      defense: 80 + (opponentLevel * 5),
+      speed: 80 + (opponentLevel * 5),
+      critRate: 0.1,
+      status: "normal"
     };
     
-    // Hide overworld container
-    overworldContainer.style.display = 'none';
+    // Add moves based on type
+    const moveType = randomType === "fitness" ? "Fire" : 
+                     randomType === "rasta" ? "Grass" : 
+                     randomType === "karen" ? "Water" : "Normal";
     
-    // Start battle with the parent window's battle function
-    if (typeof window.startBattle === 'function') {
-      window.startBattle([opponent]);
-    } else {
-      console.error("Battle function not found");
-      alert("Can't start battle - battle function not found.");
-      // Return to overworld
-      overworldContainer.style.display = 'block';
+    // Add some basic moves
+    opponent.moves = [
+      { name: "Street Punch", power: 40, accuracy: 95, type: "Normal", description: "A basic street fighting move." },
+      { name: "Hood Kick", power: 50, accuracy: 85, type: moveType, description: `A ${moveType.toLowerCase()}-infused kick.` },
+      { name: "Mean Mug", power: 0, accuracy: 100, type: "Normal", description: "Glares at opponent, lowering their defense." },
+      { name: "Trash Talk", power: 30, accuracy: 90, type: "Dark", description: "Verbal attack that may cause confusion." }
+    ];
+    
+    // Show a random encounter notification
+    const encounterMsg = `A wild ${typeName} appears! Get ready to fade!`;
+    
+    // Show battle confirmation dialog
+    if (confirm(encounterMsg)) {
+      // Hide overworld container
+      overworldContainer.style.display = 'none';
+      
+      // Start battle with the parent window's battle function
+      if (typeof window.startBattle === 'function') {
+        window.startBattle([opponent]);
+      } else {
+        console.error("Battle function not found");
+        alert("Can't start battle - battle function not found.");
+        // Return to overworld
+        overworldContainer.style.display = 'block';
+      }
     }
   }
 
