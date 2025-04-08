@@ -2,38 +2,38 @@
 const ANIMATION_STATE = {
   player: {
     default: "float 3s ease-in-out infinite 0.5px", // Slower and smaller float
-    attack: "attack 0.6s ease-in-out", // Faster attack animation
-    shake: "player-shake-animation 0.6s ease-in-out",
-    hit: "hit-flash 0.3s ease-in-out", // Flash animation when hit
-    lunge: "lunge 0.3s ease-in-out", // Lunging forward animation
-    glow: "glow 0.5s ease-in-out", // Glowing effect for status moves
-    criticalHit: "criticalHit 0.6s ease-out", // Critical hit animation
-    heal: "heal 1s ease-in-out", // Healing animation
-    statusBounce: "statusBounce 0.5s ease-out", // Status effect application
-    effectStreet: "effect-street 0.8s ease-in-out", // Street-style effect
-    effectHiphop: "effect-hiphop 0.8s ease-in-out", // Hip-hop style effect
-    effectUrban: "effect-urban 0.8s ease-in-out", // Urban style effect 
-    effectTech: "effect-tech 0.8s ease-in-out", // Tech style effect
-    effectStatus: "effect-status 0.8s ease-in-out", // Status effect style
-    imposterHit: "imposterHit 1s forwards", // Imposter hit effect
+    attack: "attack 0.4s ease-in-out", // Faster attack animation
+    shake: "player-shake-animation 0.5s ease-in-out",
+    hit: "hit-flash 0.2s ease-in-out", // Flash animation when hit
+    lunge: "lunge 0.25s ease-in-out", // Lunging forward animation
+    glow: "glow 0.4s ease-in-out", // Glowing effect for status moves
+    criticalHit: "criticalHit 0.5s ease-out", // Critical hit animation
+    heal: "heal 0.8s ease-in-out", // Healing animation
+    statusBounce: "statusBounce 0.4s ease-out", // Status effect application
+    effectStreet: "effect-street 0.6s ease-in-out", // Street-style effect
+    effectHiphop: "effect-hiphop 0.6s ease-in-out", // Hip-hop style effect
+    effectUrban: "effect-urban 0.6s ease-in-out", // Urban style effect 
+    effectTech: "effect-tech 0.6s ease-in-out", // Tech style effect
+    effectStatus: "effect-status 0.6s ease-in-out", // Status effect style
+    imposterHit: "imposterHit 0.8s forwards", // Imposter hit effect
     current: "float 3s ease-in-out infinite 0.5px"
   },
   opponent: {
     default: "float 3s ease-in-out infinite 0.5px", // Will be flipped with transform
-    attack: "attack 0.6s ease-in-out", // Faster attack animation
-    shake: "shake-animation 0.6s ease-in-out",
-    hit: "hit-flash 0.3s ease-in-out", // Flash animation when hit
-    lungeReverse: "lungeReverse 0.3s ease-in-out", // Reversed lunging animation
-    glow: "glow 0.5s ease-in-out", // Glowing effect for status moves
-    criticalHit: "criticalHit 0.6s ease-out", // Critical hit animation
-    heal: "heal 1s ease-in-out", // Healing animation
-    statusBounce: "statusBounce 0.5s ease-out", // Status effect application
-    effectStreet: "effect-street 0.8s ease-in-out", // Street-style effect
-    effectHiphop: "effect-hiphop 0.8s ease-in-out", // Hip-hop style effect
-    effectUrban: "effect-urban 0.8s ease-in-out", // Urban style effect
-    effectTech: "effect-tech 0.8s ease-in-out", // Tech style effect
-    effectStatus: "effect-status 0.8s ease-in-out", // Status effect style
-    imposterHit: "imposterHit 1s forwards", // Imposter hit effect
+    attack: "attack 0.4s ease-in-out", // Faster attack animation
+    shake: "shake-animation 0.5s ease-in-out",
+    hit: "hit-flash 0.2s ease-in-out", // Flash animation when hit
+    lungeReverse: "lungeReverse 0.25s ease-in-out", // Reversed lunging animation
+    glow: "glow 0.4s ease-in-out", // Glowing effect for status moves
+    criticalHit: "criticalHit 0.5s ease-out", // Critical hit animation
+    heal: "heal 0.8s ease-in-out", // Healing animation
+    statusBounce: "statusBounce 0.4s ease-out", // Status effect application
+    effectStreet: "effect-street 0.6s ease-in-out", // Street-style effect
+    effectHiphop: "effect-hiphop 0.6s ease-in-out", // Hip-hop style effect
+    effectUrban: "effect-urban 0.6s ease-in-out", // Urban style effect
+    effectTech: "effect-tech 0.6s ease-in-out", // Tech style effect
+    effectStatus: "effect-status 0.6s ease-in-out", // Status effect style
+    imposterHit: "imposterHit 0.8s forwards", // Imposter hit effect
     current: "float 3s ease-in-out infinite 0.5px"
   }
 };
@@ -214,13 +214,13 @@ function applyBuffAnimation(buffType, user) {
 // Function to apply healing animation
 function applyHealAnimation(user) {
   try {
-    // Apply healing animation to character
+    // Apply healing animation to character (reduced animation time)
     if (user === "player") {
       setPlayerAnimation("heal");
-      setTimeout(() => setPlayerAnimation("default"), 1000);
+      setTimeout(() => setPlayerAnimation("default"), 800);
     } else {
       setOpponentAnimation("heal");
-      setTimeout(() => setOpponentAnimation("default"), 1000);
+      setTimeout(() => setOpponentAnimation("default"), 800);
     }
     
     // Add character-specific healing effect if applicable
@@ -468,6 +468,7 @@ function applyMoveAnimation(moveType, user) {
         animationStyle = "attackHiphop";
         break;
       case "Tech":
+      case "Electric": // Added Electric for consistency
         animationStyle = "attackTech";
         break;
       case "Clout":
@@ -486,13 +487,13 @@ function applyMoveAnimation(moveType, user) {
       // Reset animation after a delay
       setTimeout(() => {
         setPlayerAnimation("default");
-      }, 500);
+      }, 400); // Reduced time for faster gameplay
     } else {
       setOpponentAnimation(animationStyle);
       // Reset animation after a delay
       setTimeout(() => {
         setOpponentAnimation("default");
-      }, 500);
+      }, 400); // Reduced time for faster gameplay
     }
     
     // Apply character-specific effect if it exists, otherwise use regular move type
@@ -512,11 +513,16 @@ function applyMoveAnimation(moveType, user) {
           } else if (characterType === "vibe") {
             applyVisualEffectGif("light", user); // Vibe characters get light effects
           }
-        }, 300);
+        }, 250); // Reduced time for faster battles
       }
     } else {
-      // Also apply the visual effect GIF based on move type
-      applyVisualEffectGif(moveType.toLowerCase(), user);
+      // Check for electric or tech move types to ensure proper handling
+      if (moveType.toLowerCase() === "electric") {
+        applyVisualEffectGif("electric", user);
+      } else {
+        // Otherwise apply the standard visual effect based on move type
+        applyVisualEffectGif(moveType.toLowerCase(), user);
+      }
     }
   } catch (error) {
     console.error("Error in applyMoveAnimation:", error);
@@ -531,50 +537,63 @@ function applyVisualEffectGif(moveType, user) {
     
     // Choose animation based on move type - updated with new effect URLs
     let animationUrl = '';
-    switch (moveType.toLowerCase()) {
-      // Type-based effects
-      case 'fire':
-        animationUrl = 'https://i.gifer.com/PVYG.gif'; // fire effect
-        break;
-      case 'water':
-        animationUrl = 'https://i.gifer.com/YlW9.gif'; // updated water attack
-        break;
-      case 'electric':
-        animationUrl = 'https://i.gifer.com/4bXG.gif'; // updated electricity attack
-        break;
-      case 'plant':
-      case 'grass':
-      case 'leaf':
-        animationUrl = 'https://i.imgur.com/Tgv0o7b.gif'; // updated leaf/plant attack
-        break;
-      case 'dark':
-        animationUrl = 'https://i.gifer.com/WXfF.gif'; // updated dark attack
-        break;
-      case 'light':
-        animationUrl = 'https://i.gifer.com/OkV7.gif'; // light effect
-        break;
-      case 'wind':
-        animationUrl = 'https://i.gifer.com/3klP.gif'; // wind effect
-        break;
-      case 'money':
-        animationUrl = 'https://i.gifer.com/xt.gif'; // money attacks
-        break;
-      case 'blast':
-      case 'explosion':
-        animationUrl = 'https://i.gifer.com/XZ5N.gif'; // blast attacks
-        break;
-      case 'sleep':
-        animationUrl = 'https://i.imgur.com/hFYQ7oe.gif'; // sleep effect
-        break;
-      case 'burn':
-        animationUrl = 'https://i.gifer.com/y8.gif'; // burn effect
-        break;
-      case 'lightning':
-        animationUrl = 'https://i.imgur.com/OtnoqvS.gif'; // lightning attack
-        break;
-      case 'heal':
-        animationUrl = 'https://i.imgur.com/684Bb2r.gif'; // heal effect
-        break;
+    
+    // Determine if this is an electric-type move
+    const isElectricEffect = moveType.toLowerCase() === 'electric' || 
+                           moveType.toLowerCase() === 'lightning';
+    
+    // Special case: when user is "opponent" and it's an electric move, use a different animation
+    if (isElectricEffect && user === 'opponent') {
+      animationUrl = 'https://i.gifer.com/Wgkb.gif'; // Enhanced electric effect for opponents
+    } else {
+      switch (moveType.toLowerCase()) {
+        // Type-based effects
+        case 'fire':
+          animationUrl = 'https://i.gifer.com/PVYG.gif'; // fire effect
+          break;
+        case 'water':
+          animationUrl = 'https://i.gifer.com/YlW9.gif'; // updated water attack
+          break;
+        case 'electric':
+          animationUrl = 'https://i.gifer.com/4bXG.gif'; // updated electricity attack for player
+          break;
+        case 'plant':
+        case 'grass':
+        case 'leaf':
+          animationUrl = 'https://i.imgur.com/Tgv0o7b.gif'; // updated leaf/plant attack
+          break;
+        case 'dark':
+          animationUrl = 'https://i.gifer.com/WXfF.gif'; // updated dark attack
+          break;
+        case 'light':
+          animationUrl = 'https://i.gifer.com/OkV7.gif'; // light effect
+          break;
+        case 'wind':
+          animationUrl = 'https://i.gifer.com/3klP.gif'; // wind effect
+          break;
+        case 'money':
+          animationUrl = 'https://i.gifer.com/xt.gif'; // money attacks
+          break;
+        case 'blast':
+        case 'explosion':
+          animationUrl = 'https://i.gifer.com/XZ5N.gif'; // blast attacks
+          break;
+        case 'sleep':
+          animationUrl = 'https://i.imgur.com/hFYQ7oe.gif'; // sleep effect
+          break;
+        case 'burn':
+          animationUrl = 'https://i.gifer.com/y8.gif'; // burn effect
+          break;
+        case 'bleed':
+        case 'bleeding':
+          animationUrl = 'https://i.gifer.com/WwaS.gif'; // bleeding effect
+          break;
+        case 'lightning':
+          animationUrl = 'https://i.imgur.com/OtnoqvS.gif'; // lightning/electric attack
+          break;
+        case 'heal':
+          animationUrl = 'https://i.imgur.com/684Bb2r.gif'; // heal effect
+          break;
       
       // Character-specific effects
       case 'scammer':
@@ -679,6 +698,7 @@ function applyVisualEffectGif(moveType, user) {
         break;
       default:
         animationUrl = 'https://i.gifer.com/Yecx.gif'; // small explosion for default
+      }
     }
     
     effectDiv.style.backgroundImage = `url(${animationUrl})`;
@@ -725,16 +745,31 @@ function applyVisualEffectGif(moveType, user) {
         
         // Calculate percentages for positioning
         const leftPos = ((opponentRect.left + opponentRect.width/2 - battleRect.left) / battleRect.width * 100) - 7.5; // Center horizontally
-        const topPos = ((opponentRect.bottom - battleRect.top) / battleRect.height * 100) - 25; // Align bottoms with offset
+        
+        // Check for specific move types that need better positioning
+        const isElectricEffect = moveType.toLowerCase() === 'electric' || 
+                               moveType.toLowerCase() === 'lightning';
+                               
+        // Adjust vertical positioning for electric effects - they need to be better centered
+        let topPos = 0;
+        if (isElectricEffect) {
+          // Center the effect on the sprite rather than aligning bottoms
+          topPos = ((opponentRect.top + opponentRect.height/2 - battleRect.top) / battleRect.height * 100) - 15;
+          effectDiv.style.width = '200px'; // Make electric effects larger
+          effectDiv.style.height = '200px';
+        } else {
+          // Standard positioning for other effects
+          topPos = ((opponentRect.bottom - battleRect.top) / battleRect.height * 100) - 25; // Align bottoms with offset
+        }
         
         effectDiv.style.left = `${leftPos}%`;
         effectDiv.style.top = `${topPos}%`;
         effectDiv.style.transform = 'translateX(-50%)'; // Center the effect
-        console.log("Positioned effect behind opponent at:", leftPos, topPos);
+        console.log(`Positioned effect (${moveType}) behind opponent at:`, leftPos, topPos);
       } else {
         // Fallback if sprite not found
         effectDiv.style.left = '20%';
-        effectDiv.style.top = '60%';
+        effectDiv.style.top = '40%';
       }
     }
     
@@ -743,12 +778,12 @@ function applyVisualEffectGif(moveType, user) {
     if (battleScreen) {
       battleScreen.appendChild(effectDiv);
       
-      // Remove after animation completes
+      // Remove after animation completes - reduced time to 1500ms for faster battles
       setTimeout(() => {
         if (effectDiv && effectDiv.parentNode) {
           effectDiv.parentNode.removeChild(effectDiv);
         }
-      }, 2000);
+      }, 1500);
     } else {
       console.warn("Battle screen not found, cannot add visual effect");
     }
