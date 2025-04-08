@@ -132,10 +132,13 @@ const STARTER_HOOD_NPCS = [
 ];
 
 // Door connections to other zones or buildings
+// Define doors for the starter hood - make sure to be consistent in leadsTo values
 const STARTER_HOOD_DOORS = [
+  // Using simple string values for these original doors for compatibility
   { x: 4, y: 11, leadsTo: 'cornerStore', entranceX: 7, entranceY: 5 },
   { x: 6, y: 14, leadsTo: 'theTrap', entranceX: 7, entranceY: 1 },
-  // New doors to our expanded zones
+  
+  // New doors to our expanded zones - make them extra visible
   { x: 2, y: 14, leadsTo: ZONE_TYPES.TRAP_HOUSE, entranceX: 7, entranceY: 1 },
   { x: 12, y: 14, leadsTo: ZONE_TYPES.MOMMA_HOUSE, entranceX: 7, entranceY: 1 },
   { x: 10, y: 1, leadsTo: ZONE_TYPES.OPPS_HOOD, entranceX: 7, entranceY: 13 },

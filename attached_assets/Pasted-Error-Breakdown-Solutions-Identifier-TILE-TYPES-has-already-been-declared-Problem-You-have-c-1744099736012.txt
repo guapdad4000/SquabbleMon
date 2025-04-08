@@ -1,0 +1,45 @@
+Error Breakdown & Solutions:
+Identifier 'TILE_TYPES' has already been declared
+Problem: You have const TILE_TYPES = {...} defined in both your main game script (the second one you provided with all the character data) AND in the overworld.js script. When both scripts load, the browser sees you trying to declare the same constant twice, which isn't allowed.
+Solution: Decide where TILE_TYPES should live. Since it seems most relevant to the overworld map logic, the best place is usually inside overworld.js only.
+Action: Find and delete the const TILE_TYPES = {...} definition from your main game script (the one with character data, audio, etc.). Keep the definition only inside the OverworldSystem code block I provided previously.
+Cannot read properties of undefined (reading 'CORNER_STORE') at overworld.js:162:45
+Problem: This error happens inside overworld.js. It's trying to read the property CORNER_STORE from an object, but that object is undefined at that moment. The object it's trying to read from is almost certainly window.ZONE_TYPES. Line 162 in the provided code is likely part of the STARTER_HOOD_DOORS definition:
+// Likely around here (line number might shift slightly based on exact code)
+const STARTER_HOOD_DOORS = [
+  { x: 4, y: 11, leadsTo: window.ZONE_TYPES.CORNER_STORE, entranceX: 7, entranceY: 13 },
+  // ... other doors using window.ZONE_TYPES ...
+];
+Use code with caution.
+JavaScript
+Cause: This confirms the script load order issue. overworld.js is executing before the main script that defines window.ZONE_TYPES. When the STARTER_HOOD_DOORS constant is declared near the top of overworld.js, window.ZONE_TYPES hasn't been created yet, so it's undefined.
+Solution:
+Action 1 (HTML Load Order): Crucially, in your HTML file, make sure the <script> tag for your main game script (containing window.ZONE_TYPES, characters, audio functions, etc.) comes BEFORE the <script> tag for overworld.js.
+<!-- Example HTML structure -->
+<body>
+    <!-- Game UI elements -->
+
+    <!-- Load MAIN game script FIRST -->
+    <script src="your-main-game-script.js"></script>
+
+    <!-- Load OverworldSystem script SECOND -->
+    <script src="overworld.js"></script>
+
+    <!-- Initialize game (maybe in another script or inline) -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Initialize things that depend on both scripts here
+            // e.g., show mode selection or initGame()
+        });
+    </script>
+</body>
+Use code with caution.
+Html
+Action 2 (Code Safety): While fixing the load order is key, we can make the overworld code slightly more robust by accessing window.ZONE_TYPES a bit later or checking if it exists. However, for constants like STARTER_HOOD_DOORS, they need ZONE_TYPES when declared. So, fixing the load order is the primary solution.
+Overworld system not found or not initialized properly / Still can't access overworld system after reload
+Problem: Your main game logic (likely the parts trying to call startExploreMode or returnToOverworld) cannot find window.OverworldSystem or its functions.
+Cause: This is a direct consequence of errors #1 and #2. Because overworld.js encountered errors during its execution (either the duplicate TILE_TYPES or the undefined ZONE_TYPES), it likely stopped running before it reached the end of the script where window.OverworldSystem = {...} is assigned. Therefore, the OverworldSystem object was never successfully created and attached to the window.
+Solution: Fixing errors #1 and #2 will automatically fix this one. Once overworld.js can run without errors from start to finish, it will successfully create the window.OverworldSystem object.
+Summary of Actions:
+DELETE the const TILE_TYPES = {...} definition from your main game script file. Keep it only in overworld.js.
+CHECK & FIX the <script> tag order in your HTML file. Ensure the main game script (with window.ZONE_TYPES, characters, etc.) loads BEFORE overworld.js.
