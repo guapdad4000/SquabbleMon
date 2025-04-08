@@ -176,12 +176,48 @@ function initOverworld(selectedCharacter) {
       // Check if there's a window.playerTeam and make it accessible when battles start
       if (window.playerTeam && Array.isArray(window.playerTeam) && window.playerTeam.length > 0) {
         console.log("Player team found in window object:", window.playerTeam);
+        
+        // Make sure selected character is in the team
+        const hasSelectedCharacter = window.playerTeam.some(char => 
+          char.id === selectedCharacter.id || char.name === selectedCharacter.name);
+          
+        if (!hasSelectedCharacter && selectedCharacter.id) {
+          console.log("Adding selected character to player team");
+          window.playerTeam.push(selectedCharacter);
+        }
       } else {
         // If no playerTeam is set globally, create one from the selected character
         // This is a fallback in case the team selection didn't initialize the team properly
         console.warn("No player team found, creating from selected character");
         window.playerTeam = [selectedCharacter];
       }
+      
+      // Make sure the global player team is properly initialized with at least one character
+      if (!window.playerTeam || window.playerTeam.length === 0) {
+        console.error("Player team is still empty after initialization attempt");
+        window.playerTeam = [{
+          id: "default1",
+          name: "Default Character",
+          hp: 100,
+          maxHp: 100,
+          attack: 20,
+          defense: 20,
+          speed: 20,
+          type: "normal",
+          sprite: "public/sprites/default_player.png",
+          moves: [
+            { name: "Basic Attack", power: 20, type: "normal", description: "A basic attack" }
+          ]
+        }];
+        console.warn("Using default character as fallback for player team");
+      }
+      
+      // Ensure character sprites are properly standardized
+      window.playerTeam.forEach(character => {
+        if (character.sprite && typeof window.standardizeSpritePath === 'function') {
+          character.sprite = window.standardizeSpritePath(character.sprite);
+        }
+      });
     } else {
       console.warn("No character provided, using default");
       player.characterId = 0;
@@ -271,29 +307,48 @@ function initOverworld(selectedCharacter) {
 
 // Create UI elements for overworld
 function createOverworldUI() {
+  console.log("Creating or updating overworld UI...");
+  
   // Check if overworld container already exists
   let existingContainer = document.getElementById('overworld-container');
   
   if (!existingContainer) {
+    console.log("No existing overworld container, creating new one");
     // Create container if it doesn't exist
     overworldContainer = document.createElement('div');
     overworldContainer.id = 'overworld-container';
+    overworldContainer.style.width = '100%';
+    overworldContainer.style.height = '100%';
+    overworldContainer.style.position = 'relative';
+    overworldContainer.style.display = 'flex';
+    overworldContainer.style.flexDirection = 'column';
+    overworldContainer.style.backgroundColor = '#222';
     document.body.appendChild(overworldContainer);
   } else {
+    console.log("Using existing overworld container");
     // Use existing container
     overworldContainer = existingContainer;
     // Clear it for fresh content
     overworldContainer.innerHTML = '';
   }
   
-  // Create map container
+  // Create map container with explicit styles
   mapContainer = document.createElement('div');
   mapContainer.id = 'map-container';
+  mapContainer.style.position = 'relative';
+  mapContainer.style.width = '100%';
+  mapContainer.style.height = '100%';
+  mapContainer.style.overflow = 'hidden';
   overworldContainer.appendChild(mapContainer);
   
-  // Create player sprite
+  // Create player sprite with explicit styles
   playerSprite = document.createElement('div');
   playerSprite.id = 'player-sprite';
+  playerSprite.style.position = 'absolute';
+  playerSprite.style.width = '64px';
+  playerSprite.style.height = '64px';
+  playerSprite.style.zIndex = '10';
+  playerSprite.style.transition = 'left 0.2s, top 0.2s';
   mapContainer.appendChild(playerSprite);
   
   // Create dialogue box (initially hidden)
@@ -1119,6 +1174,9 @@ function startNpcBattle(npc) {
   try {
     console.log("Starting NPC battle with NPC:", npc.name);
     
+    // Set game mode to story mode for team validation requirements
+    window.currentGameMode = 'story';
+    
     // Make sure we have a player team for the battle
     if (!window.playerTeam || !Array.isArray(window.playerTeam) || window.playerTeam.length === 0) {
       console.warn("No player team found, creating fallback team from player character");
@@ -1140,15 +1198,27 @@ function startNpcBattle(npc) {
       }];
     } else {
       console.log("Using existing player team for battle:", window.playerTeam);
-      
-      // Make sure all player team members have standardized sprite paths
-      if (typeof window.standardizeSpritePath === 'function') {
-        window.playerTeam.forEach(character => {
-          if (character.sprite) {
-            character.sprite = window.standardizeSpritePath(character.sprite);
-          }
-        });
-      }
+    }
+    
+    // Make sure we have at least one character with standardized sprites
+    if (window.playerTeam.length === 0) {
+      console.error("Player team is empty after initialization, battle cannot proceed");
+      return;
+    }
+    
+    // Make sure all player team members have standardized sprite paths
+    if (typeof window.standardizeSpritePath === 'function') {
+      window.playerTeam.forEach(character => {
+        if (character.sprite) {
+          character.sprite = window.standardizeSpritePath(character.sprite);
+        }
+      });
+    }
+    
+    // Make sure local playerTeam variable is synced with window.playerTeam if it exists
+    if (typeof playerTeam !== 'undefined') {
+      console.log("Syncing local playerTeam variable with window.playerTeam");
+      playerTeam = window.playerTeam.slice(); // Create a copy to avoid reference issues
     }
     
     // Instead of using the NPC as a character in the battle, we'll create a random team 
@@ -1329,6 +1399,9 @@ function triggerRandomEncounter() {
   try {
     console.log("Triggering random encounter in zone:", currentZone);
     
+    // Set game mode to story mode for team validation requirements
+    window.currentGameMode = 'story';
+
     // Make sure we have a player team for the battle
     if (!window.playerTeam || !Array.isArray(window.playerTeam) || window.playerTeam.length === 0) {
       console.warn("No player team found for random encounter, creating fallback team from player character");
@@ -1350,15 +1423,27 @@ function triggerRandomEncounter() {
       }];
     } else {
       console.log("Using existing player team for random encounter battle:", window.playerTeam);
+    }
+    
+    // Make sure we have at least one character
+    if (window.playerTeam.length === 0) {
+      console.error("Player team is empty after initialization, battle cannot proceed");
+      return;
+    }
       
-      // Make sure all player team members have standardized sprite paths
-      if (typeof window.standardizeSpritePath === 'function') {
-        window.playerTeam.forEach(character => {
-          if (character.sprite) {
-            character.sprite = window.standardizeSpritePath(character.sprite);
-          }
-        });
-      }
+    // Make sure all player team members have standardized sprite paths
+    if (typeof window.standardizeSpritePath === 'function') {
+      window.playerTeam.forEach(character => {
+        if (character.sprite) {
+          character.sprite = window.standardizeSpritePath(character.sprite);
+        }
+      });
+    }
+    
+    // Make sure local playerTeam variable is synced with window.playerTeam if it exists
+    if (typeof playerTeam !== 'undefined') {
+      console.log("Syncing local playerTeam variable with window.playerTeam");
+      playerTeam = window.playerTeam.slice(); // Create a copy to avoid reference issues
     }
     
     // Create a team of random opponents based on the current zone

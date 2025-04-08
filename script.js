@@ -2299,12 +2299,12 @@ function startBattle() {
     window.activeOpponent = opponents[0];
   }
   
-  // Ensure we have a team of exactly 3 characters before starting battle
-  if (!playerTeam || playerTeam.length !== 3) {
-    console.error("Player team not properly initialized, needs exactly 3 characters");
-    showFloatingLog("Please select 3 characters before starting battle");
+  // Check for valid player team
+  if (!playerTeam || playerTeam.length === 0) {
+    console.error("Player team not initialized at all, cannot start battle");
+    showFloatingLog("No characters available for battle");
     
-    // Return to appropriate screen based on game mode to prevent battle from starting
+    // Return to appropriate screen
     if (currentGameMode === 'story') {
       if (document.getElementById('overworld-container')) {
         document.getElementById('overworld-container').style.display = 'block';
@@ -2312,7 +2312,33 @@ function startBattle() {
         document.getElementById('selection-screen').style.display = 'flex';
       }
     } else {
-      // Default to selection screen in Fade mode
+      document.getElementById('selection-screen').style.display = 'flex';
+    }
+    
+    document.getElementById('battle-screen').style.display = 'none';
+    return;
+  }
+  
+  // If we're in fade mode (direct battle), enforce exactly 3 characters
+  // In story mode, we'll allow battles with fewer characters for better gameplay flow
+  if (currentGameMode !== 'story' && playerTeam.length !== 3) {
+    console.error("Player team not properly initialized, needs exactly 3 characters in Fade Mode");
+    showFloatingLog("Please select 3 characters before starting battle");
+    
+    // Default to selection screen in Fade mode
+    document.getElementById('selection-screen').style.display = 'flex';
+    document.getElementById('battle-screen').style.display = 'none';
+    return;
+  }
+  
+  // For story mode, make sure we have at least one character
+  if (currentGameMode === 'story' && playerTeam.length < 1) {
+    console.error("Need at least one character for battle in Story Mode");
+    showFloatingLog("You need at least one character for battle!");
+    
+    if (document.getElementById('overworld-container')) {
+      document.getElementById('overworld-container').style.display = 'block';
+    } else {
       document.getElementById('selection-screen').style.display = 'flex';
     }
     
