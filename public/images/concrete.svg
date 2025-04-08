@@ -1,0 +1,10 @@
+<svg width="64" height="64" xmlns="http://www.w3.org/2000/svg">
+  <rect width="64" height="64" fill="#aaaaaa" />
+  <pattern id="concrete" width="16" height="16" patternUnits="userSpaceOnUse">
+    <rect width="16" height="16" fill="#aaaaaa" />
+    <rect x="0" y="0" width="8" height="8" fill="#999999" />
+    <rect x="8" y="8" width="8" height="8" fill="#999999" />
+  </pattern>
+  <rect width="64" height="64" fill="url(#concrete)" />
+  <rect width="64" height="64" fill="#aaaaaa" fill-opacity="0.3" />
+</svg>

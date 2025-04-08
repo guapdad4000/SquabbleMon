@@ -135,8 +135,8 @@ function updatePlayerSprite(playerElement, direction, isMoving = false, characte
       // Initial frame
       animateSprite();
       
-      // Start animation timer
-      const timerId = setInterval(animateSprite, 250); // 4 frames per second
+      // Start animation timer (more frequent updates for smoother animation)
+      const timerId = setInterval(animateSprite, 170); // ~6 frames per second
       animationTimers.set('player', timerId);
     }
   } else {

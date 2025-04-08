@@ -379,6 +379,15 @@ function renderMap() {
         tile.dataset.y = y;
         tile.dataset.type = tileType;
         
+        // Tile image mapping
+        const tileImages = {
+          [TILE_TYPES.WALKABLE]: './public/images/concrete.png',
+          [TILE_TYPES.BLOCKED]: './public/images/wall.png',
+          [TILE_TYPES.GRASS]: './public/images/grass.png',
+          [TILE_TYPES.TRAP_ZONE]: './public/images/trap.png',
+          [TILE_TYPES.DOOR]: './public/images/door.png'
+        };
+        
         // Apply tile-specific styles
         switch (tileType) {
           case TILE_TYPES.WALKABLE:
@@ -411,6 +420,14 @@ function renderMap() {
             console.warn(`Unknown tile type: ${tileType} at position (${x},${y})`);
             tile.classList.add('walkable');
             tileCounts.unknown++;
+        }
+        
+        // Apply background image if available
+        const tileImage = tileImages[tileType];
+        if (tileImage) {
+          tile.style.backgroundImage = `url('${tileImage}')`;
+          tile.style.backgroundSize = 'cover';
+          tile.style.backgroundPosition = 'center';
         }
         
         // Add to fragment instead of directly to DOM
@@ -790,11 +807,12 @@ function movePlayer(direction) {
   // Update player position on screen
   updatePlayerPosition();
   
-  // After a short delay, set player as not moving (stop animation)
+  // After a slightly longer delay, set player as not moving (stop animation)
+  // This gives the animation more time to complete for smoother movement
   setTimeout(() => {
     player.isMoving = false;
     updatePlayerPosition();
-  }, 250); // Animation lasts for 250ms
+  }, 350); // Animation lasts longer to match CSS transition
   
   return true;
 }
