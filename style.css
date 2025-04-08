@@ -520,8 +520,10 @@ body {
   image-rendering: pixelated;
   animation: float 2s ease-in-out infinite;
   transition: filter 0.3s ease, transform 0.3s ease;
-  display: block; /* Force display block */
+  display: block !important; /* Force display block */
   margin: 0 auto; /* Center the sprite */
+  opacity: 1 !important; /* Force opacity */
+  visibility: visible !important; /* Force visibility */
 }
 
 /* Make player sprites larger (200% of opponent) */
@@ -643,9 +645,11 @@ body {
   width: 100%;
   height: 220px; /* Match the player sprite height */
   text-align: center;
-  display: flex;
+  display: flex !important;
   justify-content: center;
   align-items: center;
+  visibility: visible !important;
+  opacity: 1 !important;
 } /* Sprite container LAST */
 
 #opponent-area .opponent-sprite-container {
@@ -654,9 +658,11 @@ body {
   width: 100%;
   height: 140px; /* Match the opponent sprite height */
   text-align: center;
-  display: flex;
+  display: flex !important;
   justify-content: center;
   align-items: center;
+  visibility: visible !important;
+  opacity: 1 !important;
 } /* Sprite container FIRST */
 #opponent-area .yn-name {
   order: 2;
