@@ -2058,15 +2058,29 @@ function initGame() {
 }
 
 function populateCharacterSelection() {
+  console.log("Populating character selection...");
   const characterList = document.getElementById("character-list");
   characterList.innerHTML = "";
   
+  console.log("Available characters:", characters);
+  
   characters.forEach(character => {
+    console.log(`Processing character: ${character.name}`, character);
+    console.log(`Character sprite path: ${character.sprite}`);
+    
     const card = document.createElement("div");
     card.className = "character-card";
     card.dataset.id = character.id;
+    
+    // Fix sprite path if needed
+    let spritePath = character.sprite;
+    if (spritePath && spritePath.startsWith('./public/')) {
+      spritePath = spritePath.replace('./public/', 'public/');
+      console.log(`Fixed sprite path for ${character.name}: ${spritePath}`);
+    }
+    
     card.innerHTML = `
-      <img src="${character.sprite}" alt="${character.name}">
+      <img src="${spritePath}" alt="${character.name}" onerror="console.error('Failed to load sprite: ${spritePath}')">
       <p>${character.name}</p>
     `;
     
@@ -2088,6 +2102,8 @@ function populateCharacterSelection() {
     
     card.addEventListener("click", () => selectCharacter(character));
     characterList.appendChild(card);
+    
+    console.log(`Added character card for ${character.name}`);
   });
 }
 
@@ -2122,6 +2138,7 @@ function selectCharacter(character) {
 }
 
 function updateTeamSlots() {
+  console.log("Updating team slots with playerTeam:", playerTeam);
   const slots = document.querySelectorAll(".team-slot");
   
   // Clear all slots
@@ -2132,7 +2149,22 @@ function updateTeamSlots() {
   // Fill slots with selected characters
   playerTeam.forEach((character, index) => {
     if (index < slots.length) {
-      slots[index].innerHTML = `<img src="${character.sprite}" alt="${character.name}">`;
+      console.log(`Setting slot ${index} with ${character.name}, sprite: ${character.sprite}`);
+      
+      // Fix sprite path if needed
+      let spritePath = character.sprite;
+      if (spritePath && spritePath.startsWith('./public/')) {
+        spritePath = spritePath.replace('./public/', 'public/');
+        console.log(`Fixed sprite path for team slot ${index}: ${spritePath}`);
+      }
+      
+      slots[index].innerHTML = `
+        <img 
+          src="${spritePath}" 
+          alt="${character.name}" 
+          onerror="console.error('Failed to load team sprite: ${spritePath}')"
+          onload="console.log('Team slot ${index} sprite loaded successfully: ${spritePath}')"
+        >`;
     }
   });
 }
@@ -2308,6 +2340,12 @@ function determineFirstTurn() {
 }
 
 function updateBattleUI() {
+  console.log("Starting updateBattleUI...");
+  
+  // Debug active character data
+  console.log("Active player character:", activePlayerCharacter);
+  console.log("Active opponent:", activeOpponent);
+  
   // Update player character display
   document.getElementById("player-name").textContent = activePlayerCharacter.name;
   
@@ -2324,12 +2362,21 @@ function updateBattleUI() {
   
   // Make sure sprite paths are correct and exist
   const playerSprite = document.getElementById("player-sprite");
+  console.log("Player sprite element:", playerSprite);
+  
   // Fix sprite path - remove './public/' prefix if it exists
   let playerSpritePath = activePlayerCharacter.sprite;
   if (playerSpritePath && playerSpritePath.startsWith('./public/')) {
     playerSpritePath = playerSpritePath.replace('./public/', 'public/');
   }
+  
+  console.log("Updated player sprite path:", playerSpritePath);
   playerSprite.src = playerSpritePath;
+  
+  playerSprite.onload = function() {
+    console.log("Player sprite loaded successfully:", playerSpritePath);
+  };
+  
   playerSprite.onerror = function() {
     console.error("Failed to load player sprite:", playerSpritePath);
     // Try to fix common path errors
@@ -2348,12 +2395,21 @@ function updateBattleUI() {
   
   // Handle opponent sprite with error handling
   const opponentSprite = document.getElementById("opponent-sprite");
+  console.log("Opponent sprite element:", opponentSprite);
+  
   // Fix sprite path - remove './public/' prefix if it exists
   let opponentSpritePath = activeOpponent.sprite;
   if (opponentSpritePath && opponentSpritePath.startsWith('./public/')) {
     opponentSpritePath = opponentSpritePath.replace('./public/', 'public/');
   }
+  
+  console.log("Updated opponent sprite path:", opponentSpritePath);
   opponentSprite.src = opponentSpritePath;
+  
+  opponentSprite.onload = function() {
+    console.log("Opponent sprite loaded successfully:", opponentSpritePath);
+  };
+  
   opponentSprite.onerror = function() {
     console.error("Failed to load opponent sprite:", opponentSpritePath);
     // Try to fix common path errors
