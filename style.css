@@ -496,10 +496,10 @@ body {
 /* Sprites */
 #player-sprite,
 #opponent-sprite {
-  max-width: 160px; /* More appropriate size */
-  max-height: 160px; /* More appropriate size */
-  width: 120px; /* Reduced to better size */
-  height: 140px; /* Reduced to better size */
+  max-width: 180px; /* Increased max-width */
+  max-height: 180px; /* Increased max-height */
+  width: 160px; /* Increased width for better visibility */
+  height: 160px; /* Increased height to match width */
   object-fit: contain;
   z-index: 10;
   position: relative;
@@ -513,7 +513,22 @@ body {
   display: block; /* Force display block */
   margin: 0 auto; /* Center the sprite */
 }
+
+/* Special handling for local file sprites */
+#player-sprite[src^="public/"],
+#opponent-sprite[src^="public/"] {
+  width: 180px; /* Even larger for local sprites */
+  height: 180px; /* Match width */
+  object-fit: contain;
+  transform-origin: bottom center;
+}
 #opponent-sprite {
+  transform: scaleX(-1);
+  animation: floatFlipped 2s ease-in-out infinite;
+}
+
+/* Ensure the flipped animation works with public sprites too */
+#opponent-sprite[src^="public/"] {
   transform: scaleX(-1);
   animation: floatFlipped 2s ease-in-out infinite;
 }
@@ -601,7 +616,7 @@ body {
   order: 4;
   margin-top: 5px;
   width: 100%;
-  height: 160px; /* Decreased to match smaller sprite size */
+  height: 180px; /* Increased to match larger sprite size */
   text-align: center;
   display: flex;
   justify-content: center;
@@ -612,7 +627,7 @@ body {
   order: 1;
   margin-bottom: 5px;
   width: 100%;
-  height: 160px; /* Decreased to match smaller sprite size */
+  height: 180px; /* Increased to match larger sprite size */
   text-align: center;
   display: flex;
   justify-content: center;
