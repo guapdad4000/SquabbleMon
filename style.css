@@ -496,10 +496,10 @@ body {
 /* Sprites */
 #player-sprite,
 #opponent-sprite {
-  max-width: 240px; /* Increased from 160px */
-  max-height: 240px; /* Increased from 160px */
-  width: 180px; /* Increased from 120px */
-  height: 200px; /* Increased from 140px */
+  max-width: 160px; /* More appropriate size */
+  max-height: 160px; /* More appropriate size */
+  width: 120px; /* Reduced to better size */
+  height: 140px; /* Reduced to better size */
   object-fit: contain;
   z-index: 10;
   position: relative;
@@ -601,7 +601,7 @@ body {
   order: 4;
   margin-top: 5px;
   width: 100%;
-  height: 240px; /* Increased from 160px to match sprite sizing */
+  height: 160px; /* Decreased to match smaller sprite size */
   text-align: center;
   display: flex;
   justify-content: center;
@@ -612,7 +612,7 @@ body {
   order: 1;
   margin-bottom: 5px;
   width: 100%;
-  height: 240px; /* Increased from 160px to match sprite sizing */
+  height: 160px; /* Decreased to match smaller sprite size */
   text-align: center;
   display: flex;
   justify-content: center;
