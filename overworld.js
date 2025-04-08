@@ -188,10 +188,20 @@ function initOverworld(selectedCharacter) {
 
 // Create UI elements for overworld
 function createOverworldUI() {
-  // Create container
-  overworldContainer = document.createElement('div');
-  overworldContainer.id = 'overworld-container';
-  document.body.appendChild(overworldContainer);
+  // Check if overworld container already exists
+  let existingContainer = document.getElementById('overworld-container');
+  
+  if (!existingContainer) {
+    // Create container if it doesn't exist
+    overworldContainer = document.createElement('div');
+    overworldContainer.id = 'overworld-container';
+    document.body.appendChild(overworldContainer);
+  } else {
+    // Use existing container
+    overworldContainer = existingContainer;
+    // Clear it for fresh content
+    overworldContainer.innerHTML = '';
+  }
   
   // Create map container
   mapContainer = document.createElement('div');
@@ -220,6 +230,9 @@ function createOverworldUI() {
   
   // Set up dialogue controls
   document.getElementById('dialogue-next').addEventListener('click', advanceDialogue);
+  
+  // Render the map initially
+  renderMap();
 }
 
 // Render the map grid based on current zone
@@ -906,9 +919,29 @@ function completeQuest(quest) {
 
 // Return to overworld after battle
 function returnToOverworld(battleWon = true) {
+  console.log("Overworld: Returning from battle, victory:", battleWon);
+  
   // If battle was a random encounter and player won, increment quest counters
   if (battleWon && player.inTrapZone) {
     updateQuestProgress('defeat', 'trapZone');
+  }
+  
+  // Check if container exists, if not, create it
+  if (!document.getElementById('overworld-container')) {
+    console.log("Overworld container not found, creating it");
+    createOverworldUI();
+  }
+  
+  // Hide battle screen
+  const battleScreen = document.getElementById('battle-screen');
+  if (battleScreen) {
+    battleScreen.style.display = 'none';
+  }
+  
+  // Hide game over screen
+  const gameOverScreen = document.getElementById('game-over');
+  if (gameOverScreen) {
+    gameOverScreen.style.display = 'none';
   }
   
   // Show overworld
@@ -916,6 +949,9 @@ function returnToOverworld(battleWon = true) {
   
   // Update player display
   updatePlayerPosition();
+  
+  // Reset the map and NPCs
+  renderMap();
   
   // Switch music back to overworld
   playOverworldMusic();

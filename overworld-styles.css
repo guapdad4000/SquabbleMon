@@ -1,0 +1,156 @@
+/* Overworld styling */
+#overworld-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #222;
+  overflow: hidden;
+}
+
+#map-container {
+  position: relative;
+  width: 480px;
+  height: 480px;
+  border: 4px solid #444;
+  background-color: #333;
+  overflow: hidden;
+  image-rendering: pixelated;
+}
+
+.map-tile {
+  position: absolute;
+  z-index: 1;
+}
+
+.walkable {
+  background-color: #555;
+}
+
+.blocked {
+  background-color: #222;
+  background-image: repeating-linear-gradient(45deg, #333, #333 10px, #222 10px, #222 20px);
+}
+
+.grass {
+  background-color: #3c3;
+  background-image: 
+    linear-gradient(45deg, #3a3 25%, transparent 25%, transparent 75%, #3a3 75%),
+    linear-gradient(45deg, #3a3 25%, transparent 25%, transparent 75%, #3a3 75%);
+  background-size: 10px 10px;
+  background-position: 0 0, 5px 5px;
+}
+
+.trap-zone {
+  background-color: #a33;
+  background-image: 
+    linear-gradient(45deg, #922 25%, transparent 25%, transparent 75%, #922 75%),
+    linear-gradient(45deg, #922 25%, transparent 25%, transparent 75%, #922 75%);
+  background-size: 10px 10px;
+  background-position: 0 0, 5px 5px;
+}
+
+.door {
+  background-color: #a55;
+  background-image: linear-gradient(0deg, #833 25%, #a55 25%, #a55 75%, #833 75%);
+}
+
+#player-sprite {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  z-index: 10;
+  transition: left 0.2s, top 0.2s;
+}
+
+.npc-sprite {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  z-index: 5;
+}
+
+#player-sprite img, .npc-sprite img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.facing-up {}
+.facing-down {}
+.facing-left {
+  transform: scaleX(-1);
+}
+.facing-right {}
+
+#dialogue-box {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  background-color: rgba(0, 0, 0, 0.8);
+  border: 2px solid #f25a5a;
+  border-radius: 5px;
+  padding: 15px;
+  color: white;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 14px;
+  z-index: 100;
+}
+
+.dialogue-content {
+  margin-bottom: 10px;
+}
+
+#dialogue-name {
+  color: #f25a5a;
+  margin-bottom: 5px;
+}
+
+.dialogue-controls {
+  display: flex;
+  justify-content: flex-end;
+}
+
+#dialogue-next {
+  background-color: #f25a5a;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* Overworld quest notification */
+.quest-notification {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  border: 2px solid #f25a5a;
+  border-radius: 5px;
+  padding: 10px;
+  color: white;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 12px;
+  z-index: 100;
+  text-align: center;
+  animation: fadeIn 0.5s, fadeOut 0.5s 2.5s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}

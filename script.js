@@ -1493,9 +1493,17 @@ function startExploreMode() {
   // Hide selection screen
   document.getElementById('selection-screen').style.display = 'none';
   
+  // Make sure overworld container exists
+  let overworldContainer = document.getElementById('overworld-container');
+  if (!overworldContainer) {
+    console.log("Creating overworld container");
+    overworldContainer = document.createElement('div');
+    overworldContainer.id = 'overworld-container';
+    document.body.appendChild(overworldContainer);
+  }
+  
   // Show overworld container
-  const overworldContainer = document.getElementById('overworld-container');
-  overworldContainer.style.display = 'block';
+  overworldContainer.style.display = 'flex';
   
   // Initialize overworld with the first character in team
   if (window.OverworldSystem && typeof window.OverworldSystem.initOverworld === 'function') {
@@ -1519,8 +1527,23 @@ function returnToOverworld(battleWon = true) {
   // Hide battle screen
   document.getElementById('battle-screen').style.display = 'none';
   
+  // Hide game over screen if it's visible
+  const gameOverScreen = document.getElementById('game-over');
+  if (gameOverScreen) {
+    gameOverScreen.style.display = 'none';
+  }
+  
+  // Make sure overworld container exists
+  let overworldContainer = document.getElementById('overworld-container');
+  if (!overworldContainer) {
+    console.log("Creating overworld container");
+    overworldContainer = document.createElement('div');
+    overworldContainer.id = 'overworld-container';
+    document.body.appendChild(overworldContainer);
+  }
+  
   // Show overworld container
-  document.getElementById('overworld-container').style.display = 'block';
+  overworldContainer.style.display = 'flex';
   
   // Re-initialize overworld with updated state after battle
   if (window.OverworldSystem && typeof window.OverworldSystem.returnToOverworld === 'function') {
