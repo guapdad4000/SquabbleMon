@@ -673,6 +673,9 @@ let currentMap = STARTER_HOOD_MAP;
 let currentNpcs = STARTER_HOOD_NPCS;
 let currentDoors = STARTER_HOOD_DOORS;
 
+// Add movement cooldown to prevent super fast movement
+let lastMoveTime = 0;
+
 // UI elements (will be initialized when overworld loads)
 let overworldContainer;
 let mapContainer;
@@ -1464,6 +1467,13 @@ function movePlayer(direction) {
   let canMove = true;
   let newX = player.x;
   let newY = player.y;
+  
+  // Add a movement cooldown to prevent too fast movement
+  const now = Date.now();
+  if (now - lastMoveTime < 150) { // 150ms cooldown between movements
+    return; // Skip this movement request if too soon
+  }
+  lastMoveTime = now;
   
   // Safety check - ensure currentMap exists and is valid
   if (!currentMap || !Array.isArray(currentMap) || currentMap.length === 0) {

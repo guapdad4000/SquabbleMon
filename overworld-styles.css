@@ -153,7 +153,7 @@
   width: 64px;
   height: 64px;
   z-index: 10;
-  transition: left 0.3s ease-in-out, top 0.3s ease-in-out;
+  transition: left 0.4s ease-in-out, top 0.4s ease-in-out; /* Slowed down movement */
   display: block;
   overflow: visible;
   background-size: contain;
