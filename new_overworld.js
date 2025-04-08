@@ -3,6 +3,9 @@
  * A clean, simple implementation of the exploration mode
  */
 
+// Use a module pattern to avoid global variable conflicts
+const NewOverworldModule = (function() {
+  
 // Main game state
 let player = {
   x: 5,
@@ -853,8 +856,8 @@ function returnToOverworld(battleWon = true) {
   }
 }
 
-// Export the overworld system
-window.NewOverworldSystem = {
+// Export the public API
+return {
   // Core functions
   initOverworld,
   returnToOverworld,
@@ -869,3 +872,8 @@ window.NewOverworldSystem = {
   // Get current zone
   getCurrentZone: function() { return currentZone; }
 };
+
+})(); // End of module IIFE
+
+// Attach the module to the window object
+window.NewOverworldSystem = NewOverworldModule;

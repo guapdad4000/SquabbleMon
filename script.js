@@ -1583,24 +1583,24 @@ function startExploreMode() {
     const gameOver = document.getElementById('game-over');
     if (gameOver) gameOver.style.display = 'none';
     
-    // Make sure the new_overworld.js script is loaded
+    // Make sure the clean_overworld.js script is loaded
     if (!window.NewOverworldSystem) {
-      console.log("Loading new overworld script...");
+      console.log("Loading clean overworld script...");
       
-      // Load the new_overworld.js script if it's not already loaded
-      if (!document.querySelector('script[src*="new_overworld.js"]')) {
+      // Load the clean_overworld.js script if it's not already loaded
+      if (!document.querySelector('script[src*="clean_overworld.js"]')) {
         const overworldScript = document.createElement('script');
-        overworldScript.src = 'new_overworld.js';
+        overworldScript.src = 'clean_overworld.js';
         document.head.appendChild(overworldScript);
         
         // Wait for script to load before continuing
         overworldScript.onload = function() {
-          console.log("New overworld script loaded successfully");
+          console.log("Clean overworld script loaded successfully");
           initializeOverworld();
         };
         
         overworldScript.onerror = function() {
-          console.error("Failed to load new overworld script");
+          console.error("Failed to load clean overworld script");
           alert("Failed to load overworld. Please try again.");
           if (selectionScreen) selectionScreen.style.display = 'flex';
         };
@@ -1690,24 +1690,24 @@ function returnToOverworld(battleWon = true) {
       mobileContainer.style.opacity = "1";
     }
     
-    // Make sure the new_overworld.js script is loaded
+    // Make sure the clean_overworld.js script is loaded
     if (!window.NewOverworldSystem) {
-      console.log("Loading new overworld script...");
+      console.log("Loading clean overworld script...");
       
-      // Load the new_overworld.js script if it's not already loaded
-      if (!document.querySelector('script[src*="new_overworld.js"]')) {
+      // Load the clean_overworld.js script if it's not already loaded
+      if (!document.querySelector('script[src*="clean_overworld.js"]')) {
         const overworldScript = document.createElement('script');
-        overworldScript.src = 'new_overworld.js';
+        overworldScript.src = 'clean_overworld.js';
         document.head.appendChild(overworldScript);
         
         // Wait for script to load before continuing
         overworldScript.onload = function() {
-          console.log("New overworld script loaded, continuing to overworld");
+          console.log("Clean overworld script loaded, continuing to overworld");
           continueReturnToOverworld();
         };
         
         overworldScript.onerror = function() {
-          console.error("Failed to load new overworld script");
+          console.error("Failed to load clean overworld script");
           alert("Failed to return to overworld. Please try again.");
         };
         
