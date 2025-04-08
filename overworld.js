@@ -1559,6 +1559,11 @@ function setupOverworldControls() {
 }
 
 // Handle keyboard input
+// Player movement cooldown to prevent moving too quickly 
+// This is a shared variable for both keyboard and mobile controls
+let lastMoveTime = 0;
+const MOVE_COOLDOWN = 150; // milliseconds
+
 function handleKeyPress(e) {
   try {
     // Check if dialogueBox exists and is initialized
@@ -1567,32 +1572,50 @@ function handleKeyPress(e) {
       return;
     }
     
+    // Current time for cooldown check
+    const now = Date.now();
+    
     // Only process movement if dialogue is not active
     if (dialogueBox.style.display === 'none') {
       switch (e.key) {
         case 'ArrowUp':
         case 'w':
         case 'W':
-          movePlayer('up');
+          if (now - lastMoveTime >= MOVE_COOLDOWN) {
+            movePlayer('up');
+            lastMoveTime = now;
+          }
           break;
         case 'ArrowDown':
         case 's':
         case 'S':
-          movePlayer('down');
+          if (now - lastMoveTime >= MOVE_COOLDOWN) {
+            movePlayer('down');
+            lastMoveTime = now;
+          }
           break;
         case 'ArrowLeft':
         case 'a':
         case 'A':
-          movePlayer('left');
+          if (now - lastMoveTime >= MOVE_COOLDOWN) {
+            movePlayer('left');
+            lastMoveTime = now;
+          }
           break;
         case 'ArrowRight':
         case 'd':
         case 'D':
-          movePlayer('right');
+          if (now - lastMoveTime >= MOVE_COOLDOWN) {
+            movePlayer('right');
+            lastMoveTime = now;
+          }
           break;
         case ' ':
         case 'Enter':
+        case 'e':
+        case 'E':
           // Interact with NPC or object in front of player
+          console.log("Interaction key pressed, attempting to interact with facing tile");
           interactWithFacingTile();
           break;
       }
@@ -1627,22 +1650,38 @@ function setupMobileOverworldControls() {
           if (event.data && event.data.type === 'keypress') {
             console.log("Processing keypress in overworld:", event.data.key);
             
+            // Current time for cooldown check
+            const now = Date.now();
+            
             // Map the keypress to the appropriate action
             switch (event.data.key) {
               case 'ArrowUp':
-                movePlayer('up');
+                if (now - lastMoveTime >= MOVE_COOLDOWN) {
+                  movePlayer('up');
+                  lastMoveTime = now;
+                }
                 break;
               case 'ArrowDown':
-                movePlayer('down');
+                if (now - lastMoveTime >= MOVE_COOLDOWN) {
+                  movePlayer('down');
+                  lastMoveTime = now;
+                }
                 break;
               case 'ArrowLeft':
-                movePlayer('left');
+                if (now - lastMoveTime >= MOVE_COOLDOWN) {
+                  movePlayer('left');
+                  lastMoveTime = now;
+                }
                 break;
               case 'ArrowRight':
-                movePlayer('right');
+                if (now - lastMoveTime >= MOVE_COOLDOWN) {
+                  movePlayer('right');
+                  lastMoveTime = now;
+                }
                 break;
               case 'Enter':
               case 'A':
+                console.log("A button pressed, attempting to interact with facing tile");
                 interactWithFacingTile();
                 break;
               case 'Escape':

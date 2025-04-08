@@ -27,14 +27,15 @@
       justify-content: space-between;
       align-items: center;
       padding: 10px;
-      height: 130px; /* Match the D-pad height */
+      height: 110px; /* Reduced height */
       width: 100%;
       box-sizing: border-box;
-      background-color: #1a1a1a;
-      border-top: 1px solid #333;
+      background-color: rgba(26, 26, 26, 0.85);
+      border-top: 2px solid #444;
       position: absolute;
       bottom: 0;
       left: 0;
+      z-index: 1000; /* Ensure it's above game elements */
     }
     
     /* D-pad styles - smaller, more minimal */
@@ -153,14 +154,16 @@
     /* Instructions */
     .mobile-instructions {
       position: absolute;
-      bottom: 5px;
+      bottom: 90px; /* Positioned above the controls */
       left: 0;
       right: 0;
       text-align: center;
       font-size: 10px;
-      color: #aaa;
-      background-color: rgba(0, 0, 0, 0.5);
+      color: #fff;
+      background-color: rgba(0, 0, 0, 0.7);
       padding: 4px;
+      border-top: 1px solid #444;
+      border-bottom: 1px solid #444;
     }
   </style>
 </head>
