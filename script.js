@@ -1123,27 +1123,49 @@ function initMobileControls() {
     
     if (keyData.type === 'keypress') {
       console.log("Processing keypress:", keyData.key);
-      // Handle virtual D-pad and button controls from iframe
-      switch (keyData.key) {
-        case 'ArrowUp':
-          handleDpadUp();
-          break;
-        case 'ArrowDown':
-          handleDpadDown();
-          break;
-        case 'ArrowLeft':
-          handleDpadLeft();
-          break;
-        case 'ArrowRight':
-          handleDpadRight();
-          break;
-        case 'A':
-        case 'Enter': // Added Enter key for mobile controls
-          handleAButton();
-          break;
-        case 'B':
-          handleBButton();
-          break;
+      
+      // Check if we're in the overworld (we need to forward these keys to the overworld controls)
+      const overworldContainer = document.getElementById('overworld-container');
+      const isInOverworld = overworldContainer && overworldContainer.style.display !== 'none';
+      
+      if (isInOverworld) {
+        console.log("In overworld, forwarding keypress to overworld system");
+        // Forward the event to the overworld
+        if (window.OverworldSystem && typeof window.OverworldSystem.handleKeyPress === 'function') {
+          // Create a synthetic event
+          const syntheticEvent = { key: keyData.key, preventDefault: () => {} };
+          window.OverworldSystem.handleKeyPress(syntheticEvent);
+        } else {
+          console.log("Overworld system not found, using regular message forwarding");
+          // Regular message forwarding (backup method)
+          window.postMessage(keyData, window.location.origin);
+        }
+      } else {
+        // Handle controls in non-overworld screens
+        switch (keyData.key) {
+          case 'ArrowUp':
+            handleDpadUp();
+            break;
+          case 'ArrowDown':
+            handleDpadDown();
+            break;
+          case 'ArrowLeft':
+            handleDpadLeft();
+            break;
+          case 'ArrowRight':
+            handleDpadRight();
+            break;
+          case 'A':
+          case 'Enter': // Handle both A and Enter keys
+            console.log("A/Enter button pressed in mobile controls");
+            handleAButton();
+            break;
+          case 'B':
+          case 'Escape': // Handle both B and Escape keys
+            console.log("B/Escape button pressed in mobile controls");
+            handleBButton();
+            break;
+        }
       }
     }
   });

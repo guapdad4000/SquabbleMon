@@ -2929,6 +2929,9 @@ window.OverworldSystem = {
   ZONE_TYPES,
   TILE_TYPES,
   
+  // Controls
+  handleKeyPress, // Expose key handler for direct calls from script.js
+  
   // Helper functions
   createRandomOpponent,
   triggerRandomEncounter,

@@ -222,12 +222,34 @@
     document.getElementById('dpad-right').addEventListener('mousedown', () => sendKeyPress('ArrowRight'));
     document.getElementById('dpad-right').addEventListener('touchstart', () => sendKeyPress('ArrowRight'));
 
-    // Action buttons - A button sends Enter key for NPC interactions
-    document.getElementById('a-button').addEventListener('mousedown', () => sendKeyPress('Enter'));
-    document.getElementById('a-button').addEventListener('touchstart', () => sendKeyPress('Enter'));
+    // Action buttons - Make sure buttons are consistent with both script.js and overworld.js expectations
+    document.getElementById('a-button').addEventListener('mousedown', () => {
+      console.log("A button pressed");
+      sendKeyPress('A'); // Send A for game menu navigation 
+      // Also send Enter as a backup for systems expecting Enter key
+      setTimeout(() => sendKeyPress('Enter'), 10);
+    });
+    document.getElementById('a-button').addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      console.log("A button touch");
+      sendKeyPress('A');
+      // Also send Enter as a backup for systems expecting Enter key
+      setTimeout(() => sendKeyPress('Enter'), 10);
+    });
 
-    document.getElementById('b-button').addEventListener('mousedown', () => sendKeyPress('B'));
-    document.getElementById('b-button').addEventListener('touchstart', () => sendKeyPress('B'));
+    document.getElementById('b-button').addEventListener('mousedown', () => {
+      console.log("B button pressed");
+      sendKeyPress('B');
+      // Also send Escape as a backup for systems expecting Escape key
+      setTimeout(() => sendKeyPress('Escape'), 10);
+    });
+    document.getElementById('b-button').addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      console.log("B button touch");
+      sendKeyPress('B');
+      // Also send Escape as a backup for systems expecting Escape key
+      setTimeout(() => sendKeyPress('Escape'), 10);
+    });
 
     // Prevent default touch behaviors
     document.querySelectorAll('.dpad-button, .action-button').forEach(button => {
