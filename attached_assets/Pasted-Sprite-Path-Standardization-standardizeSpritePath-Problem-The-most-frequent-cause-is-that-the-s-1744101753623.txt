@@ -1,0 +1,79 @@
+Sprite Path Standardization (standardizeSpritePath):
+Problem: The most frequent cause is that the sprite paths for either the playerTeam or the generated opponentTeam are not being correctly processed by window.standardizeSpritePath specifically in the overworld context before the battle starts. Fade mode might be initializing teams differently where standardization is happening correctly.
+Verification:
+In OverworldSystem.js -> startNpcBattle and triggerRandomEncounter: Add these logs just before the window.startBattle(); line:
+console.log("Overworld -> startBattle: Player Team Sprites:", window.playerTeam.map(p => p.sprite));
+console.log("Overworld -> startBattle: Opponent Team Sprites:", window.activeOpponentTeam.map(o => o.sprite));
+console.log("Overworld -> startBattle: Active Opponent Sprite:", window.activeOpponent.sprite);
+window.startBattle();
+Use code with caution.
+JavaScript
+In your main game script -> startBattle function: Add these logs at the very beginning of the function:
+function startBattle() {
+    // Ensure we're using the latest global data
+    if (window.playerTeam) playerTeam = window.playerTeam;
+    if (window.activeOpponent) activeOpponent = window.activeOpponent;
+    if (window.activeOpponentTeam) opponents = window.activeOpponentTeam; // Assuming 'opponents' holds the team
+
+    console.log("Battle Script -> startBattle: Player Team Sprites:", playerTeam.map(p => p.sprite));
+    console.log("Battle Script -> startBattle: Opponent Team Sprites:", opponents.map(o => o.sprite));
+    console.log("Battle Script -> startBattle: Active Opponent Sprite:", activeOpponent.sprite);
+    // ... rest of startBattle function ...
+}
+Use code with caution.
+JavaScript
+Analysis: Run an overworld battle. Compare the logged paths. Are they fully formed (e.g., public/sprites/name.png) in both sets of logs? If they look correct in the "Overworld -> startBattle" logs but wrong (e.g., just name.png or ./public/...) in the "Battle Script -> startBattle" logs, it means the battle script isn't using the correctly updated global team data. If they are wrong even in the "Overworld" logs, the issue is within the overworld trigger functions or createRandomOpponent.
+Solution:
+Ensure Standardization: Double-check that window.standardizeSpritePath is called correctly within initOverworld (for the initial player team) AND within createRandomOpponent (for generated opponents). The provided OverworldSystem code should be doing this, but verify it matches your implementation.
+Ensure Global State Use: Make absolutely sure your main startBattle function reads the team data directly from window.playerTeam and window.activeOpponentTeam/window.activeOpponent at the time it is called, not from potentially stale local copies. The logging added above helps verify this.
+Incorrect Team Data Being Used:
+Problem: The battle system (startBattle, updateBattleUI) might be referencing an older or different copy of the playerTeam or opponents array than the one prepared by the overworld system.
+Verification: Use the console logs described in point #1. If the "Battle Script" logs show different/incorrect sprite paths than the "Overworld" logs, this is the likely cause.
+Solution: Modify your main script's startBattle function to explicitly pull the latest data from the global scope at the beginning:
+function startBattle() {
+    // Explicitly use the global state set by OverworldSystem
+    playerTeam = window.playerTeam || []; // Use global or default empty
+    opponents = window.activeOpponentTeam || [window.activeOpponent] || []; // Use global team, or single opponent, or empty
+    activeOpponent = window.activeOpponent || null; // Use global active opponent
+
+    // Add console logs here to verify the data just pulled
+    console.log("Battle Script startBattle using:", { playerTeam, opponents, activeOpponent });
+
+    if (!activeOpponent && opponents.length > 0) {
+         activeOpponent = opponents[0]; // Ensure activeOpponent is set if team exists
+    }
+
+    // Check for validity before proceeding
+    if (!playerTeam || playerTeam.length === 0 || !activeOpponent) {
+        console.error("Cannot start battle - invalid team data provided.");
+        // Handle error gracefully - maybe return to selection/overworld
+        returnToOverworld(false); // Or appropriate screen transition
+        return;
+    }
+
+    // Standardize paths AGAIN as a safety measure right before UI update
+    playerTeam.forEach(p => { if(p && p.sprite) p.sprite = window.standardizeSpritePath(p.sprite); });
+    opponents.forEach(o => { if(o && o.sprite) o.sprite = window.standardizeSpritePath(o.sprite); });
+    if(activeOpponent.sprite) activeOpponent.sprite = window.standardizeSpritePath(activeOpponent.sprite);
+
+
+    // ... rest of startBattle setup (setting activePlayerCharacter, etc.) ...
+    activePlayerCharacter = JSON.parse(JSON.stringify(playerTeam[0])); // Use first team member
+
+     // Ensure activeOpponent is also a deep clone if needed by your logic
+     // activeOpponent = JSON.parse(JSON.stringify(activeOpponent));
+
+    updateBattleUI(); // Now update the UI with confirmed correct data
+    // ... rest of battle logic ...
+}
+Use code with caution.
+JavaScript
+Asynchronous Issues / Race Conditions:
+Problem: Although less likely if Fade mode works, it's possible that window.startBattle is being called slightly before window.playerTeam or window.activeOpponentTeam has been fully processed or standardized by the overworld functions, especially if there were delays (like loading data).
+Verification: The console logs from point #1 would usually reveal this if the data looks correct just before startBattle but wrong inside it immediately after.
+Solution: Ensure all data preparation in startNpcBattle and triggerRandomEncounter completes synchronously before window.startBattle() is called. Avoid unnecessary setTimeout calls around the team preparation logic.
+Network Errors/Incorrect Paths:
+Problem: The paths generated by standardizeSpritePath might be technically correct according to the logic, but actually wrong relative to where your server is hosting the files when accessed from the overworld context.
+Verification: Open the browser's Developer Tools (F12), go to the "Network" tab, filter by "Img" (images), and trigger an overworld battle. Look for any image requests that result in a 404 (Not Found) error. Inspect the requested URL. Is it what you expect?
+Solution: Adjust the logic in standardizeSpritePath or your file structure/server configuration so that the generated paths correctly point to the hosted images. For example, ensure paths start correctly (e.g., /public/... vs public/...).
+Most Likely Cause: Based on your description, Issue #1 (Standardization) or Issue #2 (Incorrect Team Data) are the most probable culprits. The transition from the overworld is failing to provide the battle system with the correctly processed character data containing valid, standardized sprite paths. Focus your debugging there using the suggested console logs.

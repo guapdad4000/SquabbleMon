@@ -2179,7 +2179,33 @@ function standardizeSpritePath(spritePath) {
   
   console.log("Converting local sprite path to imgur URL:", spritePath);
   
-  // Map common character types to known working imgur URLs
+  // Map character names to imgur URLs for consistency across game modes
+  const nameToImgurMap = {
+    // Main characters
+    'Fitness Bro': 'https://i.imgur.com/YeMI4sr.png',
+    'Rastamon': 'https://i.imgur.com/dZWWrrs.png',
+    'Techy': 'https://i.imgur.com/VVa9pm9.png',
+    'Cool Vibe YN': 'https://i.imgur.com/2n71aSJ.png',
+    '9-5 Homie': 'https://i.imgur.com/UkE9crR.png',
+    'All Jokes YN': 'https://i.imgur.com/9hFTFQt.png',
+    'Closet Nerd': 'https://i.imgur.com/knA2Yxz.png',
+    'Functional Addict': 'https://i.imgur.com/G3xfSjU.png',
+    'Dysfunctional YN': 'https://i.imgur.com/yA0lUbo.png',
+    'Gamer YN': 'https://i.imgur.com/vFvQKap.png',
+    'Serial YN': 'https://i.imgur.com/Kwe1HpA.png',
+    'Homeless YN': 'https://i.imgur.com/LRVrieF.png',
+    'Rich Techbro': 'https://i.imgur.com/GmlKf6u.png',
+    'Gamer Unemployed': 'https://i.imgur.com/b5pnt7o.png',
+    'Earthy': 'https://i.imgur.com/1SuHgnZ.png'
+  };
+  
+  // Check for character name in local data
+  if (window.currentCharacter && window.currentCharacter.name && nameToImgurMap[window.currentCharacter.name]) {
+    console.log("Found matching character in currentCharacter:", window.currentCharacter.name);
+    return nameToImgurMap[window.currentCharacter.name];
+  }
+  
+  // Map path-based identifiers to known imgur URLs
   if (spritePath.includes('fitness') || spritePath.includes('gym')) {
     return 'https://i.imgur.com/YeMI4sr.png'; // Fitness Bro
   } else if (spritePath.includes('rasta') || spritePath.includes('plant')) {
@@ -2190,67 +2216,100 @@ function standardizeSpritePath(spritePath) {
     return 'https://i.imgur.com/2n71aSJ.png'; // Vibe
   } else if (spritePath.includes('9-5') || spritePath.includes('office')) {
     return 'https://i.imgur.com/UkE9crR.png'; // 9-5
+  } else if (spritePath.includes('jokes') || spritePath.includes('all jokes')) {
+    return 'https://i.imgur.com/9hFTFQt.png'; // All jokes
+  } else if (spritePath.includes('nerd') || spritePath.includes('closet')) {
+    return 'https://i.imgur.com/knA2Yxz.png'; // Closet nerd
+  } else if (spritePath.includes('functional') || spritePath.includes('addict')) {
+    return 'https://i.imgur.com/G3xfSjU.png'; // Functional addict
+  } else if (spritePath.includes('homeless')) {
+    return 'https://i.imgur.com/LRVrieF.png'; // Homeless YN
+  } else if (spritePath.includes('gamer')) {
+    return 'https://i.imgur.com/vFvQKap.png'; // Gamer YN
+  } else if (spritePath.includes('serial')) {
+    return 'https://i.imgur.com/Kwe1HpA.png'; // Serial YN
+  } else if (spritePath.includes('rich') || spritePath.includes('techbro')) {
+    return 'https://i.imgur.com/GmlKf6u.png'; // Rich techbro
+  } else if (spritePath.includes('unemployed')) {
+    return 'https://i.imgur.com/b5pnt7o.png'; // Gamer unemployed
+  } else if (spritePath.includes('earthy')) {
+    return 'https://i.imgur.com/1SuHgnZ.png'; // Earthy
+  } else if (spritePath.includes('dysfunctional')) {
+    return 'https://i.imgur.com/yA0lUbo.png'; // Dysfunctional
+  }
+  
+  // Special case for player movement sprites
+  if (spritePath.includes('back') || spritePath.includes('fwd') || 
+      spritePath.includes('right') || spritePath.includes('left')) {
+    // Keep these as local paths for the overworld character
+    
+    // Fix paths starting with ./public/ to use public/ instead
+    if (spritePath.startsWith('./public/')) {
+      return spritePath.replace('./public/', 'public/');
+    }
+    
+    // Ensure it starts with public/ if needed
+    if (!spritePath.startsWith('public/')) {
+      return 'public/' + spritePath;
+    }
+    
+    return spritePath;
   }
   
   // Default to fitness bro for any local paths we can't map
   console.log("Using fallback imgur URL for sprite:", spritePath);
   return 'https://i.imgur.com/YeMI4sr.png';
-  
-  // Check the location of the main character sprite files
-  // If the file is one of our main character sprites like dj-scratch.png, beatbox-wizard.png, etc.
-  const mainCharacterSprites = [
-    'dj-scratch', 'beatbox-wizard', 'boom-bap', 'copycat', 'flow-master', 
-    'graffiti-king', 'mc-crazy-legs', 'mixtape-master', 'mumble-rapper', 
-    'one-hit-wonder', 'pop-sellout', 'street-styler', 'internet-troll'
-  ];
-  
-  // Check if it's one of the main character sprites (without extension)
-  const isMainCharacter = mainCharacterSprites.some(name => 
-    spritePath === name || 
-    spritePath === name + '.png' || 
-    spritePath.endsWith('/' + name) || 
-    spritePath.endsWith('/' + name + '.png')
-  );
-  
-  if (isMainCharacter) {
-    // Extract just the filename without path or extension
-    const fileName = spritePath.split('/').pop().replace(/\.[^/.]+$/, "");
-    // Return with the correct public/ prefix
-    return 'public/' + fileName + '.png'; // These are in the root public folder
-  }
-  
-  // Remove any 'public/' or './public/' prefix first to normalize
-  spritePath = spritePath.replace(/^(\.\/)?public\//, '');
-  
-  // Check if it's an SVG path (from imposter.svg)
-  if (spritePath.endsWith('.svg')) {
-    return spritePath.startsWith('public/') ? spritePath : 'public/' + spritePath;
-  }
-  
-  // If it starts with 'sprites/', add 'public/' prefix
-  if (spritePath.startsWith('sprites/')) {
-    spritePath = 'public/' + spritePath;
-  } 
-  // If it doesn't have any folder structure, assume it's in sprites folder
-  else if (!spritePath.includes('/')) {
-    spritePath = 'public/sprites/' + spritePath;
-  }
-  // Otherwise add public/ prefix if not already there
-  else if (!spritePath.startsWith('public/')) {
-    spritePath = 'public/' + spritePath;
-  }
-  
-  // Ensure the path has proper extension
-  if (!spritePath.match(/\.(png|jpg|jpeg|gif|svg)$/i)) {
-    spritePath += '.png'; // Default to PNG if no extension
-  }
-  
-  console.log("Standardized sprite path:", spritePath);
-  return spritePath;
 }
 
 // Expose the standardizeSpritePath function globally for other modules to use
 window.standardizeSpritePath = standardizeSpritePath;
+
+// Add debugging capabilities for sprite problems
+window.debugSpritePaths = function(playerTeam, opponentTeam) {
+  console.group('===== SPRITE PATH DEBUGGING =====');
+  console.log('Game Mode:', window.currentGameMode || 'unknown');
+  
+  if (playerTeam && Array.isArray(playerTeam)) {
+    console.log('Player Team Sprites:');
+    playerTeam.forEach((char, idx) => {
+      console.log(`  ${idx}. ${char.name}: ${char.sprite || 'undefined'}`);
+      if (char.sprite) {
+        const standardizedPath = standardizeSpritePath(char.sprite);
+        if (standardizedPath !== char.sprite) {
+          console.warn(`     Non-standardized! Should be: ${standardizedPath}`);
+        }
+      }
+    });
+  } else {
+    console.warn('No valid player team found!');
+  }
+  
+  if (opponentTeam && Array.isArray(opponentTeam)) {
+    console.log('Opponent Team Sprites:');
+    opponentTeam.forEach((char, idx) => {
+      console.log(`  ${idx}. ${char.name}: ${char.sprite || 'undefined'}`);
+      if (char.sprite) {
+        const standardizedPath = standardizeSpritePath(char.sprite);
+        if (standardizedPath !== char.sprite) {
+          console.warn(`     Non-standardized! Should be: ${standardizedPath}`);
+        }
+      }
+    });
+  } else if (window.activeOpponent) {
+    console.log('Active Opponent Sprite:');
+    console.log(`  ${window.activeOpponent.name}: ${window.activeOpponent.sprite || 'undefined'}`);
+    if (window.activeOpponent.sprite) {
+      const standardizedPath = standardizeSpritePath(window.activeOpponent.sprite);
+      if (standardizedPath !== window.activeOpponent.sprite) {
+        console.warn(`     Non-standardized! Should be: ${standardizedPath}`);
+      }
+    }
+  } else {
+    console.warn('No valid opponent team or active opponent found!');
+  }
+  
+  console.groupEnd();
+};
 
 function selectCharacter(character) {
   // Create a deep copy and fix sprite paths
@@ -2439,6 +2498,9 @@ function startBattle() {
     // Standardize sprite paths for all characters
     character.sprite = standardizeSpritePath(character.sprite);
   });
+  
+  // Debug sprite paths before creating the active player character
+  window.debugSpritePaths(playerTeam, window.activeOpponentTeam || opponents);
   
   // Deep clone to avoid reference issues
   activePlayerCharacter = JSON.parse(JSON.stringify(playerTeam[0]));

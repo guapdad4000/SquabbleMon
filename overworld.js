@@ -1928,25 +1928,31 @@ function startNpcBattle(npc) {
       return;
     }
     
-    // Ensure all player sprites use the imgur URL format for consistency
+    // Ensure all player sprites use the standardized format for consistency
     window.playerTeam.forEach(character => {
-      if (character.sprite) {
-        // Check if it's already an imgur URL
-        if (!character.sprite.includes('imgur.com')) {
-          console.log(`Converting sprite format for ${character.name}:`, character.sprite);
-          
-          // Map known character sprites to their imgur URLs
-          if (character.name.includes("Fitness")) {
-            character.sprite = "https://i.imgur.com/YeMI4sr.png";
-          } else if (character.name.includes("Rasta")) {
-            character.sprite = "https://i.imgur.com/dZWWrrs.png";
-          } else {
-            // Default to fitness bro as fallback
-            character.sprite = "https://i.imgur.com/YeMI4sr.png";
-          }
-          
-          console.log(`Sprite converted to:`, character.sprite);
+      if (character.sprite && typeof window.standardizeSpritePath === 'function') {
+        // Use the global standardize function to ensure consistency
+        const originalSprite = character.sprite;
+        character.sprite = window.standardizeSpritePath(character.sprite);
+        
+        if (originalSprite !== character.sprite) {
+          console.log(`Standardized sprite for ${character.name}: ${originalSprite} => ${character.sprite}`);
         }
+      } else if (character.sprite && !character.sprite.includes('imgur.com')) {
+        // Fallback for if standardizeSpritePath isn't available
+        console.log(`Converting sprite format for ${character.name}:`, character.sprite);
+        
+        // Map known character sprites to their imgur URLs
+        if (character.name.includes("Fitness")) {
+          character.sprite = "https://i.imgur.com/YeMI4sr.png";
+        } else if (character.name.includes("Rasta")) {
+          character.sprite = "https://i.imgur.com/dZWWrrs.png";
+        } else {
+          // Default to fitness bro as fallback
+          character.sprite = "https://i.imgur.com/YeMI4sr.png";
+        }
+        
+        console.log(`Sprite converted to:`, character.sprite);
       }
     });
     
@@ -2253,6 +2259,13 @@ function triggerRandomEncounter() {
     
     // Create the main opponent for the team
     const mainOpponent = createRandomOpponent(currentZone);
+    
+    // Ensure sprite path is standardized (should already be handled in createRandomOpponent)
+    if (mainOpponent.sprite && typeof window.standardizeSpritePath === 'function') {
+      mainOpponent.sprite = window.standardizeSpritePath(mainOpponent.sprite);
+      console.log("Main opponent sprite standardized to:", mainOpponent.sprite);
+    }
+    
     randomOpponentTeam.push(mainOpponent);
     
     // Create 1-2 additional opponents for the team (lower level)
@@ -2268,7 +2281,19 @@ function triggerRandomEncounter() {
       teammate.defense = Math.floor(teammate.defense * 0.9);
       teammate.maxHp = teammate.hp;
       
+      // Standardize sprite path for teammate
+      if (teammate.sprite && typeof window.standardizeSpritePath === 'function') {
+        teammate.sprite = window.standardizeSpritePath(teammate.sprite);
+        console.log("Teammate opponent sprite standardized to:", teammate.sprite);
+      }
+      
       randomOpponentTeam.push(teammate);
+    }
+    
+    // Before setting global state, debug sprite paths
+    if (typeof window.debugSpritePaths === 'function') {
+      console.log("Running sprite path debug check before setting active opponents:");
+      window.debugSpritePaths(window.playerTeam, randomOpponentTeam);
     }
     
     // Set the active opponent team
@@ -2362,9 +2387,17 @@ function createRandomOpponent(zone) {
     'https://i.imgur.com/GmlKf6u.png'  // techbro rich
   ];
   
-  // Choose a sprite directly - no need for standardizeSpritePath since these are already Imgur URLs
-  const finalSpritePath = spriteOptions[Math.floor(Math.random() * spriteOptions.length)];
-  console.log("Using opponent sprite:", finalSpritePath);
+  // Choose a sprite from our options
+  let selectedSprite = spriteOptions[Math.floor(Math.random() * spriteOptions.length)];
+  
+  // Use standardizeSpritePath if available to ensure consistency
+  if (typeof window.standardizeSpritePath === 'function') {
+    const finalSpritePath = window.standardizeSpritePath(selectedSprite);
+    console.log("Using standardized opponent sprite:", finalSpritePath);
+    selectedSprite = finalSpritePath;
+  } else {
+    console.log("Using direct opponent sprite:", selectedSprite);
+  }
   
   // Create base stats based on level
   const baseHp = 85 + (level * 5);
@@ -2378,7 +2411,7 @@ function createRandomOpponent(zone) {
   // Return opponent object
   return {
     name: name,
-    sprite: finalSpritePath, // Use the standardized sprite path
+    sprite: selectedSprite, // Use the standardized sprite path we stored in selectedSprite
     type: type,
     level: level,
     hp: baseHp,
