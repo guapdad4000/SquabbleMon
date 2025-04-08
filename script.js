@@ -34,7 +34,7 @@ let audioInitialized = false; // Track if audio is initialized
 
 // ================ GAME DATA ================
 // Game mode tracking
-let currentGameMode = null; // Will be set to 'fade' or 'story'
+let currentGameMode = null; // Track if we're in 'fade' or 'story' mode
 // Character data with battle info
 const characters = [
   {
@@ -1490,8 +1490,7 @@ function initMobileControls() {
 }
 
 // Initialize the game and mobile controls when the page loads
-// Game mode state
-let currentGameMode = null; // 'fade' or 'story'
+// Game mode state is declared at the top of the file
 
 // Function to select game mode
 function selectGameMode(mode) {
@@ -1516,6 +1515,9 @@ function selectGameMode(mode) {
   // Initialize game components after mode selection
   initGame();
 }
+
+// Expose the function to window object so it can be called from onclick events
+window.selectGameMode = selectGameMode;
 
 // Function to start explore mode
 function startExploreMode() {
