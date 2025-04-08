@@ -2173,7 +2173,8 @@ function standardizeSpritePath(spritePath) {
   if (isMainCharacter) {
     // Extract just the filename without path or extension
     const fileName = spritePath.split('/').pop().replace(/\.[^/.]+$/, "");
-    return fileName + '.png'; // These are in the root public folder
+    // Return with the correct public/ prefix
+    return 'public/' + fileName + '.png'; // These are in the root public folder
   }
   
   // Remove any 'public/' or './public/' prefix first to normalize
