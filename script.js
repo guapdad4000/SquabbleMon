@@ -1138,6 +1138,7 @@ function initMobileControls() {
           handleDpadRight();
           break;
         case 'A':
+        case 'Enter': // Added Enter key for mobile controls
           handleAButton();
           break;
         case 'B':
