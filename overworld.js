@@ -172,6 +172,16 @@ function initOverworld(selectedCharacter) {
       player.characterName = selectedCharacter.name;
       // Set player.sprite to null to use the ninja sprite for overworld movement
       player.sprite = null;
+      
+      // Check if there's a window.playerTeam and make it accessible when battles start
+      if (window.playerTeam && Array.isArray(window.playerTeam) && window.playerTeam.length > 0) {
+        console.log("Player team found in window object:", window.playerTeam);
+      } else {
+        // If no playerTeam is set globally, create one from the selected character
+        // This is a fallback in case the team selection didn't initialize the team properly
+        console.warn("No player team found, creating from selected character");
+        window.playerTeam = [selectedCharacter];
+      }
     } else {
       console.warn("No character provided, using default");
       player.characterId = 0;
@@ -1109,6 +1119,38 @@ function startNpcBattle(npc) {
   try {
     console.log("Starting NPC battle with NPC:", npc.name);
     
+    // Make sure we have a player team for the battle
+    if (!window.playerTeam || !Array.isArray(window.playerTeam) || window.playerTeam.length === 0) {
+      console.warn("No player team found, creating fallback team from player character");
+      // Create a simple character if no team exists
+      window.playerTeam = [{
+        id: "player",
+        name: player.characterName || "Player",
+        hp: 100,
+        maxHp: 100,
+        attack: 50,
+        defense: 50,
+        speed: 50,
+        image: player.sprite || "public/images/characters/player.png",
+        sprite: player.sprite || "public/images/characters/player.png",
+        type: "Normal",
+        moves: [
+          { name: "Basic Attack", type: "Normal", power: 40, pp: 15, maxPp: 15, description: "A standard attack" }
+        ]
+      }];
+    } else {
+      console.log("Using existing player team for battle:", window.playerTeam);
+      
+      // Make sure all player team members have standardized sprite paths
+      if (typeof window.standardizeSpritePath === 'function') {
+        window.playerTeam.forEach(character => {
+          if (character.sprite) {
+            character.sprite = window.standardizeSpritePath(character.sprite);
+          }
+        });
+      }
+    }
+    
     // Instead of using the NPC as a character in the battle, we'll create a random team 
     // from predefined characters
     
@@ -1286,6 +1328,38 @@ function startNpcBattle(npc) {
 function triggerRandomEncounter() {
   try {
     console.log("Triggering random encounter in zone:", currentZone);
+    
+    // Make sure we have a player team for the battle
+    if (!window.playerTeam || !Array.isArray(window.playerTeam) || window.playerTeam.length === 0) {
+      console.warn("No player team found for random encounter, creating fallback team from player character");
+      // Create a simple character if no team exists
+      window.playerTeam = [{
+        id: "player",
+        name: player.characterName || "Player",
+        hp: 100,
+        maxHp: 100,
+        attack: 50,
+        defense: 50,
+        speed: 50,
+        image: player.sprite || "public/images/characters/player.png",
+        sprite: player.sprite || "public/images/characters/player.png",
+        type: "Normal",
+        moves: [
+          { name: "Basic Attack", type: "Normal", power: 40, pp: 15, maxPp: 15, description: "A standard attack" }
+        ]
+      }];
+    } else {
+      console.log("Using existing player team for random encounter battle:", window.playerTeam);
+      
+      // Make sure all player team members have standardized sprite paths
+      if (typeof window.standardizeSpritePath === 'function') {
+        window.playerTeam.forEach(character => {
+          if (character.sprite) {
+            character.sprite = window.standardizeSpritePath(character.sprite);
+          }
+        });
+      }
+    }
     
     // Create a team of random opponents based on the current zone
     const randomOpponentTeam = [];

@@ -2275,6 +2275,16 @@ function updateTeamSlots() {
 
 // Make startBattle globally accessible for overworld battles
 function startBattle() {
+  // Sync playerTeam with window.playerTeam if it exists (for overworld battles)
+  if (window.playerTeam && Array.isArray(window.playerTeam) && window.playerTeam.length > 0) {
+    console.log("Found window.playerTeam, syncing with local playerTeam:", window.playerTeam);
+    playerTeam = window.playerTeam;
+  } else if (playerTeam && playerTeam.length > 0) {
+    // Or sync window.playerTeam with local playerTeam
+    console.log("Setting window.playerTeam from local playerTeam:", playerTeam);
+    window.playerTeam = playerTeam;
+  }
+  
   console.log("Battle starting with player team:", playerTeam);
   
   // Check if we have an active opponent from the overworld
