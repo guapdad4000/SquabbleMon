@@ -24,37 +24,46 @@
 .map-tile {
   position: absolute;
   z-index: 1;
-  background-image: url('./images/tileset.png');
-  background-repeat: no-repeat;
-  background-size: 512px 512px; /* 4x4 grid of 128px tiles */
+  background-color: #555;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
 }
 
+/* Urban style tiles */
 .walkable {
-  background-position: 0 0; /* Plain concrete/sidewalk - first tile */
+  background-color: #aaa; /* Concrete/sidewalk */
 }
 
 .blocked {
-  background-position: -128px 0; /* Cracked concrete - second tile */
+  background-color: #555; /* Cracked concrete/barriers */
+  background-image: repeating-linear-gradient(45deg, #555, #555 10px, #444 10px, #444 20px);
 }
 
 .grass {
-  background-position: -384px 0; /* Grass - rightmost tile in first row */
+  background-color: #3c3; /* Green grass areas */
+  background-image: 
+    radial-gradient(circle, rgba(0,0,0,0) 0%, rgba(0,0,0,0.1) 100%);
 }
 
 .trap-zone {
-  background-position: -128px -128px; /* Dirt path with grass edges - second tile second row */
+  background-color: #a33; /* Dangerous areas */
+  background-image: 
+    repeating-linear-gradient(-45deg, rgba(0,0,0,0), rgba(0,0,0,0) 10px, rgba(0,0,0,0.2) 10px, rgba(0,0,0,0.2) 20px);
 }
 
 .door {
-  background-position: -256px -128px; /* Stone floor - third tile second row */
+  background-color: #964B00; /* Wooden door color */
+  background-image: linear-gradient(0deg, #703800 25%, #964B00 25%, #964B00 75%, #703800 75%);
 }
 
 .dirt {
-  background-position: 0 -128px; /* Dirt - first tile second row */
+  background-color: #8B4513; /* Dirt brown */
 }
 
 .dirt-path {
-  background-position: -384px -128px; /* Dirt with some grass - rightmost tile second row */
+  background-color: #8B4513; /* Dirt with some grass */
+  background-image: 
+    radial-gradient(circle, rgba(60,204,60,0.3) 0%, rgba(139,69,19,0.8) 80%);
 }
 
 #player-sprite {
@@ -63,6 +72,11 @@
   height: 64px;
   z-index: 10;
   transition: left 0.2s, top 0.2s;
+  display: block;
+  overflow: visible;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .npc-sprite {

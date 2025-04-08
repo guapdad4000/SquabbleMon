@@ -154,37 +154,73 @@ function initOverworld(selectedCharacter) {
   
   try {
     // Set player sprite from selected character
-    player.sprite = selectedCharacter.sprite;
+    if (selectedCharacter && selectedCharacter.sprite) {
+      player.sprite = selectedCharacter.sprite;
+    } else {
+      console.warn("No character sprite provided, using default");
+      player.sprite = 'https://i.imgur.com/m7Rup7S.png'; // Default sprite
+    }
     
-    // Hide battle screen and show overworld
+    // First, hide other screens
     const battleScreen = document.getElementById('battle-screen');
     if (battleScreen) battleScreen.style.display = 'none';
     
     const charSelection = document.getElementById('character-selection');
     if (charSelection) charSelection.style.display = 'none';
     
-    // Create overworld container if it doesn't exist
-    if (!document.getElementById('overworld-container')) {
+    const gameOver = document.getElementById('game-over');
+    if (gameOver) gameOver.style.display = 'none';
+    
+    // Create or update the overworld UI
+    const existingContainer = document.getElementById('overworld-container');
+    if (!existingContainer) {
       console.log("Creating new overworld UI");
       createOverworldUI();
     } else {
       console.log("Using existing overworld UI");
-      overworldContainer = document.getElementById('overworld-container');
+      overworldContainer = existingContainer;
       mapContainer = document.getElementById('map-container');
       playerSprite = document.getElementById('player-sprite');
       dialogueBox = document.getElementById('dialogue-box');
+      
+      // Make sure map container is clear before re-rendering
+      if (mapContainer) {
+        mapContainer.innerHTML = '';
+        if (playerSprite) mapContainer.appendChild(playerSprite);
+      }
     }
     
-    // Make sure all UI elements are defined
-    if (!overworldContainer) {
-      console.error("Overworld container not initialized!");
-      return;
+    // Double-check that all UI elements are defined
+    if (!overworldContainer || !mapContainer || !playerSprite) {
+      console.error("Overworld UI elements not properly initialized!");
+      console.log("Container:", overworldContainer);
+      console.log("Map:", mapContainer);
+      console.log("Player:", playerSprite);
+      
+      // Try to recover by creating the UI again
+      createOverworldUI();
+      
+      // Check again after recovery attempt
+      if (!overworldContainer || !mapContainer || !playerSprite) {
+        console.error("Failed to initialize overworld UI even after recovery attempt");
+        return; // Give up to prevent further errors
+      }
     }
     
-    // Display overworld
+    // Set overworld to be visible
     overworldContainer.style.display = 'flex';
     
-    // Set up player position
+    // Reset player to starting position if needed
+    if (!player.hasInitialPosition) {
+      player.x = 7; // Starting X position
+      player.y = 7; // Starting Y position
+      player.hasInitialPosition = true;
+    }
+    
+    // Render the map
+    renderMap();
+    
+    // Update the visual position of the player sprite
     updatePlayerPosition();
     
     // Set up NPCs
@@ -279,44 +315,87 @@ function createOverworldUI() {
 
 // Render the map grid based on current zone
 function renderMap() {
-  mapContainer.innerHTML = ''; // Clear existing map
-  
-  // Add player sprite
-  mapContainer.appendChild(playerSprite);
-  
-  // Render each tile based on map data
-  const tileSize = 64; // Each tile is 64x64 pixels for new tileset
-  
-  for (let y = 0; y < currentMap.length; y++) {
-    for (let x = 0; x < currentMap[y].length; x++) {
-      const tileType = currentMap[y][x];
-      const tile = document.createElement('div');
-      tile.className = 'map-tile';
-      tile.style.left = `${x * tileSize}px`;
-      tile.style.top = `${y * tileSize}px`;
-      tile.style.width = `${tileSize}px`;
-      tile.style.height = `${tileSize}px`;
-      
-      // Apply tile-specific styles
-      switch (tileType) {
-        case TILE_TYPES.WALKABLE:
-          tile.classList.add('walkable');
-          break;
-        case TILE_TYPES.BLOCKED:
-          tile.classList.add('blocked');
-          break;
-        case TILE_TYPES.GRASS:
-          tile.classList.add('grass');
-          break;
-        case TILE_TYPES.TRAP_ZONE:
-          tile.classList.add('trap-zone');
-          break;
-        case TILE_TYPES.DOOR:
-          tile.classList.add('door');
-          break;
+  try {
+    console.log("Rendering map for zone:", currentZone);
+    
+    // Check if mapContainer exists
+    if (!mapContainer) {
+      console.error("Map container not found!");
+      throw new Error("Map container is missing");
+    }
+    
+    // Clear existing map
+    mapContainer.innerHTML = '';
+    
+    // Add player sprite
+    if (!playerSprite) {
+      console.error("Player sprite element not found!");
+      playerSprite = document.createElement('div');
+      playerSprite.id = 'player-sprite';
+    }
+    
+    mapContainer.appendChild(playerSprite);
+    
+    // Render each tile based on map data
+    const tileSize = 64; // Each tile is 64x64 pixels for new tileset
+    
+    // Check if current map is defined and valid
+    if (!currentMap || !Array.isArray(currentMap) || currentMap.length === 0) {
+      console.error("Current map is invalid:", currentMap);
+      throw new Error("Invalid map data");
+    }
+    
+    console.log(`Rendering map with dimensions: ${currentMap[0].length}x${currentMap.length}`);
+    
+    for (let y = 0; y < currentMap.length; y++) {
+      for (let x = 0; x < currentMap[y].length; x++) {
+        const tileType = currentMap[y][x];
+        const tile = document.createElement('div');
+        tile.className = 'map-tile';
+        tile.style.left = `${x * tileSize}px`;
+        tile.style.top = `${y * tileSize}px`;
+        tile.style.width = `${tileSize}px`;
+        tile.style.height = `${tileSize}px`;
+        
+        // Apply tile-specific styles
+        switch (tileType) {
+          case TILE_TYPES.WALKABLE:
+            tile.classList.add('walkable');
+            break;
+          case TILE_TYPES.BLOCKED:
+            tile.classList.add('blocked');
+            break;
+          case TILE_TYPES.GRASS:
+            tile.classList.add('grass');
+            break;
+          case TILE_TYPES.TRAP_ZONE:
+            tile.classList.add('trap-zone');
+            break;
+          case TILE_TYPES.DOOR:
+            tile.classList.add('door');
+            break;
+          case TILE_TYPES.NPC:
+            // Just render as walkable, NPCs will be added separately
+            tile.classList.add('walkable');
+            break;
+          default:
+            // Unknown tile type - use walkable as fallback
+            console.warn(`Unknown tile type: ${tileType} at position (${x},${y})`);
+            tile.classList.add('walkable');
+        }
+        
+        mapContainer.appendChild(tile);
       }
-      
-      mapContainer.appendChild(tile);
+    }
+    
+    console.log("Map rendering complete");
+  } catch (error) {
+    console.error("Error rendering map:", error);
+    // Create a visible error message in the map container
+    if (mapContainer) {
+      mapContainer.innerHTML = `<div style="color: red; padding: 20px;">
+        Error rendering map. Please reload the game.
+      </div>`;
     }
   }
   
@@ -361,50 +440,99 @@ function renderNpcs() {
 
 // Update player position on the map
 function updatePlayerPosition() {
-  const tileSize = 64;
-  playerSprite.style.left = `${player.x * tileSize}px`;
-  playerSprite.style.top = `${player.y * tileSize}px`;
-  
-  // Update player sprite direction
-  playerSprite.className = `facing-${player.direction}`;
-  
-  // Set sprite image
-  if (!playerSprite.querySelector('img')) {
-    const img = document.createElement('img');
-    img.src = player.sprite;
-    img.alt = 'Player';
-    playerSprite.appendChild(img);
+  try {
+    console.log("Updating player position:", player.x, player.y, player.direction);
+    
+    if (!playerSprite) {
+      console.error("Player sprite element not found in updatePlayerPosition");
+      return;
+    }
+    
+    const tileSize = 64;
+    playerSprite.style.left = `${player.x * tileSize}px`;
+    playerSprite.style.top = `${player.y * tileSize}px`;
+    
+    // Update player sprite direction
+    playerSprite.className = `facing-${player.direction}`;
+    
+    // Set sprite image if not already set
+    if (!playerSprite.querySelector('img')) {
+      console.log("Adding player sprite image:", player.sprite);
+      
+      if (!player.sprite) {
+        console.warn("No player sprite URL defined, using default");
+        player.sprite = 'https://i.imgur.com/m7Rup7S.png'; // Default sprite
+      }
+      
+      const img = document.createElement('img');
+      img.src = player.sprite;
+      img.alt = 'Player';
+      img.style.width = '100%';
+      img.style.height = '100%';
+      img.style.objectFit = 'contain';
+      playerSprite.appendChild(img);
+    } else {
+      // Update existing sprite image if needed
+      const img = playerSprite.querySelector('img');
+      if (img.src !== player.sprite) {
+        console.log("Updating player sprite image to:", player.sprite);
+        img.src = player.sprite;
+      }
+    }
+    
+    // Check current tile type after position update
+    checkCurrentTile();
+  } catch (error) {
+    console.error("Error updating player position:", error);
   }
-  
-  // Check current tile type
-  checkCurrentTile();
 }
 
 // Check the type of tile the player is standing on
 function checkCurrentTile() {
-  const tileType = currentMap[player.y][player.x];
-  
-  // Handle trap zones (random encounter areas)
-  player.inTrapZone = (tileType === TILE_TYPES.TRAP_ZONE);
-  
-  // Check for door tiles
-  if (tileType === TILE_TYPES.DOOR) {
-    const door = currentDoors.find(d => d.x === player.x && d.y === player.y);
-    if (door) {
-      changeZone(door.leadsTo, door.entranceX, door.entranceY);
+  try {
+    // Validate player position
+    if (!currentMap || 
+        player.y < 0 || player.y >= currentMap.length || 
+        player.x < 0 || player.x >= currentMap[player.y].length) {
+      console.error("Invalid player position:", player.x, player.y);
+      return;
     }
-  }
-  
-  // Check for random encounters in trap zones
-  if (player.inTrapZone) {
-    player.stepCount++;
     
-    if (player.stepCount % 5 === 0) {
-      if (Math.random() < 0.25) {
-        // 25% chance of random encounter every 5 steps in trap zones
-        triggerRandomEncounter();
+    const tileType = currentMap[player.y][player.x];
+    console.log(`Player at position (${player.x},${player.y}) on tile type: ${tileType}`);
+    
+    // Handle trap zones (random encounter areas)
+    player.inTrapZone = (tileType === TILE_TYPES.TRAP_ZONE);
+    
+    // Check for door tiles
+    if (tileType === TILE_TYPES.DOOR) {
+      const door = currentDoors.find(d => d.x === player.x && d.y === player.y);
+      if (door) {
+        console.log(`Found door leading to ${door.leadsTo} at entrance (${door.entranceX},${door.entranceY})`);
+        changeZone(door.leadsTo, door.entranceX, door.entranceY);
+      } else {
+        console.warn(`Door tile at (${player.x},${player.y}) has no corresponding door data`);
       }
     }
+    
+    // Check for random encounters in trap zones
+    if (player.inTrapZone) {
+      player.stepCount++;
+      console.log(`In trap zone, step count: ${player.stepCount}`);
+      
+      if (player.stepCount % 5 === 0) {
+        const encounterChance = Math.random();
+        if (encounterChance < 0.25) {
+          console.log("Random encounter triggered!");
+          // 25% chance of random encounter every 5 steps in trap zones
+          triggerRandomEncounter();
+        } else {
+          console.log(`No encounter this time (roll: ${encounterChance.toFixed(2)})`);
+        }
+      }
+    }
+  } catch (error) {
+    console.error("Error checking current tile:", error);
   }
 }
 
@@ -1061,9 +1189,23 @@ function returnToOverworld(battleWon = true) {
 
 // Play overworld music
 function playOverworldMusic() {
-  // This should tie into existing audio system
-  if (typeof playMenuMusic === 'function') {
-    playMenuMusic();
+  try {
+    // This should tie into existing audio system
+    console.log("Attempting to play overworld music");
+    
+    // Check if global audio functions are available
+    if (typeof window.playMenuMusic === 'function') {
+      console.log("Using global playMenuMusic function");
+      window.playMenuMusic();
+    } else if (typeof playMenuMusic === 'function') {
+      console.log("Using local playMenuMusic function");
+      playMenuMusic();
+    } else {
+      console.warn("No music function available - overworld music won't play");
+    }
+  } catch (error) {
+    console.error("Error playing overworld music:", error);
+    // Non-critical error, can continue without music
   }
 }
 
