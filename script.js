@@ -1453,9 +1453,96 @@ function initMobileControls() {
 }
 
 // Initialize the game and mobile controls when the page loads
-document.addEventListener("DOMContentLoaded", function() {
+// Game mode state
+let currentGameMode = null; // 'fade' or 'story'
+
+// Function to select game mode
+function selectGameMode(mode) {
+  console.log(`Selecting game mode: ${mode}`);
+  currentGameMode = mode;
+  
+  // Hide mode selection screen
+  document.getElementById('mode-selection-screen').style.display = 'none';
+  
+  // Show character selection
+  document.getElementById('selection-screen').style.display = 'flex';
+  
+  // Update UI based on selected mode
+  if (mode === 'fade') {
+    // Fade mode just needs character selection for battle
+    document.getElementById('explore-button').style.display = 'none';
+  } else if (mode === 'story') {
+    // Story mode shows explore button
+    document.getElementById('explore-button').style.display = 'inline-block';
+  }
+  
+  // Initialize game components after mode selection
   initGame();
+}
+
+// Function to start explore mode
+function startExploreMode() {
+  console.log("Starting explore mode...");
+  
+  // Check if we have at least one character
+  if (playerTeam.length === 0) {
+    alert("Select at least one character to explore");
+    return;
+  }
+  
+  // Hide selection screen
+  document.getElementById('selection-screen').style.display = 'none';
+  
+  // Show overworld container
+  const overworldContainer = document.getElementById('overworld-container');
+  overworldContainer.style.display = 'block';
+  
+  // Initialize overworld with the first character in team
+  if (window.OverworldSystem && typeof window.OverworldSystem.initOverworld === 'function') {
+    window.OverworldSystem.initOverworld(playerTeam[0]);
+  } else {
+    console.error("Overworld system not found or not initialized properly");
+    alert("Overworld system not available. Please try again.");
+    
+    // Show selection screen again if overworld fails to load
+    document.getElementById('selection-screen').style.display = 'flex';
+  }
+}
+
+// Return to the overworld after a battle
+function returnToOverworld(battleWon = true) {
+  console.log("Returning to overworld...");
+  
+  // Only do this in story mode
+  if (currentGameMode !== 'story') return;
+  
+  // Hide battle screen
+  document.getElementById('battle-screen').style.display = 'none';
+  
+  // Show overworld container
+  document.getElementById('overworld-container').style.display = 'block';
+  
+  // Re-initialize overworld with updated state after battle
+  if (window.OverworldSystem && typeof window.OverworldSystem.returnToOverworld === 'function') {
+    window.OverworldSystem.returnToOverworld(battleWon);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  // Initialize audio but wait for user interaction to play
+  initAudio();
+  
+  // Set up mobile controls if needed
   initMobileControls();
+  
+  // Start with mode selection screen visible
+  document.getElementById('mode-selection-screen').style.display = 'flex';
+  
+  // Hide other screens
+  document.getElementById('selection-screen').style.display = 'none';
+  document.getElementById('battle-screen').style.display = 'none';
+  
+  // Don't auto-initialize game, wait for mode selection first
 });
 
 // Audio Functions
@@ -4234,9 +4321,8 @@ function showGameOver(playerWon) {
   againButton.style.display = "block";
   document.getElementById("share-buttons").style.display = "flex";
   
-  // Add "Return to Overworld" button if we came from overworld
-  const overworldContainer = document.getElementById("overworld-container");
-  if (overworldContainer && window.OverworldSystem) {
+  // Add "Return to Overworld" button if we're in story mode
+  if (currentGameMode === 'story') {
     // Create or show return button
     let returnButton = document.getElementById("return-to-overworld");
     
@@ -4248,7 +4334,7 @@ function showGameOver(playerWon) {
       returnButton.style.marginTop = "10px";
       returnButton.onclick = function() {
         document.getElementById("game-over").style.display = "none";
-        window.OverworldSystem.returnToOverworld(playerWon);
+        returnToOverworld(playerWon);
       };
       
       // Add the button to game over screen
