@@ -1149,7 +1149,24 @@ function initMobileControls() {
   
   // Keyboard handlers for desktop users
   function handleKeyboardNavigation(e) {
-    // Only handle navigation keys
+    console.log("Handling keyboard navigation:", e.key);
+    
+    // Check if we're in the overworld (we may need to forward the key to the overworld controls)
+    const overworldContainer = document.getElementById('overworld-container');
+    const isInOverworld = overworldContainer && overworldContainer.style.display !== 'none';
+    
+    if (isInOverworld) {
+      // If in overworld, we need to add player movement by posting a message to the overworld
+      console.log("Sending keypress:", e.key);
+      const message = {
+        type: 'keypress',
+        key: e.key
+      };
+      window.postMessage(message, window.location.origin);
+      return; // Don't continue with the menu navigation if we're in overworld
+    }
+    
+    // Only handle navigation keys for menus
     switch (e.key) {
       case 'ArrowUp':
         handleDpadUp();

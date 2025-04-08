@@ -1049,6 +1049,8 @@ function renderMap() {
             break;
           case TILE_TYPES.DOOR:
             tile.classList.add('door');
+            // Add a visual indicator for doors to make them more visible
+            tile.innerHTML = '<div class="door-indicator"></div>';
             tileCounts.door++;
             break;
           case TILE_TYPES.NPC:
@@ -1599,11 +1601,46 @@ function setupMobileOverworldControls() {
     if (mobileControls) {
       // Make sure mobile controls are visible on overworld
       mobileControls.style.display = 'block';
+      mobileControls.style.visibility = 'visible';
+      mobileControls.style.opacity = '1';
+      mobileControls.style.zIndex = '9999';
       
       // The mobile controls use an iframe, so we need to communicate with it
       window.addEventListener('message', (event) => {
         try {
-          if (event.data && event.data.type === 'mobileControl') {
+          console.log("Received message in overworld:", event.data);
+          
+          // Handle keypresses from mobile-controls.html
+          if (event.data && event.data.type === 'keypress') {
+            console.log("Processing keypress in overworld:", event.data.key);
+            
+            // Map the keypress to the appropriate action
+            switch (event.data.key) {
+              case 'ArrowUp':
+                movePlayer('up');
+                break;
+              case 'ArrowDown':
+                movePlayer('down');
+                break;
+              case 'ArrowLeft':
+                movePlayer('left');
+                break;
+              case 'ArrowRight':
+                movePlayer('right');
+                break;
+              case 'Enter':
+              case 'A':
+                interactWithFacingTile();
+                break;
+              case 'Escape':
+              case 'B':
+                // Cancel current action or close dialogs
+                if (dialogueBox && dialogueBox.style.display !== 'none') {
+                  dialogueBox.style.display = 'none';
+                }
+                break;
+            }
+          } else if (event.data && event.data.type === 'mobileControl') {
             switch (event.data.button) {
               case 'up':
                 movePlayer('up');
