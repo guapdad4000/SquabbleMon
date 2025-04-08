@@ -2154,30 +2154,58 @@ function populateCharacterSelection() {
 
 // Helper function to standardize sprite paths
 function standardizeSpritePath(spritePath) {
+  // Add global debugging property if it doesn't exist
+  if (typeof window.debugSpritePaths === 'undefined') {
+    window.debugSpritePaths = true;
+  }
+  
+  // Debug helper for tracking sprite standardization
+  const logSprite = (message, path) => {
+    if (window.debugSpritePaths) {
+      console.log(`[SPRITE] ${message}`, path);
+    }
+  };
+  
   // Provide a default sprite if none is given or invalid
   if (!spritePath || typeof spritePath !== 'string') {
-    console.warn("Invalid sprite path provided:", spritePath);
+    logSprite("⚠️ Invalid sprite path provided:", spritePath);
     // Use a known working imgur URL as default
     return 'https://i.imgur.com/YeMI4sr.png'; // Fitness Bro
   }
   
   // Trim any whitespace
   spritePath = spritePath.trim();
+  logSprite("Processing sprite path:", spritePath);
   
-  // If it's an imgur URL, return it as is (preferred format)
+  // Fix common issues with imgur URLs
   if (spritePath.includes('imgur.com')) {
-    console.log("Using existing imgur URL sprite:", spritePath);
+    logSprite("Found imgur URL, standardizing format", spritePath);
+    
+    // Ensure it uses https://i.imgur.com format 
+    if (spritePath.includes('imgur.com/a/')) {
+      logSprite("⚠️ Imgur album detected, not supported:", spritePath);
+      return 'https://i.imgur.com/YeMI4sr.png'; // Cannot use album links
+    }
+    
+    // Fix non-direct links to use i.imgur.com format
+    if (spritePath.includes('imgur.com') && !spritePath.includes('i.imgur.com')) {
+      // Extract the ID (last part of URL)
+      const parts = spritePath.split('/');
+      const id = parts[parts.length - 1].split('.')[0];
+      spritePath = `https://i.imgur.com/${id}.png`;
+      logSprite("Converted to direct i.imgur.com format:", spritePath);
+    }
+    
     return spritePath;
   }
   
-  // For other URLs, leave as is
+  // For other URLs, leave as is but log
   if (spritePath.startsWith('http')) {
-    console.log("Using non-imgur URL sprite:", spritePath);
-    // We could convert known URLs to imgur here if needed
+    logSprite("Using non-imgur URL sprite:", spritePath);
     return spritePath;
   }
   
-  console.log("Converting local sprite path to imgur URL:", spritePath);
+  logSprite("Converting local path to standardized URL:", spritePath);
   
   // Map character names to imgur URLs for consistency across game modes
   const nameToImgurMap = {
@@ -2199,65 +2227,99 @@ function standardizeSpritePath(spritePath) {
     'Earthy': 'https://i.imgur.com/1SuHgnZ.png'
   };
   
-  // Check for character name in local data
-  if (window.currentCharacter && window.currentCharacter.name && nameToImgurMap[window.currentCharacter.name]) {
-    console.log("Found matching character in currentCharacter:", window.currentCharacter.name);
-    return nameToImgurMap[window.currentCharacter.name];
+  // Helper to clean up character names before checking
+  const normalizeCharacterName = (name) => {
+    if (!name) return '';
+    return name.toLowerCase().trim();
+  };
+  
+  // Check input for character names directly
+  const lowercasePath = spritePath.toLowerCase();
+  
+  // Try to find a direct name match
+  for (const [charName, imgurUrl] of Object.entries(nameToImgurMap)) {
+    if (lowercasePath.includes(normalizeCharacterName(charName))) {
+      logSprite(`Found character name match: ${charName}`, imgurUrl);
+      return imgurUrl;
+    }
   }
   
-  // Map path-based identifiers to known imgur URLs
-  if (spritePath.includes('fitness') || spritePath.includes('gym')) {
+  // Check for character name in currentCharacter (if available)
+  if (window.currentCharacter && window.currentCharacter.name) {
+    const characterName = window.currentCharacter.name;
+    if (nameToImgurMap[characterName]) {
+      logSprite(`Found match for current character: ${characterName}`, nameToImgurMap[characterName]);
+      return nameToImgurMap[characterName];
+    }
+  }
+  
+  // Check for character name in activePlayerCharacter (if available) 
+  if (window.activePlayerCharacter && window.activePlayerCharacter.name) {
+    const characterName = window.activePlayerCharacter.name;
+    if (nameToImgurMap[characterName]) {
+      logSprite(`Found match for active player character: ${characterName}`, nameToImgurMap[characterName]);
+      return nameToImgurMap[characterName];
+    }
+  }
+  
+  // Map keywords in path to known imgur URLs
+  if (lowercasePath.includes('fitness') || lowercasePath.includes('gym')) {
     return 'https://i.imgur.com/YeMI4sr.png'; // Fitness Bro
-  } else if (spritePath.includes('rasta') || spritePath.includes('plant')) {
+  } else if (lowercasePath.includes('rasta') || lowercasePath.includes('plant')) {
     return 'https://i.imgur.com/dZWWrrs.png'; // Rasta
-  } else if (spritePath.includes('tech') || spritePath.includes('electric')) {
+  } else if (lowercasePath.includes('tech') || lowercasePath.includes('electric')) {
     return 'https://i.imgur.com/VVa9pm9.png'; // Techy
-  } else if (spritePath.includes('vibe') || spritePath.includes('cool')) {
+  } else if (lowercasePath.includes('vibe') || lowercasePath.includes('cool')) {
     return 'https://i.imgur.com/2n71aSJ.png'; // Vibe
-  } else if (spritePath.includes('9-5') || spritePath.includes('office')) {
+  } else if (lowercasePath.includes('9-5') || lowercasePath.includes('office')) {
     return 'https://i.imgur.com/UkE9crR.png'; // 9-5
-  } else if (spritePath.includes('jokes') || spritePath.includes('all jokes')) {
+  } else if (lowercasePath.includes('jokes') || lowercasePath.includes('all jokes')) {
     return 'https://i.imgur.com/9hFTFQt.png'; // All jokes
-  } else if (spritePath.includes('nerd') || spritePath.includes('closet')) {
+  } else if (lowercasePath.includes('nerd') || lowercasePath.includes('closet')) {
     return 'https://i.imgur.com/knA2Yxz.png'; // Closet nerd
-  } else if (spritePath.includes('functional') || spritePath.includes('addict')) {
+  } else if (lowercasePath.includes('functional') || lowercasePath.includes('addict')) {
     return 'https://i.imgur.com/G3xfSjU.png'; // Functional addict
-  } else if (spritePath.includes('homeless')) {
+  } else if (lowercasePath.includes('homeless')) {
     return 'https://i.imgur.com/LRVrieF.png'; // Homeless YN
-  } else if (spritePath.includes('gamer')) {
+  } else if (lowercasePath.includes('gamer')) {
     return 'https://i.imgur.com/vFvQKap.png'; // Gamer YN
-  } else if (spritePath.includes('serial')) {
+  } else if (lowercasePath.includes('serial')) {
     return 'https://i.imgur.com/Kwe1HpA.png'; // Serial YN
-  } else if (spritePath.includes('rich') || spritePath.includes('techbro')) {
+  } else if (lowercasePath.includes('rich') || lowercasePath.includes('techbro')) {
     return 'https://i.imgur.com/GmlKf6u.png'; // Rich techbro
-  } else if (spritePath.includes('unemployed')) {
+  } else if (lowercasePath.includes('unemployed')) {
     return 'https://i.imgur.com/b5pnt7o.png'; // Gamer unemployed
-  } else if (spritePath.includes('earthy')) {
+  } else if (lowercasePath.includes('earthy')) {
     return 'https://i.imgur.com/1SuHgnZ.png'; // Earthy
-  } else if (spritePath.includes('dysfunctional')) {
+  } else if (lowercasePath.includes('dysfunctional')) {
     return 'https://i.imgur.com/yA0lUbo.png'; // Dysfunctional
   }
   
-  // Special case for player movement sprites
-  if (spritePath.includes('back') || spritePath.includes('fwd') || 
-      spritePath.includes('right') || spritePath.includes('left')) {
+  // Special case for player movement sprites in overworld
+  if (lowercasePath.includes('back') || lowercasePath.includes('fwd') || 
+      lowercasePath.includes('right') || lowercasePath.includes('left')) {
     // Keep these as local paths for the overworld character
+    logSprite("Handling movement sprite for overworld:", spritePath);
     
     // Fix paths starting with ./public/ to use public/ instead
     if (spritePath.startsWith('./public/')) {
-      return spritePath.replace('./public/', 'public/');
+      const fixedPath = spritePath.replace('./public/', 'public/');
+      logSprite("Fixed path from ./public/ to public/", fixedPath);
+      return fixedPath;
     }
     
     // Ensure it starts with public/ if needed
     if (!spritePath.startsWith('public/')) {
-      return 'public/' + spritePath;
+      const fixedPath = 'public/' + spritePath;
+      logSprite("Added public/ prefix to path", fixedPath);
+      return fixedPath;
     }
     
     return spritePath;
   }
   
   // Default to fitness bro for any local paths we can't map
-  console.log("Using fallback imgur URL for sprite:", spritePath);
+  logSprite("⚠️ Using fallback imgur URL for sprite:", spritePath);
   return 'https://i.imgur.com/YeMI4sr.png';
 }
 
@@ -2396,6 +2458,37 @@ function startBattle() {
   
   console.log("Battle starting with player team:", playerTeam);
   
+  // Add debug logging to trace sprite issues before battle starts
+  console.group("🏆 START BATTLE SPRITE DIAGNOSTICS");
+  
+  // Show sprite debugging for each player character
+  if (playerTeam && playerTeam.length > 0) {
+    console.log("Player team sprites:");
+    playerTeam.forEach((character, index) => {
+      console.log(`Player ${index}: ${character.name}`);
+      console.log(`  Original sprite: ${character.sprite || 'undefined'}`);
+      
+      // Apply standardization if needed
+      if (character.sprite && typeof standardizeSpritePath === 'function') {
+        const standardized = standardizeSpritePath(character.sprite);
+        if (standardized !== character.sprite) {
+          console.warn(`  Sprite path not standardized, fixing...`);
+          character.sprite = standardized;
+          console.log(`  Fixed to: ${character.sprite}`);
+        } else {
+          console.log(`  Sprite path already standardized correctly.`);
+        }
+      }
+      
+      // Use sprite debugging helper if available
+      if (window.SpriteManager && typeof window.SpriteManager.debugSpriteIssues === 'function') {
+        window.SpriteManager.debugSpriteIssues('START_BATTLE', character);
+      }
+    });
+  } else {
+    console.error("No player team defined before starting battle!");
+  }
+  
   // Check if we have an active opponent from the overworld
   if (window.activeOpponent) {
     // Use the overworld opponent
@@ -2403,16 +2496,32 @@ function startBattle() {
     // Update our active opponent in the opponent list
     opponents[0] = window.activeOpponent;
     
+    // Debug opponent sprite
+    console.log("Opponent sprite before standardization:", opponents[0].sprite);
+    
     // Ensure the opponent sprite is standardized
     if (opponents[0].sprite) {
+      const originalOpponentSprite = opponents[0].sprite;
       opponents[0].sprite = standardizeSpritePath(opponents[0].sprite);
-      console.log(`Standardized opponent sprite: ${opponents[0].name} → ${opponents[0].sprite}`);
+      console.log(`Standardized opponent sprite: ${opponents[0].name}`, originalOpponentSprite, "→", opponents[0].sprite);
+      
+      // Use sprite debugging helper if available
+      if (window.SpriteManager && typeof window.SpriteManager.debugSpriteIssues === 'function') {
+        window.SpriteManager.debugSpriteIssues('START_BATTLE_OPPONENT', opponents[0]);
+      }
     }
   } else {
     console.warn("No active opponent set, using a default opponent");
     // Create a default opponent if none is set
     window.activeOpponent = opponents[0];
+    
+    // Ensure opponent has standardized sprite
+    if (window.activeOpponent && window.activeOpponent.sprite) {
+      window.activeOpponent.sprite = standardizeSpritePath(window.activeOpponent.sprite);
+    }
   }
+  
+  console.groupEnd();
   
   // Check for valid player team
   if (!playerTeam || playerTeam.length === 0) {
@@ -2712,225 +2821,225 @@ function updateBattleUI() {
     battleScreen.appendChild(newBattleBackground);
   }
   
-  // Get or create player sprite container
-  let playerSpriteContainer = document.getElementById("player-sprite-container");
-  if (!playerSpriteContainer) {
-    console.log("Creating player sprite container");
-    playerSpriteContainer = document.createElement("div");
-    playerSpriteContainer.id = "player-sprite-container";
-    playerSpriteContainer.className = "player-sprite-container";
-    playerSpriteContainer.style.display = "flex";
-    playerSpriteContainer.style.visibility = "visible";
-    playerSpriteContainer.style.opacity = "1";
-    playerSpriteContainer.style.width = "300px";
-    playerSpriteContainer.style.height = "300px";
-    playerSpriteContainer.style.position = "absolute";
-    playerSpriteContainer.style.left = "10%";
-    playerSpriteContainer.style.bottom = "30%";
-    playerSpriteContainer.style.justifyContent = "center";
-    playerSpriteContainer.style.alignItems = "center";
-    playerSpriteContainer.style.zIndex = "10";
-    
-    // Add to battle background if it exists, otherwise to battle screen
-    const container = document.getElementById("battle-background") || document.getElementById("battle-screen");
-    container.appendChild(playerSpriteContainer);
+  // IMPORTANT FIX: Always recreate sprite containers to avoid DOM conflicts
+  
+  // First, clean up any existing containers
+  const existingPlayerContainer = document.getElementById("player-sprite-container");
+  const existingOpponentContainer = document.getElementById("opponent-sprite-container");
+  
+  if (existingPlayerContainer) {
+    console.log("Removing existing player sprite container");
+    existingPlayerContainer.remove();
   }
   
-  // Get or create player sprite
-  let playerSprite = document.getElementById("player-sprite");
-  if (!playerSprite) {
-    console.log("Creating player sprite element");
-    playerSprite = document.createElement("img");
-    playerSprite.id = "player-sprite";
-    playerSprite.alt = "Player";
-    playerSprite.style.display = "block";
-    playerSprite.style.visibility = "visible";
-    playerSprite.style.opacity = "1";
-    playerSprite.style.width = "220px";
-    playerSprite.style.height = "220px";
-    playerSprite.style.position = "relative";
-    playerSprite.style.zIndex = "15";
-    playerSpriteContainer.appendChild(playerSprite);
+  if (existingOpponentContainer) {
+    console.log("Removing existing opponent sprite container");
+    existingOpponentContainer.remove();
   }
   
-  // Get or create opponent sprite container
-  let opponentSpriteContainer = document.getElementById("opponent-sprite-container");
-  if (!opponentSpriteContainer) {
-    console.log("Creating opponent sprite container");
-    opponentSpriteContainer = document.createElement("div");
-    opponentSpriteContainer.id = "opponent-sprite-container";
-    opponentSpriteContainer.className = "opponent-sprite-container";
-    opponentSpriteContainer.style.display = "flex";
-    opponentSpriteContainer.style.visibility = "visible";
-    opponentSpriteContainer.style.opacity = "1";
-    opponentSpriteContainer.style.width = "200px";
-    opponentSpriteContainer.style.height = "200px";
-    opponentSpriteContainer.style.position = "absolute";
-    opponentSpriteContainer.style.right = "10%";
-    opponentSpriteContainer.style.top = "20%";
-    opponentSpriteContainer.style.justifyContent = "center";
-    opponentSpriteContainer.style.alignItems = "center";
-    opponentSpriteContainer.style.zIndex = "10";
-    
-    // Add to battle background if it exists, otherwise to battle screen
-    const container = document.getElementById("battle-background") || document.getElementById("battle-screen");
-    container.appendChild(opponentSpriteContainer);
+  // Get the parent container for our sprites
+  const container = document.getElementById("battle-background") || document.getElementById("battle-screen");
+  if (!container) {
+    console.error("No battle container found!");
+    return;
   }
   
-  // Get or create opponent sprite
-  let opponentSprite = document.getElementById("opponent-sprite");
-  if (!opponentSprite) {
-    console.log("Creating opponent sprite element");
-    opponentSprite = document.createElement("img");
-    opponentSprite.id = "opponent-sprite";
-    opponentSprite.alt = "Opponent";
-    opponentSprite.style.display = "block";
-    opponentSprite.style.visibility = "visible";
-    opponentSprite.style.opacity = "1";
-    opponentSprite.style.width = "140px";
-    opponentSprite.style.height = "140px";
-    opponentSprite.style.position = "relative";
-    opponentSprite.style.zIndex = "15";
-    opponentSpriteContainer.appendChild(opponentSprite);
-  }
+  // Create fresh player sprite container
+  console.log("Creating fresh player sprite container");
+  const playerSpriteContainer = document.createElement("div");
+  playerSpriteContainer.id = "player-sprite-container";
+  playerSpriteContainer.className = "player-sprite-container";
+  // Apply critical styling directly
+  playerSpriteContainer.style.display = "flex";
+  playerSpriteContainer.style.visibility = "visible";
+  playerSpriteContainer.style.opacity = "1";
+  playerSpriteContainer.style.width = "240px";
+  playerSpriteContainer.style.height = "240px";
+  playerSpriteContainer.style.position = "absolute";
+  playerSpriteContainer.style.left = "10%";
+  playerSpriteContainer.style.bottom = "20%";
+  playerSpriteContainer.style.justifyContent = "center";
+  playerSpriteContainer.style.alignItems = "center";
+  playerSpriteContainer.style.zIndex = "50";
+  
+  // Add to battle container
+  container.appendChild(playerSpriteContainer);
+  
+  // Create fresh player sprite
+  console.log("Creating fresh player sprite element");
+  const playerSprite = document.createElement("img");
+  playerSprite.id = "player-sprite";
+  playerSprite.alt = "Player";
+  playerSprite.style.display = "block";
+  playerSprite.style.visibility = "visible";
+  playerSprite.style.opacity = "1";
+  playerSprite.style.width = "220px";
+  playerSprite.style.height = "220px";
+  playerSprite.style.position = "relative";
+  playerSprite.style.zIndex = "100";
+  playerSpriteContainer.appendChild(playerSprite);
+  
+  // Create fresh opponent sprite container
+  console.log("Creating fresh opponent sprite container");
+  const opponentSpriteContainer = document.createElement("div");
+  opponentSpriteContainer.id = "opponent-sprite-container";
+  opponentSpriteContainer.className = "opponent-sprite-container";
+  opponentSpriteContainer.style.display = "flex";
+  opponentSpriteContainer.style.visibility = "visible";
+  opponentSpriteContainer.style.opacity = "1";
+  opponentSpriteContainer.style.width = "160px";
+  opponentSpriteContainer.style.height = "160px";
+  opponentSpriteContainer.style.position = "absolute";
+  opponentSpriteContainer.style.right = "10%";
+  opponentSpriteContainer.style.top = "20%";
+  opponentSpriteContainer.style.justifyContent = "center";
+  opponentSpriteContainer.style.alignItems = "center";
+  opponentSpriteContainer.style.zIndex = "50";
+  
+  // Add to battle container
+  container.appendChild(opponentSpriteContainer);
+  
+  // Create fresh opponent sprite
+  console.log("Creating fresh opponent sprite element");
+  const opponentSprite = document.createElement("img");
+  opponentSprite.id = "opponent-sprite";
+  opponentSprite.alt = "Opponent";
+  opponentSprite.style.display = "block";
+  opponentSprite.style.visibility = "visible";
+  opponentSprite.style.opacity = "1";
+  opponentSprite.style.width = "140px";
+  opponentSprite.style.height = "140px";
+  opponentSprite.style.position = "relative";
+  opponentSprite.style.zIndex = "100";
+  opponentSpriteContainer.appendChild(opponentSprite);
   
   // Update player character display and add debug logging
   const playerNameElement = document.getElementById("player-name");
-  console.log("Player name element before setting:", playerNameElement.innerHTML);
-  playerNameElement.textContent = activePlayerCharacter.name;
-  console.log("Player name element after setting:", playerNameElement.innerHTML);
+  if (playerNameElement) {
+    console.log("Player name element before setting:", playerNameElement.innerHTML);
+    playerNameElement.textContent = activePlayerCharacter.name;
+    console.log("Player name element after setting:", playerNameElement.innerHTML);
+  }
   
   // Make sure maxHp is set for both active characters
   activePlayerCharacter.maxHp = activePlayerCharacter.maxHp || activePlayerCharacter.hp;
   activeOpponent.maxHp = activeOpponent.maxHp || activeOpponent.hp;
   
   // Update HP display using maxHp
-  document.getElementById("player-hp").textContent = `${activePlayerCharacter.hp}/${activePlayerCharacter.maxHp}`;
+  const playerHpElement = document.getElementById("player-hp");
+  if (playerHpElement) {
+    playerHpElement.textContent = `${activePlayerCharacter.hp}/${activePlayerCharacter.maxHp}`;
+  }
   
   // Debug sprite paths
   console.log("Player sprite path:", activePlayerCharacter.sprite);
   console.log("Opponent sprite path:", activeOpponent.sprite);
   
-  // Get player sprite element from the container we created earlier
-  const playerSpriteElem = document.getElementById("player-sprite");
-  console.log("Player sprite element check:", playerSpriteElem);
-  console.log("Player sprite current src:", playerSpriteElem.src);
-  console.log("Player sprite current display:", playerSpriteElem.style.display);
-  console.log("Player sprite current visibility:", playerSpriteElem.style.visibility);
-  console.log("Player sprite current opacity:", playerSpriteElem.style.opacity);
-  
+  // Set sprites with standardized paths
   try {
     // Use our standardize helper for player sprite path
     const playerSpritePath = standardizeSpritePath(activePlayerCharacter.sprite);
+    console.log("Standardized player sprite path:", playerSpritePath);
     
-    console.log("Updated player sprite path:", playerSpritePath);
-    console.log("Setting player sprite src to:", playerSpritePath);
-    
-    // Get the container for additional styling
-    const playerSpriteContainer = document.getElementById("player-sprite-container");
-    if (playerSpriteContainer) {
-      playerSpriteContainer.style.display = "flex";
-      playerSpriteContainer.style.visibility = "visible";
-      playerSpriteContainer.style.opacity = "1";
-      playerSpriteContainer.style.width = "100%";
-      playerSpriteContainer.style.height = "220px";
-      playerSpriteContainer.style.justifyContent = "center";
-      playerSpriteContainer.style.alignItems = "center";
-      playerSpriteContainer.style.position = "relative";
-      playerSpriteContainer.style.zIndex = "10";
-      console.log("Applied container styles");
-    }
-    
-    // Force visibility settings on sprite
-    playerSpriteElem.style.display = "block";
-    playerSpriteElem.style.visibility = "visible";
-    playerSpriteElem.style.opacity = "1";
-    playerSpriteElem.style.width = "220px";
-    playerSpriteElem.style.height = "220px";
-    playerSpriteElem.style.zIndex = "15";
-    playerSpriteElem.style.position = "relative";
-    
-    // Set the source last
-    playerSpriteElem.src = playerSpritePath;
-    
-    console.log("After update - display:", playerSpriteElem.style.display);
-    console.log("After update - visibility:", playerSpriteElem.style.visibility);
-    console.log("After update - opacity:", playerSpriteElem.style.opacity);
-    
-    playerSpriteElem.onload = function() {
-      console.log("Player sprite loaded successfully:", playerSpritePath);
+    // Get the sprite element we just created
+    const playerSpriteElem = document.getElementById("player-sprite");
+    if (playerSpriteElem) {
+      // Set the source first so onload event will fire
+      playerSpriteElem.src = playerSpritePath;
       
-      // Double-check settings after load
-      console.log("After load - display:", playerSpriteElem.style.display);
-      console.log("After load - visibility:", playerSpriteElem.style.visibility);
-      console.log("After load - opacity:", playerSpriteElem.style.opacity);
-    };
-    
-    playerSpriteElem.onerror = function() {
-      console.error("Failed to load player sprite:", playerSpritePath);
-      // Retry with default sprite
-      console.log("Trying fallback sprite...");
-      playerSpriteElem.src = "https://i.imgur.com/YeMI4sr.png"; // Fitness Bro as fallback
-    };
+      // Force visibility again after setting src
+      playerSpriteElem.style.display = "block";
+      playerSpriteElem.style.visibility = "visible";
+      playerSpriteElem.style.opacity = "1";
+      
+      console.log("Player sprite visibility settings applied");
+      
+      // Set onload handler
+      playerSpriteElem.onload = function() {
+        console.log("Player sprite loaded successfully:", playerSpritePath);
+        // Force visibility AGAIN after load
+        playerSpriteElem.style.display = "block";
+        playerSpriteElem.style.visibility = "visible";
+        playerSpriteElem.style.opacity = "1";
+      };
+      
+      // Set error handler
+      playerSpriteElem.onerror = function() {
+        console.error("Failed to load player sprite:", playerSpritePath);
+        // Retry with default sprite
+        console.log("Trying fallback sprite...");
+        playerSpriteElem.src = "https://i.imgur.com/YeMI4sr.png"; // Fitness Bro as fallback
+      };
+    } else {
+      console.error("Player sprite element not found after creation!");
+    }
   } catch (error) {
     console.error("Error setting player sprite:", error);
   }
   
   // Update opponent display
-  document.getElementById("opponent-name").textContent = activeOpponent.name;
-  document.getElementById("opponent-hp").textContent = `${activeOpponent.hp}/${activeOpponent.maxHp}`;
+  const opponentNameElement = document.getElementById("opponent-name");
+  if (opponentNameElement) {
+    opponentNameElement.textContent = activeOpponent.name;
+  }
+  
+  const opponentHpElement = document.getElementById("opponent-hp");
+  if (opponentHpElement) {
+    opponentHpElement.textContent = `${activeOpponent.hp}/${activeOpponent.maxHp}`;
+  }
   
   // Handle opponent sprite with error handling
-  const opponentSpriteElem = document.getElementById("opponent-sprite");
-  console.log("Opponent sprite element:", opponentSpriteElem);
-  console.log("Opponent sprite current src:", opponentSpriteElem.src);
-  console.log("Opponent sprite current display:", opponentSpriteElem.style.display);
-  console.log("Opponent sprite current visibility:", opponentSpriteElem.style.visibility);
-  console.log("Opponent sprite current opacity:", opponentSpriteElem.style.opacity);
-  
   try {
     // Use our standardize helper for opponent sprite path
     const opponentSpritePath = standardizeSpritePath(activeOpponent.sprite);
+    console.log("Standardized opponent sprite path:", opponentSpritePath);
     
-    console.log("Updated opponent sprite path:", opponentSpritePath);
-    console.log("Setting opponent sprite src to:", opponentSpritePath);
-    
-    // Force visibility settings
-    opponentSpriteElem.style.display = "block";
-    opponentSpriteElem.style.visibility = "visible";
-    opponentSpriteElem.style.opacity = "1";
-    opponentSpriteElem.style.width = "140px";
-    opponentSpriteElem.style.height = "140px";
-    
-    // Set the source last
-    opponentSpriteElem.src = opponentSpritePath;
-    
-    console.log("After update - display:", opponentSpriteElem.style.display);
-    console.log("After update - visibility:", opponentSpriteElem.style.visibility);
-    console.log("After update - opacity:", opponentSpriteElem.style.opacity);
-    
-    opponentSpriteElem.onload = function() {
-      console.log("Opponent sprite loaded successfully:", opponentSpritePath);
+    // Get the sprite element we just created
+    const opponentSpriteElem = document.getElementById("opponent-sprite");
+    if (opponentSpriteElem) {
+      // Set the source first so onload event will fire
+      opponentSpriteElem.src = opponentSpritePath;
       
-      // Double-check settings after load
-      console.log("After load - display:", opponentSpriteElem.style.display);
-      console.log("After load - visibility:", opponentSpriteElem.style.visibility);
-      console.log("After load - opacity:", opponentSpriteElem.style.opacity);
-    };
-    
-    opponentSpriteElem.onerror = function() {
-      console.error("Failed to load opponent sprite:", opponentSpritePath);
-      // Retry with default sprite
-      console.log("Trying fallback sprite...");
-      opponentSpriteElem.src = "https://i.imgur.com/UkE9crR.png"; // 9-5 Homie as fallback
-    };
+      // Force visibility again after setting src
+      opponentSpriteElem.style.display = "block";
+      opponentSpriteElem.style.visibility = "visible"; 
+      opponentSpriteElem.style.opacity = "1";
+      
+      console.log("Opponent sprite visibility settings applied");
+      
+      // Set onload handler
+      opponentSpriteElem.onload = function() {
+        console.log("Opponent sprite loaded successfully:", opponentSpritePath);
+        // Force visibility AGAIN after load
+        opponentSpriteElem.style.display = "block";
+        opponentSpriteElem.style.visibility = "visible";
+        opponentSpriteElem.style.opacity = "1";
+      };
+      
+      // Set error handler
+      opponentSpriteElem.onerror = function() {
+        console.error("Failed to load opponent sprite:", opponentSpritePath);
+        // Retry with default sprite
+        console.log("Trying fallback sprite...");
+        opponentSpriteElem.src = "https://i.imgur.com/UkE9crR.png"; // 9-5 Homie as fallback
+      };
+    } else {
+      console.error("Opponent sprite element not found after creation!");
+    }
   } catch (error) {
     console.error("Error setting opponent sprite:", error);
   }
   
   // Update HP bars using maxHp directly
-  document.getElementById("player-hp-fill").style.width = `${(activePlayerCharacter.hp / activePlayerCharacter.maxHp) * 100}%`;
-  document.getElementById("opponent-hp-fill").style.width = `${(activeOpponent.hp / activeOpponent.maxHp) * 100}%`;
+  const playerHpFill = document.getElementById("player-hp-fill");
+  if (playerHpFill) {
+    playerHpFill.style.width = `${(activePlayerCharacter.hp / activePlayerCharacter.maxHp) * 100}%`;
+  }
+  
+  const opponentHpFill = document.getElementById("opponent-hp-fill");
+  if (opponentHpFill) {
+    opponentHpFill.style.width = `${(activeOpponent.hp / activeOpponent.maxHp) * 100}%`;
+  }
   
   // Update player info tooltip with safety checks
   if (activePlayerCharacter && document.getElementById("player-info-text")) {
@@ -2965,6 +3074,26 @@ function updateBattleUI() {
     `;
     document.getElementById("opponent-info-text").innerHTML = characterInfo;
   }
+  
+  // Final check - force both sprites to be visible again after a short delay
+  setTimeout(() => {
+    const playerSpriteElem = document.getElementById("player-sprite");
+    const opponentSpriteElem = document.getElementById("opponent-sprite");
+    
+    if (playerSpriteElem) {
+      playerSpriteElem.style.display = "block";
+      playerSpriteElem.style.visibility = "visible";
+      playerSpriteElem.style.opacity = "1";
+    }
+    
+    if (opponentSpriteElem) {
+      opponentSpriteElem.style.display = "block";
+      opponentSpriteElem.style.visibility = "visible";
+      opponentSpriteElem.style.opacity = "1";
+    }
+    
+    console.log("Final visibility check complete");
+  }, 100);
 }
 
 function updateStatusIcons() {

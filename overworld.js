@@ -1947,12 +1947,23 @@ function startNpcBattle(npc) {
           character.sprite = "https://i.imgur.com/YeMI4sr.png";
         } else if (character.name.includes("Rasta")) {
           character.sprite = "https://i.imgur.com/dZWWrrs.png";
+        } else if (character.name.includes("Tech")) {
+          character.sprite = "https://i.imgur.com/VVa9pm9.png";
+        } else if (character.name.includes("Cool") || character.name.includes("Vibe")) {
+          character.sprite = "https://i.imgur.com/2n71aSJ.png";
+        } else if (character.name.includes("9-5") || character.name.includes("Homie")) {
+          character.sprite = "https://i.imgur.com/UkE9crR.png";
         } else {
           // Default to fitness bro as fallback
           character.sprite = "https://i.imgur.com/YeMI4sr.png";
         }
         
         console.log(`Sprite converted to:`, character.sprite);
+      }
+      
+      // Use sprite debugging helper if available
+      if (window.SpriteManager && typeof window.SpriteManager.debugSpriteIssues === 'function') {
+        window.SpriteManager.debugSpriteIssues('NPC_BATTLE', character);
       }
     });
     
@@ -2226,25 +2237,74 @@ function triggerRandomEncounter() {
       return;
     }
     
-    // Ensure all player sprites use the imgur URL format for consistency
+    // Ensure all player sprites use the standardized format for consistency
     window.playerTeam.forEach(character => {
-      if (character.sprite) {
-        // Check if it's already an imgur URL
-        if (!character.sprite.includes('imgur.com')) {
-          console.log(`Converting sprite format for ${character.name}:`, character.sprite);
-          
-          // Map known character sprites to their imgur URLs
-          if (character.name.includes("Fitness")) {
-            character.sprite = "https://i.imgur.com/YeMI4sr.png";
-          } else if (character.name.includes("Rasta")) {
-            character.sprite = "https://i.imgur.com/dZWWrrs.png";
-          } else {
-            // Default to fitness bro as fallback
-            character.sprite = "https://i.imgur.com/YeMI4sr.png";
-          }
-          
-          console.log(`Sprite converted to:`, character.sprite);
+      console.log(`Checking sprite for character ${character.name}`, character.sprite);
+      
+      if (!character.sprite) {
+        console.warn(`Character ${character.name} has no sprite defined - adding default`);
+        // Assign based on character name
+        character.sprite = character.name;
+      }
+      
+      // Multiple methods to ensure sprites are properly standardized:
+      
+      // Method 1: Use standardizeSpritePath if available (from script.js) - our most reliable method
+      if (typeof window.standardizeSpritePath === 'function') {
+        const originalSprite = character.sprite;
+        character.sprite = window.standardizeSpritePath(character.sprite);
+        
+        if (originalSprite !== character.sprite) {
+          console.log(`Standardized sprite for ${character.name}:`, originalSprite, "→", character.sprite);
         }
+      } 
+      // Method 2: Use SpriteManager.getGameSpriteUrl as another option
+      else if (window.SpriteManager && typeof window.SpriteManager.getGameSpriteUrl === 'function') {
+        const originalSprite = character.sprite;
+        character.sprite = window.SpriteManager.getGameSpriteUrl(character.sprite);
+        
+        if (originalSprite !== character.sprite) {
+          console.log(`Sprite Manager fixed sprite for ${character.name}:`, originalSprite, "→", character.sprite);
+        }
+      } 
+      // Method 3: Fallback direct mapping for critical path
+      else if (character.sprite && !character.sprite.includes('imgur.com')) {
+        console.log(`Converting non-imgur sprite for ${character.name}:`, character.sprite);
+          
+        // Map known character sprites to their imgur URLs
+        if (character.name.includes("Fitness")) {
+          character.sprite = "https://i.imgur.com/YeMI4sr.png";
+        } else if (character.name.includes("Rasta")) {
+          character.sprite = "https://i.imgur.com/dZWWrrs.png";
+        } else if (character.name.includes("Tech")) {
+          character.sprite = "https://i.imgur.com/VVa9pm9.png";
+        } else if (character.name.includes("Cool") || character.name.includes("Vibe")) {
+          character.sprite = "https://i.imgur.com/2n71aSJ.png";
+        } else if (character.name.includes("9-5") || character.name.includes("Homie")) {
+          character.sprite = "https://i.imgur.com/UkE9crR.png";
+        } else if (character.name.includes("Jokes")) {
+          character.sprite = "https://i.imgur.com/9hFTFQt.png";
+        } else if (character.name.includes("Nerd")) {
+          character.sprite = "https://i.imgur.com/knA2Yxz.png";
+        } else if (character.name.includes("Addict")) {
+          character.sprite = "https://i.imgur.com/G3xfSjU.png";
+        } else {
+          // Default to fitness bro as fallback
+          character.sprite = "https://i.imgur.com/YeMI4sr.png";
+        }
+          
+        console.log(`Sprite converted to:`, character.sprite);
+      }
+        
+      // Final verification - make sure every character has a valid imgur URL
+      if (!character.sprite || !character.sprite.includes('imgur.com')) {
+        console.warn(`Still problematic sprite for ${character.name}, forcing to Fitness Bro as fallback`);
+        character.sprite = "https://i.imgur.com/YeMI4sr.png";
+      }
+      
+      // Use sprite debugging helper if available as a final check
+      if (window.SpriteManager && typeof window.SpriteManager.debugSpriteIssues === 'function') {
+        window.SpriteManager.debugSpriteIssues('RANDOM_ENCOUNTER', character);
       }
     });
     

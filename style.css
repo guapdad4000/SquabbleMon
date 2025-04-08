@@ -532,6 +532,10 @@ body {
   max-height: 240px !important;
   width: 220px !important; /* Larger but not too large (about 160% of opponent) */
   height: 220px !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 100 !important;
 }
 
 /* Special handling for local file sprites */
@@ -2233,4 +2237,45 @@ body {
     opacity: 1;
     transform: translateY(-50%) scale(1.05);
   }
+}
+
+/* Battle sprite containers - special high-specificity styles to ensure visibility */
+#battle-background #player-sprite-container,
+#battle-screen #player-sprite-container {
+  position: absolute !important;
+  bottom: 20% !important;
+  left: 10% !important;
+  width: 240px !important;
+  height: 240px !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  z-index: 50 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+#battle-background #opponent-sprite-container,
+#battle-screen #opponent-sprite-container {
+  position: absolute !important;
+  top: 20% !important; 
+  right: 10% !important;
+  width: 160px !important;
+  height: 160px !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  z-index: 50 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Global fix for all battle sprite images */
+#player-sprite,
+#opponent-sprite {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  z-index: 100 !important;
 }

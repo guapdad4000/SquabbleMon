@@ -240,67 +240,247 @@ function updateNpcSprite(npcElement, npcData) {
  * @returns {string} - Resolved sprite URL using imgur URLs
  */
 function getGameSpriteUrl(spritePath) {
+  // If window.standardizeSpritePath is available, use that for consistency
+  if (typeof window.standardizeSpritePath === 'function') {
+    console.log("Using global standardizeSpritePath for consistency");
+    return window.standardizeSpritePath(spritePath);
+  }
+  
+  // Debug helper to track standardization of sprites
+  const debugEnabled = true;
+  const logSprite = (message, path) => {
+    if (debugEnabled) {
+      console.log(`[SPRITE_MANAGER] ${message}`, path);
+    }
+  };
+  
   // Default sprite if none is provided
   if (!spritePath || typeof spritePath !== 'string') {
-    console.warn("Missing or invalid sprite path in getGameSpriteUrl");
+    logSprite("Missing or invalid sprite path in getGameSpriteUrl", spritePath);
     return 'https://i.imgur.com/YeMI4sr.png'; // Default to Fitness Bro
   }
   
-  // If it's already an imgur URL, return as is
+  // Trim any whitespace
+  spritePath = spritePath.trim();
+  logSprite("Processing sprite path:", spritePath);
+  
+  // For imgur URLs, ensure consistency
   if (spritePath.includes('imgur.com')) {
-    console.log(`Using existing imgur URL: ${spritePath}`);
+    logSprite("Found imgur URL", spritePath);
+    
+    // Fix common imgur format issues
+    if (spritePath.includes('imgur.com/a/')) {
+      logSprite("Imgur album detected, not supported", spritePath);
+      return 'https://i.imgur.com/YeMI4sr.png'; // Cannot use album links
+    }
+    
+    // Fix non-direct links to use i.imgur.com format
+    if (spritePath.includes('imgur.com') && !spritePath.includes('i.imgur.com')) {
+      // Extract the ID (last part of URL)
+      const parts = spritePath.split('/');
+      const id = parts[parts.length - 1].split('.')[0];
+      spritePath = `https://i.imgur.com/${id}.png`;
+      logSprite("Converted to direct i.imgur.com format", spritePath);
+    }
+    
     return spritePath;
   }
   
   // For other URLs, leave as is
   if (spritePath.startsWith('http://') || spritePath.startsWith('https://')) {
-    console.log(`Using non-imgur URL: ${spritePath}`);
+    logSprite("Using non-imgur URL", spritePath);
     return spritePath;
   }
   
   // For local paths, map to imgur URLs
-  console.log(`Converting local path to imgur URL: ${spritePath}`);
+  logSprite("Converting local path to imgur URL", spritePath);
+  
+  // Character name map
+  const characterToImageMap = {
+    // Main characters
+    'Rastamon': 'https://i.imgur.com/dZWWrrs.png',
+    'Fitness Bro': 'https://i.imgur.com/YeMI4sr.png',
+    'Techy': 'https://i.imgur.com/VVa9pm9.png',
+    'Cool Vibe YN': 'https://i.imgur.com/2n71aSJ.png',
+    '9-5 Homie': 'https://i.imgur.com/UkE9crR.png',
+    'All Jokes YN': 'https://i.imgur.com/9hFTFQt.png',
+    'Closet Nerd': 'https://i.imgur.com/knA2Yxz.png',
+    'Functional Addict': 'https://i.imgur.com/G3xfSjU.png',
+    'Dysfunctional YN': 'https://i.imgur.com/yA0lUbo.png',
+    'Gamer YN': 'https://i.imgur.com/vFvQKap.png',
+    'Serial YN': 'https://i.imgur.com/Kwe1HpA.png',
+    'Homeless YN': 'https://i.imgur.com/LRVrieF.png',
+    'Rich Techbro': 'https://i.imgur.com/GmlKf6u.png',
+    'Gamer Unemployed': 'https://i.imgur.com/b5pnt7o.png',
+    'Earthy': 'https://i.imgur.com/1SuHgnZ.png'
+  };
+  
+  // Try to match character name directly
+  for (const [charName, imgurUrl] of Object.entries(characterToImageMap)) {
+    if (spritePath.toLowerCase().includes(charName.toLowerCase())) {
+      logSprite(`Found character name match: ${charName}`, imgurUrl);
+      return imgurUrl;
+    }
+  }
   
   // Map common character types to known working imgur URLs
-  if (spritePath.includes('og_ras') || spritePath.includes('rasta')) {
+  const lowercasePath = spritePath.toLowerCase();
+  
+  if (lowercasePath.includes('og_ras') || lowercasePath.includes('rasta')) {
     return 'https://i.imgur.com/dZWWrrs.png';
-  } else if (spritePath.includes('brick') || spritePath.includes('fitness') || spritePath.includes('workout')) {
+  } else if (lowercasePath.includes('brick') || lowercasePath.includes('fitness') || lowercasePath.includes('workout')) {
     return 'https://i.imgur.com/YeMI4sr.png';
-  } else if (spritePath.includes('tech') || spritePath.includes('computer')) {
+  } else if (lowercasePath.includes('tech') || lowercasePath.includes('computer')) {
     return 'https://i.imgur.com/VVa9pm9.png';
-  } else if (spritePath.includes('cool') || spritePath.includes('vibe')) {
+  } else if (lowercasePath.includes('cool') || lowercasePath.includes('vibe')) {
     return 'https://i.imgur.com/2n71aSJ.png';
-  } else if (spritePath.includes('trap')) {
+  } else if (lowercasePath.includes('trap')) {
     return 'https://i.imgur.com/Kwe1HpA.png'; // Serial YN as trap character
-  } else if (spritePath.includes('guard')) {
+  } else if (lowercasePath.includes('guard')) {
     return 'https://i.imgur.com/G3xfSjU.png'; // Functional addict as guard
-  } else if (spritePath.includes('kingpin')) {
+  } else if (lowercasePath.includes('kingpin')) {
     return 'https://i.imgur.com/GmlKf6u.png'; // Rich techbro as kingpin
-  } else if (spritePath.includes('momma') || spritePath.includes('kitchen')) {
-    return 'https://i.imgur.com/vFvQKap.png'; // Gamer YN as momma (not perfect but works)
-  } else if (spritePath.includes('opp')) {
+  } else if (lowercasePath.includes('momma') || lowercasePath.includes('kitchen')) {
+    return 'https://i.imgur.com/vFvQKap.png'; // Gamer YN as momma
+  } else if (lowercasePath.includes('opp')) {
     return 'https://i.imgur.com/9hFTFQt.png'; // All jokes as Opp
-  } else if (spritePath.includes('back') || spritePath.includes('fwd') || 
-             spritePath.includes('right') || spritePath.includes('left')) {
+  } else if (lowercasePath.includes('earthy')) {
+    return 'https://i.imgur.com/1SuHgnZ.png'; // Earthy character
+  } else if (lowercasePath.includes('dysfunctional')) {
+    return 'https://i.imgur.com/yA0lUbo.png'; // Dysfunctional YN
+  } else if (lowercasePath.includes('9-5') || lowercasePath.includes('office')) {
+    return 'https://i.imgur.com/UkE9crR.png'; // 9-5 homie
+  } else if (lowercasePath.includes('jokes')) {
+    return 'https://i.imgur.com/9hFTFQt.png'; // All jokes
+  } else if (lowercasePath.includes('nerd') || lowercasePath.includes('closet')) {
+    return 'https://i.imgur.com/knA2Yxz.png'; // Closet nerd
+  } else if (lowercasePath.includes('homeless')) {
+    return 'https://i.imgur.com/LRVrieF.png'; // Homeless YN
+  } else if (lowercasePath.includes('gamer')) {
+    return 'https://i.imgur.com/vFvQKap.png'; // Gamer YN
+  } else if (lowercasePath.includes('serial')) {
+    return 'https://i.imgur.com/Kwe1HpA.png'; // Serial YN
+  } else if (lowercasePath.includes('rich') || lowercasePath.includes('techbro')) {
+    return 'https://i.imgur.com/GmlKf6u.png'; // Rich techbro
+  } 
+  
+  // Special case for overworld movement sprites
+  if (lowercasePath.includes('back') || lowercasePath.includes('fwd') || 
+      lowercasePath.includes('right') || lowercasePath.includes('left')) {
     // For player movement sprites, still use the originals as is
-    // These are movement frames and need special handling
+    logSprite("Handling movement sprite for overworld", spritePath);
     
     // Fix paths starting with ./public/ to use public/ instead
     if (spritePath.startsWith('./public/')) {
-      return spritePath.replace('./public/', 'public/');
+      const fixedPath = spritePath.replace('./public/', 'public/');
+      logSprite("Fixed path from ./public/ to public/", fixedPath);
+      return fixedPath;
     }
     
     // Ensure it starts with public/ if needed
     if (!spritePath.startsWith('public/')) {
-      return 'public/' + spritePath;
+      const fixedPath = 'public/' + spritePath;
+      logSprite("Added public/ prefix to path", fixedPath);
+      return fixedPath;
     }
     
     return spritePath;
   }
   
   // Default fallback - use fitness bro for anything we can't map
-  console.log(`Using fallback imgur URL for sprite: ${spritePath}`);
+  logSprite("Using fallback imgur URL for sprite", spritePath);
   return 'https://i.imgur.com/YeMI4sr.png';
+}
+
+/**
+ * Debugging utility for sprite issues
+ * @param {string} context - Where this is being called from 
+ * @param {Object} character - Character object to debug sprites for
+ */
+function debugSpriteIssues(context, character) {
+  console.group(`🔍 SPRITE DEBUG [${context}]`);
+  
+  console.log('Character:', character ? character.name : 'No character provided');
+  
+  if (character) {
+    console.log('Sprite path:', character.sprite);
+    if (character.sprite) {
+      const standardized = typeof window.standardizeSpritePath === 'function' 
+        ? window.standardizeSpritePath(character.sprite) 
+        : getGameSpriteUrl(character.sprite);
+      
+      console.log('Standardized path:', standardized);
+      
+      if (standardized !== character.sprite) {
+        console.warn('⚠️ Non-standardized sprite path detected!');
+        // Auto-fix the sprite path if needed
+        if (context.includes('BATTLE')) {
+          console.log('Auto-fixing sprite path for battle...');
+          character.sprite = standardized;
+        }
+      }
+    } else {
+      console.warn('⚠️ No sprite path defined for character!');
+      // Auto-assign a default sprite based on character name or type
+      if (character.name) {
+        console.log('Attempting to assign default sprite based on character name...');
+        character.sprite = getGameSpriteUrl(character.name);
+        console.log('Assigned default sprite:', character.sprite);
+      }
+    }
+  }
+  
+  // Check for sprite containers in battle screen
+  const playerSpriteContainer = document.getElementById('player-sprite-container');
+  if (playerSpriteContainer) {
+    console.log('Player sprite container found:');
+    console.log('  Visibility:', playerSpriteContainer.style.visibility);
+    console.log('  Display:', playerSpriteContainer.style.display);
+    console.log('  Opacity:', playerSpriteContainer.style.opacity);
+    console.log('  Dimensions:', playerSpriteContainer.style.width, 'x', playerSpriteContainer.style.height);
+    console.log('  Z-index:', playerSpriteContainer.style.zIndex);
+    
+    // Check for image inside container
+    const playerImg = playerSpriteContainer.querySelector('img');
+    if (playerImg) {
+      console.log('  Image found inside container');
+      console.log('  Image src:', playerImg.src);
+    } else {
+      console.warn('  ⚠️ No image found inside container!');
+    }
+  } else {
+    // Check for player-sprite element (direct img element)
+    const playerSpriteElement = document.getElementById('player-sprite');
+    if (playerSpriteElement) {
+      console.log('Player sprite element found in DOM');
+      console.log('  Current src:', playerSpriteElement.src);
+      console.log('  Visibility:', playerSpriteElement.style.visibility);
+      console.log('  Display:', playerSpriteElement.style.display);
+      console.log('  Opacity:', playerSpriteElement.style.opacity);
+      console.log('  Dimensions:', playerSpriteElement.style.width, 'x', playerSpriteElement.style.height);
+      console.log('  Z-index:', playerSpriteElement.style.zIndex);
+    } else {
+      console.warn('⚠️ Neither player sprite container nor element found in DOM');
+    }
+  }
+  
+  // Check if we're in battle mode
+  const battleScreen = document.getElementById('battle-screen');
+  if (battleScreen) {
+    console.log('Battle screen detected:');
+    console.log('  Display:', battleScreen.style.display);
+    console.log('  Visibility:', battleScreen.style.visibility);
+  }
+  
+  // Check if we're in overworld mode
+  const overworldContainer = document.getElementById('overworld-container');
+  if (overworldContainer) {
+    console.log('Overworld container detected:');
+    console.log('  Display:', overworldContainer.style.display);
+    console.log('  Visibility:', overworldContainer.style.visibility);
+  }
+  
+  console.groupEnd();
 }
 
 // Export the sprite manager functions
@@ -309,6 +489,7 @@ window.SpriteManager = {
   updatePlayerSprite,
   updateNpcSprite,
   getGameSpriteUrl,
+  debugSpriteIssues,
   NINJA_CHARACTER_SPRITES,
   NPC_SPRITES
 };
