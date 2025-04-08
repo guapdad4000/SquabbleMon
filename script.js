@@ -2154,49 +2154,59 @@ function populateCharacterSelection() {
 
 // Helper function to standardize sprite paths
 function standardizeSpritePath(spritePath) {
-  // Add global debugging property if it doesn't exist
-  if (typeof window.debugSpritePaths === 'undefined') {
-    window.debugSpritePaths = true;
-  }
-  
-  // Debug helper for tracking sprite standardization
-  const logSprite = (message, path) => {
-    if (window.debugSpritePaths) {
-      console.log(`[SPRITE] ${message}`, path);
-    }
-  };
-  
-  // Provide a default sprite if none is given or invalid
-  if (!spritePath || typeof spritePath !== 'string') {
-    logSprite("⚠️ Invalid sprite path provided:", spritePath);
-    // Use a known working imgur URL as default
-    return 'https://i.imgur.com/YeMI4sr.png'; // Fitness Bro
-  }
-  
-  // Trim any whitespace
-  spritePath = spritePath.trim();
-  logSprite("Processing sprite path:", spritePath);
-  
-  // Fix common issues with imgur URLs
-  if (spritePath.includes('imgur.com')) {
-    logSprite("Found imgur URL, standardizing format", spritePath);
-    
-    // Ensure it uses https://i.imgur.com format 
-    if (spritePath.includes('imgur.com/a/')) {
-      logSprite("⚠️ Imgur album detected, not supported:", spritePath);
-      return 'https://i.imgur.com/YeMI4sr.png'; // Cannot use album links
+  try {
+    // Add global debugging property if it doesn't exist
+    if (typeof window.debugSpritePaths === 'undefined') {
+      window.debugSpritePaths = true;
     }
     
-    // Fix non-direct links to use i.imgur.com format
-    if (spritePath.includes('imgur.com') && !spritePath.includes('i.imgur.com')) {
-      // Extract the ID (last part of URL)
-      const parts = spritePath.split('/');
-      const id = parts[parts.length - 1].split('.')[0];
-      spritePath = `https://i.imgur.com/${id}.png`;
-      logSprite("Converted to direct i.imgur.com format:", spritePath);
+    // Debug helper for tracking sprite standardization
+    const logSprite = (message, path) => {
+      if (window.debugSpritePaths) {
+        console.log(`[SPRITE] ${message}`, path);
+      }
+    };
+    
+    // Provide a default sprite if none is given or invalid
+    if (!spritePath || typeof spritePath !== 'string') {
+      logSprite("⚠️ Invalid sprite path provided:", spritePath);
+      // Use a known working imgur URL as default
+      return 'https://i.imgur.com/YeMI4sr.png'; // Fitness Bro
     }
     
-    return spritePath;
+    // Trim any whitespace
+    spritePath = spritePath.trim();
+    logSprite("Processing sprite path:", spritePath);
+    
+    // Fix common issues with imgur URLs
+    if (spritePath.includes('imgur.com')) {
+      logSprite("Found imgur URL, standardizing format", spritePath);
+      
+      // Ensure it uses https://i.imgur.com format 
+      if (spritePath.includes('imgur.com/a/')) {
+        logSprite("⚠️ Imgur album detected, not supported:", spritePath);
+        return 'https://i.imgur.com/YeMI4sr.png'; // Cannot use album links
+      }
+      
+      // Fix non-direct links to use i.imgur.com format
+      if (spritePath.includes('imgur.com') && !spritePath.includes('i.imgur.com')) {
+        try {
+          // Extract the ID (last part of URL)
+          const parts = spritePath.split('/');
+          const id = parts[parts.length - 1].split('.')[0];
+          spritePath = `https://i.imgur.com/${id}.png`;
+          logSprite("Converted to direct i.imgur.com format:", spritePath);
+        } catch (error) {
+          console.error("Error standardizing imgur URL:", error);
+          return 'https://i.imgur.com/YeMI4sr.png'; // Use default on error
+        }
+      }
+      
+      return spritePath;
+    }
+  } catch (error) {
+    console.error("Error in standardizeSpritePath:", error);
+    return 'https://i.imgur.com/YeMI4sr.png'; // Failsafe return
   }
   
   // For other URLs, leave as is but log

@@ -1608,13 +1608,32 @@ function movePlayer(direction) {
 function setupOverworldControls() {
   console.log("Setting up overworld controls and keyboard listeners");
   
-  // Remove any existing listeners to avoid duplicates
-  document.removeEventListener('keydown', handleKeyPress);
+  // First use the global keyboard handler if available
+  if (typeof window.initializeKeyboardHandler === 'function') {
+    console.log("Using global keyboard handler");
+    window.initializeKeyboardHandler();
+    
+    // Make sure the important functions are exposed globally
+    if (typeof window.exposeRequiredFunctions === 'function') {
+      window.exposeRequiredFunctions();
+    }
+    
+    // Also make sure to expose specific functions needed by the keyboard handler
+    window.movePlayer = movePlayer;
+    window.interactWithFacingTile = interactWithFacingTile;
+    window.advanceDialogue = advanceDialogue;
+  } else {
+    // Fallback to original method if global handler is not available
+    console.log("Global keyboard handler not found, using local key handler");
+    
+    // Remove any existing listeners to avoid duplicates
+    document.removeEventListener('keydown', handleKeyPress);
+    
+    // Add the new event listener
+    document.addEventListener('keydown', handleKeyPress);
+  }
   
-  // Add the new event listener
-  document.addEventListener('keydown', handleKeyPress);
-  
-  // Attach click events to NPCs for mouse interaction
+  // Attach click events to NPCs for mouse interaction regardless of keyboard method
   npcs.forEach(npc => {
     if (npc.element) {
       npc.element.style.cursor = 'pointer';
@@ -1624,6 +1643,14 @@ function setupOverworldControls() {
       });
     }
   });
+  
+  // Add click event to player sprite for debugging
+  if (player.element) {
+    player.element.style.cursor = 'pointer';
+    player.element.addEventListener('click', function() {
+      console.log("Player clicked, position:", player.x, player.y);
+    });
+  }
   
   console.log("Overworld controls initialized successfully");
 }
