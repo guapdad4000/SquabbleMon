@@ -674,6 +674,7 @@ let currentNpcs = STARTER_HOOD_NPCS;
 let currentDoors = STARTER_HOOD_DOORS;
 
 // Add movement cooldown to prevent super fast movement
+// This variable is used by both keyboard and mobile controls
 let lastMoveTime = 0;
 
 // UI elements (will be initialized when overworld loads)
@@ -1560,8 +1561,7 @@ function setupOverworldControls() {
 
 // Handle keyboard input
 // Player movement cooldown to prevent moving too quickly 
-// This is a shared variable for both keyboard and mobile controls
-let lastMoveTime = 0;
+// Using the global lastMoveTime variable declared at the top of the file
 const MOVE_COOLDOWN = 150; // milliseconds
 
 function handleKeyPress(e) {
