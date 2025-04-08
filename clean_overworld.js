@@ -771,9 +771,13 @@ const NewOverworldSystem = (function() {
    * Handle keydown events
    */
   function handleKeyDown(e) {
+    console.log("Overworld keydown:", e.key);
+    
     // In dialogue mode, only handle action key
-    if (dialogueBox.style.display !== 'none') {
-      if (e.key === ' ' || e.key === 'Enter' || e.key === 'e' || e.key === 'E' || e.key === 'A') {
+    if (dialogueBox && dialogueBox.style.display !== 'none') {
+      console.log("In dialogue mode, handling:", e.key);
+      if (e.key === ' ' || e.key === 'Enter' || e.key === 'e' || e.key === 'E' || e.key === 'A' || e.key === 'a') {
+        console.log("Advancing dialogue with key:", e.key);
         advanceDialogue();
       }
       return;
@@ -808,6 +812,8 @@ const NewOverworldSystem = (function() {
       case 'Enter':
       case 'e':
       case 'E':
+      case 'A':
+      case 'a':
         keysPressed.action = true;
         interact();
         break;
@@ -843,6 +849,8 @@ const NewOverworldSystem = (function() {
       case 'Enter':
       case 'e':
       case 'E':
+      case 'A':
+      case 'a':
         keysPressed.action = false;
         break;
     }

@@ -1132,12 +1132,37 @@ function initMobileControls() {
         console.log("In overworld, forwarding keypress to overworld system");
         
         // Forward the event to the overworld
-        if (window.NewOverworldSystem && typeof window.NewOverworldSystem.handleKeyDown === 'function') {
-          // First try the new overworld system
-          console.log("Key pressed:", keyData.key);
-          // Create a synthetic event
-          const syntheticEvent = { key: keyData.key, preventDefault: () => {} };
-          window.NewOverworldSystem.handleKeyDown(syntheticEvent);
+        if (window.NewOverworldSystem) {
+          console.log("Using NewOverworldSystem for key:", keyData.key);
+          
+          // Handle directional keys with forceMove
+          if (keyData.key === 'ArrowUp') {
+            window.NewOverworldSystem.forceMove('up');
+            return;
+          }
+          else if (keyData.key === 'ArrowDown') {
+            window.NewOverworldSystem.forceMove('down');
+            return;
+          }
+          else if (keyData.key === 'ArrowLeft') {
+            window.NewOverworldSystem.forceMove('left');
+            return;
+          }
+          else if (keyData.key === 'ArrowRight') {
+            window.NewOverworldSystem.forceMove('right');
+            return;
+          }
+          // Handle A and Enter buttons with forceInteract
+          else if (keyData.key === 'A' || keyData.key === 'Enter') {
+            window.NewOverworldSystem.forceInteract();
+            return;
+          }
+          // Handle all other keys normally
+          else {
+            // Create a synthetic event
+            const syntheticEvent = { key: keyData.key, preventDefault: () => {} };
+            window.NewOverworldSystem.handleKeyDown(syntheticEvent);
+          }
         } 
         else if (window.OverworldSystem && typeof window.OverworldSystem.handleKeyPress === 'function') {
           // Fall back to the old overworld system
