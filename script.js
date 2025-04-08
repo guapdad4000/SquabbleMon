@@ -1593,6 +1593,12 @@ function useFirstMove() {
   }
 }
 
+// Global player inventory
+let playerInventory;
+
+// Global shops
+let gameShops = {};
+
 function initGame() {
   populateCharacterSelection();
   setupMoveTooltips();
@@ -1602,6 +1608,17 @@ function initGame() {
   battleCounter = 0;
   opponentIndex = 0;
   updateFadeDisplay();
+  
+  // Initialize player inventory
+  playerInventory = window.InventorySystem.createPlayerInventory();
+  
+  // Initialize shops
+  gameShops = {
+    cornerStore: window.ShopSystem.createShopInventory(window.ShopSystem.SHOP_TYPES.CORNER_STORE),
+    theTrap: window.ShopSystem.createShopInventory(window.ShopSystem.SHOP_TYPES.THE_TRAP),
+    cloutDealer: window.ShopSystem.createShopInventory(window.ShopSystem.SHOP_TYPES.CLOUT_DEALER),
+    popUpVan: window.ShopSystem.createShopInventory(window.ShopSystem.SHOP_TYPES.POP_UP_VAN)
+  };
   
   // Initialize audio controls (but wait for user interaction to play music)
   initAudio();
@@ -4191,6 +4208,9 @@ function showGameOver(playerWon) {
   const continueButton = document.getElementById("continue-battle");
   const againButton = document.querySelector("#game-over button:not(#continue-battle)");
   
+  // Grant XP, money, and possibly items
+  grantBattleRewards(playerWon);
+  
   // Play appropriate sound
   if (playerWon) {
     playSuccessSound();
@@ -4310,11 +4330,230 @@ function healPlayerTeam() {
   showFloatingLog("Team healed!");
 }
 
+// Open shop with a specific shop inventory
+function openShop(shop) {
+  if (!shop) return;
+  
+  // Update shop UI
+  document.getElementById("shop-name").textContent = shop.name;
+  document.getElementById("player-money").textContent = playerInventory.money;
+  
+  // Populate shop items
+  const shopItemsContainer = document.getElementById("shop-items-container");
+  shopItemsContainer.innerHTML = "";
+  
+  // Check if shop has items
+  if (!shop.items || shop.items.length === 0) {
+    shopItemsContainer.innerHTML = "<p>This shop is currently sold out.</p>";
+  } else {
+    // Create item elements
+    shop.items.forEach(item => {
+      const itemElement = document.createElement("div");
+      itemElement.className = "shop-item";
+      
+      // Create icon element
+      const iconElement = document.createElement("div");
+      iconElement.className = "shop-item-icon";
+      iconElement.textContent = item.icon || "📦";
+      
+      // Create details element
+      const detailsElement = document.createElement("div");
+      detailsElement.className = "shop-item-details";
+      
+      // Create name element
+      const nameElement = document.createElement("div");
+      nameElement.className = "shop-item-name";
+      nameElement.textContent = item.name;
+      
+      // Create description element
+      const descElement = document.createElement("div");
+      descElement.className = "shop-item-description";
+      descElement.textContent = item.description;
+      
+      // Add name and description to details
+      detailsElement.appendChild(nameElement);
+      detailsElement.appendChild(descElement);
+      
+      // Create price element
+      const priceElement = document.createElement("div");
+      priceElement.className = "shop-item-price";
+      
+      // Create price text
+      const priceText = document.createElement("div");
+      priceText.textContent = `$${item.price}`;
+      
+      // Create stock text
+      const stockText = document.createElement("div");
+      stockText.className = "shop-item-stock";
+      stockText.textContent = `Stock: ${item.stock}`;
+      
+      // Create buy button
+      const buyButton = document.createElement("button");
+      buyButton.className = "pixel-button shop-buy-button";
+      buyButton.textContent = "Buy";
+      buyButton.onclick = () => buyShopItem(shop, item);
+      
+      // Disable buy button if player can't afford
+      if (playerInventory.money < item.price) {
+        buyButton.disabled = true;
+        buyButton.style.opacity = "0.5";
+        buyButton.title = "Not enough money";
+      }
+      
+      // Add elements to price
+      priceElement.appendChild(priceText);
+      priceElement.appendChild(stockText);
+      priceElement.appendChild(buyButton);
+      
+      // Add all elements to item
+      itemElement.appendChild(iconElement);
+      itemElement.appendChild(detailsElement);
+      itemElement.appendChild(priceElement);
+      
+      // Add item to container
+      shopItemsContainer.appendChild(itemElement);
+    });
+  }
+  
+  // Show shop screen
+  document.getElementById("shop-screen").style.display = "block";
+}
+
+// Close shop
+function closeShop() {
+  document.getElementById("shop-screen").style.display = "none";
+}
+
+// Buy an item from the shop
+function buyShopItem(shop, item) {
+  // Use the shop system to process the purchase
+  const result = window.ShopSystem.buyItem(shop, item.id, playerInventory);
+  
+  if (result.success) {
+    // Play success sound
+    if (typeof playSuccessSound === 'function') playSuccessSound();
+    
+    // Show floating notification
+    showFloatingLog(result.message);
+    
+    // Update money display
+    document.getElementById("player-money").textContent = playerInventory.money;
+    
+    // Refresh shop display (items may be out of stock now)
+    openShop(shop);
+  } else {
+    // Show error message
+    showFloatingLog(result.message);
+  }
+}
+
+// Apply level up to a character
+function handleCharacterLevelUp(character, levelUpResult) {
+  if (!character || !levelUpResult) return;
+  
+  // Show level up notification
+  const levelUpContent = document.getElementById("level-up-content");
+  
+  // Build level up content
+  let contentHTML = `
+    <div class="level-up-header">
+      <p><strong>${character.name}</strong> reached level ${character.level}!</p>
+    </div>
+    <div class="level-up-stat">
+      <span class="level-up-stat-name">Level</span>
+      <span class="stat-increase">${character.level}</span>
+    </div>
+    <div class="level-up-stat">
+      <span class="level-up-stat-name">XP</span>
+      <span>${character.currentXP} / ${levelUpResult.nextLevelXP}</span>
+    </div>
+  `;
+  
+  // If new moves were unlocked, display them
+  if (levelUpResult.newMoves && levelUpResult.newMoves.length > 0) {
+    levelUpResult.newMoves.forEach(move => {
+      contentHTML += `
+        <div class="new-move">
+          <strong>New Move Unlocked:</strong> ${move.name}
+        </div>
+      `;
+    });
+  }
+  
+  // Update content and show notification
+  levelUpContent.innerHTML = contentHTML;
+  document.getElementById("level-up-notification").style.display = "block";
+  
+  // Play success sound
+  if (typeof playSuccessSound === 'function') playSuccessSound();
+}
+
+// Grant battle rewards (XP, items, money)
+function grantBattleRewards(wasVictorious) {
+  // Calculate base money reward
+  const moneyReward = wasVictorious ? 
+    50 + (activeOpponent.level || 1) * 10 : 
+    Math.floor((25 + (activeOpponent.level || 1) * 5) * 0.5);
+  
+  // Add money to inventory
+  playerInventory.money += moneyReward;
+  
+  // Calculate XP for each character in the team
+  playerTeam.forEach(character => {
+    // Initialize level properties if not already set
+    window.LevelSystem.initializeCharacterLevel(character);
+    
+    // Calculate XP based on opponent level and victory status
+    const xpGained = window.LevelSystem.calculateBattleXP(
+      activeOpponent.level || 1, 
+      wasVictorious,
+      wasVictorious ? 1 : 0  // One knockout for victory, none for loss
+    );
+    
+    // Grant XP to character
+    const levelUpResult = window.LevelSystem.grantXP(character, xpGained);
+    
+    // If character leveled up, show notification
+    if (levelUpResult && levelUpResult.leveledUp) {
+      // Queue level up notifications to show after battle ends
+      setTimeout(() => {
+        handleCharacterLevelUp(character, levelUpResult);
+      }, 1500);
+    }
+    
+    // Log XP gain to battle log
+    addToBattleLog(`${character.name} gained ${xpGained} XP!`);
+  });
+  
+  // Log money reward
+  addToBattleLog(`You got $${moneyReward}!`);
+  
+  // Chance for item drop (only if victorious)
+  if (wasVictorious && Math.random() < 0.3) {
+    // Define possible drops (basic items)
+    const possibleDrops = [
+      { id: 'weed', name: 'Weed', type: 'consumable', effect: 'statusCure', hpBoost: 10, count: 1, icon: '🌿', description: 'Cures status effects and restores a small amount of HP' },
+      { id: 'energy_drink', name: 'Energy Drink', type: 'consumable', effect: 'healing', hpBoost: 30, count: 1, icon: '🥤', description: 'Restores 30 HP to a character' }
+    ];
+    
+    // Select random drop
+    const drop = possibleDrops[Math.floor(Math.random() * possibleDrops.length)];
+    
+    // Add to inventory
+    window.InventorySystem.addItemToInventory(playerInventory, drop);
+    
+    // Log item drop
+    addToBattleLog(`Found item: ${drop.name}!`);
+  }
+}
+
 function restartGame() {
   // Reset everything
   document.getElementById("game-over").style.display = "none";
   document.getElementById("battle-screen").style.display = "none";
   document.getElementById("selection-screen").style.display = "block";
+  document.getElementById("shop-screen").style.display = "none";
+  document.getElementById("level-up-notification").style.display = "none";
   
   // Switch back to menu music
   playMenuMusic();
@@ -4330,6 +4569,17 @@ function restartGame() {
   opponentIndex = 0;
   battleLog = [];
   gameActive = false;
+  
+  // Reset inventory and shops
+  playerInventory = window.InventorySystem.createPlayerInventory();
+  
+  // Restock shops
+  gameShops = {
+    cornerStore: window.ShopSystem.createShopInventory(window.ShopSystem.SHOP_TYPES.CORNER_STORE),
+    theTrap: window.ShopSystem.createShopInventory(window.ShopSystem.SHOP_TYPES.THE_TRAP),
+    cloutDealer: window.ShopSystem.createShopInventory(window.ShopSystem.SHOP_TYPES.CLOUT_DEALER),
+    popUpVan: window.ShopSystem.createShopInventory(window.ShopSystem.SHOP_TYPES.POP_UP_VAN)
+  };
   
   // Reset character selection
   document.querySelectorAll(".character-card").forEach(card => {

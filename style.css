@@ -265,8 +265,15 @@ body {
   opacity: 0.7;
   color: #666;
 }
-#start-battle {
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
   margin-top: 25px;
+}
+
+#start-battle {
+  margin-top: 0;
 }
 #start-battle img {
   height: 40px;
@@ -1012,6 +1019,8 @@ body {
   z-index: 1000;
   box-shadow: 8px 8px 0px 0px rgba(0, 0, 0, 0.4);
   min-width: 300px;
+  max-height: 85vh;
+  overflow-y: auto;
 }
 .pixel-popup h2 {
   margin-bottom: 15px;
@@ -1023,6 +1032,118 @@ body {
   margin-bottom: 15px;
   font-size: 1em;
   line-height: 1.4;
+}
+
+/* Level Up Notification */
+#level-up-notification {
+  max-width: 400px;
+  text-align: center;
+}
+#level-up-content {
+  margin: 15px 0;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 2px solid var(--pixel-accent);
+}
+.level-up-stat {
+  display: flex;
+  justify-content: space-between;
+  margin: 5px 0;
+  padding: 3px 10px;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.level-up-stat-name {
+  color: var(--pixel-accent);
+  font-weight: bold;
+}
+.stat-increase {
+  color: #4bdb88; /* Green for increases */
+}
+.new-move {
+  margin-top: 10px;
+  padding: 8px;
+  background-color: rgba(75, 219, 136, 0.2);
+  border: 1px solid #4bdb88;
+}
+.new-move strong {
+  color: #4bdb88;
+}
+
+/* Shop System Styles */
+#shop-screen {
+  width: 90%;
+  max-width: 600px;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+#shop-items-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin: 15px 0;
+  max-height: 50vh;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+.shop-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  padding: 8px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 2px solid var(--pixel-border);
+  align-items: center;
+  text-align: left;
+}
+.shop-item-icon {
+  font-size: 24px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.shop-item-details {
+  display: flex;
+  flex-direction: column;
+}
+.shop-item-name {
+  font-size: 1em;
+  color: var(--pixel-text-light);
+  margin-bottom: 3px;
+}
+.shop-item-description {
+  font-size: 0.8em;
+  opacity: 0.8;
+}
+.shop-item-price {
+  font-size: 0.9em;
+  color: var(--pixel-accent);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.shop-item-stock {
+  font-size: 0.7em;
+  opacity: 0.7;
+}
+.shop-buy-button {
+  margin-top: 5px;
+  padding: 3px 8px;
+  font-size: 0.8em;
+  background-color: var(--pixel-accent);
+}
+#shop-inventory-summary {
+  margin: 15px 0;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 2px solid var(--pixel-border);
+  text-align: center;
+  font-size: 1.1em;
+}
+#player-money {
+  color: var(--pixel-accent);
+  font-weight: bold;
 }
 #game-over {
   width: 90%;

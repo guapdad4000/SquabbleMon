@@ -1,0 +1,188 @@
+# 🎮 SQUABBLE – GAMEPLAY SYSTEM OVERVIEW
+
+## 🔥 Concept
+Squabble is a pixel-based hood fantasy battler where players build a 3-character squad and explore a top-down world, encountering random fades and rival NPCs. It blends street culture, RPG progression, and collectible gear into a unique 3v3 battle system.
+
+---
+
+## 🧩 GAME FLOW STRUCTURE
+
+1. **Start Screen**
+   - “Start Game” / “Options”
+   - Optional: Loadout, Settings, Save/Continue
+
+2. **Character Select**
+   - Choose 3 characters for your squad (out of 30+)
+   - Squad becomes your main 3 throughout battles
+
+3. **Overworld Exploration**
+   - Top-down pixel world map (alleyways, parks, neighborhoods)
+   - WASD or arrow key movement
+   - Trigger battles by talking to NPCs or walking into zones (e.g., alley, trap house, etc.)
+
+4. **Battle Trigger**
+   - If in a random zone (like grass), or after dialogue with an NPC
+   - Transition to battle screen using the current 3v3 battle system
+
+5. **Battle System (Already Built)**
+   - Each squad member takes turns
+   - Use 1 of 4 moves per character
+   - Win, earn XP and cash; lose, still get minor XP
+
+6. **Post-Battle Return**
+   - Player returns to same overworld spot
+   - Optionally trigger side quest unlocks, rare NPC appearances, or store updates
+
+---
+
+## 📈 CHARACTER LEVELING SYSTEM
+
+- **Max Level: 50**
+- Characters unlock new moves as they level:
+
+| Level Range | Move Unlocks            | Notes |
+|-------------|-------------------------|-------|
+| 1–5         | Start with 1–2 moves     | Entry tier |
+| 6–15        | Move 2 unlocked          | Midway unlock |
+| 16–30       | Move 3 unlocked          | Squad building begins |
+| 31–50       | Move 4 unlocked          | Full move set |
+
+- **After Level 50**:
+  - No new moves
+  - Progress is based on **money**, **gear**, and **luck events**
+
+---
+
+## 💰 GAME ECONOMY: STORES & TRAP
+
+### 🏬 Shop Types:
+
+| Shop           | Description                              |
+|----------------|------------------------------------------|
+| Corner Store   | Sells regular items (heals, status cures) |
+| The Trap       | Rare moves, risky items, gear, laced buffs |
+| Clout Dealer   | Sells visuals/cosmetics like bikes/groupies |
+| Pop-Up Vans    | Limited-time inventory (random drops)     |
+
+---
+
+## 🛍️ BUYABLE CONTENT
+
+### 1. **Moves (Move Chips)**
+- Bought in bulk or singles
+- Can only be equipped to compatible characters/types
+
+```js
+{
+  name: "Trap Fire Chip",
+  type: "move",
+  power: 60,
+  compatibleTypes: ["Fire", "Dark"]
+}
+2. Items (Consumables)
+Used during or after battle
+
+Effects: healing, buffs, status cures
+
+js
+Copy
+Edit
+{
+  name: "Weed",
+  type: "consumable",
+  effect: "statusCure",
+  hpBoost: 10,
+  icon: "🌿"
+}
+3. Gear (Visual + Stat Boosts)
+Shows up behind/beside character
+
+Provides passive boosts
+
+Only 1–2 gear slots per character
+
+Example Gear:
+Gear Name	Sprite Effect	Stat Boost
+Dirt Bike	Character rides it	+10 Speed
+Groupies	Appear behind character	+5 Crit Rate
+Dice Chain	Shows on idle pose	+10 Luck
+Backpack	Visible on back	+2 Item Slots
+Slick Shades	Shine during idle	+5% Dodge Chance
+js
+Copy
+Edit
+{
+  name: "Dirt Bike",
+  type: "gear",
+  slot: "vehicle",
+  sprite: "sprites/gear/dirtbike.png",
+  showOnCharacter: true,
+  effect: { stat: "speed", value: +10 }
+}
+⚠️ LACED ITEMS (Trap-Only)
+Risk-reward system: boosts with side effects
+
+js
+Copy
+Edit
+{
+  name: "Bootleg Energy Drink",
+  effect: { stat: "attack", value: +15 },
+  drawback: { stat: "defense", value: -10 }
+}
+🧠 POST-LEVEL 50 SYSTEM (LONG-TERM GRIND)
+After level cap:
+
+Collect cash to buy rare moves/gear
+
+Flex through visual upgrades (bikes, groupies, chains)
+
+Unlock rare variants or alt skins through luck events
+
+Build strategy with team synergy, items, and buffs
+
+🎨 PIXEL VISUALS
+Gear items use 32x32 or 48x48 pixel sprites
+
+Character rendering system should read:
+
+gear[]
+
+showOnCharacter: true
+
+and attach the sprite behind or beside main character
+
+🛠️ DEV STRUCTURE NOTES
+Characters should support:
+
+level, moves[], equippedGear[], xp, gearSlots
+
+Items should include:
+
+type, effect, description, visual, duration
+
+Overworld should:
+
+Load a tilemap
+
+Register trigger zones/NPCs
+
+Swap to battle scene on fade event
+
+Let me know if you want help building:
+
+Gear JSON files
+
+Inventory menus
+
+XP curve function
+
+Trap item store layout
+
+yaml
+Copy
+Edit
+
+---
+
+That’s your full **Squabble System Bible** — copy, paste, build, flex. 

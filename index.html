@@ -36,14 +36,23 @@
           <div class="team-slot"></div>
           <div class="team-slot"></div>
         </div>
-        <button
-          id="start-battle"
-          class="pixel-button"
-          disabled
-          onclick="startBattle();"
-        >
-          Start Fade <img src="https://i.gifer.com/ZS3t.gif" alt="Start" />
-        </button>
+        <div class="button-group">
+          <button
+            id="start-battle"
+            class="pixel-button"
+            disabled
+            onclick="startBattle();"
+          >
+            Start Fade <img src="https://i.gifer.com/ZS3t.gif" alt="Start" />
+          </button>
+          <button
+            id="shop-button"
+            class="pixel-button"
+            onclick="openShop(gameShops.cornerStore);"
+          >
+            Shop <span style="font-size: 1.2em;">🛒</span>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -198,8 +207,35 @@
       <iframe id="mobile-controls-frame" src="mobile-controls.html" frameborder="0"></iframe>
     </div>
     
+    <!-- Level Up Notification -->
+    <div id="level-up-notification" class="pixel-popup" style="display: none">
+      <h2>Level Up!</h2>
+      <div id="level-up-content">
+        <!-- Content will be filled dynamically -->
+      </div>
+      <button class="pixel-button" onclick="document.getElementById('level-up-notification').style.display = 'none'">
+        Got it!
+      </button>
+    </div>
     
-
+    <!-- Shop Screen (Initially Hidden) -->
+    <div id="shop-screen" class="pixel-popup" style="display: none">
+      <h2 id="shop-name">Shop</h2>
+      <div id="shop-items-container">
+        <!-- Items will be filled dynamically -->
+      </div>
+      <div id="shop-inventory-summary">
+        Your Cash: $<span id="player-money">0</span>
+      </div>
+      <button class="pixel-button" onclick="closeShop()">
+        Exit Shop
+      </button>
+    </div>
+    
+    <!-- New System Scripts (Load BEFORE main game script) -->
+    <script src="level-system.js"></script>
+    <script src="inventory-system.js"></script>
+    <script src="shop-system.js"></script>
     <script src="animations.js"></script>
     <script src="battle-dialogue.js"></script>
     <script src="script.js"></script>
