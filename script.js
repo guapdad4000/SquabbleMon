@@ -1834,9 +1834,12 @@ window.selectGameMode = selectGameMode;
 window.startExploreMode = startExploreMode;
 window.openShop = openShop;
 window.closeShop = closeShop;
-window.gameShops = gameShops;
 window.startBattle = startBattle;
 window.returnToOverworld = returnToOverworld;
+window.handleSimpleSwitchYes = handleSimpleSwitchYes;
+window.handleSimpleSwitchNo = handleSimpleSwitchNo;
+
+// gameShops will be assigned to window after it's initialized
 
 // Initialize other functions that might be needed immediately
 console.log("Exposing essential functions to window object:", 
@@ -2039,6 +2042,9 @@ function initGame() {
     cloutDealer: window.ShopSystem.createShopInventory(window.ShopSystem.SHOP_TYPES.CLOUT_DEALER),
     popUpVan: window.ShopSystem.createShopInventory(window.ShopSystem.SHOP_TYPES.POP_UP_VAN)
   };
+  
+  // Now that gameShops is initialized, expose it to window
+  window.gameShops = gameShops;
   
   // Initialize audio controls (but wait for user interaction to play music)
   initAudio();
