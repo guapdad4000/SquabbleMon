@@ -461,18 +461,18 @@ body {
   image-rendering: pixelated;
 }
 
-/* Much larger platform for player */
+/* Platform for player - proportional to sprite size */
 #player-platform {
-  height: 72px; /* 50% larger */
-  width: 288px; /* 50% larger */
+  height: 58px; /* Sized for player sprite */
+  width: 232px; /* Sized for player sprite */
   bottom: 3%;
   left: 5%; /* Match player area position */
 }
 
 /* Standard platform for opponent */
 #opponent-platform {
-  height: 48px;
-  width: 192px;
+  height: 45px;
+  width: 180px;
   top: 35%; /* Lowered further to fix position */
   right: 8%;
 }
@@ -508,8 +508,8 @@ body {
 #opponent-sprite {
   max-width: 160px; /* Standard size for opponent */
   max-height: 160px; /* Standard size for opponent */
-  width: 120px; /* Smaller width for opponent */
-  height: 120px; /* Smaller height for opponent */
+  width: 140px; /* Opponent sprite size */
+  height: 140px; /* Opponent sprite size */
   object-fit: contain;
   z-index: 10;
   position: relative;
@@ -524,26 +524,26 @@ body {
   margin: 0 auto; /* Center the sprite */
 }
 
-/* Make player sprites MUCH larger (300%) */
+/* Make player sprites larger (200% of opponent) */
 #player-sprite {
-  max-width: 320px !important; /* Much larger for player */
-  max-height: 320px !important; /* Much larger for player */
-  width: 300px !important; /* Much larger for player - 300% of opponent */
-  height: 300px !important; /* Much larger for player - 300% of opponent */
+  max-width: 240px !important; /* Larger but not too large (200%) */
+  max-height: 240px !important;
+  width: 220px !important; /* Larger but not too large (about 160% of opponent) */
+  height: 220px !important;
 }
 
 /* Special handling for local file sprites */
 #opponent-sprite[src^="public/"] {
-  width: 120px; /* Standard size for opponent with local files */
-  height: 120px; /* Standard size for opponent */
+  width: 140px; /* Standard size for opponent with local files */
+  height: 140px; /* Standard size for opponent */
   object-fit: contain;
   transform-origin: bottom center;
 }
 
 /* Special handling for local file player sprites */
 #player-sprite[src^="public/"] {
-  width: 300px !important; /* Much larger for player - 300% */
-  height: 300px !important; /* Much larger for player - 300% */
+  width: 220px !important; /* Larger for player (about 160% of opponent) */
+  height: 220px !important;
   object-fit: contain;
   transform-origin: bottom center;
 }
@@ -641,7 +641,7 @@ body {
   order: 4;
   margin-top: 5px;
   width: 100%;
-  height: 300px; /* Increased to match much larger player sprite */
+  height: 220px; /* Match the player sprite height */
   text-align: center;
   display: flex;
   justify-content: center;
@@ -652,7 +652,7 @@ body {
   order: 1;
   margin-bottom: 5px;
   width: 100%;
-  height: 120px; /* Decreased for smaller opponent sprites */
+  height: 140px; /* Match the opponent sprite height */
   text-align: center;
   display: flex;
   justify-content: center;

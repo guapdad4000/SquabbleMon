@@ -119,37 +119,57 @@ function applyBuffAnimation(buffType, user) {
     if (user === "player" && window.activePlayer) {
       const characterName = window.activePlayer.name?.toLowerCase() || "";
       if (characterName.includes("scammer")) {
-        buffAnimationType = "scammer";
+        buffAnimationType = "scammer-buff";
         characterSpecificBuff = true;
-      } else if (characterName.includes("plug") || 
-                characterName.includes("dysfunctional") || 
+      } else if (characterName.includes("plug")) {
+        buffAnimationType = "plug-buff";
+        characterSpecificBuff = true;
+      } else if (characterName.includes("dysfunctional") || 
                 characterName.includes("serial")) {
-        buffAnimationType = "dysfunctional";
+        buffAnimationType = "dysfunctional-buff";
         characterSpecificBuff = true;
       } else if (characterName.includes("9-5")) {
-        buffAnimationType = "9-5";
+        buffAnimationType = "9-5-buff";
         characterSpecificBuff = true;
       } else if (characterName.includes("smoker") || 
-                characterName.includes("functional")) {
-        buffAnimationType = "smoker";
+                characterName.includes("rasta")) {
+        buffAnimationType = "smoker-buff";
+        characterSpecificBuff = true;
+      } else if (characterName.includes("functional") || 
+                characterName.includes("addict")) {
+        buffAnimationType = "functional-buff";
+        characterSpecificBuff = true;
+      } else if (characterName.includes("tech") || 
+                characterName.includes("rich")) {
+        buffAnimationType = "tech-buff";
         characterSpecificBuff = true;
       }
     } else if (user === "opponent" && window.activeOpponent) {
       const characterName = window.activeOpponent.name?.toLowerCase() || "";
       if (characterName.includes("scammer")) {
-        buffAnimationType = "scammer";
+        buffAnimationType = "scammer-buff";
         characterSpecificBuff = true;
-      } else if (characterName.includes("plug") || 
-                characterName.includes("dysfunctional") || 
+      } else if (characterName.includes("plug")) {
+        buffAnimationType = "plug-buff";
+        characterSpecificBuff = true;
+      } else if (characterName.includes("dysfunctional") || 
                 characterName.includes("serial")) {
-        buffAnimationType = "dysfunctional";
+        buffAnimationType = "dysfunctional-buff";
         characterSpecificBuff = true;
       } else if (characterName.includes("9-5")) {
-        buffAnimationType = "9-5";
+        buffAnimationType = "9-5-buff";
         characterSpecificBuff = true;
       } else if (characterName.includes("smoker") || 
-                characterName.includes("functional")) {
-        buffAnimationType = "smoker";
+                characterName.includes("rasta")) {
+        buffAnimationType = "smoker-buff";
+        characterSpecificBuff = true;
+      } else if (characterName.includes("functional") || 
+                characterName.includes("addict")) {
+        buffAnimationType = "functional-buff";
+        characterSpecificBuff = true;
+      } else if (characterName.includes("tech") || 
+                characterName.includes("rich")) {
+        buffAnimationType = "tech-buff";
         characterSpecificBuff = true;
       }
     }
@@ -162,6 +182,13 @@ function applyBuffAnimation(buffType, user) {
           break;
         case 'water':
           buffAnimationType = 'water-buff';
+          break;
+        case 'normal':
+        case 'rock':
+          buffAnimationType = 'normal-buff';
+          break;
+        case 'light':
+          buffAnimationType = 'light-buff';
           break;
         default:
           buffAnimationType = 'buff'; // Default buff animation
@@ -187,12 +214,26 @@ function applyBuffAnimation(buffType, user) {
 // Function to apply healing animation
 function applyHealAnimation(user) {
   try {
+    // Apply healing animation to character
     if (user === "player") {
       setPlayerAnimation("heal");
       setTimeout(() => setPlayerAnimation("default"), 1000);
     } else {
       setOpponentAnimation("heal");
       setTimeout(() => setOpponentAnimation("default"), 1000);
+    }
+    
+    // Add character-specific healing effect if applicable
+    const characterName = user === "player" 
+      ? (window.activePlayer?.name || "").toLowerCase()
+      : (window.activeOpponent?.name || "").toLowerCase();
+    
+    if (characterName.includes("vibe")) {
+      // Special vibe heal effect
+      applyVisualEffectGif("https://i.gifer.com/X5NK.gif", user);
+    } else {
+      // Default heal effect
+      applyVisualEffectGif("heal", user);
     }
   } catch (error) {
     console.error("Error in applyHealAnimation:", error);
@@ -202,6 +243,7 @@ function applyHealAnimation(user) {
 // Function to apply critical hit animation
 function applyCriticalHitAnimation(user) {
   try {
+    // Apply critical hit animation to character
     if (user === "player") {
       setPlayerAnimation("criticalHit");
       setTimeout(() => setPlayerAnimation("default"), 500);
@@ -209,6 +251,14 @@ function applyCriticalHitAnimation(user) {
       setOpponentAnimation("criticalHit");
       setTimeout(() => setOpponentAnimation("default"), 500);
     }
+    
+    // Add a special explosion effect for critical hits
+    applyVisualEffectGif("explosion", user);
+    
+    // Show "hands" effect for critical hits (like throwing hands)
+    setTimeout(() => {
+      applyVisualEffectGif("hands", user);
+    }, 300);
   } catch (error) {
     console.error("Error in applyCriticalHitAnimation:", error);
   }
@@ -217,7 +267,7 @@ function applyCriticalHitAnimation(user) {
 // Handle status effect animations in battle
 function handleStatusEffectAnimation(effectType, target) {
   try {
-    // Map effect type to animation type
+    // Map effect type to animation type for sprite animation
     let animationType = "statusBounce";
     
     switch(effectType) {
@@ -244,13 +294,38 @@ function handleStatusEffectAnimation(effectType, target) {
         animationType = "statusBounce";
     }
     
-    // Apply the animation (faster)
+    // Apply the animation to the character
     if (target === "player") {
       setPlayerAnimation(animationType);
       setTimeout(() => setPlayerAnimation("default"), 500);
     } else {
       setOpponentAnimation(animationType);
       setTimeout(() => setOpponentAnimation("default"), 500);
+    }
+    
+    // Apply visual effect based on status type
+    switch(effectType.toLowerCase()) {
+      case "burn":
+        applyVisualEffectGif("burn", target);
+        break;
+      case "sleep":
+        applyVisualEffectGif("sleep", target);
+        break;
+      case "lightning":
+      case "paralysis":
+        applyVisualEffectGif("lightning", target);
+        break;
+      case "wet":
+      case "water":
+        applyVisualEffectGif("water", target);
+        break;
+      case "leaf":
+      case "plant":
+        applyVisualEffectGif("leaf", target);
+        break;
+      default:
+        // For other status effects, just use the status bounce animation
+        break;
     }
   } catch (error) {
     console.error("Error in handleStatusEffectAnimation:", error);
@@ -269,6 +344,8 @@ function applyMoveAnimation(moveType, user) {
     // Check if the active character is any special type for character-specific effects
     if (user === "player" && window.activePlayer) {
       const characterName = window.activePlayer.name?.toLowerCase() || "";
+      
+      // Extended character type detection - prioritize specific character types
       if (characterName.includes("scammer")) {
         characterType = "scammer";
         isCharacterSpecific = true;
@@ -281,18 +358,50 @@ function applyMoveAnimation(moveType, user) {
       } else if (characterName.includes("9-5")) {
         characterType = "9-5";
         isCharacterSpecific = true;
+      } else if (characterName.includes("rasta")) {
+        characterType = "rasta";
+        isCharacterSpecific = true;
+      } else if (characterName.includes("gamer")) {
+        characterType = "gamer";
+        isCharacterSpecific = true;
+      } else if (characterName.includes("vibe")) {
+        characterType = "vibe";
+        isCharacterSpecific = true;
+      } else if (characterName.includes("tech") || characterName.includes("techy")) {
+        characterType = "tech";
+        isCharacterSpecific = true;
       } else if (characterName.includes("dysfunctional") || 
-                characterName.includes("serial") || 
-                characterName.includes("addict")) {
+                characterName.includes("serial")) {
         characterType = "dysfunctional";
         isCharacterSpecific = true;
-      } else if (characterName.includes("smoker") || 
-                characterName.includes("functional")) {
+      } else if (characterName.includes("officer") || 
+                characterName.includes("ganger")) {
+        characterType = "officer";
+        isCharacterSpecific = true;
+      } else if (characterName.includes("snitch")) {
+        characterType = "snitch";
+        isCharacterSpecific = true;
+      } else if (characterName.includes("muslim")) {
+        characterType = "muslim";
+        isCharacterSpecific = true;
+      } else if (characterName.includes("rapper")) {
+        characterType = "rapper";
+        isCharacterSpecific = true;
+      } else if (characterName.includes("smoker")) {
         characterType = "smoker";
+        isCharacterSpecific = true;
+      } else if (characterName.includes("functional") || 
+                characterName.includes("addict")) {
+        characterType = "functional";
+        isCharacterSpecific = true;
+      } else if (characterName.includes("cd")) {
+        characterType = "cd";
         isCharacterSpecific = true;
       }
     } else if (user === "opponent" && window.activeOpponent) {
       const characterName = window.activeOpponent.name?.toLowerCase() || "";
+      
+      // Extended character type detection for opponent - prioritize specific character types
       if (characterName.includes("scammer")) {
         characterType = "scammer";
         isCharacterSpecific = true;
@@ -305,18 +414,49 @@ function applyMoveAnimation(moveType, user) {
       } else if (characterName.includes("9-5")) {
         characterType = "9-5";
         isCharacterSpecific = true;
+      } else if (characterName.includes("rasta")) {
+        characterType = "rasta";
+        isCharacterSpecific = true;
+      } else if (characterName.includes("gamer")) {
+        characterType = "gamer";
+        isCharacterSpecific = true;
+      } else if (characterName.includes("vibe")) {
+        characterType = "vibe";
+        isCharacterSpecific = true;
+      } else if (characterName.includes("tech") || characterName.includes("techy")) {
+        characterType = "tech";
+        isCharacterSpecific = true;
       } else if (characterName.includes("dysfunctional") || 
-                characterName.includes("serial") || 
-                characterName.includes("addict")) {
+                characterName.includes("serial")) {
         characterType = "dysfunctional";
         isCharacterSpecific = true;
-      } else if (characterName.includes("smoker") || 
-                characterName.includes("functional")) {
+      } else if (characterName.includes("officer") || 
+                characterName.includes("ganger")) {
+        characterType = "officer";
+        isCharacterSpecific = true;
+      } else if (characterName.includes("snitch")) {
+        characterType = "snitch";
+        isCharacterSpecific = true;
+      } else if (characterName.includes("muslim")) {
+        characterType = "muslim";
+        isCharacterSpecific = true;
+      } else if (characterName.includes("rapper")) {
+        characterType = "rapper";
+        isCharacterSpecific = true;
+      } else if (characterName.includes("smoker")) {
         characterType = "smoker";
+        isCharacterSpecific = true;
+      } else if (characterName.includes("functional") || 
+                characterName.includes("addict")) {
+        characterType = "functional";
+        isCharacterSpecific = true;
+      } else if (characterName.includes("cd")) {
+        characterType = "cd";
         isCharacterSpecific = true;
       }
     }
     
+    // Set animation style based on move type
     switch (moveType) {
       case "Street":
         animationStyle = "attackStreet";
@@ -357,7 +497,23 @@ function applyMoveAnimation(moveType, user) {
     
     // Apply character-specific effect if it exists, otherwise use regular move type
     if (isCharacterSpecific) {
+      // Log the character-specific effect being used
+      console.log(`Using character-specific effect for ${characterType}`);
       applyVisualEffectGif(characterType, user);
+      
+      // For certain character types, apply additional effects after a short delay
+      if (characterType === "rapper" || characterType === "gamer" || characterType === "vibe") {
+        setTimeout(() => {
+          // Apply a secondary effect for these character types
+          if (characterType === "rapper") {
+            applyVisualEffectGif("money", user); // Rappers get money effects
+          } else if (characterType === "gamer") {
+            applyVisualEffectGif("electric", user); // Gamers get electric effects
+          } else if (characterType === "vibe") {
+            applyVisualEffectGif("light", user); // Vibe characters get light effects
+          }
+        }, 300);
+      }
     } else {
       // Also apply the visual effect GIF based on move type
       applyVisualEffectGif(moveType.toLowerCase(), user);
@@ -373,24 +529,26 @@ function applyVisualEffectGif(moveType, user) {
     const effectDiv = document.createElement('div');
     effectDiv.className = 'battle-effect';
     
-    // Choose animation based on move type
+    // Choose animation based on move type - updated with new effect URLs
     let animationUrl = '';
     switch (moveType.toLowerCase()) {
+      // Type-based effects
       case 'fire':
         animationUrl = 'https://i.gifer.com/PVYG.gif'; // fire effect
         break;
       case 'water':
-        animationUrl = 'https://i.gifer.com/X5Nb.gif'; // water effect
+        animationUrl = 'https://i.gifer.com/YlW9.gif'; // updated water attack
         break;
       case 'electric':
-        animationUrl = 'https://i.gifer.com/Z9pp.gif'; // electricity effect
+        animationUrl = 'https://i.gifer.com/4bXG.gif'; // updated electricity attack
         break;
       case 'plant':
       case 'grass':
-        animationUrl = 'https://i.gifer.com/56i2.gif'; // earthy attack (using for plant)
+      case 'leaf':
+        animationUrl = 'https://i.imgur.com/Tgv0o7b.gif'; // updated leaf/plant attack
         break;
       case 'dark':
-        animationUrl = 'https://i.gifer.com/3iCN.gif'; // dark effect
+        animationUrl = 'https://i.gifer.com/WXfF.gif'; // updated dark attack
         break;
       case 'light':
         animationUrl = 'https://i.gifer.com/OkV7.gif'; // light effect
@@ -399,8 +557,25 @@ function applyVisualEffectGif(moveType, user) {
         animationUrl = 'https://i.gifer.com/3klP.gif'; // wind effect
         break;
       case 'money':
-        animationUrl = 'https://i.gifer.com/xt.gif'; // money attacks 
+        animationUrl = 'https://i.gifer.com/xt.gif'; // money attacks
         break;
+      case 'blast':
+      case 'explosion':
+        animationUrl = 'https://i.gifer.com/XZ5N.gif'; // blast attacks
+        break;
+      case 'sleep':
+        animationUrl = 'https://i.imgur.com/hFYQ7oe.gif'; // sleep effect
+        break;
+      case 'burn':
+        animationUrl = 'https://i.gifer.com/y8.gif'; // burn effect
+        break;
+      case 'lightning':
+        animationUrl = 'https://i.imgur.com/OtnoqvS.gif'; // lightning attack
+        break;
+      case 'heal':
+        animationUrl = 'https://i.imgur.com/684Bb2r.gif'; // heal effect
+        break;
+      
       // Character-specific effects
       case 'scammer':
         animationUrl = 'https://i.gifer.com/y7.gif'; // scammer effect
@@ -408,17 +583,72 @@ function applyVisualEffectGif(moveType, user) {
       case 'earthy':
         animationUrl = 'https://i.gifer.com/56i2.gif'; // earthy attack
         break;
+      case 'rasta':
+      case 'smoker':
+        animationUrl = 'https://i.gifer.com/3klZ.gif'; // smoker/rasta attack
+        break;
       case 'plug':
         animationUrl = 'https://i.gifer.com/3vIR.gif'; // plug effect
         break;
       case '9-5':
-        animationUrl = 'https://i.gifer.com/yvL.gif'; // 9-5 buff
+        animationUrl = 'https://i.gifer.com/49a7.gif'; // updated 9-5 attack
+        break;
+      case 'gamer':
+        animationUrl = 'https://i.gifer.com/4XCT.gif'; // gamer attack
+        break;
+      case 'vibe':
+        animationUrl = 'https://i.gifer.com/PZz.gif'; // vibe attack
+        break;
+      case 'tech':
+      case 'techy':
+        animationUrl = 'https://i.gifer.com/24S2.gif'; // tech attack
         break;
       case 'dysfunctional':
-        animationUrl = 'https://i.gifer.com/YyBN.gif'; // dysfunctional/serial/plug buff
+      case 'serial':
+      case 'officer':
+      case 'ganger':
+        animationUrl = 'https://i.gifer.com/42xO.gif'; // dysfunctional/serial/officer/ganger attack
         break;
-      case 'smoker':
-        animationUrl = 'https://i.gifer.com/1pOk.gif'; // smoker/functional buff
+      case 'snitch':
+        animationUrl = 'https://i.gifer.com/3Alr.gif'; // snitch attack
+        break;
+      case 'muslim':
+        animationUrl = 'https://i.gifer.com/75P0.gif'; // muslim homie attack
+        break;
+      case 'rapper':
+        animationUrl = 'https://i.gifer.com/ZGYt.gif'; // rapper attack
+        break;
+      case 'crash':
+      case 'cd':
+        animationUrl = 'https://i.gifer.com/1kME.gif'; // cd use
+        break;
+      
+      // Buff effects
+      case 'scammer-buff':
+        animationUrl = 'https://i.gifer.com/3BBS.gif'; // scammer buff
+        break;
+      case '9-5-buff':
+        animationUrl = 'https://i.gifer.com/yvL.gif'; // 9-5 buff
+        break;
+      case 'plug-buff':
+        animationUrl = 'https://i.gifer.com/2r6D.gif'; // plug buff
+        break;
+      case 'dysfunctional-buff':
+      case 'serial-buff':
+      case 'plug-special-buff':
+        animationUrl = 'https://i.gifer.com/YyBN.gif'; // dysfunctional/serial/plug special buff
+        break;
+      case 'functional-buff':
+      case 'addict-buff':
+        animationUrl = 'https://i.gifer.com/1pOk.gif'; // functional addict buff
+        break;
+      case 'smoker-buff':
+      case 'rasta-buff':
+        animationUrl = 'https://i.gifer.com/1uKK.gif'; // smoker/rasta buff
+        break;
+      case 'tech-buff':
+      case 'rich-buff':
+        animationUrl = 'https://i.gifer.com/7sZH.gif'; // tech bro/techy buff
         break;
       case 'dark-buff':
         animationUrl = 'https://i.gifer.com/Dzpn.gif'; // dark buffs
@@ -426,11 +656,23 @@ function applyVisualEffectGif(moveType, user) {
       case 'water-buff':
         animationUrl = 'https://i.gifer.com/3q60.gif'; // water buff
         break;
+      case 'normal-buff':
+      case 'rock-buff': 
+        animationUrl = 'https://i.gifer.com/5Q11.gif'; // normal/rock buff
+        break;
+      case 'light-buff':
+        animationUrl = 'https://i.gifer.com/XiPv.gif'; // light buff
+        break;
       case 'buff':
         animationUrl = 'https://i.gifer.com/XZ5L.gif'; // generic buffs
         break;
+        
+      // Win/Lose effects
       case 'win':
         animationUrl = 'https://i.gifer.com/ZJF0.gif'; // win screen animation
+        break;
+      case 'hands':
+        animationUrl = 'https://i.gifer.com/1uIf.gif'; // win hands
         break;
       case 'lose':
         animationUrl = 'https://i.gifer.com/Z6W8.gif'; // lose animation
