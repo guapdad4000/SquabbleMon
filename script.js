@@ -2137,25 +2137,47 @@ function populateCharacterSelection() {
 
 // Helper function to standardize sprite paths
 function standardizeSpritePath(spritePath) {
-  if (!spritePath) return 'public/sprites/default_npc.png'; // Provide a default sprite if none is given
+  // Provide a default sprite if none is given or invalid
+  if (!spritePath || typeof spritePath !== 'string') {
+    console.warn("Invalid sprite path provided:", spritePath);
+    return 'public/sprites/default_npc.png';
+  }
+  
+  // Trim any whitespace
+  spritePath = spritePath.trim();
   
   // If it's a URL (e.g., https://...), leave it as is
   if (spritePath.startsWith('http')) {
     return spritePath;
   }
   
-  // Remove any './public/' prefix first
-  spritePath = spritePath.replace(/^\.\/public\//, 'public/');
+  // Remove any leading './' prefix
+  spritePath = spritePath.replace(/^\.\//, '');
   
-  // If the path doesn't start with 'public/', add it
-  if (!spritePath.startsWith('public/')) {
-    // Check if it already starts with 'sprites/'
-    if (spritePath.startsWith('sprites/')) {
-      spritePath = 'public/' + spritePath;
-    } else {
-      // If it doesn't start with sprites/ either, assume it's a full path
-      spritePath = 'public/' + spritePath;
-    }
+  // Remove any 'public/' or './public/' prefix first to normalize
+  spritePath = spritePath.replace(/^(\.\/)?public\//, '');
+  
+  // Check if it's an SVG path (from imposter.svg)
+  if (spritePath.endsWith('.svg')) {
+    return spritePath.startsWith('public/') ? spritePath : 'public/' + spritePath;
+  }
+  
+  // If it starts with 'sprites/', add 'public/' prefix
+  if (spritePath.startsWith('sprites/')) {
+    spritePath = 'public/' + spritePath;
+  } 
+  // If it doesn't have any folder structure, assume it's in sprites folder
+  else if (!spritePath.includes('/')) {
+    spritePath = 'public/sprites/' + spritePath;
+  }
+  // Otherwise add public/ prefix if not already there
+  else if (!spritePath.startsWith('public/')) {
+    spritePath = 'public/' + spritePath;
+  }
+  
+  // Ensure the path has proper extension
+  if (!spritePath.match(/\.(png|jpg|jpeg|gif|svg)$/i)) {
+    spritePath += '.png'; // Default to PNG if no extension
   }
   
   console.log("Standardized sprite path:", spritePath);
@@ -2318,10 +2340,39 @@ function startBattle() {
     } else {
       // Single NPC battle - deep clone to avoid reference issues
       activeOpponent = JSON.parse(JSON.stringify(window.activeOpponent));
+      
+      // If we have a single opponent, create an opponents array with just that opponent
+      // This ensures consistency when handling single opponents
+      opponents = [activeOpponent];
+      
       console.log("Using single NPC opponent:", activeOpponent.name);
     }
   } else {
-    // Regular battle - use the opponent from the opponents array
+    // Make sure opponents is initialized as an array if it's not already
+    if (!Array.isArray(opponents) || opponents.length === 0) {
+      // Create a default opponent if none exists
+      opponents = [
+        {
+          id: "default1",
+          name: "Random Challenger",
+          hp: 100,
+          maxHp: 100,
+          attack: 20,
+          defense: 20,
+          speed: 20,
+          type: "trap",
+          sprite: "public/sprites/default_npc.png",
+          moves: [
+            { name: "Weak Attack", power: 20, type: "normal", description: "A basic attack" },
+            { name: "Defend", power: 0, type: "status", statusEffect: { type: "defense-up", duration: 3 } }
+          ]
+        }
+      ];
+      console.warn("No opponents defined, using default opponent");
+    }
+    
+    // Use opponents array and make sure opponentIndex is valid
+    opponentIndex = Math.min(opponentIndex, opponents.length - 1);
     activeOpponent = JSON.parse(JSON.stringify(opponents[opponentIndex]));
   }
   
@@ -3556,33 +3607,61 @@ function executeOpponentMove(move) {
 }
 
 function calculateDamage(attacker, defender, move, attackerMods, defenderMods) {
-  // Add safety checks
-  if (!attacker || !defender || !move || !attackerMods || !defenderMods) {
-    console.error("Missing required parameters in calculateDamage:", { attacker, defender, move, attackerMods, defenderMods });
+  // Comprehensive safety checks
+  if (!attacker || !defender || !move) {
+    console.error("Missing critical parameters in calculateDamage:", { attacker, defender, move });
     return 0;
   }
+  
+  // Provide default stat modifiers if missing
+  attackerMods = attackerMods || { attack: 1, defense: 1, speed: 1, accuracy: 1 };
+  defenderMods = defenderMods || { attack: 1, defense: 1, speed: 1, accuracy: 1 };
   
   // For status moves or moves with 0 power, return 0 damage
-  if (move.type === "status" || move.power === 0) {
+  if (move.type === "status" || move.power === 0 || move.power === undefined) {
     return 0;
   }
   
-  // Set defaults for missing properties with safety checks
-  const attackerAttack = attacker.attack || 50;
-  const defenderDefense = defender.defense || 50;
-  const movePower = move.power || 40;
-  const attackerModAttack = attackerMods && attackerMods.attack ? attackerMods.attack : 1;
-  const defenderModDefense = defenderMods && defenderMods.defense ? defenderMods.defense : 1;
+  // Extract stats safely - handle both direct properties and stats object structure
+  let attackerAttack = 50; // Default if we can't find a value
+  if (typeof attacker.attack === 'number') {
+    attackerAttack = attacker.attack;
+  } else if (attacker.stats && typeof attacker.stats.attack === 'number') {
+    attackerAttack = attacker.stats.attack;
+  }
+  
+  let defenderDefense = 50; // Default if we can't find a value
+  if (typeof defender.defense === 'number') {
+    defenderDefense = defender.defense;
+  } else if (defender.stats && typeof defender.stats.defense === 'number') {
+    defenderDefense = defender.stats.defense;
+  }
+  
+  // Ensure all values are positive numbers
+  const movePower = Math.max(1, move.power || 40); // Minimum power of 1
+  const attackerModAttack = Math.max(0.1, attackerMods.attack || 1); // Minimum modifier of 0.1
+  const defenderModDefense = Math.max(0.1, defenderMods.defense || 1); // Minimum modifier of 0.1
+  
+  // Log the values being used for damage calculation
+  console.log("Damage calculation values:", {
+    attackerAttack,
+    defenderDefense,
+    movePower,
+    attackerModAttack,
+    defenderModDefense
+  });
   
   // Base damage calculation with safety
   let damage = Math.floor((attackerAttack * attackerModAttack * movePower) / 110);
   
   // Apply defense reduction - increased defender impact for balance
-  damage = Math.floor(damage / (defenderDefense * defenderModDefense / 40));
+  // Ensure we don't divide by zero by using Math.max
+  const defenseValue = Math.max(1, defenderDefense * defenderModDefense / 40);
+  damage = Math.floor(damage / defenseValue);
   
   // Apply type effectiveness with balanced multipliers (with safety check)
-  const defenderType = defender.type || 'Normal';
-  const moveType = move.type || 'Normal';
+  const defenderType = defender.type || 'normal';
+  const moveType = move.type || 'normal';
   const effectiveness = calculateTypeEffectiveness(moveType, defenderType);
   damage = Math.floor(damage * effectiveness);
   

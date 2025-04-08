@@ -480,14 +480,17 @@ body {
   flex-direction: column;
   align-items: center;
   z-index: 5;
+  min-height: 280px; /* Set minimum height for better spacing */
 }
 #player-area {
   bottom: calc(5% + 20px);
   left: 9%;
+  justify-content: flex-end; /* Align content to bottom */
 }
 #opponent-area {
   top: 7%; /* Adjusted top further up */
   right: 9%;
+  justify-content: flex-start; /* Align content to top */
 }
 
 /* Sprites */
@@ -495,7 +498,7 @@ body {
 #opponent-sprite {
   max-width: 160px;
   max-height: 160px;
-  width: auto;
+  width: 120px; /* Fixed width for consistency */
   height: 140px;
   object-fit: contain;
   z-index: 10;
@@ -507,6 +510,8 @@ body {
   image-rendering: pixelated;
   animation: float 2s ease-in-out infinite;
   transition: filter 0.3s ease, transform 0.3s ease;
+  display: block; /* Force display block */
+  margin: 0 auto; /* Center the sprite */
 }
 #opponent-sprite {
   transform: scaleX(-1);
@@ -596,14 +601,22 @@ body {
   order: 4;
   margin-top: 5px;
   width: 100%;
+  height: 160px; /* Fixed height for consistency */
   text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 } /* Sprite container LAST */
 
 #opponent-area .opponent-sprite-container {
   order: 1;
   margin-bottom: 5px;
   width: 100%;
+  height: 160px; /* Fixed height for consistency */
   text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 } /* Sprite container FIRST */
 #opponent-area .yn-name {
   order: 2;
