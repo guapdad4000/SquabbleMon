@@ -4,7 +4,7 @@
  */
 
 // Use a module pattern to avoid global variable conflicts
-const OverworldSystem = (function() {
+const NewOverworldSystem = (function() {
   // Main game state
   let player = {
     x: 5,
@@ -414,15 +414,32 @@ const OverworldSystem = (function() {
    * Update player visual state (position and sprite)
    */
   function updatePlayerVisual() {
+    if (!playerSprite) {
+      console.error("Player sprite element not found in updatePlayerVisual");
+      // Try to recover by getting player sprite from DOM
+      playerSprite = document.querySelector('.player-sprite');
+      if (!playerSprite) {
+        console.error("Could not recover player sprite element");
+        return;
+      }
+    }
+    
     playerSprite.style.left = `${player.x * 64}px`;
     playerSprite.style.top = `${player.y * 64}px`;
     
     try {
-      playerSprite.style.backgroundImage = `url(${standardizeSpritePath(player.sprite)})`;
+      // Use a fixed sprite for overworld movement
+      console.log("Using fixed overworld sprite rather than character-specific sprite");
+      const spriteUrl = standardizeSpritePath(player.sprite);
+      playerSprite.style.backgroundImage = `url(${spriteUrl})`;
     } catch (error) {
       console.error("Failed to set player sprite:", error);
       playerSprite.style.backgroundColor = '#00f'; // Blue fallback
     }
+    
+    // Log current position and tile type
+    const tileType = ZONE_DATA[currentZone].map[player.y]?.[player.x] || 0;
+    console.log(`Player at position (${player.x},${player.y}) on tile type: ${tileType}`);
   }
 
   /**
@@ -609,6 +626,12 @@ const OverworldSystem = (function() {
       
       // Reset cooldown
       lastMoveTime = now;
+      
+      // Reset moving state after a delay
+      setTimeout(() => {
+        player.moving = false;
+        updatePlayerVisual();
+      }, 100);
     }
   }
 
@@ -874,4 +897,4 @@ const OverworldSystem = (function() {
 })(); // End of module IIFE
 
 // Attach the module to the window object
-window.NewOverworldSystem = OverworldSystem;
+window.NewOverworldSystem = NewOverworldSystem;
