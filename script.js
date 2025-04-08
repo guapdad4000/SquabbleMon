@@ -2508,8 +2508,11 @@ function updateBattleUI() {
   console.log("Active player character:", activePlayerCharacter);
   console.log("Active opponent:", activeOpponent);
   
-  // Update player character display
-  document.getElementById("player-name").textContent = activePlayerCharacter.name;
+  // Update player character display and add debug logging
+  const playerNameElement = document.getElementById("player-name");
+  console.log("Player name element before setting:", playerNameElement.innerHTML);
+  playerNameElement.textContent = activePlayerCharacter.name;
+  console.log("Player name element after setting:", playerNameElement.innerHTML);
   
   // Make sure maxHp is set for both active characters
   activePlayerCharacter.maxHp = activePlayerCharacter.maxHp || activePlayerCharacter.hp;
