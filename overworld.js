@@ -4,13 +4,17 @@
  */
 
 // Map constants for various zones
-const ZONE_TYPES = {
+// Check if ZONE_TYPES is already defined to avoid redeclaration
+const ZONE_TYPES = window.ZONE_TYPES || {
   STARTER_HOOD: 'starterHood',
   THE_TRAP: 'theTrap',
   THE_BLOCK: 'theBlock',
   RICH_SUBURBIA: 'richSuburbia',
   BACK_ALLEY_ARENA: 'backAlleyArena'
 };
+
+// Make ZONE_TYPES available globally
+window.ZONE_TYPES = ZONE_TYPES;
 
 // Tile types for collision and interaction
 const TILE_TYPES = {

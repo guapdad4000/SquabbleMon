@@ -1,6 +1,6 @@
 // ================ ZONE TYPES ================
-// Zone types for integration with overworld
-const ZONE_TYPES = {
+// Zone types for integration with overworld - exposed via window
+window.ZONE_TYPES = window.ZONE_TYPES || {
   STARTER_HOOD: 'starterHood',
   THE_TRAP: 'theTrap',
   THE_BLOCK: 'theBlock',
@@ -1802,6 +1802,10 @@ window.Game = {
   processStatusEffects,
   calculateDamage,
   
+  // Game mode functions
+  selectGameMode,
+  startExploreMode,
+  
   // Character management
   populateCharacterSelection,
   selectCharacter,
@@ -1811,6 +1815,8 @@ window.Game = {
   updateBattleUI,
   showMoves,
   showItems,
+  openShop,
+  closeShop,
   
   // Audio
   playBattleMusic,
@@ -1822,6 +1828,19 @@ window.Game = {
   getPlayerTeam: function() { return playerTeam; },
   getOpponentTeam: function() { return opponentTeam; }
 };
+
+// Immediately expose essential functions directly on window for backward compatibility
+window.selectGameMode = selectGameMode;
+window.startExploreMode = startExploreMode;
+window.openShop = openShop;
+window.closeShop = closeShop;
+window.gameShops = gameShops;
+window.startBattle = startBattle;
+window.returnToOverworld = returnToOverworld;
+
+// Initialize other functions that might be needed immediately
+console.log("Exposing essential functions to window object:", 
+  "selectGameMode, startExploreMode, openShop, closeShop, startBattle, returnToOverworld");
 
 document.addEventListener("DOMContentLoaded", function() {
   // Initialize audio but wait for user interaction to play
@@ -2007,9 +2026,9 @@ function initGame() {
   // Initialize audio controls (but wait for user interaction to play music)
   initAudio();
   
-  // Expose necessary functions to window object for cross-file communication
-  window.startBattle = startBattle;
-  window.returnToOverworld = returnToOverworld;
+  // These functions have already been exposed earlier, but we'll check to make sure
+  if (!window.startBattle) window.startBattle = startBattle;
+  if (!window.returnToOverworld) window.returnToOverworld = returnToOverworld;
   
   // Set up a one-time click listener to start audio (browser policy requires user interaction)
   const startAudioOnce = () => {

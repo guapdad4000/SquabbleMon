@@ -33,7 +33,7 @@
         <button
           id="fade-mode-button"
           class="pixel-button mode-button"
-          onclick="selectGameMode('fade');"
+          onclick="window.selectGameMode('fade');"
         >
           Fade Mode <span style="font-size: 1.2em;">👊</span>
           <div class="mode-description">Quick battles against opponents</div>
@@ -41,7 +41,7 @@
         <button
           id="story-mode-button"
           class="pixel-button mode-button"
-          onclick="selectGameMode('story');"
+          onclick="window.selectGameMode('story');"
         >
           Story Mode <span style="font-size: 1.2em;">🗺️</span>
           <div class="mode-description">Explore the hood, meet characters, build your squad</div>
@@ -66,21 +66,21 @@
             id="start-battle"
             class="pixel-button"
             disabled
-            onclick="startBattle();"
+            onclick="window.startBattle();"
           >
             Start Fade <img src="https://i.gifer.com/ZS3t.gif" alt="Start" />
           </button>
           <button
             id="shop-button"
             class="pixel-button"
-            onclick="openShop(gameShops.cornerStore);"
+            onclick="window.openShop(window.gameShops.cornerStore);"
           >
             Shop <span style="font-size: 1.2em;">🛒</span>
           </button>
           <button
             id="explore-button"
             class="pixel-button"
-            onclick="startExploreMode();"
+            onclick="window.startExploreMode();"
           >
             Explore <span style="font-size: 1.2em;">🗺️</span>
           </button>

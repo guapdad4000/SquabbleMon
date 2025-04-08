@@ -2039,11 +2039,12 @@ body {
   width: 100vw;
   height: 100vh;
   background-color: #000;
-  background-image: url('https://i.imgur.com/nsrUdXQ.gif');
+  background-image: url('./public/backgrounds/start-screen.png');
   background-size: cover;
   background-position: center;
   text-align: center;
   padding: 20px;
+  z-index: 10;
 }
 
 #mode-selection-screen h1 {
