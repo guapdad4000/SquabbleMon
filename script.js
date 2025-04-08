@@ -2617,6 +2617,14 @@ function updateMoveButtons() {
     if (index < activePlayerCharacter.moves.length) {
       const move = activePlayerCharacter.moves[index];
       
+      // Set default PP and maxPp values if they don't exist
+      if (move.pp === undefined || move.pp === null) {
+        move.pp = move.maxPp || 15; // Default to 15 if maxPp is also not set
+      }
+      if (move.maxPp === undefined || move.maxPp === null) {
+        move.maxPp = move.pp; // Use pp value as maxPp if not set
+      }
+      
       // Clear any existing content
       button.innerHTML = '';
       
@@ -2625,13 +2633,11 @@ function updateMoveButtons() {
       moveNameElement.textContent = move.name;
       button.appendChild(moveNameElement);
       
-      // Add PP count if applicable
-      if (move.pp !== undefined) {
-        const ppCount = document.createElement('span');
-        ppCount.className = 'pp-count';
-        ppCount.textContent = `${move.pp}/${move.maxPp}`;
-        button.appendChild(ppCount);
-      }
+      // Always add PP count (even for status moves)
+      const ppCount = document.createElement('span');
+      ppCount.className = 'pp-count';
+      ppCount.textContent = `${move.pp}/${move.maxPp}`;
+      button.appendChild(ppCount);
       
       // Add data for tooltips
       button.dataset.move = JSON.stringify(move);

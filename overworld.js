@@ -1111,7 +1111,7 @@ function startNpcBattle(npc) {
     
     // Create a team for the NPC instead of just using the character directly
     // This fixes the issue with NPC battles showing just the NPC sprite
-    const npcTeam = [];
+    let npcTeam = [];
     
     // For named NPCs like OG Ras, create a team of characters based on their "type"
     if (npc.character) {
@@ -1135,9 +1135,23 @@ function startNpcBattle(npc) {
           if (npc.character.level) {
             const levelFactor = npc.character.level / 5;
             teamMember.hp = Math.floor(teamMember.hp * levelFactor);
+            teamMember.maxHp = teamMember.hp; // Set maxHp to match
             teamMember.attack = Math.floor(teamMember.attack * levelFactor);
             teamMember.defense = Math.floor(teamMember.defense * levelFactor);
           }
+          
+          // Ensure moves have PP values
+          if (teamMember.moves) {
+            teamMember.moves.forEach(move => {
+              if (move.pp === undefined || move.pp === null) {
+                move.pp = move.maxPp || 15; // Default to 15 if maxPp is also not set
+              }
+              if (move.maxPp === undefined || move.maxPp === null) {
+                move.maxPp = move.pp; // Use pp value as maxPp if not set
+              }
+            });
+          }
+          
           npcTeam.push(teamMember);
         }
       }
@@ -1150,6 +1164,18 @@ function startNpcBattle(npc) {
       npcCharacter.attack = npcCharacter.attack || 50;
       npcCharacter.defense = npcCharacter.defense || 40;
       npcCharacter.speed = npcCharacter.speed || 30;
+      
+      // Ensure moves have PP values
+      if (npcCharacter.moves) {
+        npcCharacter.moves.forEach(move => {
+          if (move.pp === undefined || move.pp === null) {
+            move.pp = move.maxPp || 15; // Default to 15 if maxPp is also not set
+          }
+          if (move.maxPp === undefined || move.maxPp === null) {
+            move.maxPp = move.pp; // Use pp value as maxPp if not set
+          }
+        });
+      }
       
       // Standardize sprite path
       if (typeof window.standardizeSpritePath === 'function') {
@@ -1173,12 +1199,27 @@ function startNpcBattle(npc) {
         moves: npc.character.moves || []
       };
       
+      // Ensure moves have PP values
+      if (safeOpponent.moves) {
+        safeOpponent.moves.forEach(move => {
+          if (move.pp === undefined || move.pp === null) {
+            move.pp = move.maxPp || 15; // Default to 15 if maxPp is also not set
+          }
+          if (move.maxPp === undefined || move.maxPp === null) {
+            move.maxPp = move.pp; // Use pp value as maxPp if not set
+          }
+        });
+      }
+      
       // Standardize sprite path
       if (typeof window.standardizeSpritePath === 'function') {
         safeOpponent.sprite = window.standardizeSpritePath(safeOpponent.sprite);
       }
       
+      // Create a team with just this opponent
+      npcTeam = [safeOpponent];
       window.activeOpponent = safeOpponent;
+      window.activeOpponentTeam = npcTeam;
       console.log("Using NPC character directly (with safety checks):", window.activeOpponent);
     } else {
       // Set the team as the active opponent
