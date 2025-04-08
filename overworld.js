@@ -1790,22 +1790,28 @@ function startNpcBattle(npc) {
     // Make sure we have a player team for the battle
     if (!window.playerTeam || !Array.isArray(window.playerTeam) || window.playerTeam.length === 0) {
       console.warn("No player team found, creating fallback team from player character");
-      // Create a simple character if no team exists
+      
+      // Get known default character sprites that work properly
+      const defaultSprite = "https://i.imgur.com/YeMI4sr.png"; // Fitness Bro sprite
+      
+      // Create a simple character if no team exists, with a sprite URL we know works
       window.playerTeam = [{
         id: "player",
-        name: player.characterName || "Player",
+        name: player.characterName || "Fitness Bro", // Use a known character name
         hp: 100,
         maxHp: 100,
         attack: 50,
         defense: 50,
         speed: 50,
-        image: player.sprite || "public/images/characters/player.png",
-        sprite: player.sprite || "public/images/characters/player.png",
-        type: "Normal",
+        image: defaultSprite,
+        sprite: defaultSprite, // Use a sprite we know works with imgur URL format
+        type: "Fire", // Match the character type
         moves: [
           { name: "Basic Attack", type: "Normal", power: 40, pp: 15, maxPp: 15, description: "A standard attack" }
         ]
       }];
+      
+      console.log("Created fallback player with sprite:", defaultSprite);
     } else {
       console.log("Using existing player team for battle:", window.playerTeam);
     }
@@ -1816,14 +1822,27 @@ function startNpcBattle(npc) {
       return;
     }
     
-    // Make sure all player team members have standardized sprite paths
-    if (typeof window.standardizeSpritePath === 'function') {
-      window.playerTeam.forEach(character => {
-        if (character.sprite) {
-          character.sprite = window.standardizeSpritePath(character.sprite);
+    // Ensure all player sprites use the imgur URL format for consistency
+    window.playerTeam.forEach(character => {
+      if (character.sprite) {
+        // Check if it's already an imgur URL
+        if (!character.sprite.includes('imgur.com')) {
+          console.log(`Converting sprite format for ${character.name}:`, character.sprite);
+          
+          // Map known character sprites to their imgur URLs
+          if (character.name.includes("Fitness")) {
+            character.sprite = "https://i.imgur.com/YeMI4sr.png";
+          } else if (character.name.includes("Rasta")) {
+            character.sprite = "https://i.imgur.com/dZWWrrs.png";
+          } else {
+            // Default to fitness bro as fallback
+            character.sprite = "https://i.imgur.com/YeMI4sr.png";
+          }
+          
+          console.log(`Sprite converted to:`, character.sprite);
         }
-      });
-    }
+      }
+    });
     
     // Make sure local playerTeam variable is synced with window.playerTeam if it exists
     if (typeof playerTeam !== 'undefined') {
@@ -2063,22 +2082,28 @@ function triggerRandomEncounter() {
     // Make sure we have a player team for the battle
     if (!window.playerTeam || !Array.isArray(window.playerTeam) || window.playerTeam.length === 0) {
       console.warn("No player team found for random encounter, creating fallback team from player character");
-      // Create a simple character if no team exists
+      
+      // Get known default character sprites that work properly
+      const defaultSprite = "https://i.imgur.com/YeMI4sr.png"; // Fitness Bro sprite
+      
+      // Create a simple character if no team exists, with a sprite URL we know works
       window.playerTeam = [{
         id: "player",
-        name: player.characterName || "Player",
+        name: player.characterName || "Fitness Bro", // Use a known character name
         hp: 100,
         maxHp: 100,
         attack: 50,
         defense: 50,
         speed: 50,
-        image: player.sprite || "public/images/characters/player.png",
-        sprite: player.sprite || "public/images/characters/player.png",
-        type: "Normal",
+        image: defaultSprite,
+        sprite: defaultSprite, // Use a sprite we know works with imgur URL format
+        type: "Fire", // Match the character type
         moves: [
           { name: "Basic Attack", type: "Normal", power: 40, pp: 15, maxPp: 15, description: "A standard attack" }
         ]
       }];
+      
+      console.log("Created fallback player with sprite:", defaultSprite);
     } else {
       console.log("Using existing player team for random encounter battle:", window.playerTeam);
     }
@@ -2088,15 +2113,28 @@ function triggerRandomEncounter() {
       console.error("Player team is empty after initialization, battle cannot proceed");
       return;
     }
-      
-    // Make sure all player team members have standardized sprite paths
-    if (typeof window.standardizeSpritePath === 'function') {
-      window.playerTeam.forEach(character => {
-        if (character.sprite) {
-          character.sprite = window.standardizeSpritePath(character.sprite);
+    
+    // Ensure all player sprites use the imgur URL format for consistency
+    window.playerTeam.forEach(character => {
+      if (character.sprite) {
+        // Check if it's already an imgur URL
+        if (!character.sprite.includes('imgur.com')) {
+          console.log(`Converting sprite format for ${character.name}:`, character.sprite);
+          
+          // Map known character sprites to their imgur URLs
+          if (character.name.includes("Fitness")) {
+            character.sprite = "https://i.imgur.com/YeMI4sr.png";
+          } else if (character.name.includes("Rasta")) {
+            character.sprite = "https://i.imgur.com/dZWWrrs.png";
+          } else {
+            // Default to fitness bro as fallback
+            character.sprite = "https://i.imgur.com/YeMI4sr.png";
+          }
+          
+          console.log(`Sprite converted to:`, character.sprite);
         }
-      });
-    }
+      }
+    });
     
     // Make sure local playerTeam variable is synced with window.playerTeam if it exists
     if (typeof playerTeam !== 'undefined') {
@@ -2199,7 +2237,7 @@ function createRandomOpponent(zone) {
   const name = namePool[Math.floor(Math.random() * namePool.length)];
   const type = types[Math.floor(Math.random() * types.length)];
   
-  // Use external sprite options for better character variety
+  // Use external sprite options for better character variety - directly using imgur URLs that we know work
   const spriteOptions = [
     'https://i.imgur.com/dZWWrrs.png', // rasta
     'https://i.imgur.com/YeMI4sr.png', // fitness
@@ -2217,13 +2255,10 @@ function createRandomOpponent(zone) {
     'https://i.imgur.com/1SuHgnZ.png', // earthy
     'https://i.imgur.com/GmlKf6u.png'  // techbro rich
   ];
-  // Ensure paths are standardized
-  const sprite = spriteOptions[Math.floor(Math.random() * spriteOptions.length)];
   
-  // Use standardizeSpritePath if it exists in the global scope
-  const finalSpritePath = typeof window.standardizeSpritePath === 'function' 
-    ? window.standardizeSpritePath(sprite) 
-    : sprite;
+  // Choose a sprite directly - no need for standardizeSpritePath since these are already Imgur URLs
+  const finalSpritePath = spriteOptions[Math.floor(Math.random() * spriteOptions.length)];
+  console.log("Using opponent sprite:", finalSpritePath);
   
   // Create base stats based on level
   const baseHp = 85 + (level * 5);

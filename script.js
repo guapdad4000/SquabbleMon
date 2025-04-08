@@ -2140,19 +2140,44 @@ function standardizeSpritePath(spritePath) {
   // Provide a default sprite if none is given or invalid
   if (!spritePath || typeof spritePath !== 'string') {
     console.warn("Invalid sprite path provided:", spritePath);
-    return 'public/sprites/default_npc.png';
+    // Use a known working imgur URL as default
+    return 'https://i.imgur.com/YeMI4sr.png'; // Fitness Bro
   }
   
   // Trim any whitespace
   spritePath = spritePath.trim();
   
-  // If it's a URL (e.g., https://...), leave it as is
-  if (spritePath.startsWith('http')) {
+  // If it's an imgur URL, return it as is (preferred format)
+  if (spritePath.includes('imgur.com')) {
+    console.log("Using existing imgur URL sprite:", spritePath);
     return spritePath;
   }
   
-  // Remove any leading './' prefix
-  spritePath = spritePath.replace(/^\.\//, '');
+  // For other URLs, leave as is
+  if (spritePath.startsWith('http')) {
+    console.log("Using non-imgur URL sprite:", spritePath);
+    // We could convert known URLs to imgur here if needed
+    return spritePath;
+  }
+  
+  console.log("Converting local sprite path to imgur URL:", spritePath);
+  
+  // Map common character types to known working imgur URLs
+  if (spritePath.includes('fitness') || spritePath.includes('gym')) {
+    return 'https://i.imgur.com/YeMI4sr.png'; // Fitness Bro
+  } else if (spritePath.includes('rasta') || spritePath.includes('plant')) {
+    return 'https://i.imgur.com/dZWWrrs.png'; // Rasta
+  } else if (spritePath.includes('tech') || spritePath.includes('electric')) {
+    return 'https://i.imgur.com/VVa9pm9.png'; // Techy
+  } else if (spritePath.includes('vibe') || spritePath.includes('cool')) {
+    return 'https://i.imgur.com/2n71aSJ.png'; // Vibe
+  } else if (spritePath.includes('9-5') || spritePath.includes('office')) {
+    return 'https://i.imgur.com/UkE9crR.png'; // 9-5
+  }
+  
+  // Default to fitness bro for any local paths we can't map
+  console.log("Using fallback imgur URL for sprite:", spritePath);
+  return 'https://i.imgur.com/YeMI4sr.png';
   
   // Check the location of the main character sprite files
   // If the file is one of our main character sprites like dj-scratch.png, beatbox-wizard.png, etc.

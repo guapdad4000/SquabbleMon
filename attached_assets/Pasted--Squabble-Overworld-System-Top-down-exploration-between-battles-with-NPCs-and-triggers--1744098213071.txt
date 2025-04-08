@@ -1,0 +1,2079 @@
+/**
+ * Squabble Overworld System
+ * Top-down exploration between battles with NPCs and triggers
+ */
+
+// Map constants for various zones
+// Check if ZONE_TYPES is already defined to avoid redeclaration
+const ZONE_TYPES = window.ZONE_TYPES || {
+  STARTER_HOOD: 'starterHood',
+  THE_TRAP: 'theTrap', // Keep original name if used elsewhere, but prefer constants
+  THE_BLOCK: 'theBlock',
+  RICH_SUBURBIA: 'richSuburbia',
+  BACK_ALLEY_ARENA: 'backAlleyArena',
+  CORNER_STORE: 'cornerStore', // Added for consistency
+
+  // New expanded zones
+  TRAP_HOUSE: 'trapHouse',
+  MOMMA_HOUSE: 'mommaHouse',
+  OPPS_HOOD: 'oppsHood',
+  FADE_PARK: 'fadePark'
+};
+
+// Make ZONE_TYPES available globally
+window.ZONE_TYPES = ZONE_TYPES;
+
+// Tile types for collision and interaction
+const TILE_TYPES = {
+  WALKABLE: 0,
+  BLOCKED: 1,
+  GRASS: 2,
+  TRAP_ZONE: 3,
+  DOOR: 4,
+  NPC: 5 // Note: NPC tiles on the map are usually rendered as walkable background
+};
+
+// --- MAP DATA ---
+// 0 = walkable, 1 = blocked, 2 = grass, 3 = trap zone, 4 = door, 5 = NPC placeholder
+const STARTER_HOOD_MAP = [
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 1], // Door to Opps Hood
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+  [1, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 1],
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+  [1, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0, 1],
+  [1, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0, 1],
+  [1, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 0, 1], // Trap Zone
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 0, 1], // Trap Zone
+  [1, 0, 0, 0, 4, 0, 0, 0, 0, 0, 3, 3, 3, 0, 1], // Door to Corner Store, Trap Zone
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+  [1, 1, 4, 1, 1, 1, 4, 1, 1, 1, 1, 4, 1, 1, 1], // Doors to Trap House, The Trap, Momma House
+];
+
+const TRAP_HOUSE_MAP = [
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], // Entrance from Starter Hood (bottom) might be here instead of y=14?
+    [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1],
+    [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1],
+    [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1],
+    [1, 0, 1, 0, 0, 5, 0, 0, 5, 0, 0, 1, 0, 0, 1], // NPCs
+    [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1],
+    [1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1], // Some interior walls
+    [1, 0, 0, 0, 0, 0, 1, 5, 1, 0, 0, 0, 0, 0, 1], // NPC Kingpin behind counter?
+    [1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1],
+    [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1],
+    [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1] // Exit door at bottom center
+];
+
+const MOMMA_HOUSE_MAP = [
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1], // Walls for rooms
+    [1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 1], // Kitchen area maybe
+    [1, 0, 1, 0, 0, 0, 1, 5, 1, 0, 0, 0, 1, 0, 1], // Momma in kitchen
+    [1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 1],
+    [1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1], // Living room area maybe
+    [1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1], // Bedroom?
+    [1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1], // More walls
+    [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
+    [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1] // Exit door
+];
+
+const OPPS_HOOD_MAP = [
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1], // Trap zone border
+  [1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 1],
+  [1, 3, 0, 5, 0, 0, 1, 1, 1, 0, 0, 5, 0, 3, 1], // NPCs, some structure
+  [1, 3, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 3, 1],
+  [1, 3, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 3, 1],
+  [1, 3, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 3, 1], // Central structure
+  [1, 3, 0, 0, 0, 1, 0, 5, 0, 1, 0, 0, 0, 3, 1], // Leader NPC
+  [1, 3, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 3, 1],
+  [1, 3, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 3, 1],
+  [1, 3, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 3, 1],
+  [1, 3, 0, 5, 0, 0, 0, 0, 0, 0, 0, 5, 0, 3, 1], // NPCs
+  [1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 1],
+  [1, 3, 3, 3, 3, 3, 3, 4, 3, 3, 3, 3, 3, 3, 1], // Exit Door
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+];
+
+const FADE_PARK_MAP = [
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1], // Grass border
+  [1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1], // Walkable path
+  [1, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 1], // Grass patches
+  [1, 2, 0, 2, 5, 0, 0, 0, 0, 0, 5, 2, 0, 2, 1], // NPCs on path/grass edge
+  [1, 2, 0, 2, 0, 2, 2, 2, 2, 2, 0, 2, 0, 2, 1],
+  [1, 2, 0, 2, 0, 2, 1, 1, 1, 2, 0, 2, 0, 2, 1], // Structure / Fountain?
+  [1, 2, 0, 0, 0, 0, 1, 5, 1, 0, 0, 0, 0, 2, 1], // Champion NPC
+  [1, 2, 0, 2, 0, 2, 1, 1, 1, 2, 0, 2, 0, 2, 1],
+  [1, 2, 0, 2, 0, 2, 2, 2, 2, 2, 0, 2, 0, 2, 1],
+  [1, 2, 0, 2, 5, 0, 0, 0, 0, 0, 5, 2, 0, 2, 1], // NPCs
+  [1, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 1],
+  [1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1], // Walkable path
+  [1, 2, 2, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 2, 1], // Exit Door
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+];
+
+const CORNER_STORE_MAP = [ // Example Interior Map
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1], // Shelves
+    [1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1],
+    [1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 1], // NPC (Lil Brick) behind counter
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], // Counter
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1], // More Shelves
+    [1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1],
+    [1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1]  // Exit Door
+];
+
+// --- NPC DATA ---
+const STARTER_HOOD_NPCS = [
+  {
+    id: 'npc1', name: 'OG Ras', x: 3, y: 3, sprite: 'public/sprites/og_ras.png', direction: 'down',
+    lines: ["Ayo, youngblood.", "You rollin' through here like you own the trap?", "Lemme test them squabble hands."],
+    triggersBattle: true,
+    character: { name: 'OG Ras', sprite: 'public/sprites/og_ras.png', type: 'Fire', level: 5, hp: 110, maxHp: 110, attack: 55, defense: 40, speed: 45, moves: [/* moves data */] } // Keep character for level/theming
+  },
+  {
+    id: 'npc2', name: 'Lil Brick', x: 11, y: 3, sprite: 'public/sprites/lil_brick.png', direction: 'left',
+    lines: ["Yo what's good?", "I sell the finest product on the block.", "You lookin' to cop somethin'?"],
+    triggersBattle: false, opensShop: true, shopType: 'cornerStore'
+  },
+  {
+    id: 'npc3', name: 'Street Runner', x: 3, y: 7, sprite: 'public/sprites/street_runner.png', direction: 'right',
+    lines: ["These streets ain't safe no more.", "Them dudes from the north side been pushing weight.", "Watch yourself if you head to the trap zone down south."],
+    triggersBattle: false, givesQuest: true,
+    quest: { id: 'quest1', name: 'Clear The Trap', description: 'Defeat 3 enemies in the trap zone', objective: { type: 'defeat', zone: 'trapZone', count: 3 }, reward: { money: 100, item: { id: 'gold_chain', name: 'Gold Chain' } } }
+  }
+];
+
+const TRAP_HOUSE_NPCS = [
+  {
+    id: 'trap_dealer', name: 'Trap Dealer', x: 5, y: 5, sprite: 'public/sprites/trap_dealer.png', direction: 'down',
+    lines: ["Welcome to the trap house.", "I got all the goods you need to survive the streets.", "Whatchu need today?"],
+    opensShop: true, shopType: 'trapHouse'
+  },
+  {
+    id: 'trap_guard', name: 'Trap Guard', x: 8, y: 5, sprite: 'public/sprites/trap_guard.png', direction: 'left',
+    lines: ["You better have business here.", "Don't make me test you in these streets.", "Step wrong and we got problems."],
+    triggersBattle: true, character: { name: 'Trap Guard', sprite: 'public/sprites/trap_guard.png', type: 'Dark', level: 8, /* stats/moves */ }
+  },
+  {
+    id: 'trap_kingpin', name: 'Trap Kingpin', x: 7, y: 8, sprite: 'public/sprites/trap_kingpin.png', direction: 'up', // Adjusted position based on map
+    lines: ["So you made it this far into my trap?", "You either brave or stupid.", "Let's see if you got what it takes to survive here."],
+    triggersBattle: true, character: { name: 'Trap Kingpin', sprite: 'public/sprites/trap_kingpin.png', type: 'Psychic', level: 12, /* stats/moves */ }
+  }
+];
+
+const MOMMA_HOUSE_NPCS = [
+  {
+    id: 'momma', name: 'Big Momma', x: 7, y: 4, sprite: 'public/sprites/big_momma.png', direction: 'down', // Adjusted position based on map
+    lines: ["Baby, you look hungry! Let me fix you a plate.", "I got some healing food for you to take on your journey.", "Don't forget to eat and keep your strength up out there."],
+    opensShop: true, shopType: 'mommaKitchen', givesHeal: true // 'givesHeal' might trigger a full party heal?
+  }
+];
+
+const OPPS_HOOD_NPCS = [
+  {
+    id: 'opp_leader', name: 'Opp Leader', x: 7, y: 7, sprite: 'public/sprites/opp_leader.png', direction: 'down',
+    lines: ["You in the wrong hood, fool.", "This our territory. You better bounce.", "Or we can settle this right now."],
+    triggersBattle: true, character: { name: 'Opp Leader', sprite: 'public/sprites/opp_leader.png', type: 'Fighting', level: 15, /* stats/moves */ }
+  },
+  { id: 'opp_soldier1', name: 'Opp Soldier', x: 3, y: 3, sprite: 'public/sprites/opp_soldier.png', direction: 'right', lines: ["On sight! On sight!", "We don't play around here.", "Let's get it poppin'!"], triggersBattle: true, character: { name: 'Opp Soldier', sprite: 'public/sprites/opp_soldier.png', type: 'Dark', level: 10, /* stats/moves */ } },
+  { id: 'opp_soldier2', name: 'Opp Soldier', x: 11, y: 3, sprite: 'public/sprites/opp_soldier2.png', direction: 'left', lines: ["You lost or something?", "Wrong turn, homie.", "This gonna hurt you more than me."], triggersBattle: true, character: { name: 'Opp Soldier', sprite: 'public/sprites/opp_soldier2.png', type: 'Fire', level: 10, /* stats/moves */ } },
+  { id: 'opp_soldier3', name: 'Opp Soldier', x: 3, y: 11, sprite: 'public/sprites/opp_soldier3.png', direction: 'right', lines: ["End of the line for you.", "Ain't no way out now.", "Time to catch these hands."], triggersBattle: true, character: { name: 'Opp Soldier', sprite: 'public/sprites/opp_soldier3.png', type: 'Electric', level: 10, /* stats/moves */ } },
+  { id: 'opp_soldier4', name: 'Opp Soldier', x: 11, y: 11, sprite: 'public/sprites/opp_soldier4.png', direction: 'left', lines: ["You walked into the wrong situation.", "No mercy in these streets.", "It's fade on sight!"], triggersBattle: true, character: { name: 'Opp Soldier', sprite: 'public/sprites/opp_soldier4.png', type: 'Water', level: 10, /* stats/moves */ } }
+];
+
+const FADE_PARK_NPCS = [
+  {
+    id: 'park_champion', name: 'Park Champion', x: 7, y: 7, sprite: 'public/sprites/park_champion.png', direction: 'down',
+    lines: ["This park is where legends are made.", "I'm the undefeated champion of Fade Park.", "Step up if you're ready to be humbled."],
+    triggersBattle: true, character: { name: 'Park Champion', sprite: 'public/sprites/park_champion.png', type: 'Grass', level: 18, /* stats/moves */ }
+  },
+  { id: 'park_challenger1', name: 'Park Challenger', x: 4, y: 4, sprite: 'public/sprites/park_challenger1.png', direction: 'right', lines: ["You look strong. Let's battle!", "I'm training to take on the Park Champion.", "Show me what you got!"], triggersBattle: true, character: { name: 'Park Challenger', sprite: 'public/sprites/park_challenger1.png', type: 'Normal', level: 12, /* stats/moves */ } },
+  { id: 'park_challenger2', name: 'Park Challenger', x: 10, y: 4, sprite: 'public/sprites/park_challenger2.png', direction: 'left', lines: ["This is my training ground.", "I come here every day to get stronger.", "Let me show you my progress!"], triggersBattle: true, character: { name: 'Park Challenger', sprite: 'public/sprites/park_challenger2.png', type: 'Flying', level: 12, /* stats/moves */ } },
+  { id: 'park_challenger3', name: 'Park Challenger', x: 4, y: 10, sprite: 'public/sprites/park_challenger3.png', direction: 'right', lines: ["I heard you've been winning battles.", "Let's see if the rumors are true.", "Give me your best shot!"], triggersBattle: true, character: { name: 'Park Challenger', sprite: 'public/sprites/park_challenger3.png', type: 'Rock', level: 12, /* stats/moves */ } },
+  { id: 'park_challenger4', name: 'Park Challenger', x: 10, y: 10, sprite: 'public/sprites/park_challenger4.png', direction: 'left', lines: ["People come to Fade Park to prove themselves.", "I'm here to be the best there ever was.", "Show me if you have what it takes!"], triggersBattle: true, character: { name: 'Park Challenger', sprite: 'public/sprites/park_challenger4.png', type: 'Ice', level: 12, /* stats/moves */ } }
+];
+
+const CORNER_STORE_NPCS = [
+     {
+    id: 'npc2', name: 'Lil Brick', x: 7, y: 5, sprite: 'public/sprites/lil_brick.png', direction: 'down', // Positioned behind counter
+    lines: ["Yo what's good?", "I sell the finest product on the block.", "You lookin' to cop somethin'?"],
+    triggersBattle: false, opensShop: true, shopType: 'cornerStore'
+  }
+];
+
+// --- DOOR DATA ---
+const STARTER_HOOD_DOORS = [
+  { x: 4, y: 11, leadsTo: ZONE_TYPES.CORNER_STORE, entranceX: 7, entranceY: 13 }, // Adjusted entrance Y for corner store
+  { x: 6, y: 14, leadsTo: ZONE_TYPES.THE_TRAP, entranceX: 7, entranceY: 1 }, // Leads to "The Trap" zone (needs map/data)
+  { x: 2, y: 14, leadsTo: ZONE_TYPES.TRAP_HOUSE, entranceX: 7, entranceY: 13 }, // Adjusted entrance Y for trap house
+  { x: 11, y: 14, leadsTo: ZONE_TYPES.MOMMA_HOUSE, entranceX: 7, entranceY: 13 }, // Adjusted entrance Y for momma house
+  { x: 10, y: 1, leadsTo: ZONE_TYPES.OPPS_HOOD, entranceX: 7, entranceY: 13 },
+  { x: 3, y: 1, leadsTo: ZONE_TYPES.FADE_PARK, entranceX: 7, entranceY: 13 }, // Door needs to be added to map for Fade Park
+];
+
+const TRAP_HOUSE_DOORS = [
+  // { x: 7, y: 1, leadsTo: ZONE_TYPES.STARTER_HOOD, entranceX: 2, entranceY: 13 }, // Entrance might be at bottom instead?
+  { x: 7, y: 14, leadsTo: ZONE_TYPES.STARTER_HOOD, entranceX: 2, entranceY: 13 } // Exit door at bottom
+];
+
+const MOMMA_HOUSE_DOORS = [
+  // { x: 7, y: 1, leadsTo: ZONE_TYPES.STARTER_HOOD, entranceX: 12, entranceY: 13 }, // Entrance might be at bottom instead?
+  { x: 7, y: 14, leadsTo: ZONE_TYPES.STARTER_HOOD, entranceX: 11, entranceY: 13 } // Exit door at bottom
+];
+
+const OPPS_HOOD_DOORS = [
+  { x: 7, y: 13, leadsTo: ZONE_TYPES.STARTER_HOOD, entranceX: 10, entranceY: 2 }
+];
+
+const FADE_PARK_DOORS = [
+  { x: 7, y: 13, leadsTo: ZONE_TYPES.STARTER_HOOD, entranceX: 3, entranceY: 2 } // Adjusted entrance coordinates slightly
+];
+
+const CORNER_STORE_DOORS = [
+    { x: 7, y: 14, leadsTo: ZONE_TYPES.STARTER_HOOD, entranceX: 4, entranceY: 12 } // Exit door
+];
+
+
+// --- PLAYER AND GAME STATE ---
+let player = {
+  x: 7, // Starting X position
+  y: 7, // Starting Y position
+  direction: 'down',
+  sprite: 'public/sprites/player_overworld.png', // Fixed overworld sprite
+  characterSprite: '', // Actual character sprite for battle system reference
+  characterId: null,
+  characterName: 'Player',
+  speed: 5, // Movement speed (currently visual, logic uses tile steps)
+  stepCount: 0,
+  inTrapZone: false,
+  isMoving: false, // For animation state
+  hasInitialPosition: false, // Flag to prevent resetting position on return
+  activeQuests: [],
+  completedQuests: []
+};
+
+// Current zone and map state
+let currentZone = ZONE_TYPES.STARTER_HOOD;
+let currentMap = STARTER_HOOD_MAP;
+let currentNpcs = STARTER_HOOD_NPCS;
+let currentDoors = STARTER_HOOD_DOORS;
+
+// UI elements
+let overworldContainer = null;
+let mapContainer = null;
+let playerSprite = null;
+let dialogueBox = null;
+let npcs = []; // Array to hold NPC DOM elements and data references
+
+// Dialogue state
+let currentDialogue = null;
+let currentDialogueLine = 0;
+
+// --- CORE FUNCTIONS ---
+
+/**
+ * Initialize or re-initialize the overworld screen.
+ * @param {object} [selectedCharacter=null] - The character selected by the player (optional).
+ */
+function initOverworld(selectedCharacter = null) {
+  console.log("Initializing overworld...");
+  try {
+    // --- Preload & Dependency Checks ---
+    if (window.SpriteManager && typeof window.SpriteManager.preloadSprites === 'function') {
+      console.log("Preloading sprites via SpriteManager...");
+      window.SpriteManager.preloadSprites(); // Assuming this handles necessary overworld sprites
+    } else {
+        console.warn("SpriteManager not found or preloadSprites function missing.");
+    }
+
+    // Ensure essential global systems are somewhat present (or log warnings)
+    if (typeof window.playerTeam === 'undefined') {
+        console.warn("window.playerTeam not defined. Battle system might fail.");
+        window.playerTeam = []; // Initialize to prevent errors later if possible
+    }
+     if (typeof window.gameShops === 'undefined') {
+        console.warn("window.gameShops not defined. Shops will not open.");
+        window.gameShops = {};
+    }
+     if (typeof window.InventorySystem === 'undefined') {
+        console.warn("window.InventorySystem not defined. Inventory/Quest rewards might fail.");
+        // Define a dummy if needed for testing
+        window.InventorySystem = { addItemToInventory: (inv, item) => console.log("Dummy Inventory: Added", item.name) };
+        window.playerInventory = { money: 0, items: [] }; // Dummy inventory
+    }
+
+
+    // --- Player Setup ---
+    player.isMoving = false; // Reset moving state
+
+    if (selectedCharacter && selectedCharacter.id) {
+      console.log("Setting up player with selected character:", selectedCharacter.name);
+      player.characterId = selectedCharacter.id;
+      player.characterName = selectedCharacter.name;
+      player.characterSprite = selectedCharacter.sprite; // Store for battle reference
+      player.sprite = 'public/sprites/player_overworld.png'; // Use fixed overworld sprite
+
+      // Ensure selected character is in the global team
+       if (Array.isArray(window.playerTeam)) {
+           const alreadyInTeam = window.playerTeam.some(char => char.id === selectedCharacter.id);
+           if (!alreadyInTeam) {
+               console.log("Adding selected character to window.playerTeam");
+               window.playerTeam.push(selectedCharacter);
+           }
+       } else {
+           console.error("window.playerTeam is not an array!");
+           window.playerTeam = [selectedCharacter]; // Attempt recovery
+       }
+
+    } else if (window.playerTeam && window.playerTeam.length > 0) {
+        console.log("No selected character passed, using first character from window.playerTeam");
+        const firstChar = window.playerTeam[0];
+        player.characterId = firstChar.id;
+        player.characterName = firstChar.name;
+        player.characterSprite = firstChar.sprite;
+        player.sprite = 'public/sprites/player_overworld.png';
+    }
+    else {
+      console.warn("No selected character provided and playerTeam is empty/invalid. Using defaults.");
+      player.characterId = 'defaultPlayer';
+      player.characterName = 'Player';
+      player.characterSprite = 'public/sprites/player_default_battle.png'; // Example battle sprite
+      player.sprite = 'public/sprites/player_overworld.png';
+      // Create a default fallback team member if none exists
+      if (!window.playerTeam || window.playerTeam.length === 0) {
+           console.log("Creating default fallback player team member.");
+           window.playerTeam = [{
+               id: player.characterId, name: player.characterName, hp: 100, maxHp: 100, attack: 50, defense: 50, speed: 50, type: "Normal",
+               sprite: player.characterSprite,
+               moves: [{ name: "Tackle", type: "Normal", power: 40, pp: 20, maxPp: 20 }]
+           }];
+      }
+    }
+
+    // Standardize player team sprites *after* potential additions/fallbacks
+    if (Array.isArray(window.playerTeam) && typeof window.standardizeSpritePath === 'function') {
+        window.playerTeam.forEach(character => {
+            if (character.sprite) {
+                character.sprite = window.standardizeSpritePath(character.sprite);
+            }
+             if (character.image && character.image !== character.sprite) { // Handle 'image' property if used
+                character.image = window.standardizeSpritePath(character.image);
+             }
+        });
+         // Also standardize the stored characterSprite for consistency
+         if(player.characterSprite) {
+             player.characterSprite = window.standardizeSpritePath(player.characterSprite);
+         }
+         // Standardize the fixed overworld sprite too
+         if (player.sprite) {
+            player.sprite = window.standardizeSpritePath(player.sprite);
+         }
+    }
+
+
+    // --- UI Setup ---
+    // Hide other screens
+    const battleScreen = document.getElementById('battle-screen');
+    if (battleScreen) battleScreen.style.display = 'none';
+    const charSelection = document.getElementById('character-selection');
+    if (charSelection) charSelection.style.display = 'none';
+    const gameOver = document.getElementById('game-over');
+    if (gameOver) gameOver.style.display = 'none';
+     const mobileControls = document.getElementById('mobile-controls-container'); // Hide mobile controls initially if needed
+     // if (mobileControls) mobileControls.style.display = 'none'; // Decide if they show immediately or later
+
+    // Create or update the overworld UI
+    createOverworldUI(); // This now handles finding/creating elements robustly
+
+    // Final check for UI elements after creation
+    if (!overworldContainer || !mapContainer || !playerSprite || !dialogueBox) {
+      console.error("FATAL: Overworld UI elements failed to initialize!");
+      return; // Stop initialization if UI is broken
+    }
+
+    overworldContainer.style.display = 'flex'; // Ensure container is visible
+
+    // --- Player Position ---
+    if (!player.hasInitialPosition) {
+      console.log("Setting initial player position.");
+      // Reset to default starting position of the current zone (or default 7,7)
+      // This needs refinement if zones have defined start points
+      player.x = 7;
+      player.y = 7;
+      player.hasInitialPosition = true;
+    } else {
+        console.log("Player position retained from previous state:", player.x, player.y);
+    }
+
+    // Safety check - ensure player position is within current map bounds *before* rendering
+    if (currentMap && currentMap.length > 0 && currentMap[0].length > 0) {
+      const mapHeight = currentMap.length;
+      const mapWidth = currentMap[0].length;
+      if (player.y < 0 || player.y >= mapHeight || player.x < 0 || player.x >= mapWidth || currentMap[player.y][player.x] === TILE_TYPES.BLOCKED) {
+          console.warn(`Player position (${player.x}, ${player.y}) is invalid or blocked. Resetting to safe default (1, 1).`);
+          player.x = 1; // Find first walkable tile? For now, reset simply.
+          player.y = 1;
+          // Ideally, find the nearest valid tile instead of just (1,1)
+      }
+      console.log("Player position after bounds check:", player.x, player.y);
+    } else {
+        console.error("Current map is invalid, cannot perform player bounds check.");
+        // Consider stopping initialization or loading a fallback map
+        return;
+    }
+
+    // --- Render & Setup ---
+    renderMap(); // Render map tiles FIRST
+    renderNpcs(); // Render NPCs on top of map
+    updatePlayerPosition(); // Place player sprite visually
+    setupOverworldControls();
+    setupMobileOverworldControls(); // Setup mobile controls listener
+    playOverworldMusic();
+
+    console.log("Overworld initialization complete. Current zone:", currentZone);
+
+  } catch (error) {
+    console.error("Error initializing overworld:", error.stack);
+    // Display an error message to the user?
+    if (document.body) {
+        document.body.innerHTML = `<div style="color: red; padding: 20px; font-family: sans-serif;">
+            <h1>Overworld Initialization Failed</h1><p>${error.message}</p><pre>${error.stack}</pre>
+            <p>Please try refreshing the page.</p></div>`;
+    }
+  }
+}
+
+/**
+ * Creates or retrieves the necessary DOM elements for the overworld UI.
+ */
+function createOverworldUI() {
+  console.log("Creating/Updating Overworld UI...");
+
+  overworldContainer = document.getElementById('overworld-container');
+  if (!overworldContainer) {
+    console.log("Creating new overworld container.");
+    overworldContainer = document.createElement('div');
+    overworldContainer.id = 'overworld-container';
+    // Apply necessary styles via CSS or here
+    overworldContainer.style.width = '100%';
+    overworldContainer.style.height = '100%';
+    overworldContainer.style.position = 'relative'; // Important for absolute positioning inside
+    overworldContainer.style.display = 'flex'; // Use flex for layout if needed
+    overworldContainer.style.flexDirection = 'column';
+    overworldContainer.style.backgroundColor = '#222'; // Example background
+    document.body.appendChild(overworldContainer);
+  } else {
+    console.log("Using existing overworld container.");
+    overworldContainer.innerHTML = ''; // Clear existing content for re-render
+  }
+
+  // Create map container
+  mapContainer = document.createElement('div');
+  mapContainer.id = 'map-container';
+  mapContainer.style.position = 'relative'; // For positioning tiles and sprites
+  mapContainer.style.width = '100%'; // Adjust as needed
+  mapContainer.style.height = 'calc(100% - 150px)'; // Example: Leave space for dialogue
+  mapContainer.style.overflow = 'hidden'; // Prevent scrollbars if map is larger
+  mapContainer.style.margin = 'auto'; // Center map container potentially
+  mapContainer.style.maxWidth = `${15 * 64}px`; // Max width based on map size
+  mapContainer.style.maxHeight = `${15 * 64}px`; // Max height based on map size
+  overworldContainer.appendChild(mapContainer);
+
+
+  // Create player sprite element (will be positioned in updatePlayerPosition)
+  playerSprite = document.createElement('div');
+  playerSprite.id = 'player-sprite';
+  playerSprite.style.position = 'absolute';
+  playerSprite.style.width = '64px'; // Match tileSize
+  playerSprite.style.height = '64px';
+  playerSprite.style.zIndex = '10'; // Above tiles, below dialogue usually
+  playerSprite.style.transition = 'left 0.15s linear, top 0.15s linear'; // Smoother movement
+  playerSprite.style.pointerEvents = 'none'; // Prevent interfering with map clicks if any
+  // Player sprite is added to mapContainer *during renderMap* after tiles
+
+  // Create dialogue box
+  dialogueBox = document.createElement('div');
+  dialogueBox.id = 'dialogue-box';
+  // Style dialogue box via CSS (recommended) or here
+  dialogueBox.style.position = 'absolute';
+  dialogueBox.style.bottom = '10px';
+  dialogueBox.style.left = '10px';
+  dialogueBox.style.right = '10px';
+  dialogueBox.style.height = '120px'; // Example height
+  dialogueBox.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+  dialogueBox.style.border = '2px solid #eee';
+  dialogueBox.style.borderRadius = '5px';
+  dialogueBox.style.color = 'white';
+  dialogueBox.style.padding = '15px';
+  dialogueBox.style.zIndex = '100'; // Above everything else
+  dialogueBox.style.display = 'none'; // Hidden initially
+  dialogueBox.style.fontFamily = "'Press Start 2P', monospace"; // Example font
+  dialogueBox.style.fontSize = '14px';
+
+  const dialogueContent = document.createElement('div');
+  dialogueContent.className = 'dialogue-content';
+  dialogueContent.style.height = 'calc(100% - 30px)'; // Leave space for button
+  dialogueContent.style.overflowY = 'auto';
+
+  const nameElement = document.createElement('p');
+  nameElement.id = 'dialogue-name';
+  nameElement.style.fontWeight = 'bold';
+  nameElement.style.marginBottom = '10px';
+  nameElement.style.color = '#f25a5a'; // Example name color
+
+  const textElement = document.createElement('p');
+  textElement.id = 'dialogue-text';
+  textElement.style.margin = '0';
+  textElement.style.lineHeight = '1.4';
+
+  // Append in correct order
+  dialogueContent.appendChild(nameElement);
+  dialogueContent.appendChild(textElement);
+
+  const dialogueControls = document.createElement('div');
+  dialogueControls.className = 'dialogue-controls';
+  dialogueControls.style.position = 'absolute';
+  dialogueControls.style.bottom = '10px';
+  dialogueControls.style.right = '10px';
+
+  const nextButton = document.createElement('button');
+  nextButton.id = 'dialogue-next';
+  nextButton.textContent = 'Next (Space)';
+  // Style button via CSS or here
+   nextButton.style.padding = '5px 10px';
+   nextButton.style.fontFamily = "'Press Start 2P', monospace";
+   nextButton.style.fontSize = '12px';
+   nextButton.style.cursor = 'pointer';
+
+  dialogueControls.appendChild(nextButton);
+
+  dialogueBox.appendChild(dialogueContent);
+  dialogueBox.appendChild(dialogueControls);
+  overworldContainer.appendChild(dialogueBox);
+
+  // Attach event listener for the button
+  nextButton.addEventListener('click', advanceDialogue);
+
+  console.log("Overworld UI structure created.");
+}
+
+
+/**
+ * Renders the map tiles based on the currentMap data.
+ */
+function renderMap() {
+  console.log(`Rendering map for zone: ${currentZone}`);
+  if (!mapContainer) {
+    console.error("Map container not found during renderMap!");
+    createOverworldUI(); // Attempt to recreate UI if missing
+    if (!mapContainer) {
+        console.error("FATAL: Map container recovery failed.");
+        return; // Stop if critical element is missing
+    }
+  }
+  if (!currentMap || !Array.isArray(currentMap) || currentMap.length === 0 || !Array.isArray(currentMap[0]) || currentMap[0].length === 0) {
+    console.error("Invalid or empty currentMap data for rendering:", currentMap);
+    // Display error on map container?
+    mapContainer.innerHTML = '<p style="color:red; padding: 20px;">Error: Invalid map data loaded.</p>';
+    return; // Stop rendering
+  }
+
+  try {
+    const mapFragment = document.createDocumentFragment();
+    const tileSize = 64;
+    const mapHeight = currentMap.length;
+    const mapWidth = currentMap[0].length;
+
+    // Adjust map container size explicitly if needed (optional)
+    // mapContainer.style.width = `${mapWidth * tileSize}px`;
+    // mapContainer.style.height = `${mapHeight * tileSize}px`;
+
+    // Define tileset mapping (ensure this matches your actual tileset.png)
+    // Assumes tileset.png is 256x256 (4x4 grid of 64x64 tiles)
+    const tilesetUrl = 'public/images/tileset.png'; // Correct path?
+    const tileOffsets = {
+      [TILE_TYPES.WALKABLE]: { x: 0, y: 0 },      // Top-left (Concrete)
+      [TILE_TYPES.BLOCKED]: { x: 2, y: 1 },       // Row 2, Col 3 (Stone Wall)
+      [TILE_TYPES.GRASS]: { x: 4, y: 0 },         // Row 1, Col 5? (If tileset is wider) - Check your tileset! Assuming 4x4 for now: { x: 3, y: 0 }
+      [TILE_TYPES.TRAP_ZONE]: { x: 0, y: 1 },     // Row 2, Col 1 (Dirt)
+      [TILE_TYPES.DOOR]: { x: 2, y: 3 },          // Row 4, Col 3 (Stone Path) - Placeholder, door visuals often differ
+      // Add mappings for other tiles if your tileset includes them
+    };
+    const defaultTileOffset = tileOffsets[TILE_TYPES.WALKABLE]; // Fallback
+
+    for (let y = 0; y < mapHeight; y++) {
+      for (let x = 0; x < mapWidth; x++) {
+        const tileType = currentMap[y][x];
+        const tile = document.createElement('div');
+        tile.className = 'map-tile';
+        tile.style.position = 'absolute'; // Position tiles absolutely within mapContainer
+        tile.style.left = `${x * tileSize}px`;
+        tile.style.top = `${y * tileSize}px`;
+        tile.style.width = `${tileSize}px`;
+        tile.style.height = `${tileSize}px`;
+        tile.dataset.x = x;
+        tile.dataset.y = y;
+        tile.dataset.type = tileType;
+
+        // Get background offset, use default if type unknown or is NPC placeholder
+        const tileOffset = tileOffsets[tileType] || defaultTileOffset;
+        // Treat NPC placeholder tile as walkable visually
+        const effectiveOffset = (tileType === TILE_TYPES.NPC) ? tileOffsets[TILE_TYPES.WALKABLE] : tileOffset;
+
+        const bgPosX = -(effectiveOffset.x * tileSize);
+        const bgPosY = -(effectiveOffset.y * tileSize);
+
+        tile.style.backgroundImage = `url('${tilesetUrl}')`;
+        tile.style.backgroundSize = '256px 256px'; // Adjust if your tileset grid size differs
+        tile.style.backgroundPosition = `${bgPosX}px ${bgPosY}px`;
+        tile.style.backgroundRepeat = 'no-repeat';
+
+        // Add class for potential CSS styling based on type
+        let typeClass = 'walkable'; // Default
+        switch(tileType) {
+            case TILE_TYPES.BLOCKED: typeClass = 'blocked'; break;
+            case TILE_TYPES.GRASS: typeClass = 'grass'; break;
+            case TILE_TYPES.TRAP_ZONE: typeClass = 'trap-zone'; break;
+            case TILE_TYPES.DOOR: typeClass = 'door'; break;
+             // case TILE_TYPES.NPC: // Keep 'walkable' visually
+        }
+        tile.classList.add(typeClass);
+
+
+        mapFragment.appendChild(tile);
+      }
+    }
+
+    // Clear previous map content (tiles and NPCs)
+    while (mapContainer.firstChild) {
+      // Be careful not to remove the player sprite if it was already added
+      if (mapContainer.firstChild.id !== 'player-sprite') {
+          mapContainer.removeChild(mapContainer.firstChild);
+      } else {
+          // Detach player sprite temporarily if needed, though adding fragment should place it after
+           break; // Assume player is last, or handle more carefully
+      }
+    }
+     // Clear NPCs array as well since elements are removed
+     npcs = [];
+
+
+    // Add new tiles
+    mapContainer.appendChild(mapFragment);
+
+    // Ensure player sprite exists and add it (or re-add it) on top
+    if (!playerSprite) {
+      console.error("Player sprite element lost during map render!");
+      // Attempt recovery (create it again, though state might be lost)
+      playerSprite = document.createElement('div');
+      playerSprite.id = 'player-sprite';
+      // Re-apply styles if necessary
+       playerSprite.style.position = 'absolute';
+       playerSprite.style.width = '64px';
+       playerSprite.style.height = '64px';
+       playerSprite.style.zIndex = '10';
+       playerSprite.style.transition = 'left 0.15s linear, top 0.15s linear';
+       playerSprite.style.pointerEvents = 'none';
+    }
+    // Ensure player sprite is in the map container
+     if (!playerSprite.parentNode || playerSprite.parentNode !== mapContainer) {
+        mapContainer.appendChild(playerSprite);
+     }
+
+
+    console.log("Map rendering complete.");
+
+    // NPCs are rendered separately after map tiles are down
+    // renderNpcs(); called by init or changeZone after renderMap
+
+  } catch (error) {
+    console.error("Error during map rendering:", error.stack);
+    mapContainer.innerHTML = `<p style="color:red; padding:20px;">Map Rendering Error: ${error.message}</p>`;
+     // Consider attempting a fallback map render here
+     renderFallbackMapOnError();
+  }
+}
+
+/** Renders a simple fallback map if the main render fails */
+function renderFallbackMapOnError() {
+    try {
+        console.warn("Attempting to render fallback map due to error.");
+         const fallbackMap = [
+            [1, 1, 1, 1, 1],
+            [1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1],
+            [1, 1, 1, 1, 1]
+          ];
+         const originalMap = currentMap; // Backup original
+         currentMap = fallbackMap;
+         player.x = 2; // Safe position
+         player.y = 2;
+         mapContainer.innerHTML = ''; // Clear error message
+         renderMap(); // Try rendering the fallback
+         currentMap = originalMap; // Restore original map data for next attempt maybe? Or leave fallback?
+         console.warn("Rendered fallback map. Game state might be inconsistent.");
+
+    } catch (fallbackError) {
+        console.error("FATAL: Fallback map rendering also failed:", fallbackError.stack);
+         mapContainer.innerHTML = `<p style="color:red; padding:20px;">FATAL: Map and Fallback Failed: ${fallbackError.message}</p>`;
+    }
+}
+
+
+/**
+ * Renders NPCs onto the map. Assumes map tiles are already rendered.
+ */
+function renderNpcs() {
+  if (!mapContainer) {
+      console.error("Cannot render NPCs: mapContainer not found.");
+      return;
+  }
+   if (!currentNpcs || !Array.isArray(currentNpcs)) {
+       console.warn("No valid NPC data for current zone:", currentZone);
+       return; // Nothing to render
+   }
+
+  console.log(`Rendering ${currentNpcs.length} NPCs for zone: ${currentZone}`);
+  try {
+    // Remove previous NPC elements (already done in renderMap, but good safety check)
+    npcs.forEach(npc => {
+      if (npc.element && npc.element.parentNode === mapContainer) {
+        mapContainer.removeChild(npc.element);
+      }
+    });
+    npcs = []; // Clear the reference array
+
+    const npcFragment = document.createDocumentFragment();
+    const tileSize = 64;
+
+    currentNpcs.forEach(npcData => {
+      try {
+        const npcElement = document.createElement('div');
+        npcElement.className = 'npc-sprite'; // Base class for styling
+        npcElement.style.position = 'absolute';
+        npcElement.style.left = `${npcData.x * tileSize}px`;
+        npcElement.style.top = `${npcData.y * tileSize}px`;
+        npcElement.style.width = `${tileSize}px`;
+        npcElement.style.height = `${tileSize}px`;
+        npcElement.style.zIndex = '9'; // Just below player
+        npcElement.style.pointerEvents = 'none';
+        npcElement.dataset.npcId = npcData.id;
+        npcElement.dataset.npcName = npcData.name;
+
+        // Add interaction hint classes
+        if (npcData.triggersBattle) npcElement.classList.add('battle-npc');
+        if (npcData.opensShop) npcElement.classList.add('shop-npc');
+        if (npcData.givesQuest) npcElement.classList.add('quest-npc');
+
+
+        // --- Sprite Rendering ---
+        let npcSpritePath = npcData.sprite;
+        // Attempt standardization if function exists
+        if (typeof window.standardizeSpritePath === 'function') {
+            npcSpritePath = window.standardizeSpritePath(npcSpritePath);
+        }
+
+         if (window.SpriteManager && typeof window.SpriteManager.updateNpcSprite === 'function') {
+             // Use SpriteManager if available (assuming it handles img creation/updates)
+             window.SpriteManager.updateNpcSprite(npcElement, npcData); // Pass element and data
+         } else {
+             // Legacy/Fallback: Create img element directly
+             const npcImg = document.createElement('img');
+             npcImg.src = npcSpritePath;
+             npcImg.alt = npcData.name;
+             npcImg.style.width = '100%';
+             npcImg.style.height = '100%';
+             npcImg.style.objectFit = 'contain'; // Prevent stretching
+             npcImg.className = `facing-${npcData.direction}`; // For potential directional sprites
+
+             npcImg.onerror = function() {
+                console.warn(`Failed to load sprite for NPC: ${npcData.name} at ${npcSpritePath}`);
+                npcElement.innerHTML = `
+                    <svg width="64" height="64" viewBox="0 0 64 64" style="image-rendering: pixelated;">
+                      <rect x="18" y="12" width="28" height="40" fill="#888" />
+                      <rect x="14" y="24" width="36" height="16" fill="#aaa" />
+                      <circle cx="24" cy="26" r="4" fill="#000" />
+                      <circle cx="40" cy="26" r="4" fill="#000" />
+                      <text x="32" y="58" text-anchor="middle" font-size="8" fill="#fff">${npcData.name.substring(0, 8)}</text>
+                    </svg>
+                `;
+                 npcElement.title = `${npcData.name} (Sprite Error)`; // Tooltip for error
+             };
+             npcElement.appendChild(npcImg);
+         }
+
+        npcFragment.appendChild(npcElement);
+
+        // Store reference
+        npcs.push({ data: npcData, element: npcElement });
+
+      } catch (singleNpcError) {
+        console.error(`Error rendering individual NPC (${npcData.id} - ${npcData.name}):`, singleNpcError.stack);
+      }
+    });
+
+    // Add all NPCs to map
+    mapContainer.appendChild(npcFragment);
+    console.log(`Successfully rendered ${npcs.length} NPCs.`);
+
+  } catch (error) {
+    console.error("Error in renderNpcs function:", error.stack);
+  }
+}
+
+/**
+ * Updates the player sprite's visual position and appearance (direction, animation).
+ */
+function updatePlayerPosition() {
+  if (!playerSprite) {
+    console.error("Player sprite element not found in updatePlayerPosition!");
+    // Attempt recovery - might be created but not assigned yet
+    playerSprite = document.getElementById('player-sprite');
+    if (!playerSprite) {
+        console.error("FATAL: Could not recover player sprite element.");
+        return;
+    }
+  }
+   if (!currentMap || currentMap.length === 0 || !currentMap[0]) {
+       console.error("Cannot update player position: Invalid map data.");
+       return;
+   }
+
+   // Boundary check before calculating style (though movePlayer should prevent invalid coords)
+   const mapHeight = currentMap.length;
+   const mapWidth = currentMap[0].length;
+   if (player.x < 0 || player.x >= mapWidth || player.y < 0 || player.y >= mapHeight) {
+       console.error(`Invalid player coordinates (${player.x}, ${player.y}) detected in updatePlayerPosition. Clamping.`);
+       player.x = Math.max(0, Math.min(player.x, mapWidth - 1));
+       player.y = Math.max(0, Math.min(player.y, mapHeight - 1));
+   }
+
+
+  try {
+    const tileSize = 64;
+    playerSprite.style.left = `${player.x * tileSize}px`;
+    playerSprite.style.top = `${player.y * tileSize}px`;
+
+    // Update appearance (direction/animation) using SpriteManager or fallback
+    if (window.SpriteManager && typeof window.SpriteManager.updatePlayerSprite === 'function') {
+      // Use the SpriteManager to handle complex animations/directions
+      // Pass the *fixed* overworld sprite URL and state
+      window.SpriteManager.updatePlayerSprite(playerSprite, player.direction, player.isMoving, player.sprite);
+    } else {
+      // Fallback: Simple direction class and image update
+      playerSprite.className = `player-sprite facing-${player.direction}`; // Basic class for direction
+       if (player.isMoving) {
+           playerSprite.classList.add('moving'); // Add moving class for CSS animation
+       } else {
+           playerSprite.classList.remove('moving');
+       }
+
+      // Ensure the image element exists and has the correct src
+      let img = playerSprite.querySelector('img');
+      const expectedSrc = player.sprite || 'public/sprites/player_overworld.png'; // Fallback sprite URL
+
+      if (!img) {
+        img = document.createElement('img');
+        img.alt = 'Player';
+        img.style.width = '100%';
+        img.style.height = '100%';
+        img.style.objectFit = 'contain';
+        playerSprite.appendChild(img);
+      }
+
+      // Only update src if it's different or missing
+      if (img.src !== expectedSrc) {
+         img.src = expectedSrc;
+         img.onerror = function() {
+             console.warn("Failed to load player overworld sprite:", expectedSrc);
+              playerSprite.innerHTML = `
+                <svg width="64" height="64" viewBox="0 0 64 64" style="image-rendering: pixelated;">
+                  <rect x="18" y="12" width="28" height="40" fill="#f25a5a" />
+                  <rect x="14" y="24" width="36" height="16" fill="#f25a5a" />
+                  <circle cx="24" cy="26" r="4" fill="#000" />
+                  <circle cx="40" cy="26" r="4" fill="#000" />
+                </svg>
+              `; // Basic fallback
+         }
+      }
+    }
+
+    // After visual update, check the tile player landed on
+    checkCurrentTile();
+
+  } catch (error) {
+    console.error("Error updating player position visuals:", error.stack);
+  }
+}
+
+/**
+ * Checks the tile the player is currently on for special properties (traps, doors).
+ */
+function checkCurrentTile() {
+  if (!currentMap || currentMap.length <= player.y || player.y < 0 || !currentMap[player.y] || currentMap[player.y].length <= player.x || player.x < 0) {
+    console.error(`Cannot check tile: Invalid player position (${player.x}, ${player.y}) or map data.`);
+    return;
+  }
+
+  try {
+    const tileType = currentMap[player.y][player.x];
+    // console.log(`Player at (${player.x},${player.y}) on tile type: ${tileType}`); // Debug log
+
+    // Handle Trap Zones
+    const wasInTrapZone = player.inTrapZone;
+    player.inTrapZone = (tileType === TILE_TYPES.TRAP_ZONE);
+    if (player.inTrapZone && !wasInTrapZone) {
+        console.log("Entered trap zone.");
+        player.stepCount = 0; // Reset step count on entering
+    } else if (!player.inTrapZone && wasInTrapZone) {
+        console.log("Left trap zone.");
+    }
+
+    // Check for random encounters in trap zones
+    if (player.inTrapZone) {
+      player.stepCount++;
+      // console.log(`Trap zone step count: ${player.stepCount}`); // Debug log
+      const encounterRoll = Math.random();
+      const encounterThreshold = 0.15; // 15% chance per step in trap zone (adjust as needed)
+      if (encounterRoll < encounterThreshold) {
+        console.log(`Random encounter triggered! (Roll: ${encounterRoll.toFixed(2)} < ${encounterThreshold})`);
+        triggerRandomEncounter();
+        // Need to prevent further movement/actions until battle resolves
+        // This might require disabling controls or setting a game state flag
+      }
+    }
+
+    // Handle stepping ON a door tile (trigger transition)
+    if (tileType === TILE_TYPES.DOOR) {
+      const door = currentDoors.find(d => d.x === player.x && d.y === player.y);
+      if (door) {
+        console.log(`Stepped on door at (${player.x},${player.y}), leading to ${door.leadsTo}`);
+        // Delay transition slightly to show player on door tile?
+        // setTimeout(() => {
+             changeZone(door.leadsTo, door.entranceX, door.entranceY);
+        // }, 50); // 50ms delay
+      } else {
+        console.warn(`Stepped on door tile at (${player.x},${player.y}) but no matching door data found in currentDoors.`);
+      }
+    }
+
+    // Could add checks for other tile types here (e.g., healing tiles, info signs)
+
+  } catch (error) {
+    console.error("Error checking current tile:", error.stack);
+  }
+}
+
+
+/**
+ * Attempts to move the player in the specified direction.
+ * @param {string} direction - 'up', 'down', 'left', or 'right'.
+ * @returns {boolean} - True if the player moved, false otherwise.
+ */
+function movePlayer(direction) {
+  if (!currentMap || currentMap.length === 0) {
+    console.error("Cannot move player: Map not loaded.");
+    return false;
+  }
+  // Prevent movement if dialogue is open? Or if a battle is starting?
+  if (dialogueBox && dialogueBox.style.display !== 'none') {
+      console.log("Movement blocked: Dialogue open.");
+      return false;
+  }
+  // Add similar checks for battle state if needed:
+  // if (window.isInBattle) { return false; }
+
+  const prevX = player.x;
+  const prevY = player.y;
+  let newX = prevX;
+  let newY = prevY;
+
+  // 1. Update intended direction
+  player.direction = direction;
+
+  // 2. Update visual direction immediately (sprite faces the way player pressed)
+  player.isMoving = false; // Assume not moving yet, just turning
+  updatePlayerPosition(); // Update sprite visual direction
+
+
+  // 3. Calculate potential new coordinates
+  switch (direction) {
+    case 'up':    newY--; break;
+    case 'down':  newY++; break;
+    case 'left':  newX--; break;
+    case 'right': newX++; break;
+    default: return false; // Invalid direction
+  }
+
+  // 4. Check Boundaries
+  const mapHeight = currentMap.length;
+  const mapWidth = currentMap[0].length;
+  if (newY < 0 || newY >= mapHeight || newX < 0 || newX >= mapWidth) {
+    console.log(`Movement blocked: Map boundary at (${newX},${newY}).`);
+    return false; // Hit edge of map
+  }
+
+  // 5. Check Tile Collision (Blocked Tiles)
+  const targetTileType = currentMap[newY][newX];
+  if (targetTileType === TILE_TYPES.BLOCKED) {
+    console.log(`Movement blocked: Blocked tile at (${newX},${newY}).`);
+    return false; // Hit a wall
+  }
+
+  // 6. Check NPC Collision
+  const npcAtTarget = currentNpcs.find(npc => npc.x === newX && npc.y === newY);
+  if (npcAtTarget) {
+    console.log(`Movement blocked: NPC '${npcAtTarget.name}' at (${newX},${newY}).`);
+    // Optional: Turn player towards NPC?
+    // Optional: Trigger dialogue immediately? (less common for bumping)
+    return false; // Bumped into NPC
+  }
+
+  // 7. Collision checks passed - Execute Movement
+  player.x = newX;
+  player.y = newY;
+  player.isMoving = true; // Player is now actually moving
+
+  // 8. Update visual position and trigger tile checks
+  updatePlayerPosition(); // This handles visual update and checkCurrentTile
+
+  // 9. Reset isMoving state after a short delay (for animation)
+  // Needs to be slightly longer than the CSS transition duration
+  setTimeout(() => {
+    player.isMoving = false;
+    // Update sprite visuals again to stop animation, if necessary
+     if (window.SpriteManager && typeof window.SpriteManager.updatePlayerSprite === 'function') {
+        window.SpriteManager.updatePlayerSprite(playerSprite, player.direction, player.isMoving, player.sprite);
+     } else {
+         if(playerSprite) playerSprite.classList.remove('moving');
+     }
+  }, 160); // Adjust timing (e.g., 150ms transition + 10ms buffer)
+
+
+  // console.log(`Player moved ${direction} to (${player.x},${player.y})`); // Debug log
+  return true; // Movement successful
+}
+
+/** Sets up keyboard listeners for overworld controls. */
+function setupOverworldControls() {
+  console.log("Setting up keyboard controls.");
+  // Remove existing listener first to prevent duplicates if init is called multiple times
+  document.removeEventListener('keydown', handleKeyPress);
+  document.addEventListener('keydown', handleKeyPress);
+}
+
+/** Handles key presses for movement and interaction. */
+function handleKeyPress(e) {
+  try {
+    // If dialogue is active, Space/Enter should advance it
+    if (dialogueBox && dialogueBox.style.display !== 'none') {
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault(); // Prevent default space scroll/enter form submit
+        advanceDialogue();
+      }
+      return; // Block movement keys while dialogue is open
+    }
+
+    // If dialogue is not active, handle movement and interaction
+    switch (e.key) {
+      case 'ArrowUp':
+      case 'w':
+      case 'W':
+        e.preventDefault();
+        movePlayer('up');
+        break;
+      case 'ArrowDown':
+      case 's':
+      case 'S':
+        e.preventDefault();
+        movePlayer('down');
+        break;
+      case 'ArrowLeft':
+      case 'a':
+      case 'A':
+        e.preventDefault();
+        movePlayer('left');
+        break;
+      case 'ArrowRight':
+      case 'd':
+      case 'D':
+        e.preventDefault();
+        movePlayer('right');
+        break;
+      case ' ': // Spacebar
+      case 'Enter':
+        e.preventDefault();
+        interactWithFacingTile();
+        break;
+        // Add other keys? (e.g., 'm' for map, 'i' for inventory)
+    }
+  } catch (error) {
+    console.error("Error handling key press:", error.stack);
+  }
+}
+
+/** Sets up listeners for mobile controls (via iframe messages). */
+function setupMobileOverworldControls() {
+    console.log("Setting up mobile control listener.");
+    // Assumes mobile controls are in an iframe and send messages like:
+    // { type: 'mobileControl', button: 'up' | 'down' | 'left' | 'right' | 'a' | 'b' }
+
+    // Remove previous listener to avoid duplicates
+    window.removeEventListener('message', handleMobileMessage);
+    window.addEventListener('message', handleMobileMessage);
+
+    // Show the mobile controls container if it exists
+    const mobileControlsContainer = document.getElementById('mobile-controls-container');
+    if (mobileControlsContainer) {
+        mobileControlsContainer.style.display = 'block'; // Or 'flex', etc.
+    } else {
+        console.warn("Mobile controls container 'mobile-controls-container' not found.");
+    }
+}
+
+/** Handles messages received from the mobile controls iframe */
+function handleMobileMessage(event) {
+    // Basic security check: ensure message is from expected origin if possible
+    // if (event.origin !== "expected-iframe-origin.com") return;
+
+    if (event.data && event.data.type === 'mobileControl') {
+        // If dialogue is active, button 'A' should advance it
+        if (dialogueBox && dialogueBox.style.display !== 'none') {
+            if (event.data.button === 'a') {
+                advanceDialogue();
+            } else if (event.data.button === 'b') {
+                // Optional: Allow 'B' to close dialogue?
+                // dialogueBox.style.display = 'none';
+                // currentDialogue = null;
+            }
+            return; // Block movement buttons during dialogue
+        }
+
+        // If dialogue is closed, handle movement/interaction
+        try {
+            switch (event.data.button) {
+                case 'up':    movePlayer('up'); break;
+                case 'down':  movePlayer('down'); break;
+                case 'left':  movePlayer('left'); break;
+                case 'right': movePlayer('right'); break;
+                case 'a':     interactWithFacingTile(); break;
+                case 'b':
+                    // 'B' button action in overworld (e.g., open menu, cancel action?)
+                    console.log("Mobile 'B' button pressed - no action defined.");
+                    break;
+            }
+        } catch (error) {
+            console.error("Error handling mobile control message:", error.stack);
+        }
+    }
+}
+
+
+/** Gets the coordinates and type of the tile directly in front of the player. */
+function getTileFacingPlayer() {
+  if (!currentMap || currentMap.length === 0) return null;
+
+  let targetX = player.x;
+  let targetY = player.y;
+
+  switch (player.direction) {
+    case 'up':    targetY--; break;
+    case 'down':  targetY++; break;
+    case 'left':  targetX--; break;
+    case 'right': targetX++; break;
+  }
+
+  // Check bounds
+  if (targetY >= 0 && targetY < currentMap.length && targetX >= 0 && targetX < currentMap[0].length) {
+    return { x: targetX, y: targetY, type: currentMap[targetY][targetX] };
+  }
+
+  return null; // Facing outside the map
+}
+
+/** Handles player interaction with the tile they are facing. */
+function interactWithFacingTile() {
+  const facingTile = getTileFacingPlayer();
+  if (!facingTile) {
+      console.log("Interaction failed: Facing map boundary.");
+      return;
+  }
+
+   console.log(`Interacting with tile at (${facingTile.x}, ${facingTile.y}), type: ${facingTile.type}`);
+
+  // 1. Check for NPC at the facing tile
+  const npc = currentNpcs.find(n => n.x === facingTile.x && n.y === facingTile.y);
+  if (npc) {
+    console.log(`Found NPC: ${npc.name}`);
+    // Optional: Make NPC turn towards player?
+    // npc.direction = getOppositeDirection(player.direction);
+    // updateNpcVisuals(npc); // Need a function for this if not using SpriteManager
+
+    startDialogue(npc);
+    return; // Interaction handled
+  }
+
+  // 2. Check for interactable objects (like signs, chests, etc. - future)
+  // Example:
+  // if (facingTile.type === TILE_TYPES.SIGN) {
+  //   readSign(facingTile.x, facingTile.y);
+  //   return;
+  // }
+
+  // 3. Check for doors (usually handled by stepping on them, but allow interaction too?)
+  if (facingTile.type === TILE_TYPES.DOOR) {
+      const door = currentDoors.find(d => d.x === facingTile.x && d.y === facingTile.y);
+      if (door) {
+          console.log(`Interacted with door leading to ${door.leadsTo}. Transitioning.`);
+          changeZone(door.leadsTo, door.entranceX, door.entranceY);
+          return;
+      } else {
+           console.warn(`Interacted with door tile at (${facingTile.x},${facingTile.y}) but no matching door data.`);
+      }
+  }
+
+  // 4. If nothing else, maybe a generic "nothing happens" message?
+  console.log("Nothing interesting to interact with here.");
+  // showFloatingLog("Nothing happened."); // Optional feedback
+}
+
+// --- DIALOGUE FUNCTIONS ---
+
+/** Displays the dialogue box and starts conversation with an NPC. */
+function startDialogue(npc) {
+  if (!dialogueBox) {
+    console.error("Cannot start dialogue: Dialogue box element not found!");
+    return;
+  }
+   if (!npc || !npc.lines || npc.lines.length === 0) {
+       console.error("Cannot start dialogue: Invalid NPC data or no lines defined.", npc);
+       return;
+   }
+
+  console.log(`Starting dialogue with ${npc.name}`);
+  try {
+    currentDialogue = npc;
+    currentDialogueLine = 0;
+
+    const nameElement = document.getElementById('dialogue-name');
+    const textElement = document.getElementById('dialogue-text');
+
+    if (!nameElement || !textElement) {
+        console.error("Dialogue name or text element missing!");
+        dialogueBox.style.display = 'none'; // Hide broken box
+        return;
+    }
+
+    nameElement.textContent = npc.name;
+    textElement.textContent = npc.lines[currentDialogueLine];
+
+    dialogueBox.style.display = 'block';
+
+    // Play a sound?
+    // if (typeof playSound === 'function') playSound('dialogueStart');
+
+  } catch (error) {
+    console.error("Error starting dialogue:", error.stack);
+    if (dialogueBox) dialogueBox.style.display = 'none'; // Hide on error
+  }
+}
+
+/** Advances dialogue to the next line or triggers post-dialogue actions. */
+function advanceDialogue() {
+  if (!currentDialogue || !dialogueBox || dialogueBox.style.display === 'none') {
+    // No active dialogue, or box is hidden
+    return;
+  }
+
+  try {
+    currentDialogueLine++;
+
+    if (currentDialogueLine >= currentDialogue.lines.length) {
+      // End of dialogue
+      console.log(`Dialogue with ${currentDialogue.name} finished.`);
+      dialogueBox.style.display = 'none';
+
+      // Trigger post-dialogue actions
+      const npc = currentDialogue; // Keep reference after clearing global
+      currentDialogue = null; // Clear state *before* potentially transitioning away
+
+      if (npc.triggersBattle) {
+        console.log(`Triggering battle with ${npc.name}`);
+        startNpcBattle(npc);
+      } else if (npc.opensShop) {
+         console.log(`Opening shop: ${npc.shopType}`);
+         if (typeof openShop === 'function' && window.gameShops && window.gameShops[npc.shopType]) {
+             openShop(window.gameShops[npc.shopType]); // Assumes openShop exists globally
+         } else {
+              console.warn(`Shop function 'openShop' or shop data for '${npc.shopType}' not found.`);
+               showFloatingLog(`Shop for ${npc.name} is currently closed.`); // User feedback
+         }
+      } else if (npc.givesQuest) {
+          console.log(`Offering quest: ${npc.quest.name}`);
+          if (typeof giveQuest === 'function') { // Check if function exists
+              giveQuest(npc.quest);
+          } else {
+              console.warn("Quest function 'giveQuest' not found.");
+          }
+      } else if (npc.givesHeal) {
+          console.log(`NPC ${npc.name} offers healing.`);
+          // Implement healing logic - e.g., heal playerTeam
+           if (window.playerTeam && typeof healParty === 'function') { // Assuming a healParty function exists
+                healParty(window.playerTeam); // Heal the global team
+                showFloatingLog("Your team was fully healed!");
+           } else {
+               console.warn("Healing function or player team not available.");
+           }
+      }
+
+    } else {
+      // Show next line
+      const textElement = document.getElementById('dialogue-text');
+      if (textElement) {
+        textElement.textContent = currentDialogue.lines[currentDialogueLine];
+        // Play sound?
+        // if (typeof playSound === 'function') playSound('dialogueNext');
+      } else {
+           console.error("Dialogue text element missing during advance!");
+           dialogueBox.style.display = 'none'; // Hide broken box
+           currentDialogue = null;
+      }
+    }
+  } catch (error) {
+    console.error("Error advancing dialogue:", error.stack);
+    if (dialogueBox) dialogueBox.style.display = 'none'; // Hide on error
+    currentDialogue = null;
+  }
+}
+
+// --- BATTLE TRIGGER FUNCTIONS ---
+
+/**
+ * Initiates a battle with a specific NPC.
+ * Generates a random team for the NPC based on their defined level.
+ */
+function startNpcBattle(npc) {
+  console.log(`Preparing battle with NPC: ${npc.name} (Level ${npc.character?.level || '??'})`);
+
+  if (!npc || !npc.character) {
+      console.error("Cannot start NPC battle: Invalid NPC data or missing character template.", npc);
+      return;
+  }
+   if (typeof window.startBattle !== 'function') {
+        console.error("Cannot start battle: 'window.startBattle' function not found.");
+        showFloatingLog("Battle system is unavailable.");
+        return;
+   }
+   if (!window.playerTeam || !Array.isArray(window.playerTeam) || window.playerTeam.length === 0) {
+       console.error("Cannot start battle: Player team is missing or empty.");
+       // Maybe try to re-run initOverworld with a default character?
+       showFloatingLog("Error: Your team is not ready for battle!");
+       return;
+   }
+
+  try {
+    window.currentGameMode = 'story'; // Set mode if battle system uses it
+
+    // --- Generate Opponent Team ---
+    // Instead of using npc.character directly, create a random team themed by the NPC.
+    const npcLevel = npc.character.level || 5; // Use NPC level as base
+    const opponentTeam = [];
+
+    // Create main opponent (stronger)
+    const mainOpponent = createRandomOpponent(currentZone, npcLevel + 1); // Slightly higher level maybe
+     // Override name/sprite to match the specific NPC triggering the battle
+     mainOpponent.name = npc.character.name || npc.name;
+     if(npc.character.sprite) {
+         mainOpponent.sprite = (typeof window.standardizeSpritePath === 'function')
+            ? window.standardizeSpritePath(npc.character.sprite)
+            : npc.character.sprite;
+     }
+     mainOpponent.type = npc.character.type || mainOpponent.type; // Use NPC's type if defined
+    opponentTeam.push(mainOpponent);
+
+    // Add 1 or 2 supporting random opponents based on NPC level
+    const teamSize = Math.min(2, Math.floor(npcLevel / 5)); // e.g., 0 for L1-4, 1 for L5-9, 2 for L10+
+    for (let i = 0; i < teamSize; i++) {
+        const teammate = createRandomOpponent(currentZone, npcLevel - 1); // Slightly lower level
+        // Ensure teammate is not identical to main opponent
+        if(teammate.name !== mainOpponent.name) {
+             opponentTeam.push(teammate);
+        }
+    }
+
+     console.log(`Generated opponent team for ${npc.name}:`, opponentTeam.map(o => `${o.name} (L${o.level})`));
+
+    window.activeOpponentTeam = opponentTeam;
+    window.activeOpponent = opponentTeam[0]; // Battle system usually starts with the first one
+
+    // --- Transition ---
+    console.log("Hiding overworld and starting battle...");
+    if (overworldContainer) overworldContainer.style.display = 'none';
+    const mobileControls = document.getElementById('mobile-controls-container');
+    if (mobileControls) mobileControls.style.display = 'none';
+
+    window.startBattle(); // Call the global battle start function
+
+  } catch (error) {
+    console.error("Error setting up or starting NPC battle:", error.stack);
+    // Attempt to return to overworld gracefully?
+     showFloatingLog("Error starting battle!");
+     if (overworldContainer) overworldContainer.style.display = 'flex'; // Show overworld again
+     if (mobileControls) mobileControls.style.display = 'block';
+  }
+}
+
+/**
+ * Triggers a random encounter battle based on the current zone.
+ */
+function triggerRandomEncounter() {
+  console.log(`Triggering random encounter in zone: ${currentZone}`);
+
+   if (typeof window.startBattle !== 'function') {
+        console.error("Cannot start random encounter: 'window.startBattle' function not found.");
+        return; // Silently fail or show message?
+   }
+    if (!window.playerTeam || !Array.isArray(window.playerTeam) || window.playerTeam.length === 0) {
+       console.error("Cannot start random encounter: Player team is missing or empty.");
+       return; // Cannot battle without a team
+   }
+
+  try {
+     window.currentGameMode = 'story'; // Or 'randomEncounter'?
+
+    // Determine opponent level range based on zone
+    let baseLevel = 3;
+    switch (currentZone) {
+        case ZONE_TYPES.STARTER_HOOD: baseLevel = 3; break;
+        case ZONE_TYPES.THE_TRAP:
+        case ZONE_TYPES.TRAP_HOUSE: baseLevel = 6; break;
+        case ZONE_TYPES.THE_BLOCK: baseLevel = 9; break; // Assuming THE_BLOCK exists
+        case ZONE_TYPES.OPPS_HOOD: baseLevel = 11; break;
+        case ZONE_TYPES.FADE_PARK: baseLevel = 13; break;
+        case ZONE_TYPES.RICH_SUBURBIA: baseLevel = 15; break; // Assuming RICH_SUBURBIA exists
+        case ZONE_TYPES.BACK_ALLEY_ARENA: baseLevel = 17; break; // Assuming BACK_ALLEY_ARENA exists
+        default: baseLevel = 5;
+    }
+
+    // Create opponent team (1-3 members)
+    const opponentTeam = [];
+    const teamSize = 1 + Math.floor(Math.random() * 3); // 1 to 3 opponents
+
+    for (let i = 0; i < teamSize; i++) {
+        // Add slight level variation within the team
+        const levelVariance = Math.floor(Math.random() * 3) - 1; // -1, 0, or 1
+        const opponentLevel = Math.max(1, baseLevel + levelVariance);
+        opponentTeam.push(createRandomOpponent(currentZone, opponentLevel));
+    }
+
+    console.log(`Generated random encounter team:`, opponentTeam.map(o => `${o.name} (L${o.level})`));
+
+    window.activeOpponentTeam = opponentTeam;
+    window.activeOpponent = opponentTeam[0];
+
+    // --- Transition ---
+    console.log("Hiding overworld and starting random battle...");
+    if (overworldContainer) overworldContainer.style.display = 'none';
+    const mobileControls = document.getElementById('mobile-controls-container');
+    if (mobileControls) mobileControls.style.display = 'none';
+
+    window.startBattle();
+
+  } catch (error) {
+      console.error("Error setting up or starting random encounter:", error.stack);
+      // Attempt to return to overworld
+      showFloatingLog("Error starting encounter!");
+      if (overworldContainer) overworldContainer.style.display = 'flex';
+      if (mobileControls) mobileControls.style.display = 'block';
+  }
+}
+
+
+/**
+ * Creates a randomized opponent character object.
+ * @param {string} zone - The current zone identifier (e.g., ZONE_TYPES.STARTER_HOOD).
+ * @param {number} [targetLevel=5] - The approximate level for the opponent.
+ * @returns {object} - A character object for the opponent.
+ */
+function createRandomOpponent(zone, targetLevel = 5) {
+  let level = Math.max(1, targetLevel + Math.floor(Math.random() * 3) - 1); // Add slight randomness +/- 1 level
+  let types = ['Normal'];
+  let namePool = ['Wanderer'];
+  let baseHp = 70;
+  let baseAtk = 30;
+  let baseDef = 30;
+  let baseSpd = 30;
+
+  // Zone-specific parameters
+  switch (zone) {
+    case ZONE_TYPES.STARTER_HOOD:
+      types = ['Fire', 'Water', 'Grass', 'Normal', 'Fighting'];
+      namePool = ['Street Kid', 'Rookie', 'Young Buck', 'Corner Boy', 'Local'];
+      baseHp = 80; baseAtk = 35; baseDef = 30; baseSpd = 35;
+      break;
+    case ZONE_TYPES.THE_TRAP: // Assuming THE_TRAP exists as a zone
+    case ZONE_TYPES.TRAP_HOUSE:
+      types = ['Fire', 'Dark', 'Electric', 'Poison', 'Steel'];
+      namePool = ['Trapper', 'Hustler', 'Dealer', 'Lookout', 'Guard'];
+      baseHp = 90; baseAtk = 45; baseDef = 40; baseSpd = 30;
+      break;
+    // Add cases for THE_BLOCK, RICH_SUBURBIA, BACK_ALLEY_ARENA if they have random encounters
+    case ZONE_TYPES.OPPS_HOOD:
+        types = ['Fighting', 'Dark', 'Fire', 'Steel', 'Electric'];
+        namePool = ['Opp Soldier', 'Block Runner', 'Enforcer', 'Scout', 'Rival'];
+        baseHp = 100; baseAtk = 55; baseDef = 45; baseSpd = 40;
+        break;
+    case ZONE_TYPES.FADE_PARK:
+        types = ['Grass', 'Fighting', 'Normal', 'Flying', 'Rock', 'Ice'];
+        namePool = ['Park Challenger', 'Trainer', 'Jogger', 'Skater', 'Local Legend'];
+        baseHp = 95; baseAtk = 50; baseDef = 50; baseSpd = 45;
+        break;
+    default: // Fallback for unknown zones
+      types = ['Normal', 'Fire', 'Water', 'Grass'];
+      namePool = ['Stranger', 'Unknown', 'Traveler', 'Lost Soul'];
+  }
+
+  const name = namePool[Math.floor(Math.random() * namePool.length)];
+  const type = types[Math.floor(Math.random() * types.length)];
+
+  // Use diverse sprites - Using the updated links from your NPC data
+  const spriteOptions = [
+    'https://i.imgur.com/dZWWrrs.png', // rasta
+    'https://i.imgur.com/YeMI4sr.png', // fitness
+    'https://i.imgur.com/VVa9pm9.png', // techy
+    'https://i.imgur.com/2n71aSJ.png', // vibe
+    'https://i.imgur.com/UkE9crR.png', // 9-5
+    'https://i.imgur.com/9hFTFQt.png', // all jokes
+    'https://i.imgur.com/knA2Yxz.png', // closet nerd
+    // 'https://i.imgur.com/yA0lUbo.png', // dysfunctional (Removed as link seems dead/wrong?)
+    'https://i.imgur.com/G3xfSjU.png', // functional addict
+    'https://i.imgur.com/b5pnt7o.png', // gamer unemployed
+    'https://i.imgur.com/vFvQKap.png', // gamer
+    'https://i.imgur.com/LRVrieF.png', // homeless yn
+    'https://i.imgur.com/Kwe1HpA.png', // serial yn
+    'https://i.imgur.com/1SuHgnZ.png', // earthy
+    'https://i.imgur.com/GmlKf6u.png', // techbro rich
+    // Add sprites matching your NPC definitions too
+    'public/sprites/og_ras.png',
+    'public/sprites/lil_brick.png',
+    'public/sprites/street_runner.png',
+    'public/sprites/trap_dealer.png',
+    'public/sprites/trap_guard.png',
+    'public/sprites/trap_kingpin.png',
+    'public/sprites/big_momma.png',
+    'public/sprites/opp_leader.png',
+    'public/sprites/opp_soldier.png', // Base soldier
+    'public/sprites/park_champion.png',
+    'public/sprites/park_challenger1.png', // Base challenger
+  ];
+  let sprite = spriteOptions[Math.floor(Math.random() * spriteOptions.length)];
+
+   // Standardize sprite path
+    if (typeof window.standardizeSpritePath === 'function') {
+        sprite = window.standardizeSpritePath(sprite);
+    }
+
+
+  // Calculate stats based on level and base values
+  // Simple linear scaling example - adjust formula as needed for balance
+  const hp = Math.floor(baseHp + (level * 6) + (Math.random() * level * 2));
+  const attack = Math.floor(baseAtk + (level * 3.5) + (Math.random() * level));
+  const defense = Math.floor(baseDef + (level * 3) + (Math.random() * level));
+  const speed = Math.floor(baseSpd + (level * 3.2) + (Math.random() * level));
+
+  // Generate moves
+  const moves = generateMovesForType(type, level);
+
+  // Return opponent object matching battle system format
+  return {
+    id: `random_${zone}_${Date.now()}_${Math.random().toString(16).substring(2, 8)}`, // Unique-ish ID
+    name: name,
+    sprite: sprite,
+    type: type,
+    level: level,
+    hp: hp,
+    maxHp: hp,
+    attack: attack,
+    defense: defense,
+    speed: speed,
+    moves: moves,
+    isOpponent: true // Flag if your battle system needs it
+  };
+}
+
+/**
+ * Generates a list of 1-4 moves suitable for a character's type and level.
+ * Placeholder implementation - expand with a real move database.
+ */
+function generateMovesForType(type, level) {
+  // Simple placeholder move database
+   const movePool = {
+    'Fire': [ { name: 'Ember', power: 40 }, { name: 'Fire Spin', power: 35 }, { name: 'Flame Up', power: 50 }, { name: 'Heat Wave', power: 60} ],
+    'Water': [ { name: 'Water Gun', power: 40 }, { name: 'Aqua Jet', power: 40 }, { name: 'Bubble', power: 30 }, { name: 'Splash Down', power: 55 } ],
+    'Grass': [ { name: 'Vine Whip', power: 45 }, { name: 'Leaf Blade', power: 55 }, { name: 'Seed Bomb', power: 60 }, { name: 'Growth', power: 0, effect: 'buff', stat: 'attack', amount: 1.2 } ],
+    'Normal': [ { name: 'Tackle', power: 40 }, { name: 'Quick Attack', power: 40 }, { name: 'Slam', power: 55 }, { name: 'Growl', power: 0, effect: 'debuff', stat: 'attack', amount: 0.8 } ],
+    'Fighting': [ { name: 'Punch', power: 40 }, { name: 'Karate Chop', power: 50 }, { name: 'Low Kick', power: 50 }, { name: 'Bulk Up', power: 0, effect: 'buff', stat: 'attack', amount: 1.2 } ],
+    'Dark': [ { name: 'Bite', power: 45 }, { name: 'Feint Attack', power: 50 }, { name: 'Taunt', power: 0, effect: 'debuff', stat: 'attack', amount: 0.8 }, { name: 'Shadow Sneak', power: 40 } ],
+    'Electric': [ { name: 'Thunder Shock', power: 40 }, { name: 'Spark', power: 45 }, { name: 'Charge', power: 0, effect: 'buff', stat: 'spDef', amount: 1.2 }, { name: 'Zap', power: 50 } ],
+    'Poison': [ { name: 'Poison Sting', power: 30, effect: 'status', status: 'poison', chance: 0.3 }, { name: 'Acid', power: 40 }, { name: 'Sludge', power: 55 }, { name: 'Toxic Spray', power: 45, effect: 'status', status: 'poison', chance: 0.4 } ],
+    'Steel': [ { name: 'Metal Claw', power: 50 }, { name: 'Iron Head', power: 60 }, { name: 'Harden', power: 0, effect: 'buff', stat: 'defense', amount: 1.2 }, { name: 'Gear Grind', power: 50 } ],
+    'Psychic': [ { name: 'Confusion', power: 50 }, { name: 'Psybeam', power: 65 }, { name: 'Calm Mind', power: 0, effect: 'buff', stat: 'spAtk', amount: 1.2 }, { name: 'Mind Reader', power: 0 } ],
+    'Flying': [ { name: 'Peck', power: 35 }, { name: 'Gust', power: 40 }, { name: 'Wing Attack', power: 60 }, { name: 'Agility', power: 0, effect: 'buff', stat: 'speed', amount: 1.5 } ],
+    'Rock': [ { name: 'Rock Throw', power: 50 }, { name: 'Rollout', power: 30 }, { name: 'Stone Edge', power: 70 }, { name: 'Harden', power: 0, effect: 'buff', stat: 'defense', amount: 1.2 } ],
+    'Ice': [ { name: 'Ice Shard', power: 40 }, { name: 'Icy Wind', power: 55, effect: 'debuff', stat: 'speed', amount: 0.8 }, { name: 'Frost Breath', power: 60 }, { name: 'Hail', power: 0 } ],
+    // Add more types...
+   };
+
+   const primaryMoves = movePool[type] || movePool['Normal']; // Fallback to Normal
+   const availableMoves = [...primaryMoves];
+
+    // Add one or two moves from other types for coverage? (optional)
+    /*
+    const otherTypes = Object.keys(movePool).filter(t => t !== type);
+    if (otherTypes.length > 0) {
+        const secondaryType = otherTypes[Math.floor(Math.random() * otherTypes.length)];
+        availableMoves.push(...movePool[secondaryType].slice(0,1)); // Add one random move
+    }
+    */
+
+   // Filter moves based on level? (e.g., stronger moves unlock later)
+   const learnableMoves = availableMoves.filter(move => {
+       // Example: unlock stronger moves > L10
+       if (move.power > 55 && level < 10) return false;
+       return true;
+   });
+
+   // Shuffle and select up to 4 moves
+   const shuffledMoves = learnableMoves.sort(() => 0.5 - Math.random());
+   const selectedMoves = shuffledMoves.slice(0, 4);
+
+   // Add PP and description details
+   return selectedMoves.map(move => ({
+       name: move.name,
+       type: move.type || type, // Assume move type matches character unless specified
+       power: move.power || 0,
+       pp: Math.max(5, 20 - Math.floor(move.power / 10)), // Basic PP calculation
+       maxPp: Math.max(5, 20 - Math.floor(move.power / 10)),
+       description: move.description || `${move.name}: A ${type} move.`, // Generic description
+       effect: move.effect || null, // Include effects if defined
+       stat: move.stat || null,
+       amount: move.amount || null,
+       status: move.status || null,
+       chance: move.chance || null,
+   }));
+}
+
+
+// --- ZONE TRANSITION ---
+
+/**
+ * Changes the current zone, updates map data, and re-renders.
+ * @param {string} zoneName - The ZONE_TYPES key for the destination zone.
+ * @param {number} entranceX - Player's starting X coordinate in the new zone.
+ * @param {number} entranceY - Player's starting Y coordinate in the new zone.
+ */
+function changeZone(zoneName, entranceX, entranceY) {
+  console.log(`Changing zone to: ${zoneName}, entering at (${entranceX}, ${entranceY})`);
+
+  // Stop any ongoing player movement/animation before changing zone
+   player.isMoving = false;
+
+   let foundZone = false;
+
+  // Update map, NPCs, doors based on the target zoneName
+  switch (zoneName) {
+    case ZONE_TYPES.STARTER_HOOD:
+      currentMap = STARTER_HOOD_MAP;
+      currentNpcs = STARTER_HOOD_NPCS;
+      currentDoors = STARTER_HOOD_DOORS;
+      foundZone = true;
+      break;
+    case ZONE_TYPES.TRAP_HOUSE:
+      currentMap = TRAP_HOUSE_MAP;
+      currentNpcs = TRAP_HOUSE_NPCS;
+      currentDoors = TRAP_HOUSE_DOORS;
+       foundZone = true;
+      break;
+    case ZONE_TYPES.MOMMA_HOUSE:
+      currentMap = MOMMA_HOUSE_MAP;
+      currentNpcs = MOMMA_HOUSE_NPCS;
+      currentDoors = MOMMA_HOUSE_DOORS;
+       foundZone = true;
+      break;
+    case ZONE_TYPES.OPPS_HOOD:
+      currentMap = OPPS_HOOD_MAP;
+      currentNpcs = OPPS_HOOD_NPCS;
+      currentDoors = OPPS_HOOD_DOORS;
+      player.inTrapZone = true; // Example: Mark as dangerous zone
+       foundZone = true;
+      break;
+    case ZONE_TYPES.FADE_PARK:
+      currentMap = FADE_PARK_MAP;
+      currentNpcs = FADE_PARK_NPCS;
+      currentDoors = FADE_PARK_DOORS;
+      player.inTrapZone = false; // Example: Park is safer
+       foundZone = true;
+      break;
+    case ZONE_TYPES.CORNER_STORE: // Internal location
+      currentMap = CORNER_STORE_MAP;
+      currentNpcs = CORNER_STORE_NPCS;
+      currentDoors = CORNER_STORE_DOORS;
+       foundZone = true;
+      break;
+    // Add cases for THE_TRAP, THE_BLOCK, RICH_SUBURBIA, BACK_ALLEY_ARENA with their data
+    case ZONE_TYPES.THE_TRAP:
+      console.warn(`Zone data for ${zoneName} not implemented yet. Using Starter Hood as fallback.`);
+      currentMap = STARTER_HOOD_MAP; // Placeholder
+      currentNpcs = []; // Placeholder
+      currentDoors = [{ x: 7, y: 1, leadsTo: ZONE_TYPES.STARTER_HOOD, entranceX: 6, entranceY: 13 }]; // Placeholder exit
+      foundZone = true; // Mark as handled (even though fallback)
+      break;
+    // ... add other zones ...
+
+    default:
+      console.error(`Unknown zone name: ${zoneName}. Cannot change zone.`);
+      showFloatingLog(`Error: Could not travel to ${zoneName}.`);
+      return; // Do not proceed if zone is unknown
+  }
+
+  // Update current zone state AFTER successful data load
+  currentZone = zoneName;
+
+  // Update player position
+  player.x = entranceX;
+  player.y = entranceY;
+
+  // Boundary check for the *new* zone just in case entrance coords are bad
+   if (!currentMap || currentMap.length <= player.y || player.y < 0 || !currentMap[player.y] || currentMap[player.y].length <= player.x || player.x < 0 || currentMap[player.y][player.x] === TILE_TYPES.BLOCKED) {
+       console.warn(`Entrance coordinates (${entranceX}, ${entranceY}) for zone ${zoneName} are invalid or blocked! Resetting player to safe default (1, 1).`);
+       player.x = 1; // Find first walkable?
+       player.y = 1;
+   }
+
+  // Reset step count for random encounters when changing zones
+  player.stepCount = 0;
+  if (currentMap && currentMap[player.y] && currentMap[player.y][player.x] !== TILE_TYPES.TRAP_ZONE) {
+      player.inTrapZone = false; // Ensure trap zone status is updated based on entry point
+  } else if (currentMap && currentMap[player.y] && currentMap[player.y][player.x] === TILE_TYPES.TRAP_ZONE) {
+       player.inTrapZone = true;
+  }
+
+
+  console.log("Re-rendering map and NPCs for new zone.");
+  // Re-render the entire scene for the new zone
+  renderMap(); // Render tiles first
+  renderNpcs(); // Then render NPCs
+  updatePlayerPosition(); // Then update player visual position
+
+  // Play transition sound/effect?
+  // if (typeof playSound === 'function') playSound('zoneChange');
+}
+
+
+// --- QUEST FUNCTIONS ---
+
+/** Gives a quest to the player if they don't already have it. */
+function giveQuest(quest) {
+    if (!quest || !quest.id) {
+        console.error("Cannot give quest: Invalid quest data provided.");
+        return;
+    }
+     if (!player || !player.activeQuests || !player.completedQuests) {
+         console.error("Cannot give quest: Player quest data structure invalid.");
+         return;
+     }
+
+  // Check if player already has or completed this quest
+  const isActive = player.activeQuests.some(q => q.id === quest.id);
+  const isCompleted = player.completedQuests.some(q => q.id === quest.id);
+
+  if (isActive) {
+    showFloatingLog(`Quest "${quest.name}" is already active.`);
+  } else if (isCompleted) {
+    showFloatingLog(`You have already completed "${quest.name}".`);
+  } else {
+    console.log(`Adding quest: ${quest.name}`);
+    player.activeQuests.push({ ...quest, progress: 0, startedAt: Date.now() }); // Add progress tracking
+    showFloatingLog(`New Quest: ${quest.name}`);
+    // TODO: Update a visual Quest Log UI if one exists
+    // updateQuestLogUI();
+  }
+}
+
+/** Updates progress for active quests based on an action. */
+function updateQuestProgress(objectiveType, details) {
+    // Details could be an object like { zone: 'trapZone', defeated: 'Opp Soldier', count: 1 }
+    if (!player || !player.activeQuests) return;
+
+    console.log(`Updating quest progress for type: ${objectiveType}`, details);
+
+    player.activeQuests.forEach((quest, index) => {
+        // Check if the quest objective matches the action type
+        if (quest.objective.type === objectiveType) {
+            let match = true;
+            // Add specific checks based on objectiveType
+            if (objectiveType === 'defeat') {
+                // Check if zone matches (if specified)
+                if (quest.objective.zone && quest.objective.zone !== details.zone) {
+                    match = false;
+                }
+                // Check if specific enemy type matches (if specified)
+                 if (quest.objective.enemyType && quest.objective.enemyType !== details.defeated) {
+                    match = false;
+                }
+            } else if (objectiveType === 'collect') {
+                 if (quest.objective.itemId && quest.objective.itemId !== details.itemId) {
+                     match = false;
+                 }
+            } // Add more objective types (talkTo, reachLocation, etc.)
+
+            if (match) {
+                quest.progress += details.count || 1; // Increment progress
+                console.log(`Quest "${quest.name}" progress: ${quest.progress}/${quest.objective.count}`);
+                showFloatingLog(`Quest progress: ${quest.name} (${quest.progress}/${quest.objective.count})`);
+
+                // Check for completion
+                if (quest.progress >= quest.objective.count) {
+                    completeQuest(quest, index); // Pass index for easy removal
+                }
+            }
+        }
+    });
+     // TODO: Update Quest Log UI
+     // updateQuestLogUI();
+}
+
+/** Marks a quest as complete, gives rewards, and moves it to completed list. */
+function completeQuest(quest, index) {
+     if (!quest) return;
+     console.log(`Completing quest: ${quest.name}`);
+
+    // Remove from active quests using index if provided, otherwise find it
+    if (index !== undefined) {
+        player.activeQuests.splice(index, 1);
+    } else {
+        const findIndex = player.activeQuests.findIndex(q => q.id === quest.id);
+        if (findIndex !== -1) {
+            player.activeQuests.splice(findIndex, 1);
+        } else {
+            console.warn("Could not find quest in active list to remove:", quest.id);
+             // Still proceed to add to completed and give rewards maybe?
+        }
+    }
+
+    // Add to completed quests (ensure no duplicates)
+    if (!player.completedQuests.some(q => q.id === quest.id)) {
+        player.completedQuests.push({ ...quest, completedAt: Date.now() });
+    }
+
+    // Give rewards
+    if (quest.reward) {
+        let rewardText = `Quest Complete: ${quest.name}! Rewards: `;
+        const rewardsGiven = [];
+        if (quest.reward.money) {
+            if (window.playerInventory) {
+                window.playerInventory.money += quest.reward.money;
+                rewardsGiven.push(`${quest.reward.money} Money`);
+            } else { console.warn("Cannot give money reward: playerInventory not found."); }
+        }
+        if (quest.reward.xp) {
+             // Assuming an XP system exists
+             // givePlayerXp(quest.reward.xp);
+             rewardsGiven.push(`${quest.reward.xp} XP`);
+        }
+        if (quest.reward.item) {
+            if (window.InventorySystem && window.playerInventory && typeof window.InventorySystem.addItemToInventory === 'function') {
+                window.InventorySystem.addItemToInventory(window.playerInventory, quest.reward.item);
+                rewardsGiven.push(`${quest.reward.item.name}`);
+            } else { console.warn("Cannot give item reward: InventorySystem or addItem function not found."); }
+        }
+        // Show completion notification
+        showFloatingLog(rewardText + (rewardsGiven.length > 0 ? rewardsGiven.join(', ') : 'None'));
+    } else {
+         showFloatingLog(`Quest Complete: ${quest.name}!`);
+    }
+
+     // TODO: Update Quest Log UI
+     // updateQuestLogUI();
+}
+
+// --- UTILITY / OTHER ---
+
+/** Placeholder for showing temporary messages to the player */
+function showFloatingLog(message) {
+    console.log(`[LOG] ${message}`);
+    // TODO: Implement a proper floating text UI element
+    const logElement = document.createElement('div');
+    logElement.textContent = message;
+    // Style it
+     logElement.style.position = 'fixed';
+     logElement.style.top = '20px';
+     logElement.style.left = '50%';
+     logElement.style.transform = 'translateX(-50%)';
+     logElement.style.padding = '10px 20px';
+     logElement.style.backgroundColor = 'rgba(0,0,0,0.7)';
+     logElement.style.color = 'white';
+     logElement.style.borderRadius = '5px';
+     logElement.style.zIndex = '200';
+     logElement.style.fontFamily = 'sans-serif';
+     logElement.style.fontSize = '14px';
+     logElement.style.opacity = '1';
+     logElement.style.transition = 'opacity 0.5s ease-out 2s'; // Fade out after 2s
+     document.body.appendChild(logElement);
+     // Trigger fade out
+     setTimeout(() => { logElement.style.opacity = '0'; }, 100); // Delay slightly before starting fade timer
+     // Remove from DOM after fade
+     setTimeout(() => { if (logElement.parentNode) logElement.parentNode.removeChild(logElement); }, 2600); // 2s delay + 0.5s fade + buffer
+}
+
+
+/** Returns the opposite direction string. */
+function getOppositeDirection(direction) {
+    switch (direction) {
+        case 'up': return 'down';
+        case 'down': return 'up';
+        case 'left': return 'right';
+        case 'right': return 'left';
+        default: return 'down';
+    }
+}
+
+
+/** Returns control to the overworld after a battle concludes. */
+function returnToOverworld(battleResults) {
+  // battleResults could contain info like { won: true, experienceGained: 100, moneyGained: 50, defeatedOpponent: 'Opp Leader' }
+  console.log("Returning to overworld. Battle results:", battleResults);
+
+  try {
+    // Update quests based on battle outcome
+    if (battleResults && battleResults.won && battleResults.defeatedOpponentName && player.inTrapZone) { // Check if in trap zone specifically
+        updateQuestProgress('defeat', {
+            zone: 'trapZone', // Assuming trapZone is the identifier for the objective
+            defeated: battleResults.defeatedOpponentName, // Pass opponent name if needed
+            count: 1
+         });
+    } else if (battleResults && battleResults.won && battleResults.defeatedOpponentName) {
+         // Handle non-trap-zone defeats if necessary for other quests
+         // Example: Defeat a specific named NPC for a quest
+         updateQuestProgress('defeat', {
+             // Might need zone info from before the battle started
+             zone: currentZone, // This might be wrong if battle changed zone context
+             defeated: battleResults.defeatedOpponentName,
+             count: 1
+         })
+    }
+
+
+    // Hide battle screen, game over screen
+    const battleScreen = document.getElementById('battle-screen');
+    if (battleScreen) battleScreen.style.display = 'none';
+    const gameOverScreen = document.getElementById('game-over');
+    if (gameOverScreen) gameOverScreen.style.display = 'none';
+
+    // Ensure overworld UI exists and is visible
+    if (!overworldContainer) {
+      console.warn("Overworld container missing on return, re-initializing UI.");
+      createOverworldUI(); // Attempt to recreate
+      if (!overworldContainer) {
+          console.error("FATAL: Failed to restore overworld UI after battle.");
+          // Show a generic error?
+          document.body.innerHTML = "<p>Error returning to game world. Please refresh.</p>";
+          return;
+      }
+    }
+    overworldContainer.style.display = 'flex';
+
+    // Show mobile controls again
+    const mobileControls = document.getElementById('mobile-controls-container');
+    if (mobileControls) mobileControls.style.display = 'block';
+
+    // Refresh map, NPCs, and player position
+    // Re-rendering is important in case an NPC was defeated and should be removed,
+    // or if quest completion changed NPC state/dialogue (requires more complex NPC state handling)
+    renderMap();
+    renderNpcs();
+    updatePlayerPosition();
+
+    // Re-attach controls (might be removed by other systems)
+    setupOverworldControls();
+    setupMobileOverworldControls();
+
+
+    // Switch music back
+    playOverworldMusic();
+
+    console.log("Successfully returned to overworld.");
+
+  } catch (error) {
+    console.error("Error returning to overworld:", error.stack);
+     // Fallback: Try to force UI visible
+     if (overworldContainer) overworldContainer.style.display = 'flex';
+      showFloatingLog("Error returning to overworld.");
+  }
+}
+
+/** Plays the appropriate music for the overworld. */
+function playOverworldMusic() {
+  console.log("Attempting to play overworld music for zone:", currentZone);
+  try {
+    // Check for a global function, potentially zone-specific
+    if (typeof window.playMusicForZone === 'function') {
+        window.playMusicForZone(currentZone);
+    } else if (typeof window.playMenuMusic === 'function') {
+      // Fallback to general menu/overworld music player
+      console.log("Using generic playMenuMusic function.");
+      window.playMenuMusic(); // Assuming this handles stopping battle music
+    } else {
+      console.warn("No music playback function (playMusicForZone or playMenuMusic) found.");
+    }
+  } catch (error) {
+    console.error("Error playing overworld music:", error.stack);
+  }
+}
+
+
+// --- EXPORT ---
+// Make the system accessible globally
+window.OverworldSystem = {
+  initOverworld,
+  returnToOverworld,
+  movePlayer, // Expose for potential external triggers?
+  changeZone, // Allow programmatic zone changes?
+  getCurrentZone: () => currentZone,
+  getPlayerPosition: () => ({ x: player.x, y: player.y }),
+  giveQuest, // Expose for script triggers maybe
+  updateQuestProgress, // Expose for battle system callbacks
+
+  // Constants might be useful externally too
+  ZONE_TYPES,
+  TILE_TYPES,
+
+   // Potentially expose internal state/data if needed carefully
+   // _player: player,
+   // _currentMap: currentMap,
+};
+
+console.log("Squabble Overworld System Loaded.");
+// --- END OF SCRIPT ---
