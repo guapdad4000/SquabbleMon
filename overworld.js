@@ -1107,101 +1107,45 @@ function advanceDialogue() {
 // Trigger a battle with an NPC
 function startNpcBattle(npc) {
   try {
-    console.log("Starting NPC battle with:", npc.name);
+    console.log("Starting NPC battle with NPC:", npc.name);
     
-    // Create a team for the NPC instead of just using the character directly
-    // This fixes the issue with NPC battles showing just the NPC sprite
-    let npcTeam = [];
+    // Instead of using the NPC as a character in the battle, we'll create a random team 
+    // from the characters list to battle against
     
-    // For named NPCs like OG Ras, create a team of characters based on their "type"
-    if (npc.character) {
-      // Find characters that would be appropriate for this NPC's team based on their type
-      const npcType = npc.character.type;
-      console.log("NPC Type:", npcType);
-      
-      // Search for characters in the main character list with similar type
-      if (window.characters) {
-        const matchingCharacters = window.characters.filter(c => 
-          c.type === npcType || 
-          (npcType === 'Fire' && c.type === 'Plant') ||
-          (npcType === 'Water' && c.type === 'Fire') ||
-          (npcType === 'Plant' && c.type === 'Water')
-        );
-        
-        // Add 2 matching characters to the NPC's team (or fewer if not enough found)
-        for (let i = 0; i < Math.min(2, matchingCharacters.length); i++) {
-          const teamMember = JSON.parse(JSON.stringify(matchingCharacters[i]));
-          // Adjust stats based on NPC level
-          if (npc.character.level) {
-            const levelFactor = npc.character.level / 5;
-            teamMember.hp = Math.floor(teamMember.hp * levelFactor);
-            teamMember.maxHp = teamMember.hp; // Set maxHp to match
-            teamMember.attack = Math.floor(teamMember.attack * levelFactor);
-            teamMember.defense = Math.floor(teamMember.defense * levelFactor);
-          }
-          
-          // Ensure moves have PP values
-          if (teamMember.moves) {
-            teamMember.moves.forEach(move => {
-              if (move.pp === undefined || move.pp === null) {
-                move.pp = move.maxPp || 15; // Default to 15 if maxPp is also not set
-              }
-              if (move.maxPp === undefined || move.maxPp === null) {
-                move.maxPp = move.pp; // Use pp value as maxPp if not set
-              }
-            });
-          }
-          
-          npcTeam.push(teamMember);
-        }
-      }
-      
-      // Create a deep copy of the NPC character with safety checks
-      const npcCharacter = JSON.parse(JSON.stringify(npc.character));
-      
-      // Ensure all necessary properties exist
-      npcCharacter.maxHp = npcCharacter.maxHp || npcCharacter.hp;
-      npcCharacter.attack = npcCharacter.attack || 50;
-      npcCharacter.defense = npcCharacter.defense || 40;
-      npcCharacter.speed = npcCharacter.speed || 30;
-      
-      // Ensure moves have PP values
-      if (npcCharacter.moves) {
-        npcCharacter.moves.forEach(move => {
-          if (move.pp === undefined || move.pp === null) {
-            move.pp = move.maxPp || 15; // Default to 15 if maxPp is also not set
-          }
-          if (move.maxPp === undefined || move.maxPp === null) {
-            move.maxPp = move.pp; // Use pp value as maxPp if not set
-          }
-        });
-      }
-      
-      // Standardize sprite path
-      if (typeof window.standardizeSpritePath === 'function') {
-        npcCharacter.sprite = window.standardizeSpritePath(npcCharacter.sprite);
-      }
-      
-      // Add the NPC's character as the first team member
-      npcTeam.unshift(npcCharacter);
+    // Create a random opponent team based on character list
+    if (!window.characters || window.characters.length === 0) {
+      console.error("No characters available for battle team");
+      return;
     }
     
-    // If team creation failed, use the NPC character directly (fallback)
-    if (npcTeam.length === 0) {
-      // Create a safe copy with default values for missing properties
-      const safeOpponent = { 
-        ...npc.character,
-        maxHp: npc.character.maxHp || npc.character.hp || 100,
-        hp: npc.character.hp || 100,
-        attack: npc.character.attack || 50,
-        defense: npc.character.defense || 40,
-        speed: npc.character.speed || 30,
-        moves: npc.character.moves || []
-      };
+    // Determine difficulty based on NPC's level (if any)
+    const npcLevel = npc.character && npc.character.level ? npc.character.level : 3;
+    const difficultyFactor = npcLevel / 5;
+    
+    // Create a shuffled copy of the characters to pick from
+    const shuffledCharacters = [...window.characters].sort(() => 0.5 - Math.random());
+    
+    // Pick 3 random characters for the opponent team
+    const opponentTeam = [];
+    for (let i = 0; i < Math.min(3, shuffledCharacters.length); i++) {
+      const teamMember = JSON.parse(JSON.stringify(shuffledCharacters[i]));
+      
+      // Adjust stats based on difficulty (NPC level)
+      teamMember.hp = Math.floor(teamMember.hp * difficultyFactor);
+      teamMember.maxHp = teamMember.hp;
+      teamMember.attack = Math.floor(teamMember.attack * difficultyFactor);
+      teamMember.defense = Math.floor(teamMember.defense * difficultyFactor);
+      
+      // Add some randomness to stats
+      const randomFactor = 0.8 + (Math.random() * 0.4); // 0.8 to 1.2
+      teamMember.hp = Math.floor(teamMember.hp * randomFactor);
+      teamMember.maxHp = teamMember.hp;
+      teamMember.attack = Math.floor(teamMember.attack * randomFactor);
+      teamMember.defense = Math.floor(teamMember.defense * randomFactor);
       
       // Ensure moves have PP values
-      if (safeOpponent.moves) {
-        safeOpponent.moves.forEach(move => {
+      if (teamMember.moves) {
+        teamMember.moves.forEach(move => {
           if (move.pp === undefined || move.pp === null) {
             move.pp = move.maxPp || 15; // Default to 15 if maxPp is also not set
           }
@@ -1213,19 +1157,20 @@ function startNpcBattle(npc) {
       
       // Standardize sprite path
       if (typeof window.standardizeSpritePath === 'function') {
-        safeOpponent.sprite = window.standardizeSpritePath(safeOpponent.sprite);
+        teamMember.sprite = window.standardizeSpritePath(teamMember.sprite);
       }
       
-      // Create a team with just this opponent
-      npcTeam = [safeOpponent];
-      window.activeOpponent = safeOpponent;
-      window.activeOpponentTeam = npcTeam;
-      console.log("Using NPC character directly (with safety checks):", window.activeOpponent);
+      opponentTeam.push(teamMember);
+    }
+    
+    // Use the generated team
+    if (opponentTeam.length > 0) {
+      window.activeOpponentTeam = opponentTeam;
+      window.activeOpponent = opponentTeam[0];
+      console.log("Created random opponent team with", opponentTeam.length, "members for NPC battle");
     } else {
-      // Set the team as the active opponent
-      window.activeOpponentTeam = npcTeam;
-      window.activeOpponent = npcTeam[0];
-      console.log("Created NPC team with", npcTeam.length, "members:", npcTeam);
+      console.error("Failed to create opponent team for NPC battle");
+      return;
     }
     
     // Hide overworld and show battle screen
