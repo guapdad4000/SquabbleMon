@@ -245,7 +245,7 @@ const NewOverworldSystem = (function() {
 
   // Timing
   let lastMoveTime = 0;
-  let moveCooldown = 200; // ms between moves
+  let moveCooldown = 80; // ms between moves (reduced from 200ms for faster response)
 
   // Control state
   let keysPressed = {
@@ -365,7 +365,7 @@ const NewOverworldSystem = (function() {
           background-repeat: no-repeat;
           background-position: center;
           z-index: 10;
-          transition: top 0.2s, left 0.2s;
+          transition: top 0.1s, left 0.1s; /* Faster transitions for smoother movement */
         }
         
         .dialogue-box {

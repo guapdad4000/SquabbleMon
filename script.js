@@ -2630,6 +2630,17 @@ function startBattle() {
     overworldContainer.style.display = "none";
   }
   
+  // Schedule sprite visibility fix call after UI becomes visible
+  setTimeout(() => {
+    // This will run after the DOM has had time to render the battle screen
+    if (typeof ensureBattleSpritesVisible === 'function') {
+      console.log("Running battle sprite visibility fix");
+      ensureBattleSpritesVisible();
+    } else {
+      console.warn("ensureBattleSpritesVisible function not available yet");
+    }
+  }, 300);
+  
   // Hide mobile controls during battle
   const mobileContainer = document.getElementById("mobile-controls-container");
   if (mobileContainer) {
@@ -3016,46 +3027,155 @@ function updateBattleUI() {
   console.log("Player sprite path:", activePlayerCharacter.sprite);
   console.log("Opponent sprite path:", activeOpponent.sprite);
   
-  // Set sprites with standardized paths
-  try {
-    // Use our standardize helper for player sprite path
-    const playerSpritePath = standardizeSpritePath(activePlayerCharacter.sprite);
-    console.log("Standardized player sprite path:", playerSpritePath);
+  // Create a robust function to handle sprite loading/displaying
+  function ensureBattleSpritesVisible() {
+    console.group("🎯 ENSURING BATTLE SPRITES ARE VISIBLE");
     
-    // Get the sprite element we just created
-    const playerSpriteElem = document.getElementById("player-sprite");
-    if (playerSpriteElem) {
-      // Set the source first so onload event will fire
-      playerSpriteElem.src = playerSpritePath;
+    try {
+      // Fix player sprite
+      const playerSpritePath = standardizeSpritePath(activePlayerCharacter.sprite);
+      console.log("Player sprite path:", playerSpritePath);
       
-      // Force visibility again after setting src
+      // Ensure we have a player sprite element
+      let playerSpriteElem = document.getElementById("player-sprite");
+      if (!playerSpriteElem) {
+        console.warn("Player sprite element missing, creating it");
+        const playerContainer = document.getElementById("player-sprite-container");
+        
+        if (!playerContainer) {
+          console.warn("Player container missing too, creating both");
+          // Create container
+          const container = document.getElementById("battle-background") || document.body;
+          const newContainer = document.createElement("div");
+          newContainer.id = "player-sprite-container";
+          newContainer.style.position = "absolute";
+          newContainer.style.left = "10%";
+          newContainer.style.bottom = "20%";
+          newContainer.style.width = "240px";
+          newContainer.style.height = "240px";
+          newContainer.style.zIndex = "50";
+          container.appendChild(newContainer);
+          
+          // Create sprite
+          playerSpriteElem = document.createElement("img");
+          playerSpriteElem.id = "player-sprite";
+          playerSpriteElem.alt = "Player";
+          newContainer.appendChild(playerSpriteElem);
+        } else {
+          // Just create sprite
+          playerSpriteElem = document.createElement("img");
+          playerSpriteElem.id = "player-sprite";
+          playerSpriteElem.alt = "Player";
+          playerContainer.appendChild(playerSpriteElem);
+        }
+      }
+      
+      // Set player sprite attributes
+      playerSpriteElem.src = playerSpritePath;
       playerSpriteElem.style.display = "block";
       playerSpriteElem.style.visibility = "visible";
       playerSpriteElem.style.opacity = "1";
+      playerSpriteElem.style.width = "220px";
+      playerSpriteElem.style.height = "220px";
+      playerSpriteElem.style.position = "relative";
       
-      console.log("Player sprite visibility settings applied");
-      
-      // Set onload handler
+      // Set event handlers
       playerSpriteElem.onload = function() {
-        console.log("Player sprite loaded successfully:", playerSpritePath);
-        // Force visibility AGAIN after load
+        console.log("Player sprite loaded successfully");
         playerSpriteElem.style.display = "block";
         playerSpriteElem.style.visibility = "visible";
         playerSpriteElem.style.opacity = "1";
       };
       
-      // Set error handler
       playerSpriteElem.onerror = function() {
-        console.error("Failed to load player sprite:", playerSpritePath);
-        // Retry with default sprite
-        console.log("Trying fallback sprite...");
-        playerSpriteElem.src = "https://i.imgur.com/YeMI4sr.png"; // Fitness Bro as fallback
+        console.error("Player sprite failed to load, using fallback");
+        playerSpriteElem.src = "https://i.imgur.com/YeMI4sr.png"; // Fitness Bro fallback
       };
-    } else {
-      console.error("Player sprite element not found after creation!");
+      
+      // Fix opponent sprite
+      const opponentSpritePath = standardizeSpritePath(activeOpponent.sprite);
+      console.log("Opponent sprite path:", opponentSpritePath);
+      
+      // Ensure we have an opponent sprite element
+      let opponentSpriteElem = document.getElementById("opponent-sprite");
+      if (!opponentSpriteElem) {
+        console.warn("Opponent sprite element missing, creating it");
+        const opponentContainer = document.getElementById("opponent-sprite-container");
+        
+        if (!opponentContainer) {
+          console.warn("Opponent container missing too, creating both");
+          // Create container
+          const container = document.getElementById("battle-background") || document.body;
+          const newContainer = document.createElement("div");
+          newContainer.id = "opponent-sprite-container";
+          newContainer.style.position = "absolute";
+          newContainer.style.right = "10%";
+          newContainer.style.top = "20%";
+          newContainer.style.width = "160px";
+          newContainer.style.height = "160px";
+          newContainer.style.zIndex = "50";
+          container.appendChild(newContainer);
+          
+          // Create sprite
+          opponentSpriteElem = document.createElement("img");
+          opponentSpriteElem.id = "opponent-sprite";
+          opponentSpriteElem.alt = "Opponent";
+          newContainer.appendChild(opponentSpriteElem);
+        } else {
+          // Just create sprite
+          opponentSpriteElem = document.createElement("img");
+          opponentSpriteElem.id = "opponent-sprite";
+          opponentSpriteElem.alt = "Opponent";
+          opponentContainer.appendChild(opponentSpriteElem);
+        }
+      }
+      
+      // Set opponent sprite attributes
+      opponentSpriteElem.src = opponentSpritePath;
+      opponentSpriteElem.style.display = "block";
+      opponentSpriteElem.style.visibility = "visible";
+      opponentSpriteElem.style.opacity = "1";
+      opponentSpriteElem.style.width = "140px";
+      opponentSpriteElem.style.height = "140px";
+      opponentSpriteElem.style.position = "relative";
+      
+      // Set event handlers
+      opponentSpriteElem.onload = function() {
+        console.log("Opponent sprite loaded successfully");
+        opponentSpriteElem.style.display = "block";
+        opponentSpriteElem.style.visibility = "visible";
+        opponentSpriteElem.style.opacity = "1";
+      };
+      
+      opponentSpriteElem.onerror = function() {
+        console.error("Opponent sprite failed to load, using fallback");
+        opponentSpriteElem.src = "https://i.imgur.com/UkE9crR.png"; // 9-5 Homie fallback
+      };
+      
+      // Final visibility check
+      setTimeout(() => {
+        console.log("Final visibility check complete");
+        
+        // Ensure player sprite is visible
+        if (playerSpriteElem) {
+          playerSpriteElem.style.display = "block";
+          playerSpriteElem.style.visibility = "visible";
+          playerSpriteElem.style.opacity = "1";
+        }
+        
+        // Ensure opponent sprite is visible
+        if (opponentSpriteElem) {
+          opponentSpriteElem.style.display = "block";
+          opponentSpriteElem.style.visibility = "visible";
+          opponentSpriteElem.style.opacity = "1";
+        }
+      }, 500);
+      
+    } catch (error) {
+      console.error("Error in ensureBattleSpritesVisible:", error);
     }
-  } catch (error) {
-    console.error("Error setting player sprite:", error);
+    
+    console.groupEnd();
   }
   
   // Update opponent display
@@ -3069,47 +3189,15 @@ function updateBattleUI() {
     opponentHpElement.textContent = `${activeOpponent.hp}/${activeOpponent.maxHp}`;
   }
   
-  // Handle opponent sprite with error handling
-  try {
-    // Use our standardize helper for opponent sprite path
-    const opponentSpritePath = standardizeSpritePath(activeOpponent.sprite);
-    console.log("Standardized opponent sprite path:", opponentSpritePath);
-    
-    // Get the sprite element we just created
-    const opponentSpriteElem = document.getElementById("opponent-sprite");
-    if (opponentSpriteElem) {
-      // Set the source first so onload event will fire
-      opponentSpriteElem.src = opponentSpritePath;
-      
-      // Force visibility again after setting src
-      opponentSpriteElem.style.display = "block";
-      opponentSpriteElem.style.visibility = "visible"; 
-      opponentSpriteElem.style.opacity = "1";
-      
-      console.log("Opponent sprite visibility settings applied");
-      
-      // Set onload handler
-      opponentSpriteElem.onload = function() {
-        console.log("Opponent sprite loaded successfully:", opponentSpritePath);
-        // Force visibility AGAIN after load
-        opponentSpriteElem.style.display = "block";
-        opponentSpriteElem.style.visibility = "visible";
-        opponentSpriteElem.style.opacity = "1";
-      };
-      
-      // Set error handler
-      opponentSpriteElem.onerror = function() {
-        console.error("Failed to load opponent sprite:", opponentSpritePath);
-        // Retry with default sprite
-        console.log("Trying fallback sprite...");
-        opponentSpriteElem.src = "https://i.imgur.com/UkE9crR.png"; // 9-5 Homie as fallback
-      };
-    } else {
-      console.error("Opponent sprite element not found after creation!");
-    }
-  } catch (error) {
-    console.error("Error setting opponent sprite:", error);
-  }
+  // Call our new sprite fixing function
+  ensureBattleSpritesVisible();
+  
+  // Add an additional backup call to ensure sprites after a slight delay
+  setTimeout(() => {
+    ensureBattleSpritesVisible();
+  }, 300);
+  
+  // Additional debug info for sprites
   
   // Update HP bars using maxHp directly
   const playerHpFill = document.getElementById("player-hp-fill");
