@@ -6,11 +6,11 @@
 // Use local sprites from public folder
 // Main character sprite set (ninja character with directional animations)
 const NINJA_CHARACTER_SPRITES = {
-  down: [
+  up: [
     './public/sprites/fwd 1.png',
     './public/sprites/fwd 2.png'
   ],
-  up: [
+  down: [
     './public/sprites/back 1.png',
     './public/sprites/back 2.png'
   ],

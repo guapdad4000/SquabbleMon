@@ -132,8 +132,7 @@
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
-  filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5));
-  animation: playerBreathe 2s infinite alternate;
+  /* Removed drop shadow and breathing animation to prevent floating effect */
 }
 
 .npc-sprite {
@@ -253,22 +252,18 @@
   to { transform: translateY(-3px); }
 }
 
-/* Direction-based player sprites */
+/* Direction-based player sprites - no transforms or animations */
 .facing-up {
-  /* Reset previous transforms but maintain animations */
-  transform: translateY(0) scale(1);
+  /* Plain sprite with no transformations */
 }
 .facing-down {
-  /* Reset previous transforms but maintain animations */
-  transform: translateY(0) scale(1);
+  /* Plain sprite with no transformations */
 }
 .facing-left {
-  /* Use natural sprite facing direction */
-  transform: translateY(0) scale(1);
+  /* Plain sprite with no transformations */
 }
 .facing-right {
-  /* Use natural sprite facing direction */
-  transform: translateY(0) scale(1);
+  /* Plain sprite with no transformations */
 }
 
 #dialogue-box {

@@ -781,56 +781,71 @@ function movePlayer(direction) {
   const prevX = player.x;
   const prevY = player.y;
   
-  // Update player direction
+  // Always update player direction, even if we can't move
   player.direction = direction;
   
-  // Update position based on direction
+  // Update player sprite immediately for direction change
+  // This ensures the player always faces the requested direction, even if blocked
+  player.isMoving = false;
+  updatePlayerPosition();
+  
+  // Try to update position based on direction
+  let canMove = true;
+  let newX = player.x;
+  let newY = player.y;
+  
   switch (direction) {
     case 'up':
-      if (player.y > 0) player.y--;
+      if (player.y > 0) newY--;
+      else canMove = false;
       break;
     case 'down':
-      if (player.y < currentMap.length - 1) player.y++;
+      if (player.y < currentMap.length - 1) newY++;
+      else canMove = false;
       break;
     case 'left':
-      if (player.x > 0) player.x--;
+      if (player.x > 0) newX--;
+      else canMove = false;
       break;
     case 'right':
-      if (player.x < currentMap[0].length - 1) player.x++;
+      if (player.x < currentMap[0].length - 1) newX++;
+      else canMove = false;
       break;
   }
   
-  // Check for collision
-  if (currentMap[player.y][player.x] === TILE_TYPES.BLOCKED) {
-    // Revert to previous position
-    player.x = prevX;
-    player.y = prevY;
-    return false;
+  // Check for collision with blocked tiles
+  if (canMove && currentMap[newY][newX] === TILE_TYPES.BLOCKED) {
+    canMove = false;
   }
   
   // Check for NPC collision
-  const npcAtPosition = currentNpcs.find(npc => npc.x === player.x && npc.y === player.y);
-  if (npcAtPosition) {
-    // Revert to previous position
-    player.x = prevX;
-    player.y = prevY;
-    return false;
+  if (canMove) {
+    const npcAtPosition = currentNpcs.find(npc => npc.x === newX && npc.y === newY);
+    if (npcAtPosition) {
+      canMove = false;
+    }
   }
   
-  // Set player as moving (for animation)
-  player.isMoving = true;
-  
-  // Update player position on screen
-  updatePlayerPosition();
-  
-  // After a slightly longer delay, set player as not moving (stop animation)
-  // This gives the animation more time to complete for smoother movement
-  setTimeout(() => {
-    player.isMoving = false;
+  // Only update position if we can move
+  if (canMove) {
+    player.x = newX;
+    player.y = newY;
+    
+    // Set player as moving (for animation)
+    player.isMoving = true;
+    
+    // Update player position on screen with movement animation
     updatePlayerPosition();
-  }, 350); // Animation lasts longer to match CSS transition
+    
+    // After a slightly longer delay, set player as not moving (stop animation)
+    // This gives the animation more time to complete for smoother movement
+    setTimeout(() => {
+      player.isMoving = false;
+      updatePlayerPosition();
+    }, 350); // Animation lasts longer to match CSS transition
+  }
   
-  return true;
+  return canMove;
 }
 
 // Set up keyboard controls for overworld
