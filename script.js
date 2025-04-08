@@ -2671,45 +2671,126 @@ function updateBattleUI() {
   console.log("Active opponent:", activeOpponent);
   
   // Verify all required elements exist and create if needed
-  const playerArea = document.getElementById("player-area");
-  const opponentArea = document.getElementById("opponent-area");
-  console.log("Player area:", playerArea);
-  console.log("Opponent area:", opponentArea);
+  const battleBackground = document.getElementById("battle-background");
+  console.log("Battle background:", battleBackground);
   
-  // Check if we need to create the sprite containers
+  // Make sure we have a battle background to work with
+  if (!battleBackground) {
+    console.log("Battle background not found, creating battle-screen structure");
+    
+    // Create the entire battle screen structure
+    const battleScreen = document.getElementById("battle-screen") || document.createElement("div");
+    if (!battleScreen.id) {
+      battleScreen.id = "battle-screen";
+      document.body.appendChild(battleScreen);
+    }
+    
+    // Create battle background
+    const newBattleBackground = document.createElement("div");
+    newBattleBackground.id = "battle-background";
+    
+    // Add player and opponent info areas
+    newBattleBackground.innerHTML = `
+      <div id="player-info">
+        <span id="player-name">${activePlayerCharacter.name}</span>
+        <div class="hp-bar">
+          <div id="player-hp-fill" class="hp-fill" style="width: 100%;"></div>
+        </div>
+        <span id="player-hp">${activePlayerCharacter.hp}/${activePlayerCharacter.maxHp}</span>
+        <span id="player-status-icon" class="status-icon"></span>
+      </div>
+      <div id="opponent-info">
+        <span id="opponent-name">${activeOpponent.name}</span>
+        <div class="hp-bar">
+          <div id="opponent-hp-fill" class="hp-fill" style="width: 100%;"></div>
+        </div>
+        <span id="opponent-hp">${activeOpponent.hp}/${activeOpponent.maxHp}</span>
+        <span id="opponent-status-icon" class="status-icon"></span>
+      </div>
+    `;
+    
+    battleScreen.appendChild(newBattleBackground);
+  }
+  
+  // Get or create player sprite container
   let playerSpriteContainer = document.getElementById("player-sprite-container");
   if (!playerSpriteContainer) {
     console.log("Creating player sprite container");
     playerSpriteContainer = document.createElement("div");
     playerSpriteContainer.id = "player-sprite-container";
     playerSpriteContainer.className = "player-sprite-container";
-    playerArea.appendChild(playerSpriteContainer);
+    playerSpriteContainer.style.display = "flex";
+    playerSpriteContainer.style.visibility = "visible";
+    playerSpriteContainer.style.opacity = "1";
+    playerSpriteContainer.style.width = "300px";
+    playerSpriteContainer.style.height = "300px";
+    playerSpriteContainer.style.position = "absolute";
+    playerSpriteContainer.style.left = "10%";
+    playerSpriteContainer.style.bottom = "30%";
+    playerSpriteContainer.style.justifyContent = "center";
+    playerSpriteContainer.style.alignItems = "center";
+    playerSpriteContainer.style.zIndex = "10";
+    
+    // Add to battle background if it exists, otherwise to battle screen
+    const container = document.getElementById("battle-background") || document.getElementById("battle-screen");
+    container.appendChild(playerSpriteContainer);
   }
   
+  // Get or create player sprite
   let playerSprite = document.getElementById("player-sprite");
   if (!playerSprite) {
     console.log("Creating player sprite element");
     playerSprite = document.createElement("img");
     playerSprite.id = "player-sprite";
     playerSprite.alt = "Player";
+    playerSprite.style.display = "block";
+    playerSprite.style.visibility = "visible";
+    playerSprite.style.opacity = "1";
+    playerSprite.style.width = "220px";
+    playerSprite.style.height = "220px";
+    playerSprite.style.position = "relative";
+    playerSprite.style.zIndex = "15";
     playerSpriteContainer.appendChild(playerSprite);
   }
   
+  // Get or create opponent sprite container
   let opponentSpriteContainer = document.getElementById("opponent-sprite-container");
   if (!opponentSpriteContainer) {
     console.log("Creating opponent sprite container");
     opponentSpriteContainer = document.createElement("div");
     opponentSpriteContainer.id = "opponent-sprite-container";
     opponentSpriteContainer.className = "opponent-sprite-container";
-    opponentArea.appendChild(opponentSpriteContainer);
+    opponentSpriteContainer.style.display = "flex";
+    opponentSpriteContainer.style.visibility = "visible";
+    opponentSpriteContainer.style.opacity = "1";
+    opponentSpriteContainer.style.width = "200px";
+    opponentSpriteContainer.style.height = "200px";
+    opponentSpriteContainer.style.position = "absolute";
+    opponentSpriteContainer.style.right = "10%";
+    opponentSpriteContainer.style.top = "20%";
+    opponentSpriteContainer.style.justifyContent = "center";
+    opponentSpriteContainer.style.alignItems = "center";
+    opponentSpriteContainer.style.zIndex = "10";
+    
+    // Add to battle background if it exists, otherwise to battle screen
+    const container = document.getElementById("battle-background") || document.getElementById("battle-screen");
+    container.appendChild(opponentSpriteContainer);
   }
   
+  // Get or create opponent sprite
   let opponentSprite = document.getElementById("opponent-sprite");
   if (!opponentSprite) {
     console.log("Creating opponent sprite element");
     opponentSprite = document.createElement("img");
     opponentSprite.id = "opponent-sprite";
     opponentSprite.alt = "Opponent";
+    opponentSprite.style.display = "block";
+    opponentSprite.style.visibility = "visible";
+    opponentSprite.style.opacity = "1";
+    opponentSprite.style.width = "140px";
+    opponentSprite.style.height = "140px";
+    opponentSprite.style.position = "relative";
+    opponentSprite.style.zIndex = "15";
     opponentSpriteContainer.appendChild(opponentSprite);
   }
   
@@ -2745,12 +2826,29 @@ function updateBattleUI() {
     console.log("Updated player sprite path:", playerSpritePath);
     console.log("Setting player sprite src to:", playerSpritePath);
     
-    // Force visibility settings
+    // Get the container for additional styling
+    const playerSpriteContainer = document.getElementById("player-sprite-container");
+    if (playerSpriteContainer) {
+      playerSpriteContainer.style.display = "flex";
+      playerSpriteContainer.style.visibility = "visible";
+      playerSpriteContainer.style.opacity = "1";
+      playerSpriteContainer.style.width = "100%";
+      playerSpriteContainer.style.height = "220px";
+      playerSpriteContainer.style.justifyContent = "center";
+      playerSpriteContainer.style.alignItems = "center";
+      playerSpriteContainer.style.position = "relative";
+      playerSpriteContainer.style.zIndex = "10";
+      console.log("Applied container styles");
+    }
+    
+    // Force visibility settings on sprite
     playerSpriteElem.style.display = "block";
     playerSpriteElem.style.visibility = "visible";
     playerSpriteElem.style.opacity = "1";
     playerSpriteElem.style.width = "220px";
     playerSpriteElem.style.height = "220px";
+    playerSpriteElem.style.zIndex = "15";
+    playerSpriteElem.style.position = "relative";
     
     // Set the source last
     playerSpriteElem.src = playerSpritePath;
