@@ -1681,8 +1681,15 @@ function setupMobileOverworldControls() {
                 break;
               case 'Enter':
               case 'A':
-                console.log("A button pressed, attempting to interact with facing tile");
-                interactWithFacingTile();
+                console.log("A button pressed, checking if dialogue is active");
+                // Check if dialogue box is active
+                if (dialogueBox && dialogueBox.style.display !== 'none') {
+                  console.log("Dialogue box is active, advancing dialogue");
+                  advanceDialogue();
+                } else {
+                  console.log("No active dialogue, attempting to interact with facing tile");
+                  interactWithFacingTile();
+                }
                 break;
               case 'Escape':
               case 'B':
@@ -1707,7 +1714,12 @@ function setupMobileOverworldControls() {
                 movePlayer('right');
                 break;
               case 'a':
-                interactWithFacingTile();
+                // Check if dialogue box is active
+                if (dialogueBox && dialogueBox.style && dialogueBox.style.display !== 'none') {
+                  advanceDialogue();
+                } else {
+                  interactWithFacingTile();
+                }
                 break;
               case 'b':
                 // Can be used for cancelling dialogue or interactions
