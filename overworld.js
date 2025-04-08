@@ -324,17 +324,8 @@ function renderMap() {
       throw new Error("Map container is missing");
     }
     
-    // Clear existing map
-    mapContainer.innerHTML = '';
-    
-    // Add player sprite
-    if (!playerSprite) {
-      console.error("Player sprite element not found!");
-      playerSprite = document.createElement('div');
-      playerSprite.id = 'player-sprite';
-    }
-    
-    mapContainer.appendChild(playerSprite);
+    // Use a document fragment for better performance (single reflow)
+    const mapFragment = document.createDocumentFragment();
     
     // Render each tile based on map data
     const tileSize = 64; // Each tile is 64x64 pixels for new tileset
@@ -347,6 +338,18 @@ function renderMap() {
     
     console.log(`Rendering map with dimensions: ${currentMap[0].length}x${currentMap.length}`);
     
+    // Track tile counts for debugging
+    const tileCounts = {
+      walkable: 0,
+      blocked: 0,
+      grass: 0,
+      trapZone: 0,
+      door: 0,
+      npc: 0,
+      unknown: 0
+    };
+    
+    // Create all tiles at once
     for (let y = 0; y < currentMap.length; y++) {
       for (let x = 0; x < currentMap[y].length; x++) {
         const tileType = currentMap[y][x];
@@ -357,45 +360,159 @@ function renderMap() {
         tile.style.width = `${tileSize}px`;
         tile.style.height = `${tileSize}px`;
         
+        // Add data attributes for debugging
+        tile.dataset.x = x;
+        tile.dataset.y = y;
+        tile.dataset.type = tileType;
+        
         // Apply tile-specific styles
         switch (tileType) {
           case TILE_TYPES.WALKABLE:
             tile.classList.add('walkable');
+            tileCounts.walkable++;
             break;
           case TILE_TYPES.BLOCKED:
             tile.classList.add('blocked');
+            tileCounts.blocked++;
             break;
           case TILE_TYPES.GRASS:
             tile.classList.add('grass');
+            tileCounts.grass++;
             break;
           case TILE_TYPES.TRAP_ZONE:
             tile.classList.add('trap-zone');
+            tileCounts.trapZone++;
             break;
           case TILE_TYPES.DOOR:
             tile.classList.add('door');
+            tileCounts.door++;
             break;
           case TILE_TYPES.NPC:
             // Just render as walkable, NPCs will be added separately
             tile.classList.add('walkable');
+            tileCounts.npc++;
             break;
           default:
             // Unknown tile type - use walkable as fallback
             console.warn(`Unknown tile type: ${tileType} at position (${x},${y})`);
             tile.classList.add('walkable');
+            tileCounts.unknown++;
         }
         
-        mapContainer.appendChild(tile);
+        // Add to fragment instead of directly to DOM
+        mapFragment.appendChild(tile);
       }
     }
     
-    console.log("Map rendering complete");
+    // Clear existing map properly
+    while (mapContainer.firstChild) {
+      mapContainer.removeChild(mapContainer.firstChild);
+    }
+    
+    // Add all tiles at once (single reflow)
+    mapContainer.appendChild(mapFragment);
+    
+    // Add player sprite
+    if (!playerSprite) {
+      console.error("Player sprite element not found!");
+      playerSprite = document.createElement('div');
+      playerSprite.id = 'player-sprite';
+    }
+    
+    // Add player to map container (on top of tiles)
+    mapContainer.appendChild(playerSprite);
+    
+    // Update player sprite appearance
+    updatePlayerPosition();
+    
+    // Set player direction class
+    playerSprite.className = `facing-${player.direction}`;
+    
+    // Set player sprite image with pixel art fallback
+    if (player.sprite) {
+      const img = playerSprite.querySelector('img');
+      if (!img) {
+        const newImg = document.createElement('img');
+        newImg.src = player.sprite;
+        newImg.alt = 'Player';
+        playerSprite.appendChild(newImg);
+      } else if (img.src !== player.sprite) {
+        img.src = player.sprite;
+      }
+    } else {
+      console.warn("No player sprite set, using pixel art fallback");
+      // Use SVG for pixel art player as fallback
+      playerSprite.innerHTML = `
+        <svg width="64" height="64" viewBox="0 0 64 64" style="image-rendering: pixelated;">
+          <rect x="18" y="12" width="28" height="40" fill="#f25a5a" />
+          <rect x="14" y="24" width="36" height="16" fill="#f25a5a" />
+          <circle cx="24" cy="26" r="4" fill="#000" />
+          <circle cx="40" cy="26" r="4" fill="#000" />
+          <rect x="28" y="38" width="8" height="2" fill="#000" />
+        </svg>
+      `;
+    }
+    
+    console.log("Map rendering complete", tileCounts);
   } catch (error) {
     console.error("Error rendering map:", error);
-    // Create a visible error message in the map container
+    // Create a visually appealing error message
     if (mapContainer) {
-      mapContainer.innerHTML = `<div style="color: red; padding: 20px;">
-        Error rendering map. Please reload the game.
-      </div>`;
+      mapContainer.innerHTML = `
+        <div style="color: white; background-color: rgba(0,0,0,0.8); padding: 20px; 
+             border-radius: 8px; border: 2px solid #f25a5a; box-shadow: 0 0 15px rgba(242,90,90,0.5); 
+             font-family: 'Press Start 2P', monospace; text-align: center; margin: 20px;">
+          <h3 style="color: #f25a5a; margin-bottom: 15px;">Map Error</h3>
+          <p>There was a problem loading this area.</p>
+          <p>Try returning to the main menu.</p>
+          <button onclick="window.location.reload()" 
+                  style="background-color: #f25a5a; color: white; border: none; 
+                         padding: 8px 15px; margin-top: 15px; cursor: pointer; 
+                         font-family: 'Press Start 2P', monospace; font-size: 12px;">
+            Reload Game
+          </button>
+        </div>
+      `;
+    }
+    
+    // Recovery attempt with a simple fallback map
+    try {
+      console.log("Attempting recovery with fallback map");
+      setTimeout(() => {
+        try {
+          // Create a basic fallback map if needed
+          const fallbackMap = [
+            [1, 1, 1, 1, 1],
+            [1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1],
+            [1, 1, 1, 1, 1]
+          ];
+          
+          // Only use fallback if rendering completely failed
+          if (!mapContainer.querySelector('.map-tile')) {
+            console.log("Using fallback map for recovery");
+            
+            // Store original map data
+            const originalMap = currentMap;
+            const originalX = player.x;
+            const originalY = player.y;
+            
+            // Reset to safe values
+            currentMap = fallbackMap;
+            player.x = 2;
+            player.y = 2;
+            
+            // Clear error message and try again
+            mapContainer.innerHTML = '';
+            renderMap();
+          }
+        } catch (e) {
+          console.error("Fallback map also failed:", e);
+        }
+      }, 1000);
+    } catch (recoveryError) {
+      console.error("Recovery attempt failed:", recoveryError);
     }
   }
   
@@ -405,37 +522,90 @@ function renderMap() {
 
 // Render NPCs on the map
 function renderNpcs() {
-  // Remove existing NPCs
-  npcs.forEach(npc => {
-    if (npc.element && npc.element.parentNode) {
-      npc.element.parentNode.removeChild(npc.element);
-    }
-  });
-  
-  npcs = [];
-  
-  // Create NPC elements
-  currentNpcs.forEach(npcData => {
-    const npcElement = document.createElement('div');
-    npcElement.className = 'npc-sprite';
-    npcElement.style.left = `${npcData.x * 64}px`;
-    npcElement.style.top = `${npcData.y * 64}px`;
+  try {
+    console.log(`Rendering ${currentNpcs.length} NPCs for zone: ${currentZone}`);
     
-    // Set NPC appearance
-    const npcImg = document.createElement('img');
-    npcImg.src = npcData.sprite;
-    npcImg.alt = npcData.name;
-    npcImg.className = `facing-${npcData.direction}`;
-    
-    npcElement.appendChild(npcImg);
-    mapContainer.appendChild(npcElement);
-    
-    // Store reference to the element
-    npcs.push({
-      data: npcData,
-      element: npcElement
+    // Remove existing NPCs
+    npcs.forEach(npc => {
+      if (npc.element && npc.element.parentNode) {
+        npc.element.parentNode.removeChild(npc.element);
+      }
     });
-  });
+    
+    npcs = [];
+    
+    // Use document fragment for better performance
+    const npcFragment = document.createDocumentFragment();
+    
+    // Create NPC elements
+    currentNpcs.forEach(npcData => {
+      try {
+        const npcElement = document.createElement('div');
+        npcElement.className = 'npc-sprite';
+        npcElement.style.left = `${npcData.x * 64}px`;
+        npcElement.style.top = `${npcData.y * 64}px`;
+        
+        // Add identifier attributes
+        npcElement.dataset.npcId = npcData.id;
+        npcElement.dataset.npcName = npcData.name;
+        
+        // Add visual cues for interactive NPCs
+        if (npcData.triggersBattle) {
+          npcElement.classList.add('battle-npc');
+        } else if (npcData.opensShop) {
+          npcElement.classList.add('shop-npc');
+        } else if (npcData.givesQuest) {
+          npcElement.classList.add('quest-npc');
+        }
+        
+        // Create tooltip with NPC name
+        const tooltip = document.createElement('div');
+        tooltip.className = 'npc-tooltip';
+        tooltip.textContent = npcData.name;
+        npcElement.appendChild(tooltip);
+        
+        // Set NPC appearance
+        const npcImg = document.createElement('img');
+        npcImg.src = npcData.sprite;
+        npcImg.alt = npcData.name;
+        npcImg.className = `facing-${npcData.direction}`;
+        
+        // Error handling for sprite loading
+        npcImg.onerror = function() {
+          console.warn(`Failed to load sprite for NPC: ${npcData.name}`);
+          // Use SVG fallback
+          npcElement.innerHTML = `
+            <svg width="64" height="64" viewBox="0 0 64 64" style="image-rendering: pixelated;">
+              <rect x="18" y="12" width="28" height="40" fill="#aaa" />
+              <rect x="14" y="24" width="36" height="16" fill="#aaa" />
+              <circle cx="24" cy="26" r="4" fill="#000" />
+              <circle cx="40" cy="26" r="4" fill="#000" />
+              <rect x="28" y="38" width="8" height="2" fill="#000" />
+              <text x="32" y="58" text-anchor="middle" font-size="10" fill="#fff">${npcData.name}</text>
+            </svg>
+          `;
+        };
+        
+        npcElement.appendChild(npcImg);
+        npcFragment.appendChild(npcElement);
+        
+        // Store reference to the element
+        npcs.push({
+          data: npcData,
+          element: npcElement
+        });
+      } catch (npcError) {
+        console.error(`Error rendering NPC ${npcData.name}:`, npcError);
+      }
+    });
+    
+    // Add all NPCs to map at once
+    mapContainer.appendChild(npcFragment);
+    
+    console.log(`Successfully rendered ${npcs.length} NPCs`);
+  } catch (error) {
+    console.error("Error in renderNpcs:", error);
+  }
 }
 
 // Update player position on the map
