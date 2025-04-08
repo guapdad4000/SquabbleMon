@@ -14,98 +14,221 @@ const NewOverworldSystem = (function() {
     sprite: null
   };
 
-  // Map data
+  // Map data - expanded tile types for a more detailed urban environment
   const TILE_TYPES = {
+    // Basic tiles
     EMPTY: 0,
     WALL: 1,
     NPC: 2,
     DOOR: 3,
     ENCOUNTER: 4,
-    SHOP: 5
+    SHOP: 5,
+    
+    // Street tiles
+    STREET: 10,
+    STREET_HORIZONTAL: 11,
+    STREET_VERTICAL: 12,
+    STREET_INTERSECTION: 13,
+    STREET_CORNER_NE: 14,
+    STREET_CORNER_NW: 15,
+    STREET_CORNER_SE: 16,
+    STREET_CORNER_SW: 17,
+    CROSSWALK: 18,
+    
+    // Building tiles
+    BUILDING_WALL: 20,
+    BUILDING_WINDOW: 21,
+    BUILDING_DOOR: 22,
+    BUILDING_ROOF: 23,
+    BUILDING_CORNER: 24,
+    
+    // Nature tiles
+    GRASS: 30,
+    TREE: 31,
+    BUSH: 32,
+    WATER: 33,
+    
+    // Urban decoration
+    TRASH_CAN: 40,
+    BENCH: 41,
+    STREETLIGHT: 42,
+    HYDRANT: 43,
+    GRAFFITI: 44,
+    BASKETBALL_HOOP: 45,
+    
+    // Special locations
+    TRAP_HOUSE_EXTERIOR: 50,
+    MOMMAS_KITCHEN_EXTERIOR: 51,
+    CORNER_STORE_EXTERIOR: 52,
+    FADE_PARK_ENTRANCE: 53,
+    THE_OPPS_TERRITORY: 54
   };
 
   // Zone definitions
   const ZONE_TYPES = {
-    STARTER_HOOD: "starter",
-    THE_TRAP: "trap",
-    MOMMAS_KITCHEN: "momma",
-    FADE_PARK: "fade",
-    THE_OPPS_HOOD: "opps"
+    MAIN_STREET: "main_street",      // Central hub connecting all locations
+    TRAP_HOUSE: "trap_house",        // The Trap House - Dealer's spot
+    MOMMAS_KITCHEN: "mommas_kitchen", // Momma's Kitchen - Healing spot
+    FADE_PARK: "fade_park",          // Fade Park - Battle arena
+    THE_OPPS_HOOD: "opps_hood"       // The Opps Hood - Enemy territory
   };
 
   // Current zone
-  let currentZone = ZONE_TYPES.STARTER_HOOD;
+  let currentZone = ZONE_TYPES.MAIN_STREET;
 
   // Zone-specific data
   const ZONE_DATA = {
-    [ZONE_TYPES.STARTER_HOOD]: {
-      name: "Starter Hood",
-      encounterRate: 0.15,
-      minLevel: 2,
-      maxLevel: 5,
+    // MAIN STREET - Central hub that connects all four main locations
+    [ZONE_TYPES.MAIN_STREET]: {
+      name: "Main Street",
+      encounterRate: 0.10,  // Occasional random encounters
+      minLevel: 3,
+      maxLevel: 7,
       map: [
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+        // A 15x15 urban map with streets and buildings
+        [20, 20, 20, 20, 20, 21, 22, 21, 20, 20, 20, 20, 20, 20, 20], // 0
+        [20, 30, 31, 30, 20, 11, 11, 11, 20, 30, 30, 30, 31, 30, 20], // 1
+        [20, 30, 30, 30, 20, 11, 11, 11, 20, 30, 52, 30, 30, 30, 20], // 2 - Corner Store at (10,2)
+        [20, 30, 30, 30, 20, 11, 11, 11, 20, 30, 30, 30, 30, 30, 20], // 3
+        [20, 20, 20, 20, 20, 11, 11, 11, 20, 20, 20, 20, 20, 20, 20], // 4
+        [20, 11, 11, 11, 11, 13, 11, 11, 11, 11, 11, 11, 11, 11, 20], // 5 - Horizontal street
+        [20, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 20], // 6
+        [20, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 20], // 7
+        [20, 20, 20, 20, 20, 11, 11, 11, 20, 20, 20, 20, 20, 20, 20], // 8
+        [20, 30, 30, 30, 20, 11, 11, 11, 20, 31, 30, 30, 53, 30, 20], // 9 - Fade Park at (12,9)
+        [20, 30, 50, 30, 20, 11, 11, 11, 20, 30, 30, 30, 30, 30, 20], // 10 - Trap House at (2,10)
+        [20, 30, 30, 30, 20, 11, 11, 11, 20, 30, 30, 31, 30, 30, 20], // 11
+        [20, 20, 20, 20, 20, 11, 11, 11, 20, 20, 20, 20, 20, 20, 20], // 12
+        [20, 30, 30, 51, 20, 11, 11, 11, 20, 31, 30, 54, 30, 30, 20], // 13 - Momma's (3,13), Opps Hood (11,13)
+        [20, 20, 20, 20, 20, 20, 22, 20, 20, 20, 20, 20, 20, 20, 20]  // 14
       ],
       npcs: [
-        { x: 3, y: 3, direction: 'down', name: "Trap Boy", sprite: "rasta", dialogue: ["What's good, fam?", "Welcome to the Starter Hood."], battleOnEnd: true, level: 3 },
-        { x: 7, y: 5, direction: 'left', name: "Corner Store", sprite: "shopkeeper", dialogue: ["Need some supplies?"], isShop: true, shopType: "corner" }
+        { x: 7, y: 5, direction: 'down', name: "Street Vendor", sprite: "shopkeeper", dialogue: ["Yo, check out my wares.", "Best prices in the hood!"], isShop: true, shopType: "corner" },
+        { x: 3, y: 7, direction: 'right', name: "Hood Kid", sprite: "rasta", dialogue: ["Watch yourself around here.", "The opps be patrolling these streets."] },
+        { x: 11, y: 7, direction: 'left', name: "B-Ball Kid", sprite: "fitness", dialogue: ["You tryna ball? Head to Fade Park.", "That's where we settle beef."] }
       ],
       doors: [
-        { x: 5, y: 9, targetZone: ZONE_TYPES.THE_TRAP, targetX: 5, targetY: 1 }
+        // Door to Trap House
+        { x: 2, y: 10, targetZone: ZONE_TYPES.TRAP_HOUSE, targetX: 5, targetY: 8 },
+        // Door to Momma's Kitchen
+        { x: 3, y: 13, targetZone: ZONE_TYPES.MOMMAS_KITCHEN, targetX: 4, targetY: 8 },
+        // Door to Fade Park
+        { x: 12, y: 9, targetZone: ZONE_TYPES.FADE_PARK, targetX: 5, targetY: 1 },
+        // Door to Opps Hood
+        { x: 11, y: 13, targetZone: ZONE_TYPES.THE_OPPS_HOOD, targetX: 5, targetY: 1 }
       ]
     },
-    [ZONE_TYPES.THE_TRAP]: {
-      name: "The Trap",
-      encounterRate: 0.2,
-      minLevel: 5,
+    
+    // THE TRAP HOUSE - Where you buy items and gear
+    [ZONE_TYPES.TRAP_HOUSE]: {
+      name: "The Trap House",
+      encounterRate: 0.05,  // Low encounter rate inside
+      minLevel: 4,
       maxLevel: 8,
       map: [
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+        // A 10x10 interior of the trap house
+        [20, 20, 20, 20, 20, 20, 20, 20, 20, 20], // 0
+        [20, 21, 21, 21, 21, 21, 21, 21, 21, 20], // 1
+        [20, 21, 40, 0, 0, 0, 0, 44, 21, 20], // 2 - Trash can, graffiti
+        [20, 0, 0, 0, 0, 0, 0, 0, 0, 20], // 3
+        [20, 0, 0, 0, 41, 0, 0, 0, 0, 20], // 4 - Bench
+        [20, 0, 0, 0, 0, 0, 0, 0, 0, 20], // 5
+        [20, 0, 0, 0, 0, 0, 0, 0, 0, 20], // 6
+        [20, 21, 0, 0, 0, 0, 0, 0, 21, 20], // 7
+        [20, 21, 0, 0, 0, 22, 0, 0, 21, 20], // 8 - Exit door in middle-bottom
+        [20, 20, 20, 20, 20, 20, 20, 20, 20, 20]  // 9
       ],
       npcs: [
-        { x: 3, y: 4, direction: 'right', name: "Fitness", sprite: "fitness", dialogue: ["You in the wrong hood!", "Let's settle this!"], battleOnEnd: true, level: 6 },
-        { x: 7, y: 3, direction: 'left', name: "Trap House", sprite: "dealer", dialogue: ["I got what you need."], isShop: true, shopType: "trap" }
+        { x: 7, y: 4, direction: 'left', name: "Trap House Dealer", sprite: "dealer", dialogue: ["Welcome to the spot.", "I got what you need for the right price."], isShop: true, shopType: "trap" },
+        { x: 2, y: 6, direction: 'right', name: "Lookout", sprite: "rasta", dialogue: ["Keep it down, we don't want the opps knowing our business.", "Cops been rolling through lately too."] }
       ],
       doors: [
-        { x: 5, y: 0, targetZone: ZONE_TYPES.STARTER_HOOD, targetX: 5, targetY: 8 },
-        { x: 9, y: 5, targetZone: ZONE_TYPES.MOMMAS_KITCHEN, targetX: 1, targetY: 5 }
+        { x: 5, y: 8, targetZone: ZONE_TYPES.MAIN_STREET, targetX: 2, targetY: 9 }
       ]
     },
+    
+    // MOMMA'S KITCHEN - Healing spot
     [ZONE_TYPES.MOMMAS_KITCHEN]: {
       name: "Momma's Kitchen",
-      encounterRate: 0,
+      encounterRate: 0, // Safe zone, no encounters
+      minLevel: 1,
+      maxLevel: 1,
       map: [
-        [1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1]
+        // A 9x9 cozy kitchen
+        [20, 20, 20, 20, 20, 20, 20, 20, 20], // 0
+        [20, 21, 21, 21, 21, 21, 21, 21, 20], // 1
+        [20, 21, 0, 0, 0, 0, 0, 21, 20], // 2
+        [20, 0, 0, 0, 0, 0, 0, 0, 20], // 3
+        [20, 0, 0, 41, 41, 41, 0, 0, 20], // 4 - Table with chairs (benches)
+        [20, 0, 0, 0, 0, 0, 0, 0, 20], // 5
+        [20, 0, 0, 0, 0, 0, 0, 0, 20], // 6
+        [20, 21, 0, 0, 0, 0, 0, 21, 20], // 7
+        [20, 20, 20, 20, 22, 20, 20, 20, 20]  // 8 - Exit door in middle-bottom
       ],
       npcs: [
-        { x: 4, y: 3, direction: 'down', name: "Momma", sprite: "mom", dialogue: ["Baby, you hungry?", "Let me heal you up."], healOnEnd: true }
+        { x: 4, y: 2, direction: 'down', name: "Momma", sprite: "mom", dialogue: ["Baby, you look tired!", "Let me fix you up something good.", "Nothing heals like Momma's cooking."], healOnEnd: true }
       ],
       doors: [
-        { x: 0, y: 3, targetZone: ZONE_TYPES.THE_TRAP, targetX: 8, targetY: 5 }
+        { x: 4, y: 8, targetZone: ZONE_TYPES.MAIN_STREET, targetX: 3, targetY: 12 }
+      ]
+    },
+    
+    // FADE PARK - Battle arena
+    [ZONE_TYPES.FADE_PARK]: {
+      name: "Fade Park",
+      encounterRate: 0.25, // High encounter rate - it's a battle zone
+      minLevel: 5,
+      maxLevel: 10,
+      map: [
+        // A 12x12 park with basketball court
+        [31, 31, 31, 31, 31, 22, 31, 31, 31, 31, 31, 31], // 0 - Trees with entrance
+        [31, 30, 30, 30, 30, 0, 30, 30, 30, 30, 30, 31], // 1
+        [31, 30, 45, 30, 30, 30, 30, 30, 30, 45, 30, 31], // 2 - Basketball hoops
+        [31, 30, 0, 0, 0, 0, 0, 0, 0, 0, 30, 31], // 3
+        [31, 30, 0, 0, 0, 0, 0, 0, 0, 0, 30, 31], // 4
+        [31, 30, 0, 0, 0, 0, 0, 0, 0, 0, 30, 31], // 5
+        [31, 30, 0, 0, 0, 0, 0, 0, 0, 0, 30, 31], // 6
+        [31, 30, 0, 0, 0, 0, 0, 0, 0, 0, 30, 31], // 7
+        [31, 30, 0, 0, 0, 0, 0, 0, 0, 0, 30, 31], // 8
+        [31, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 31], // 9
+        [31, 31, 31, 31, 31, 41, 41, 31, 31, 31, 31, 31], // 10 - Benches and trees
+        [31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31]  // 11
+      ],
+      npcs: [
+        { x: 3, y: 5, direction: 'right', name: "B-Ball Captain", sprite: "fitness", dialogue: ["You step on my court, you better be ready to ball.", "Let's see what you got!"], battleOnEnd: true, level: 8 },
+        { x: 8, y: 7, direction: 'left', name: "Street Baller", sprite: "rasta", dialogue: ["This park belongs to us.", "You want respect? Gotta earn it!"], battleOnEnd: true, level: 7 }
+      ],
+      doors: [
+        { x: 5, y: 0, targetZone: ZONE_TYPES.MAIN_STREET, targetX: 12, targetY: 8 }
+      ]
+    },
+    
+    // THE OPPS HOOD - Enemy territory with tough opponents
+    [ZONE_TYPES.THE_OPPS_HOOD]: {
+      name: "The Opps Hood",
+      encounterRate: 0.30, // Highest encounter rate - dangerous area
+      minLevel: 8,
+      maxLevel: 12,
+      map: [
+        // A 10x10 dangerous neighborhood
+        [20, 20, 20, 20, 20, 22, 20, 20, 20, 20], // 0 - Entrance at top
+        [20, 44, 0, 0, 0, 0, 0, 0, 44, 20], // 1 - Graffiti
+        [20, 0, 0, 0, 0, 0, 0, 0, 0, 20], // 2
+        [20, 0, 0, 40, 0, 0, 40, 0, 0, 20], // 3 - Trash cans
+        [20, 0, 0, 0, 0, 0, 0, 0, 0, 20], // 4
+        [20, 0, 0, 0, 4, 4, 0, 0, 0, 20], // 5 - Encounter triggers
+        [20, 0, 0, 0, 4, 4, 0, 0, 0, 20], // 6 - Encounter triggers
+        [20, 0, 0, 0, 0, 0, 0, 0, 0, 20], // 7
+        [20, 0, 43, 0, 0, 0, 0, 43, 0, 20], // 8 - Fire hydrants
+        [20, 20, 20, 20, 20, 20, 20, 20, 20, 20]  // 9
+      ],
+      npcs: [
+        { x: 2, y: 4, direction: 'right', name: "Opp Lieutenant", sprite: "fitness", dialogue: ["You're in the wrong hood.", "Time to teach you a lesson!"], battleOnEnd: true, level: 10 },
+        { x: 7, y: 4, direction: 'left', name: "Opp Soldier", sprite: "karen", dialogue: ["We don't take kindly to outsiders.", "Let's settle this right now!"], battleOnEnd: true, level: 9 },
+        { x: 5, y: 8, direction: 'up', name: "Opp Boss", sprite: "dealer", dialogue: ["So you made it this far?", "Let's see if you're really about that life."], battleOnEnd: true, level: 12 }
+      ],
+      doors: [
+        { x: 5, y: 0, targetZone: ZONE_TYPES.MAIN_STREET, targetX: 11, targetY: 12 }
       ]
     }
   };
@@ -314,32 +437,188 @@ const NewOverworldSystem = (function() {
     
     const zoneMap = ZONE_DATA[currentZone].map;
     
+    // Helper function to get tile color based on type
+    function getTileColor(tileType) {
+      switch(tileType) {
+        // Basic tiles
+        case TILE_TYPES.EMPTY: return '#333';
+        case TILE_TYPES.WALL: return '#555';
+        case TILE_TYPES.NPC: return '#333';
+        case TILE_TYPES.DOOR: return '#854';
+        case TILE_TYPES.ENCOUNTER: return '#474';
+        case TILE_TYPES.SHOP: return '#785';
+        
+        // Street tiles
+        case TILE_TYPES.STREET: return '#444';
+        case TILE_TYPES.STREET_HORIZONTAL: return '#444';
+        case TILE_TYPES.STREET_VERTICAL: return '#444';
+        case TILE_TYPES.STREET_INTERSECTION: return '#444';
+        case TILE_TYPES.STREET_CORNER_NE: return '#444';
+        case TILE_TYPES.STREET_CORNER_NW: return '#444';
+        case TILE_TYPES.STREET_CORNER_SE: return '#444';
+        case TILE_TYPES.STREET_CORNER_SW: return '#444';
+        case TILE_TYPES.CROSSWALK: return '#555';
+        
+        // Building tiles
+        case TILE_TYPES.BUILDING_WALL: return '#665';
+        case TILE_TYPES.BUILDING_WINDOW: return '#667';
+        case TILE_TYPES.BUILDING_DOOR: return '#764';
+        case TILE_TYPES.BUILDING_ROOF: return '#433';
+        case TILE_TYPES.BUILDING_CORNER: return '#554';
+        
+        // Nature tiles
+        case TILE_TYPES.GRASS: return '#363';
+        case TILE_TYPES.TREE: return '#252';
+        case TILE_TYPES.BUSH: return '#353';
+        case TILE_TYPES.WATER: return '#35a';
+        
+        // Urban decoration
+        case TILE_TYPES.TRASH_CAN: return '#666';
+        case TILE_TYPES.BENCH: return '#875';
+        case TILE_TYPES.STREETLIGHT: return '#999';
+        case TILE_TYPES.HYDRANT: return '#d33';
+        case TILE_TYPES.GRAFFITI: return '#569';
+        case TILE_TYPES.BASKETBALL_HOOP: return '#a85';
+        
+        // Special locations
+        case TILE_TYPES.TRAP_HOUSE_EXTERIOR: return '#737';
+        case TILE_TYPES.MOMMAS_KITCHEN_EXTERIOR: return '#975';
+        case TILE_TYPES.CORNER_STORE_EXTERIOR: return '#695';
+        case TILE_TYPES.FADE_PARK_ENTRANCE: return '#364';
+        case TILE_TYPES.THE_OPPS_TERRITORY: return '#744';
+        
+        default: return '#333';
+      }
+    }
+    
+    // Helper function to get tile display name
+    function getTileName(tileType) {
+      switch(tileType) {
+        // Basic tiles
+        case TILE_TYPES.EMPTY: return 'empty';
+        case TILE_TYPES.WALL: return 'wall';
+        case TILE_TYPES.NPC: return 'npc';
+        case TILE_TYPES.DOOR: return 'door';
+        case TILE_TYPES.ENCOUNTER: return 'encounter';
+        case TILE_TYPES.SHOP: return 'shop';
+        
+        // Street tiles
+        case TILE_TYPES.STREET: return 'street';
+        case TILE_TYPES.STREET_HORIZONTAL: return 'street-h';
+        case TILE_TYPES.STREET_VERTICAL: return 'street-v';
+        case TILE_TYPES.STREET_INTERSECTION: return 'street-x';
+        case TILE_TYPES.STREET_CORNER_NE: return 'street-ne';
+        case TILE_TYPES.STREET_CORNER_NW: return 'street-nw';
+        case TILE_TYPES.STREET_CORNER_SE: return 'street-se';
+        case TILE_TYPES.STREET_CORNER_SW: return 'street-sw';
+        case TILE_TYPES.CROSSWALK: return 'crosswalk';
+        
+        // Building tiles
+        case TILE_TYPES.BUILDING_WALL: return 'building-wall';
+        case TILE_TYPES.BUILDING_WINDOW: return 'building-window';
+        case TILE_TYPES.BUILDING_DOOR: return 'building-door';
+        case TILE_TYPES.BUILDING_ROOF: return 'building-roof';
+        case TILE_TYPES.BUILDING_CORNER: return 'building-corner';
+        
+        // Nature tiles
+        case TILE_TYPES.GRASS: return 'grass';
+        case TILE_TYPES.TREE: return 'tree';
+        case TILE_TYPES.BUSH: return 'bush';
+        case TILE_TYPES.WATER: return 'water';
+        
+        // Urban decoration
+        case TILE_TYPES.TRASH_CAN: return 'trash-can';
+        case TILE_TYPES.BENCH: return 'bench';
+        case TILE_TYPES.STREETLIGHT: return 'streetlight';
+        case TILE_TYPES.HYDRANT: return 'hydrant';
+        case TILE_TYPES.GRAFFITI: return 'graffiti';
+        case TILE_TYPES.BASKETBALL_HOOP: return 'basketball-hoop';
+        
+        // Special locations
+        case TILE_TYPES.TRAP_HOUSE_EXTERIOR: return 'trap-house';
+        case TILE_TYPES.MOMMAS_KITCHEN_EXTERIOR: return 'mommas-kitchen';
+        case TILE_TYPES.CORNER_STORE_EXTERIOR: return 'corner-store';
+        case TILE_TYPES.FADE_PARK_ENTRANCE: return 'fade-park';
+        case TILE_TYPES.THE_OPPS_TERRITORY: return 'opps-territory';
+        
+        default: return 'unknown';
+      }
+    }
+    
+    // Helper function to add decorative elements to tiles
+    function addTileDecoration(tile, tileType) {
+      switch(tileType) {
+        case TILE_TYPES.STREET_HORIZONTAL:
+          tile.innerHTML = '<div style="height: 2px; background-color: #fff; opacity: 0.3; margin-top: 30px;"></div>';
+          break;
+        case TILE_TYPES.STREET_VERTICAL:
+          tile.innerHTML = '<div style="width: 2px; background-color: #fff; opacity: 0.3; height: 100%; margin-left: 30px;"></div>';
+          break;
+        case TILE_TYPES.STREET_INTERSECTION:
+          tile.innerHTML = '<div style="height: 2px; background-color: #fff; opacity: 0.3; margin-top: 30px;"></div><div style="width: 2px; background-color: #fff; opacity: 0.3; height: 100%; margin-left: 30px; margin-top: -32px;"></div>';
+          break;
+        case TILE_TYPES.BUILDING_WINDOW:
+          tile.innerHTML = '<div style="width: 20px; height: 20px; background-color: #88f; margin: 20px auto; border: 2px solid #666;"></div>';
+          break;
+        case TILE_TYPES.BUILDING_DOOR:
+          tile.innerHTML = '<div style="width: 30px; height: 45px; background-color: #875; margin: 15px auto; border: 2px solid #543;"></div>';
+          break;
+        case TILE_TYPES.TREE:
+          tile.innerHTML = '<div style="width: 20px; height: 30px; background-color: #531; margin: 30px auto 0; border-radius: 0 0 5px 5px;"></div><div style="width: 40px; height: 30px; background-color: #363; margin: 0 auto; border-radius: 50%;"></div>';
+          break;
+        case TILE_TYPES.HYDRANT:
+          tile.innerHTML = '<div style="width: 15px; height: 25px; background-color: #d33; margin: 20px auto; border-radius: 3px;"></div>';
+          break;
+        case TILE_TYPES.TRASH_CAN:
+          tile.innerHTML = '<div style="width: 25px; height: 30px; background-color: #444; margin: 15px auto; border: 2px solid #333; border-radius: 2px;"></div>';
+          break;
+        case TILE_TYPES.TRAP_HOUSE_EXTERIOR:
+          tile.style.position = 'relative';
+          tile.innerHTML = '<div style="position: absolute; bottom: 0; width: 100%; height: 20px; background-color: #646; font-size: 8px; text-align: center; color: #ffa; padding-top: 3px;">TRAP HOUSE</div>';
+          break;
+        case TILE_TYPES.MOMMAS_KITCHEN_EXTERIOR:
+          tile.style.position = 'relative';
+          tile.innerHTML = '<div style="position: absolute; bottom: 0; width: 100%; height: 20px; background-color: #975; font-size: 8px; text-align: center; color: #fff; padding-top: 3px;">MOMMA\'S</div>';
+          break;
+        case TILE_TYPES.CORNER_STORE_EXTERIOR:
+          tile.style.position = 'relative';
+          tile.innerHTML = '<div style="position: absolute; bottom: 0; width: 100%; height: 20px; background-color: #585; font-size: 8px; text-align: center; color: #fff; padding-top: 3px;">STORE</div>';
+          break;
+        case TILE_TYPES.FADE_PARK_ENTRANCE:
+          tile.style.position = 'relative';
+          tile.innerHTML = '<div style="position: absolute; bottom: 0; width: 100%; height: 20px; background-color: #253; font-size: 8px; text-align: center; color: #ffa; padding-top: 3px;">FADE PARK</div>';
+          break;
+      }
+    }
+    
     // Render tiles
     for (let y = 0; y < zoneMap.length; y++) {
       for (let x = 0; x < zoneMap[y].length; x++) {
         const tileType = zoneMap[y][x];
-        if (tileType !== TILE_TYPES.EMPTY) {
-          const tile = document.createElement('div');
-          tile.className = 'tile';
-          
-          switch (tileType) {
-            case TILE_TYPES.WALL:
-              tile.classList.add('wall');
-              break;
-            case TILE_TYPES.DOOR:
-              tile.classList.add('door');
-              break;
-            case TILE_TYPES.ENCOUNTER:
-              tile.classList.add('encounter');
-              break;
-            default:
-              tile.classList.add('empty');
-          }
-          
-          tile.style.left = `${x * 64}px`;
-          tile.style.top = `${y * 64}px`;
-          mapContainer.appendChild(tile);
+        // Always create a tile, even for empty ones
+        const tile = document.createElement('div');
+        tile.className = 'tile';
+        
+        // Add specific class based on type
+        const tileName = getTileName(tileType);
+        tile.classList.add(tileName);
+        
+        // Set background color based on tile type
+        tile.style.backgroundColor = getTileColor(tileType);
+        
+        // Add border for certain tile types
+        if ([TILE_TYPES.WALL, TILE_TYPES.DOOR, TILE_TYPES.BUILDING_WALL, 
+             TILE_TYPES.BUILDING_WINDOW, TILE_TYPES.BUILDING_DOOR].includes(tileType)) {
+          tile.style.border = '1px solid #666';
         }
+        
+        // Add decorative elements to some tiles
+        addTileDecoration(tile, tileType);
+        
+        // Position the tile
+        tile.style.left = `${x * 64}px`;
+        tile.style.top = `${y * 64}px`;
+        mapContainer.appendChild(tile);
       }
     }
     
@@ -643,11 +922,51 @@ const NewOverworldSystem = (function() {
     const map = ZONE_DATA[currentZone].map;
     
     if (y < 0 || y >= map.length || x < 0 || x >= map[0].length) {
+      console.log("Attempted to move out of map boundaries");
       return false;
     }
     
-    // Check for walls
-    if (map[y][x] === TILE_TYPES.WALL) {
+    const tileType = map[y][x];
+    
+    // Non-walkable tiles
+    const blockedTiles = [
+      TILE_TYPES.WALL,
+      TILE_TYPES.BUILDING_WALL,
+      TILE_TYPES.BUILDING_CORNER,
+      TILE_TYPES.BUILDING_WINDOW,
+      TILE_TYPES.TREE,
+      TILE_TYPES.WATER,
+      TILE_TYPES.TRAP_HOUSE_EXTERIOR,
+      TILE_TYPES.MOMMAS_KITCHEN_EXTERIOR,
+      TILE_TYPES.CORNER_STORE_EXTERIOR,
+      TILE_TYPES.FADE_PARK_ENTRANCE,
+      TILE_TYPES.THE_OPPS_TERRITORY
+    ];
+    
+    // Check for walls and other blocking objects
+    if (blockedTiles.includes(tileType)) {
+      console.log(`Cannot move to position (${x},${y}) - blocked by tile type:`, tileType);
+      return false;
+    }
+    
+    // Doors are handled by interact, not by movement
+    if (tileType === TILE_TYPES.DOOR || tileType === TILE_TYPES.BUILDING_DOOR) {
+      // Doors need to be interacted with, not moved onto
+      console.log(`Cannot walk through door at (${x},${y}) - use interact instead`);
+      return false;
+    }
+    
+    // Special cases for urban decoration
+    const checkPosition = [
+      TILE_TYPES.TRASH_CAN,
+      TILE_TYPES.BENCH,
+      TILE_TYPES.STREETLIGHT,
+      TILE_TYPES.HYDRANT,
+      TILE_TYPES.BASKETBALL_HOOP
+    ];
+    
+    if (checkPosition.includes(tileType)) {
+      console.log(`Cannot move to position (${x},${y}) - blocked by decoration:`, tileType);
       return false;
     }
     
@@ -655,10 +974,23 @@ const NewOverworldSystem = (function() {
     const npcs = ZONE_DATA[currentZone].npcs || [];
     for (const npc of npcs) {
       if (npc.x === x && npc.y === y) {
+        console.log(`Cannot move to position (${x},${y}) - NPC is there:`, npc.name);
         return false;
       }
     }
     
+    // Check for encounter tiles - they're walkable but may trigger battles
+    if (tileType === TILE_TYPES.ENCOUNTER) {
+      console.log(`Walking on encounter tile at (${x},${y}) - may trigger battle`);
+      // Allow the move but with a higher chance of encounter
+      setTimeout(() => {
+        if (Math.random() < 0.5) { // 50% chance
+          triggerRandomEncounter();
+        }
+      }, 100);
+    }
+    
+    console.log(`Valid move to position (${x},${y}) on tile type:`, tileType);
     return true;
   }
 
