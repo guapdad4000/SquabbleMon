@@ -1142,14 +1142,44 @@ function startNpcBattle(npc) {
         }
       }
       
+      // Create a deep copy of the NPC character with safety checks
+      const npcCharacter = JSON.parse(JSON.stringify(npc.character));
+      
+      // Ensure all necessary properties exist
+      npcCharacter.maxHp = npcCharacter.maxHp || npcCharacter.hp;
+      npcCharacter.attack = npcCharacter.attack || 50;
+      npcCharacter.defense = npcCharacter.defense || 40;
+      npcCharacter.speed = npcCharacter.speed || 30;
+      
+      // Standardize sprite path
+      if (typeof window.standardizeSpritePath === 'function') {
+        npcCharacter.sprite = window.standardizeSpritePath(npcCharacter.sprite);
+      }
+      
       // Add the NPC's character as the first team member
-      npcTeam.unshift(npc.character);
+      npcTeam.unshift(npcCharacter);
     }
     
     // If team creation failed, use the NPC character directly (fallback)
     if (npcTeam.length === 0) {
-      window.activeOpponent = npc.character;
-      console.log("Using NPC character directly:", npc.character);
+      // Create a safe copy with default values for missing properties
+      const safeOpponent = { 
+        ...npc.character,
+        maxHp: npc.character.maxHp || npc.character.hp || 100,
+        hp: npc.character.hp || 100,
+        attack: npc.character.attack || 50,
+        defense: npc.character.defense || 40,
+        speed: npc.character.speed || 30,
+        moves: npc.character.moves || []
+      };
+      
+      // Standardize sprite path
+      if (typeof window.standardizeSpritePath === 'function') {
+        safeOpponent.sprite = window.standardizeSpritePath(safeOpponent.sprite);
+      }
+      
+      window.activeOpponent = safeOpponent;
+      console.log("Using NPC character directly (with safety checks):", window.activeOpponent);
     } else {
       // Set the team as the active opponent
       window.activeOpponentTeam = npcTeam;

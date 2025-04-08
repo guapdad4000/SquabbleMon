@@ -2137,19 +2137,28 @@ function populateCharacterSelection() {
 
 // Helper function to standardize sprite paths
 function standardizeSpritePath(spritePath) {
-  if (!spritePath) return spritePath;
+  if (!spritePath) return 'public/sprites/default_npc.png'; // Provide a default sprite if none is given
   
-  // If it's not a URL, make sure it starts with 'public/'
-  if (!spritePath.startsWith('http')) {
-    // Remove any './public/' prefix first
-    spritePath = spritePath.replace(/^\.\/public\//, 'public/');
-    
-    // Add 'public/' prefix if it doesn't have it
-    if (!spritePath.startsWith('public/')) {
+  // If it's a URL (e.g., https://...), leave it as is
+  if (spritePath.startsWith('http')) {
+    return spritePath;
+  }
+  
+  // Remove any './public/' prefix first
+  spritePath = spritePath.replace(/^\.\/public\//, 'public/');
+  
+  // If the path doesn't start with 'public/', add it
+  if (!spritePath.startsWith('public/')) {
+    // Check if it already starts with 'sprites/'
+    if (spritePath.startsWith('sprites/')) {
+      spritePath = 'public/' + spritePath;
+    } else {
+      // If it doesn't start with sprites/ either, assume it's a full path
       spritePath = 'public/' + spritePath;
     }
   }
   
+  console.log("Standardized sprite path:", spritePath);
   return spritePath;
 }
 
