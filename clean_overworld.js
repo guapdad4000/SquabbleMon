@@ -666,6 +666,8 @@ const NewOverworldSystem = (function() {
    * Handle interaction with objects facing the player
    */
   function interact() {
+    console.log("Interaction key pressed, attempting to interact with facing tile");
+    
     // Calculate position in front of player
     let facingX = player.x;
     let facingY = player.y;
@@ -685,6 +687,23 @@ const NewOverworldSystem = (function() {
         break;
     }
     
+    // Check map boundaries
+    const map = ZONE_DATA[currentZone].map;
+    if (facingY < 0 || facingY >= map.length || facingX < 0 || facingX >= map[0].length) {
+      console.log("Facing position out of bounds:", facingX, facingY);
+      return;
+    }
+    
+    // Check for doors
+    const doors = ZONE_DATA[currentZone].doors || [];
+    const facingDoor = doors.find(door => door.x === facingX && door.y === facingY);
+    
+    if (facingDoor) {
+      console.log("Using door to", facingDoor.targetZone);
+      changeZone(facingDoor.targetZone, facingDoor.targetX, facingDoor.targetY);
+      return;
+    }
+    
     // Check for NPCs at the facing position
     const npcs = ZONE_DATA[currentZone].npcs || [];
     const facingNpc = npcs.find(npc => npc.x === facingX && npc.y === facingY);
@@ -692,29 +711,87 @@ const NewOverworldSystem = (function() {
     if (facingNpc) {
       console.log("Interacting with NPC:", facingNpc.name);
       startDialogue(facingNpc);
+      return;
     }
+    
+    // We didn't find anything to interact with
+    console.log("No interactive object found at facing position:", facingX, facingY);
   }
 
   /**
    * Start dialogue with an NPC
    */
   function startDialogue(npc) {
+    if (!npc) {
+      console.error("Attempted to start dialogue with null NPC");
+      return;
+    }
+    
     currentDialogueNpc = npc;
     dialogueIndex = 0;
     
+    // Parse dialogue if it's stored as a JSON string
+    let dialogueArray = npc.dialogue;
+    if (typeof dialogueArray === 'string') {
+      try {
+        dialogueArray = JSON.parse(dialogueArray);
+        console.log("Parsed dialogue:", dialogueArray);
+      } catch (error) {
+        console.error("Failed to parse dialogue JSON:", error);
+        dialogueArray = [dialogueArray]; // Treat the string as a single line
+      }
+    }
+    
+    // Safety check
+    if (!Array.isArray(dialogueArray) || dialogueArray.length === 0) {
+      console.error("Invalid dialogue format or empty dialogue:", dialogueArray);
+      dialogueArray = ["..."];
+    }
+    
+    // Store the parsed dialogue back on the NPC object
+    npc.dialogue = dialogueArray;
+    
     // Update dialogue box
     dialogueNpcName.textContent = npc.name;
-    dialogueText.textContent = npc.dialogue[dialogueIndex];
+    dialogueText.textContent = dialogueArray[0];
     dialogueBox.style.display = 'block';
+    
+    console.log(`Started dialogue with ${npc.name}, first line: "${dialogueArray[0]}"`);
   }
 
   /**
    * Advance to the next dialogue line
    */
   function advanceDialogue() {
+    // Safety check - if no dialogue NPC is set, just hide the dialogue box
+    if (!currentDialogueNpc) {
+      console.error("Attempted to advance dialogue with no active NPC dialogue");
+      dialogueBox.style.display = 'none';
+      return;
+    }
+    
+    // Parse dialogue if it's stored as a JSON string
+    let dialogueArray = currentDialogueNpc.dialogue;
+    if (typeof dialogueArray === 'string') {
+      try {
+        dialogueArray = JSON.parse(dialogueArray);
+      } catch (error) {
+        console.error("Failed to parse dialogue JSON:", error);
+        dialogueArray = [dialogueArray]; // Treat the string as a single line
+      }
+    }
+    
+    // Another safety check
+    if (!Array.isArray(dialogueArray)) {
+      console.error("Invalid dialogue format:", dialogueArray);
+      dialogueBox.style.display = 'none';
+      currentDialogueNpc = null;
+      return;
+    }
+    
     dialogueIndex++;
     
-    if (dialogueIndex >= currentDialogueNpc.dialogue.length) {
+    if (dialogueIndex >= dialogueArray.length) {
       // End of dialogue
       dialogueBox.style.display = 'none';
       
@@ -733,7 +810,7 @@ const NewOverworldSystem = (function() {
       currentDialogueNpc = null;
     } else {
       // Show next dialogue line
-      dialogueText.textContent = currentDialogueNpc.dialogue[dialogueIndex];
+      dialogueText.textContent = dialogueArray[dialogueIndex];
     }
   }
 
