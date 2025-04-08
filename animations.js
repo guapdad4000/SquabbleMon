@@ -446,15 +446,54 @@ function applyVisualEffectGif(moveType, user) {
     effectDiv.style.position = 'absolute';
     effectDiv.style.width = '150px';
     effectDiv.style.height = '150px';
-    effectDiv.style.zIndex = '100';
+    // Use a lower z-index to ensure the effect appears behind character sprites
+    effectDiv.style.zIndex = '5';
     
-    // Position the effect depending on who is using the move
+    // Position the effect depending on who is using the move - align behind character
     if (user === 'player') {
-      effectDiv.style.left = '60%';
-      effectDiv.style.top = '40%';
+      // Get the player sprite position
+      const playerSprite = document.getElementById('player-sprite');
+      if (playerSprite) {
+        // Position the effect behind the player, aligning the bottom of the effect with the bottom of the sprite
+        const playerRect = playerSprite.getBoundingClientRect();
+        const battleScreen = document.getElementById('battle-screen') || document.querySelector('.battle-screen');
+        const battleRect = battleScreen.getBoundingClientRect();
+        
+        // Calculate percentages for positioning
+        const leftPos = ((playerRect.left + playerRect.width/2 - battleRect.left) / battleRect.width * 100) - 7.5; // Center horizontally
+        const topPos = ((playerRect.bottom - battleRect.top) / battleRect.height * 100) - 25; // Align bottoms with offset
+        
+        effectDiv.style.left = `${leftPos}%`;
+        effectDiv.style.top = `${topPos}%`;
+        effectDiv.style.transform = 'translateX(-50%)'; // Center the effect
+        console.log("Positioned effect behind player at:", leftPos, topPos);
+      } else {
+        // Fallback if sprite not found
+        effectDiv.style.left = '60%';
+        effectDiv.style.top = '60%';
+      }
     } else {
-      effectDiv.style.left = '20%';
-      effectDiv.style.top = '40%';
+      // For opponent
+      const opponentSprite = document.getElementById('opponent-sprite');
+      if (opponentSprite) {
+        // Position the effect behind the opponent, aligning the bottom of the effect with the bottom of the sprite
+        const opponentRect = opponentSprite.getBoundingClientRect();
+        const battleScreen = document.getElementById('battle-screen') || document.querySelector('.battle-screen');
+        const battleRect = battleScreen.getBoundingClientRect();
+        
+        // Calculate percentages for positioning
+        const leftPos = ((opponentRect.left + opponentRect.width/2 - battleRect.left) / battleRect.width * 100) - 7.5; // Center horizontally
+        const topPos = ((opponentRect.bottom - battleRect.top) / battleRect.height * 100) - 25; // Align bottoms with offset
+        
+        effectDiv.style.left = `${leftPos}%`;
+        effectDiv.style.top = `${topPos}%`;
+        effectDiv.style.transform = 'translateX(-50%)'; // Center the effect
+        console.log("Positioned effect behind opponent at:", leftPos, topPos);
+      } else {
+        // Fallback if sprite not found
+        effectDiv.style.left = '20%';
+        effectDiv.style.top = '60%';
+      }
     }
     
     // Add to battle screen
