@@ -6,13 +6,14 @@
 // Use local sprites from public folder
 // Main character sprite set (ninja character with directional animations)
 const NINJA_CHARACTER_SPRITES = {
+  // Fixed directional sprites - corrected up/down orientation
   up: [
-    './public/sprites/fwd 1.png',
-    './public/sprites/fwd 2.png'
+    './public/sprites/back 1.png', // Moving up shows the character's back
+    './public/sprites/back 2.png'
   ],
   down: [
-    './public/sprites/back 1.png',
-    './public/sprites/back 2.png'
+    './public/sprites/fwd 1.png',  // Moving down shows the character's front
+    './public/sprites/fwd 2.png'
   ],
   left: [
     './public/sprites/left 1.png', 

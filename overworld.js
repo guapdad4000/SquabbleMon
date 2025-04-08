@@ -1474,9 +1474,26 @@ function playOverworldMusic() {
   }
 }
 
-// Export overworld system
+// Export overworld system with more accessible functions
 window.OverworldSystem = {
+  // Core functions
   initOverworld,
   returnToOverworld,
-  ZONE_TYPES
+  
+  // Constants
+  ZONE_TYPES,
+  TILE_TYPES,
+  
+  // Helper functions
+  createRandomOpponent,
+  triggerRandomEncounter,
+  startNpcBattle,
+  updateQuestProgress,
+  
+  // Map functions
+  renderMap,
+  movePlayer,
+  
+  // Set the current zone type
+  getCurrentZone: function() { return currentZone; }
 };

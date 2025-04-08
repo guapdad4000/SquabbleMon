@@ -242,15 +242,7 @@
   image-rendering: pixelated;
 }
 
-@keyframes playerBreathe {
-  from { transform: scale(1); }
-  to { transform: scale(1.05); }
-}
-
-@keyframes npcFloat {
-  from { transform: translateY(0); }
-  to { transform: translateY(-3px); }
-}
+/* Removed animation keyframes to prevent floating effect */
 
 /* Direction-based player sprites - no transforms or animations */
 .facing-up {

@@ -1,3 +1,13 @@
+// ================ ZONE TYPES ================
+// Zone types for integration with overworld
+const ZONE_TYPES = {
+  STARTER_HOOD: 'starterHood',
+  THE_TRAP: 'theTrap',
+  THE_BLOCK: 'theBlock',
+  RICH_SUBURBIA: 'richSuburbia',
+  BACK_ALLEY_ARENA: 'backAlleyArena'
+};
+
 // ================ AUDIO CONFIGURATION ================
 // Audio URLs
 const AUDIO = {
@@ -1783,6 +1793,36 @@ function returnToOverworld(battleWon = true) {
   }
 }
 
+// Expose the game functions to the window object for external access
+window.Game = {
+  // Core battle functions
+  startBattle,
+  returnToOverworld,
+  processActiveItemEffects,
+  processStatusEffects,
+  calculateDamage,
+  
+  // Character management
+  populateCharacterSelection,
+  selectCharacter,
+  updateTeamSlots,
+  
+  // UI management
+  updateBattleUI,
+  showMoves,
+  showItems,
+  
+  // Audio
+  playBattleMusic,
+  playHitSound,
+  playSuccessSound,
+  playSwitchSound,
+  
+  // Debugging helpers
+  getPlayerTeam: function() { return playerTeam; },
+  getOpponentTeam: function() { return opponentTeam; }
+};
+
 document.addEventListener("DOMContentLoaded", function() {
   // Initialize audio but wait for user interaction to play
   initAudio();
@@ -1798,6 +1838,8 @@ document.addEventListener("DOMContentLoaded", function() {
   document.getElementById('battle-screen').style.display = 'none';
   
   // Don't auto-initialize game, wait for mode selection first
+  
+  console.log("Game functions exposed to window object:", Object.keys(window.Game));
 });
 
 // Audio Functions
@@ -1965,6 +2007,10 @@ function initGame() {
   // Initialize audio controls (but wait for user interaction to play music)
   initAudio();
   
+  // Expose necessary functions to window object for cross-file communication
+  window.startBattle = startBattle;
+  window.returnToOverworld = returnToOverworld;
+  
   // Set up a one-time click listener to start audio (browser policy requires user interaction)
   const startAudioOnce = () => {
     // Start menu music
@@ -2055,8 +2101,27 @@ function updateTeamSlots() {
   });
 }
 
+// Make startBattle globally accessible for overworld battles
 function startBattle() {
-  if (playerTeam.length !== 3) return;
+  console.log("Battle starting with player team:", playerTeam);
+  
+  // Check if we have an active opponent from the overworld
+  if (window.activeOpponent) {
+    // Use the overworld opponent
+    console.log("Using opponent from overworld:", window.activeOpponent);
+    // Update our active opponent in the opponent list
+    opponents[0] = window.activeOpponent;
+  } else {
+    console.warn("No active opponent set, using a default opponent");
+    // Create a default opponent if none is set
+    window.activeOpponent = opponents[0];
+  }
+  
+  // Ensure we have a team
+  if (playerTeam.length !== 3) {
+    console.error("Player team not properly initialized, needs 3 characters");
+    return;
+  }
   
   // Setup battle screen
   document.getElementById("selection-screen").style.display = "none";
