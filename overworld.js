@@ -909,6 +909,22 @@ function createOverworldUI() {
   mapContainer.style.width = '100%';
   mapContainer.style.height = '100%';
   mapContainer.style.overflow = 'hidden';
+  
+  // Add click event listener to the map for testing interactive areas
+  mapContainer.addEventListener('click', function(e) {
+    console.log("Map clicked at:", e.clientX, e.clientY);
+    // Determine if click is near player and trigger interaction if so
+    const rect = playerSprite.getBoundingClientRect();
+    const playerX = rect.left + rect.width/2;
+    const playerY = rect.top + rect.height/2;
+    
+    // If click is within 100px of player, trigger interaction
+    if (Math.abs(e.clientX - playerX) < 100 && Math.abs(e.clientY - playerY) < 100) {
+      console.log("Click near player, attempting interaction");
+      interactWithFacingTile();
+    }
+  });
+  
   overworldContainer.appendChild(mapContainer);
   
   // Create player sprite with explicit styles
@@ -919,22 +935,48 @@ function createOverworldUI() {
   playerSprite.style.height = '64px';
   playerSprite.style.zIndex = '10';
   playerSprite.style.transition = 'left 0.2s, top 0.2s';
+  playerSprite.style.cursor = 'pointer'; // Add pointer cursor to show it's clickable
+  
+  // Add click event listener directly to player sprite
+  playerSprite.addEventListener('click', function() {
+    console.log("Player sprite clicked, attempting interaction");
+    interactWithFacingTile();
+  });
+  
   mapContainer.appendChild(playerSprite);
   
   // Create dialogue box (initially hidden)
   dialogueBox = document.createElement('div');
   dialogueBox.id = 'dialogue-box';
+  dialogueBox.style.position = 'absolute';
+  dialogueBox.style.bottom = '20px';
+  dialogueBox.style.left = '50%';
+  dialogueBox.style.transform = 'translateX(-50%)';
+  dialogueBox.style.width = '80%';
+  dialogueBox.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+  dialogueBox.style.color = 'white';
+  dialogueBox.style.padding = '20px';
+  dialogueBox.style.borderRadius = '8px';
+  dialogueBox.style.border = '2px solid #f25a5a';
+  dialogueBox.style.zIndex = '1000';
   
   // Create dialogue content
   const dialogueContent = document.createElement('div');
   dialogueContent.className = 'dialogue-content';
+  dialogueContent.style.marginBottom = '15px';
   
   // Create text and name elements
   const nameElement = document.createElement('p');
   nameElement.id = 'dialogue-name';
+  nameElement.style.fontWeight = 'bold';
+  nameElement.style.color = '#f25a5a';
+  nameElement.style.fontSize = '18px';
+  nameElement.style.marginBottom = '10px';
   
   const textElement = document.createElement('p');
   textElement.id = 'dialogue-text';
+  textElement.style.fontSize = '16px';
+  textElement.style.lineHeight = '1.5';
   
   // Add text elements to content - name first, then text
   dialogueContent.appendChild(nameElement);
@@ -943,10 +985,18 @@ function createOverworldUI() {
   // Create controls
   const dialogueControls = document.createElement('div');
   dialogueControls.className = 'dialogue-controls';
+  dialogueControls.style.textAlign = 'right';
   
   const nextButton = document.createElement('button');
   nextButton.id = 'dialogue-next';
   nextButton.textContent = 'Next';
+  nextButton.style.backgroundColor = '#f25a5a';
+  nextButton.style.color = 'white';
+  nextButton.style.border = 'none';
+  nextButton.style.borderRadius = '4px';
+  nextButton.style.padding = '8px 16px';
+  nextButton.style.cursor = 'pointer';
+  nextButton.style.fontSize = '16px';
   
   // Add button to controls
   dialogueControls.appendChild(nextButton);
@@ -1556,7 +1606,26 @@ function movePlayer(direction) {
 
 // Set up keyboard controls for overworld
 function setupOverworldControls() {
+  console.log("Setting up overworld controls and keyboard listeners");
+  
+  // Remove any existing listeners to avoid duplicates
+  document.removeEventListener('keydown', handleKeyPress);
+  
+  // Add the new event listener
   document.addEventListener('keydown', handleKeyPress);
+  
+  // Attach click events to NPCs for mouse interaction
+  npcs.forEach(npc => {
+    if (npc.element) {
+      npc.element.style.cursor = 'pointer';
+      npc.element.addEventListener('click', function() {
+        console.log("NPC clicked:", npc.data.name);
+        startDialogue(npc.data);
+      });
+    }
+  });
+  
+  console.log("Overworld controls initialized successfully");
 }
 
 // Handle keyboard input
@@ -1566,22 +1635,30 @@ const MOVE_COOLDOWN = 150; // milliseconds
 
 function handleKeyPress(e) {
   try {
-    // Check if dialogueBox exists and is initialized
-    if (!dialogueBox) {
-      console.error("Dialogue box not found in handleKeyPress");
-      return;
-    }
+    // Always log the key press for debugging
+    console.log(`Key pressed: ${e.key}`);
     
     // Current time for cooldown check
     const now = Date.now();
     
-    // Only process movement if dialogue is not active
-    if (dialogueBox.style.display === 'none') {
+    // Check if we're in a dialogue
+    const isInDialogue = dialogueBox && dialogueBox.style && dialogueBox.style.display !== 'none';
+    
+    // Handle dialogue advancement
+    if (isInDialogue && (e.key === ' ' || e.key === 'Enter')) {
+      console.log("Advancing dialogue");
+      advanceDialogue();
+      return;
+    }
+    
+    // Handle movement and interaction
+    if (!isInDialogue) {
       switch (e.key) {
         case 'ArrowUp':
         case 'w':
         case 'W':
           if (now - lastMoveTime >= MOVE_COOLDOWN) {
+            console.log("Moving up");
             movePlayer('up');
             lastMoveTime = now;
           }
@@ -1590,6 +1667,7 @@ function handleKeyPress(e) {
         case 's':
         case 'S':
           if (now - lastMoveTime >= MOVE_COOLDOWN) {
+            console.log("Moving down");
             movePlayer('down');
             lastMoveTime = now;
           }
@@ -1598,6 +1676,7 @@ function handleKeyPress(e) {
         case 'a':
         case 'A':
           if (now - lastMoveTime >= MOVE_COOLDOWN) {
+            console.log("Moving left");
             movePlayer('left');
             lastMoveTime = now;
           }
@@ -1606,6 +1685,7 @@ function handleKeyPress(e) {
         case 'd':
         case 'D':
           if (now - lastMoveTime >= MOVE_COOLDOWN) {
+            console.log("Moving right");
             movePlayer('right');
             lastMoveTime = now;
           }
@@ -1619,9 +1699,6 @@ function handleKeyPress(e) {
           interactWithFacingTile();
           break;
       }
-    } else if (e.key === ' ' || e.key === 'Enter') {
-      // Advance dialogue when space or enter is pressed
-      advanceDialogue();
     }
   } catch (error) {
     console.error("Error handling key press:", error);
