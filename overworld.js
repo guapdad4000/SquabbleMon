@@ -1107,8 +1107,55 @@ function advanceDialogue() {
 // Trigger a battle with an NPC
 function startNpcBattle(npc) {
   try {
-    // Set up opponent using NPC character data
-    window.activeOpponent = npc.character;
+    console.log("Starting NPC battle with:", npc.name);
+    
+    // Create a team for the NPC instead of just using the character directly
+    // This fixes the issue with NPC battles showing just the NPC sprite
+    const npcTeam = [];
+    
+    // For named NPCs like OG Ras, create a team of characters based on their "type"
+    if (npc.character) {
+      // Find characters that would be appropriate for this NPC's team based on their type
+      const npcType = npc.character.type;
+      console.log("NPC Type:", npcType);
+      
+      // Search for characters in the main character list with similar type
+      if (window.characters) {
+        const matchingCharacters = window.characters.filter(c => 
+          c.type === npcType || 
+          (npcType === 'Fire' && c.type === 'Plant') ||
+          (npcType === 'Water' && c.type === 'Fire') ||
+          (npcType === 'Plant' && c.type === 'Water')
+        );
+        
+        // Add 2 matching characters to the NPC's team (or fewer if not enough found)
+        for (let i = 0; i < Math.min(2, matchingCharacters.length); i++) {
+          const teamMember = JSON.parse(JSON.stringify(matchingCharacters[i]));
+          // Adjust stats based on NPC level
+          if (npc.character.level) {
+            const levelFactor = npc.character.level / 5;
+            teamMember.hp = Math.floor(teamMember.hp * levelFactor);
+            teamMember.attack = Math.floor(teamMember.attack * levelFactor);
+            teamMember.defense = Math.floor(teamMember.defense * levelFactor);
+          }
+          npcTeam.push(teamMember);
+        }
+      }
+      
+      // Add the NPC's character as the first team member
+      npcTeam.unshift(npc.character);
+    }
+    
+    // If team creation failed, use the NPC character directly (fallback)
+    if (npcTeam.length === 0) {
+      window.activeOpponent = npc.character;
+      console.log("Using NPC character directly:", npc.character);
+    } else {
+      // Set the team as the active opponent
+      window.activeOpponentTeam = npcTeam;
+      window.activeOpponent = npcTeam[0];
+      console.log("Created NPC team with", npcTeam.length, "members:", npcTeam);
+    }
     
     // Hide overworld and show battle screen
     const overworldContainer = document.getElementById('overworld-container');
@@ -1138,11 +1185,36 @@ function startNpcBattle(npc) {
 // Trigger a random encounter in a trap zone
 function triggerRandomEncounter() {
   try {
-    // Create a random opponent based on the current zone
-    const randomOpponent = createRandomOpponent(currentZone);
+    console.log("Triggering random encounter in zone:", currentZone);
     
-    // Set the active opponent
-    window.activeOpponent = randomOpponent;
+    // Create a team of random opponents based on the current zone
+    const randomOpponentTeam = [];
+    
+    // Create the main opponent for the team
+    const mainOpponent = createRandomOpponent(currentZone);
+    randomOpponentTeam.push(mainOpponent);
+    
+    // Create 1-2 additional opponents for the team (lower level)
+    const teamSize = 1 + Math.floor(Math.random() * 2); // 1-2 additional members
+    
+    for (let i = 0; i < teamSize; i++) {
+      const teammate = createRandomOpponent(currentZone);
+      
+      // Make teammates slightly weaker than the main opponent
+      teammate.level = Math.max(1, teammate.level - 2);
+      teammate.hp = Math.floor(teammate.hp * 0.8);
+      teammate.attack = Math.floor(teammate.attack * 0.9);
+      teammate.defense = Math.floor(teammate.defense * 0.9);
+      teammate.maxHp = teammate.hp;
+      
+      randomOpponentTeam.push(teammate);
+    }
+    
+    // Set the active opponent team
+    window.activeOpponentTeam = randomOpponentTeam;
+    window.activeOpponent = randomOpponentTeam[0];
+    
+    console.log("Created random encounter team with", randomOpponentTeam.length, "members");
     
     // Hide overworld and show battle screen
     const overworldContainer = document.getElementById('overworld-container');
@@ -1219,7 +1291,13 @@ function createRandomOpponent(zone) {
     'public/sprites/rastamon.png',
     'public/sprites/fitness.png'
   ];
+  // Ensure paths are standardized
   const sprite = spriteOptions[Math.floor(Math.random() * spriteOptions.length)];
+  
+  // Use standardizeSpritePath if it exists in the global scope
+  const finalSpritePath = typeof window.standardizeSpritePath === 'function' 
+    ? window.standardizeSpritePath(sprite) 
+    : sprite;
   
   // Create base stats based on level
   const baseHp = 85 + (level * 5);
@@ -1233,7 +1311,7 @@ function createRandomOpponent(zone) {
   // Return opponent object
   return {
     name: name,
-    sprite: sprite,
+    sprite: finalSpritePath, // Use the standardized sprite path
     type: type,
     level: level,
     hp: baseHp,

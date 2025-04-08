@@ -2135,12 +2135,37 @@ function populateCharacterSelection() {
   });
 }
 
+// Helper function to standardize sprite paths
+function standardizeSpritePath(spritePath) {
+  if (!spritePath) return spritePath;
+  
+  // If it's not a URL, make sure it starts with 'public/'
+  if (!spritePath.startsWith('http')) {
+    // Remove any './public/' prefix first
+    spritePath = spritePath.replace(/^\.\/public\//, 'public/');
+    
+    // Add 'public/' prefix if it doesn't have it
+    if (!spritePath.startsWith('public/')) {
+      spritePath = 'public/' + spritePath;
+    }
+  }
+  
+  return spritePath;
+}
+
+// Expose the standardizeSpritePath function globally for other modules to use
+window.standardizeSpritePath = standardizeSpritePath;
+
 function selectCharacter(character) {
+  // Create a deep copy and fix sprite paths
+  const characterCopy = JSON.parse(JSON.stringify(character));
+  characterCopy.sprite = standardizeSpritePath(characterCopy.sprite);
+  
   // Check if character is already selected
-  if (playerTeam.some(c => c.id === character.id)) {
+  if (playerTeam.some(c => c.id === characterCopy.id)) {
     // Remove from team if already selected
-    playerTeam = playerTeam.filter(c => c.id !== character.id);
-    document.querySelector(`.character-card[data-id="${character.id}"]`).classList.remove("selected");
+    playerTeam = playerTeam.filter(c => c.id !== characterCopy.id);
+    document.querySelector(`.character-card[data-id="${characterCopy.id}"]`).classList.remove("selected");
     
     // Play sound effect
     playSuccessSound();
@@ -2152,8 +2177,8 @@ function selectCharacter(character) {
     }
     
     // Add to team
-    playerTeam.push(character);
-    document.querySelector(`.character-card[data-id="${character.id}"]`).classList.add("selected");
+    playerTeam.push(characterCopy);
+    document.querySelector(`.character-card[data-id="${characterCopy.id}"]`).classList.add("selected");
     
     // Play sound effect
     playSuccessSound();
@@ -2179,12 +2204,9 @@ function updateTeamSlots() {
     if (index < slots.length) {
       console.log(`Setting slot ${index} with ${character.name}, sprite: ${character.sprite}`);
       
-      // Fix sprite path if needed
-      let spritePath = character.sprite;
-      if (spritePath && spritePath.startsWith('./public/')) {
-        spritePath = spritePath.replace('./public/', 'public/');
-        console.log(`Fixed sprite path for team slot ${index}: ${spritePath}`);
-      }
+      // Use standardize path helper
+      const spritePath = standardizeSpritePath(character.sprite);
+      console.log(`Using sprite path for team slot ${index}: ${spritePath}`);
       
       slots[index].innerHTML = `
         <img 
@@ -2268,11 +2290,8 @@ function startBattle() {
   playerTeam.forEach(character => {
     // Set maxHp for each character if not already set
     character.maxHp = character.maxHp || character.hp;
-    // Make sure sprite paths are valid
-    if (character.sprite && !character.sprite.startsWith('http')) {
-      // Use relative paths correctly
-      character.sprite = character.sprite.replace(/^\.\//, '');
-    }
+    // Standardize sprite paths for all characters
+    character.sprite = standardizeSpritePath(character.sprite);
   });
   
   // Deep clone to avoid reference issues
@@ -2280,9 +2299,18 @@ function startBattle() {
   
   // For opponent, check if it's an NPC battle or regular battle
   if (window.activeOpponent && window.activeOpponent.name) {
-    // NPC battle - deep clone to avoid reference issues
-    activeOpponent = JSON.parse(JSON.stringify(window.activeOpponent));
-    console.log("Using NPC opponent:", activeOpponent.name);
+    // Check if we have an opponent team from an NPC battle
+    if (window.activeOpponentTeam && window.activeOpponentTeam.length > 0) {
+      console.log("Using NPC opponent team:", window.activeOpponentTeam);
+      // Use the NPC team instead of a single opponent
+      opponents = JSON.parse(JSON.stringify(window.activeOpponentTeam));
+      // Set the first team member as the active opponent
+      activeOpponent = JSON.parse(JSON.stringify(opponents[0]));
+    } else {
+      // Single NPC battle - deep clone to avoid reference issues
+      activeOpponent = JSON.parse(JSON.stringify(window.activeOpponent));
+      console.log("Using single NPC opponent:", activeOpponent.name);
+    }
   } else {
     // Regular battle - use the opponent from the opponents array
     activeOpponent = JSON.parse(JSON.stringify(opponents[opponentIndex]));
@@ -2290,6 +2318,9 @@ function startBattle() {
   
   // Set maxHp for opponent
   activeOpponent.maxHp = activeOpponent.maxHp || activeOpponent.hp;
+  
+  // Standardize opponent sprite path
+  activeOpponent.sprite = standardizeSpritePath(activeOpponent.sprite);
   
   // Initialize moves with proper PP values
   initializeMoves(playerTeam);
@@ -2412,11 +2443,8 @@ function updateBattleUI() {
   const playerSprite = document.getElementById("player-sprite");
   console.log("Player sprite element:", playerSprite);
   
-  // Fix sprite path - remove './public/' prefix if it exists
-  let playerSpritePath = activePlayerCharacter.sprite;
-  if (playerSpritePath && playerSpritePath.startsWith('./public/')) {
-    playerSpritePath = playerSpritePath.replace('./public/', 'public/');
-  }
+  // Use our standardize helper for player sprite path
+  const playerSpritePath = standardizeSpritePath(activePlayerCharacter.sprite);
   
   console.log("Updated player sprite path:", playerSpritePath);
   playerSprite.src = playerSpritePath;
@@ -2427,14 +2455,7 @@ function updateBattleUI() {
   
   playerSprite.onerror = function() {
     console.error("Failed to load player sprite:", playerSpritePath);
-    // Try to fix common path errors
-    if (playerSpritePath && !playerSpritePath.startsWith('http')) {
-      if (!playerSpritePath.startsWith('public/')) {
-        const fallbackPath = 'public/' + playerSpritePath;
-        console.log("Trying fallback player sprite path:", fallbackPath);
-        playerSprite.src = fallbackPath;
-      }
-    }
+    // No need for fallback logic since standardizeSpritePath should handle it
   };
   
   // Update opponent display
@@ -2445,11 +2466,8 @@ function updateBattleUI() {
   const opponentSprite = document.getElementById("opponent-sprite");
   console.log("Opponent sprite element:", opponentSprite);
   
-  // Fix sprite path - remove './public/' prefix if it exists
-  let opponentSpritePath = activeOpponent.sprite;
-  if (opponentSpritePath && opponentSpritePath.startsWith('./public/')) {
-    opponentSpritePath = opponentSpritePath.replace('./public/', 'public/');
-  }
+  // Use our standardize helper for opponent sprite path
+  const opponentSpritePath = standardizeSpritePath(activeOpponent.sprite);
   
   console.log("Updated opponent sprite path:", opponentSpritePath);
   opponentSprite.src = opponentSpritePath;
@@ -2460,14 +2478,7 @@ function updateBattleUI() {
   
   opponentSprite.onerror = function() {
     console.error("Failed to load opponent sprite:", opponentSpritePath);
-    // Try to fix common path errors
-    if (opponentSpritePath && !opponentSpritePath.startsWith('http')) {
-      if (!opponentSpritePath.startsWith('public/')) {
-        const fallbackPath = 'public/' + opponentSpritePath;
-        console.log("Trying fallback opponent sprite path:", fallbackPath);
-        opponentSprite.src = fallbackPath;
-      }
-    }
+    // No need for fallback logic since standardizeSpritePath should handle it
   };
   
   // Update HP bars using maxHp directly
