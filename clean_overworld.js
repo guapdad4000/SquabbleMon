@@ -1287,6 +1287,50 @@ const NewOverworldSystem = (function() {
     }
   }
 
+  /**
+   * Force movement in a direction (primarily for mobile controls)
+   * This creates a synthetic keydown event and processes it
+   */
+  function forceMove(direction) {
+    console.log(`Force moving in direction: ${direction}`);
+    
+    // Create a synthetic event representing the arrow key
+    let key = '';
+    switch (direction) {
+      case 'up': key = 'ArrowUp'; break;
+      case 'down': key = 'ArrowDown'; break;
+      case 'left': key = 'ArrowLeft'; break;
+      case 'right': key = 'ArrowRight'; break;
+      default: 
+        console.error("Invalid direction for forceMove:", direction);
+        return;
+    }
+    
+    // Create and process the synthetic event
+    const syntheticEvent = { 
+      key: key, 
+      preventDefault: () => {},
+      type: 'keydown'
+    };
+    
+    // Handle the event
+    handleKeyDown(syntheticEvent);
+    
+    // Simulate key release after a short delay
+    setTimeout(() => {
+      syntheticEvent.type = 'keyup';
+      handleKeyUp(syntheticEvent);
+    }, 100);
+  }
+  
+  /**
+   * Force an interaction (primarily for mobile controls)
+   */
+  function forceInteract() {
+    console.log("Force interaction triggered");
+    interact();
+  }
+  
   // Export the public API
   return {
     // Core functions
@@ -1295,6 +1339,9 @@ const NewOverworldSystem = (function() {
     
     // Controls
     handleKeyDown,
+    handleKeyUp,
+    forceMove,
+    forceInteract,
     
     // Map functions
     renderMap,

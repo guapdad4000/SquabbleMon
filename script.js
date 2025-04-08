@@ -1130,13 +1130,24 @@ function initMobileControls() {
       
       if (isInOverworld) {
         console.log("In overworld, forwarding keypress to overworld system");
+        
         // Forward the event to the overworld
-        if (window.OverworldSystem && typeof window.OverworldSystem.handleKeyPress === 'function') {
+        if (window.NewOverworldSystem && typeof window.NewOverworldSystem.handleKeyDown === 'function') {
+          // First try the new overworld system
+          console.log("Key pressed:", keyData.key);
+          // Create a synthetic event
+          const syntheticEvent = { key: keyData.key, preventDefault: () => {} };
+          window.NewOverworldSystem.handleKeyDown(syntheticEvent);
+        } 
+        else if (window.OverworldSystem && typeof window.OverworldSystem.handleKeyPress === 'function') {
+          // Fall back to the old overworld system
+          console.log("Using legacy overworld system for key:", keyData.key);
           // Create a synthetic event
           const syntheticEvent = { key: keyData.key, preventDefault: () => {} };
           window.OverworldSystem.handleKeyPress(syntheticEvent);
-        } else {
-          console.log("Overworld system not found, using regular message forwarding");
+        } 
+        else {
+          console.log("No compatible overworld system found, using regular message forwarding");
           // Regular message forwarding (backup method)
           window.postMessage(keyData, window.location.origin);
         }
