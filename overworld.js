@@ -262,7 +262,7 @@ function renderMap() {
   mapContainer.appendChild(playerSprite);
   
   // Render each tile based on map data
-  const tileSize = 32; // Each tile is 32x32 pixels
+  const tileSize = 64; // Each tile is 64x64 pixels for new tileset
   
   for (let y = 0; y < currentMap.length; y++) {
     for (let x = 0; x < currentMap[y].length; x++) {
@@ -316,8 +316,8 @@ function renderNpcs() {
   currentNpcs.forEach(npcData => {
     const npcElement = document.createElement('div');
     npcElement.className = 'npc-sprite';
-    npcElement.style.left = `${npcData.x * 32}px`;
-    npcElement.style.top = `${npcData.y * 32}px`;
+    npcElement.style.left = `${npcData.x * 64}px`;
+    npcElement.style.top = `${npcData.y * 64}px`;
     
     // Set NPC appearance
     const npcImg = document.createElement('img');
@@ -338,7 +338,7 @@ function renderNpcs() {
 
 // Update player position on the map
 function updatePlayerPosition() {
-  const tileSize = 32;
+  const tileSize = 64;
   playerSprite.style.left = `${player.x * tileSize}px`;
   playerSprite.style.top = `${player.y * tileSize}px`;
   

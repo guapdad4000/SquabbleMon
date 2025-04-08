@@ -13,8 +13,8 @@
 
 #map-container {
   position: relative;
-  width: 480px;
-  height: 480px;
+  width: 640px;
+  height: 640px;
   border: 4px solid #444;
   background-color: #333;
   overflow: hidden;
@@ -26,50 +26,53 @@
   z-index: 1;
 }
 
+/* Tileset-based tiles */
+.map-tile {
+  background-image: url('/images/tileset.png');
+  background-repeat: no-repeat;
+  background-size: 512px 512px; /* 4x4 grid of 128px tiles */
+}
+
 .walkable {
-  background-color: #555;
+  background-position: 0 0; /* Plain concrete/sidewalk - first tile */
 }
 
 .blocked {
-  background-color: #222;
-  background-image: repeating-linear-gradient(45deg, #333, #333 10px, #222 10px, #222 20px);
+  background-position: -128px 0; /* Cracked concrete - second tile */
 }
 
 .grass {
-  background-color: #3c3;
-  background-image: 
-    linear-gradient(45deg, #3a3 25%, transparent 25%, transparent 75%, #3a3 75%),
-    linear-gradient(45deg, #3a3 25%, transparent 25%, transparent 75%, #3a3 75%);
-  background-size: 10px 10px;
-  background-position: 0 0, 5px 5px;
+  background-position: -384px 0; /* Grass - rightmost tile in first row */
 }
 
 .trap-zone {
-  background-color: #a33;
-  background-image: 
-    linear-gradient(45deg, #922 25%, transparent 25%, transparent 75%, #922 75%),
-    linear-gradient(45deg, #922 25%, transparent 25%, transparent 75%, #922 75%);
-  background-size: 10px 10px;
-  background-position: 0 0, 5px 5px;
+  background-position: -128px -128px; /* Dirt path with grass edges - second tile second row */
 }
 
 .door {
-  background-color: #a55;
-  background-image: linear-gradient(0deg, #833 25%, #a55 25%, #a55 75%, #833 75%);
+  background-position: -256px -128px; /* Stone floor - third tile second row */
+}
+
+.dirt {
+  background-position: 0 -128px; /* Dirt - first tile second row */
+}
+
+.dirt-path {
+  background-position: -384px -128px; /* Dirt with some grass - rightmost tile second row */
 }
 
 #player-sprite {
   position: absolute;
-  width: 32px;
-  height: 32px;
+  width: 64px;
+  height: 64px;
   z-index: 10;
   transition: left 0.2s, top 0.2s;
 }
 
 .npc-sprite {
   position: absolute;
-  width: 32px;
-  height: 32px;
+  width: 64px;
+  height: 64px;
   z-index: 5;
 }
 
