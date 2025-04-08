@@ -1,0 +1,122 @@
+# 🌍 SQUABBLE – OVERWORLD SYSTEM
+
+The **Overworld** is the player’s main zone of exploration between battles. It’s a top-down, pixelated map styled like classic RPGs (think Pokémon, but set in an urban trap/fantasy hybrid). It’s where story, squad-building, and trap economy come together.
+
+---
+
+## 🧭 CORE FEATURES
+
+### 🎮 Player Movement
+- Top-down 2D
+- Use **WASD or arrow keys**
+- Smooth movement on a **tilemap grid** system
+- Player sprite updates direction as you walk (up, down, left, right)
+
+### 🧱 Tilemap System
+- Built with **Tiled**, **Godot**, **Unity Tilemap**, or similar
+- Contains:
+  - Walkable areas
+  - Blocked terrain (walls, fences, dumpsters, traffic cones)
+  - Trigger tiles (grass, trap zones, etc.)
+  - Door tiles (load into shops, homes, arenas)
+
+---
+
+## 🧑🏽‍🤝‍🧑🏽 NPC & ENCOUNTER LOGIC
+
+### 🗣️ NPC Interactions
+- Talkable NPCs with text boxes
+- Some give quests, items, or lore
+- Some will **challenge you to battle** with a fade animation
+- NPCs can use unique character models (based on your existing sprite sheet system)
+
+### ⚔️ Battle Triggers
+
+#### Option A: **Direct NPC Challenge**
+- Player walks up and presses a key (e.g., SPACE)
+- NPC says “You lookin' for a fade?” and triggers battle
+
+#### Option B: **Random Encounter Zones**
+- Areas like **alleyways, graffiti-tagged walls, trap houses, or weed fields**
+- Use a probability % to randomly start a battle after a few steps
+
+```js
+// Sample logic:
+if (player.inTrapZone && steps % 5 === 0) {
+  if (Math.random() < 0.25) {
+    startBattle()
+  }
+}
+🏙️ ZONE TYPES
+Zone Type	Description
+Starter Hood	Where player first spawns. Basic NPCs & items.
+The Trap	Black market, side quests, dangerous encounters
+The Block	Middle-tier enemies, shops, and quest givers
+Rich Suburbia	Harder fights, rare gear, side convos
+Back Alley Arena	Endgame/final boss area, elite NPCs
+🛍️ ENTERING SHOPS & BUILDINGS
+Step on a door tile or press interact
+
+Loads new interior map scene (e.g., store, trap house)
+
+Each shop can have a merchant NPC + item UI window
+
+🎯 GOAL IN THE OVERWORLD
+Explore for cash, fades, and lore
+
+Talk to NPCs, accept quests
+
+Hit the trap to upgrade your squad
+
+Trigger fights organically, not through a menu
+
+🔁 LOOP EXAMPLE
+Player enters Trap Zone
+
+Random encounter triggers → battle starts
+
+After win: get XP, money, maybe an item drop
+
+Return to map → walk to corner store
+
+Buy Weed, Move Chip, or Dirt Bike
+
+Walk into alley and find a shady NPC
+
+Talk → get challenged → fade kicks off
+
+Return to overworld — maybe now they sell you gear
+
+💬 TEXT DIALOGUE (Basic Structure)
+Use simple JSON-based dialogue arrays
+
+js
+Copy
+Edit
+{
+  npcName: "OG Ras",
+  lines: [
+    "Ayo, youngblood.",
+    "You rollin' through here like you own the trap?",
+    "Lemme test them squabble hands."
+  ],
+  triggersBattle: true
+}
+🧠 DEV NOTES
+Overworld is a scene that contains:
+
+Player movement controller
+
+Collision detection (solid tiles)
+
+NPC collision & dialogue triggers
+
+Random battle trigger system
+
+Door trigger → scene change system
+
+Keep all overworld systems modular
+
+Zones, triggers, and shops should be reusable templates
+
+Add weather, time of day, or music swaps later for immersion

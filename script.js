@@ -1720,6 +1720,12 @@ function startBattle() {
   document.getElementById("selection-screen").style.display = "none";
   document.getElementById("battle-screen").style.display = "flex";
   
+  // Hide overworld if it exists
+  const overworldContainer = document.getElementById("overworld-container");
+  if (overworldContainer) {
+    overworldContainer.style.display = "none";
+  }
+  
   // Start battle music
   playBattleMusic();
   
@@ -4206,7 +4212,7 @@ function showNextOpponentScreen(isFinalOpponent = false) {
 function showGameOver(playerWon) {
   const gameOverScreen = document.getElementById("game-over");
   const continueButton = document.getElementById("continue-battle");
-  const againButton = document.querySelector("#game-over button:not(#continue-battle)");
+  const againButton = document.querySelector("#game-over button:not(#continue-battle):not(#return-to-overworld)");
   
   // Grant XP, money, and possibly items
   grantBattleRewards(playerWon);
@@ -4227,6 +4233,30 @@ function showGameOver(playerWon) {
   continueButton.style.display = "none";
   againButton.style.display = "block";
   document.getElementById("share-buttons").style.display = "flex";
+  
+  // Add "Return to Overworld" button if we came from overworld
+  const overworldContainer = document.getElementById("overworld-container");
+  if (overworldContainer && window.OverworldSystem) {
+    // Create or show return button
+    let returnButton = document.getElementById("return-to-overworld");
+    
+    if (!returnButton) {
+      returnButton = document.createElement("button");
+      returnButton.id = "return-to-overworld";
+      returnButton.className = "pixel-button";
+      returnButton.textContent = "Return to Hood";
+      returnButton.style.marginTop = "10px";
+      returnButton.onclick = function() {
+        document.getElementById("game-over").style.display = "none";
+        window.OverworldSystem.returnToOverworld(playerWon);
+      };
+      
+      // Add the button to game over screen
+      document.getElementById("game-over").appendChild(returnButton);
+    } else {
+      returnButton.style.display = "block";
+    }
+  }
   
   gameOverScreen.style.display = "block";
   gameActive = false;
