@@ -6,31 +6,31 @@
 // Use local sprites from public folder
 // Main character sprite set (ninja character with directional animations)
 const NINJA_CHARACTER_SPRITES = {
-  // Fixed directional sprites - corrected up/down orientation
-  up: [
-    './public/sprites/back 1.png', // Moving up shows the character's back
-    './public/sprites/back 2.png'
-  ],
+  // Reversed up/down orientation as requested
   down: [
-    './public/sprites/fwd 1.png',  // Moving down shows the character's front
-    './public/sprites/fwd 2.png'
+    'public/sprites/back 1.png', // Character's back now for down direction
+    'public/sprites/back 2.png'
+  ],
+  up: [
+    'public/sprites/fwd 1.png',  // Character's front now for up direction
+    'public/sprites/fwd 2.png'
   ],
   left: [
-    './public/sprites/left 1.png', 
-    './public/sprites/left 2.png'
+    'public/sprites/left 1.png', 
+    'public/sprites/left 2.png'
   ],
   right: [
-    './public/sprites/right 1.png',
-    './public/sprites/right 2.png'
+    'public/sprites/right 1.png',
+    'public/sprites/right 2.png'
   ]
 };
 
 // NPC character sprites
 const NPC_SPRITES = {
-  'OG Ras': './public/sprites/og_ras.png',
-  'Lil Brick': './public/sprites/lil_brick.png',
-  'Street Runner': './public/sprites/street_runner.png',
-  'Default': './public/sprites/default_npc.png'
+  'OG Ras': 'public/sprites/og_ras.png',
+  'Lil Brick': 'public/sprites/lil_brick.png',
+  'Street Runner': 'public/sprites/street_runner.png',
+  'Default': 'public/sprites/default_npc.png'
 };
 
 // Animation timers for each character
@@ -233,13 +233,18 @@ function getGameSpriteUrl(spritePath) {
     return spritePath;
   }
   
-  // If it starts with public or has file extension, use as is
-  if (spritePath && (spritePath.startsWith('./public/') || spritePath.includes('.'))) {
+  // Fix paths starting with ./public/ to use public/ instead
+  if (spritePath && spritePath.startsWith('./public/')) {
+    return spritePath.replace('./public/', 'public/');
+  }
+  
+  // If it starts with public/ or has file extension, use as is
+  if (spritePath && (spritePath.startsWith('public/') || spritePath.includes('.'))) {
     return spritePath;
   }
   
   // Otherwise assume it's a character selection sprite
-  return `./public/sprites/${spritePath}.png`;
+  return `public/sprites/${spritePath}.png`;
 }
 
 // Export the sprite manager functions
