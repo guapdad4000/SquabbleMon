@@ -24,11 +24,7 @@
 .map-tile {
   position: absolute;
   z-index: 1;
-}
-
-/* Tileset-based tiles */
-.map-tile {
-  background-image: url('/images/tileset.png');
+  background-image: url('./images/tileset.png');
   background-repeat: no-repeat;
   background-size: 512px 512px; /* 4x4 grid of 128px tiles */
 }
@@ -91,10 +87,11 @@
 
 #dialogue-box {
   position: absolute;
-  bottom: 20px;
+  bottom: 30px;
   left: 50%;
   transform: translateX(-50%);
   width: 80%;
+  max-width: 600px;
   background-color: rgba(0, 0, 0, 0.8);
   border: 2px solid #f25a5a;
   border-radius: 5px;

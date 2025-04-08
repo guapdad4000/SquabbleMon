@@ -235,20 +235,43 @@ function createOverworldUI() {
   // Create dialogue box (initially hidden)
   dialogueBox = document.createElement('div');
   dialogueBox.id = 'dialogue-box';
-  dialogueBox.innerHTML = `
-    <div class="dialogue-content">
-      <p id="dialogue-text"></p>
-      <p id="dialogue-name"></p>
-    </div>
-    <div class="dialogue-controls">
-      <button id="dialogue-next">Next</button>
-    </div>
-  `;
+  
+  // Create dialogue content
+  const dialogueContent = document.createElement('div');
+  dialogueContent.className = 'dialogue-content';
+  
+  // Create text and name elements
+  const nameElement = document.createElement('p');
+  nameElement.id = 'dialogue-name';
+  
+  const textElement = document.createElement('p');
+  textElement.id = 'dialogue-text';
+  
+  // Add text elements to content - name first, then text
+  dialogueContent.appendChild(nameElement);
+  dialogueContent.appendChild(textElement);
+  
+  // Create controls
+  const dialogueControls = document.createElement('div');
+  dialogueControls.className = 'dialogue-controls';
+  
+  const nextButton = document.createElement('button');
+  nextButton.id = 'dialogue-next';
+  nextButton.textContent = 'Next';
+  
+  // Add button to controls
+  dialogueControls.appendChild(nextButton);
+  
+  // Add content and controls to dialogue box
+  dialogueBox.appendChild(dialogueContent);
+  dialogueBox.appendChild(dialogueControls);
+  
+  // Hide dialogue box initially
   dialogueBox.style.display = 'none';
   overworldContainer.appendChild(dialogueBox);
   
   // Set up dialogue controls
-  document.getElementById('dialogue-next').addEventListener('click', advanceDialogue);
+  nextButton.addEventListener('click', advanceDialogue);
   
   // Render the map initially
   renderMap();
@@ -593,17 +616,17 @@ function startDialogue(npc) {
       return;
     }
     
-    dialogueBox.style.display = 'block';
+    // Set current dialogue reference
+    currentDialogue = npc;
+    currentDialogueLine = 0;
     
+    // Get name element and update its content
     const nameElement = document.getElementById('dialogue-name');
     if (nameElement) {
       nameElement.textContent = npc.name;
     } else {
       console.error("Dialogue name element not found!");
     }
-    
-    currentDialogue = npc;
-    currentDialogueLine = 0;
     
     // Show first line of dialogue
     const textElement = document.getElementById('dialogue-text');
@@ -612,6 +635,9 @@ function startDialogue(npc) {
     } else {
       console.error("Dialogue text element not found!");
     }
+    
+    // Show the dialogue box
+    dialogueBox.style.display = 'block';
     
     // Play dialogue sound
     if (typeof playSwitchSound === 'function') {
