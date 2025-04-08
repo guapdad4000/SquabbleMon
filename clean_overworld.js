@@ -1297,38 +1297,25 @@ const NewOverworldSystem = (function() {
 
   /**
    * Force movement in a direction (primarily for mobile controls)
-   * This creates a synthetic keydown event and processes it
+   * This directly moves the player without synthetic events to reduce delay
    */
   function forceMove(direction) {
     console.log(`Force moving in direction: ${direction}`);
     
-    // Create a synthetic event representing the arrow key
-    let key = '';
-    switch (direction) {
-      case 'up': key = 'ArrowUp'; break;
-      case 'down': key = 'ArrowDown'; break;
-      case 'left': key = 'ArrowLeft'; break;
-      case 'right': key = 'ArrowRight'; break;
-      default: 
-        console.error("Invalid direction for forceMove:", direction);
-        return;
+    // If in dialogue mode, we should ignore movement
+    if (dialogueBox && dialogueBox.style.display !== 'none') {
+      console.log("In dialogue mode, ignoring movement");
+      return;
     }
     
-    // Create and process the synthetic event
-    const syntheticEvent = { 
-      key: key, 
-      preventDefault: () => {},
-      type: 'keydown'
-    };
+    // Always update player direction first for responsiveness
+    player.direction = direction;
     
-    // Handle the event
-    handleKeyDown(syntheticEvent);
+    // Now attempt the move directly without synthetic events
+    attemptMove(direction);
     
-    // Simulate key release after a short delay
-    setTimeout(() => {
-      syntheticEvent.type = 'keyup';
-      handleKeyUp(syntheticEvent);
-    }, 100);
+    // Update visuals immediately
+    updatePlayerVisual();
   }
   
   /**
