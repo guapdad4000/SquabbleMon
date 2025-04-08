@@ -2074,10 +2074,25 @@ function showMoveTooltip(e) {
     const tooltip = document.getElementById("move-tooltip");
     const rect = e.target.getBoundingClientRect();
     
-    // Position the tooltip above the button
-    tooltip.style.left = `${rect.left + rect.width/2 - 125}px`; // Center tooltip
-    tooltip.style.top = `${rect.top - 10 - tooltip.offsetHeight}px`; // Position above with 10px gap
-    tooltip.style.display = "block";
+    // Get the battle menu to calculate available space
+    const battleMenu = document.getElementById('battle-menu');
+    const battleMenuRect = battleMenu.getBoundingClientRect();
+    
+    // Calculate available space to the right and left
+    const availableRightSpace = window.innerWidth - rect.right - 20;
+    
+    // Position tooltip to the right of the button with offset for visibility
+    tooltip.style.display = "block"; // Make visible first so we can calculate width
+    
+    // Place tooltip on the right with enough margin if there's space
+    if (availableRightSpace >= 250) { // Using 250px as a guideline for tooltip width
+      tooltip.style.left = `${rect.right + 20}px`; // 20px offset from right edge of button
+      tooltip.style.top = `${rect.top - 10}px`; // Align near top of button with slight offset
+    } else {
+      // Not enough space right, position left if possible, or position fixed on the screen
+      tooltip.style.left = `${Math.max(20, rect.left - 270)}px`; // Account for tooltip width
+      tooltip.style.top = `${rect.top - 10}px`;
+    }
     
     tooltip.innerHTML = `
       <p><strong>${moveData.name || 'Unknown Move'}</strong></p>
@@ -2140,9 +2155,21 @@ function showCharacterTooltip(e) {
       </div>
     `;
     
+    // Calculate available space
+    const rect = e.currentTarget.getBoundingClientRect();
+    const availableRightSpace = window.innerWidth - rect.right - 20;
+    
     tooltip.style.display = "block";
-    tooltip.style.left = `${e.pageX + 10}px`;
-    tooltip.style.top = `${e.pageY + 10}px`;
+    
+    // Position the tooltip to the right of the character with enough margin if there's space
+    if (availableRightSpace >= 270) {
+      tooltip.style.left = `${rect.right + 20}px`;
+      tooltip.style.top = `${rect.top}px`;
+    } else {
+      // Not enough space right, try the left side
+      tooltip.style.left = `${Math.max(20, rect.left - 270)}px`;
+      tooltip.style.top = `${rect.top}px`;
+    }
   } catch (err) {
     console.error("Error showing character tooltip:", err);
   }
