@@ -2154,32 +2154,44 @@ function populateCharacterSelection() {
 
 // Helper function to standardize sprite paths
 function standardizeSpritePath(spritePath) {
+  // Debug flag - this can be toggled from the console for debugging
+  const debug = window.debugSprites || false;
+  
+  if (debug) {
+    console.log("%c[SPRITE DEBUG] Standardizing path: " + spritePath, "background:#0f2233; color:#ffcc00; padding:3px;");
+  }
+  
   // Provide a default sprite if none is given or invalid
   if (!spritePath || typeof spritePath !== 'string') {
-    console.warn("Invalid sprite path provided:", spritePath);
+    console.warn("🚫 Invalid sprite path provided:", spritePath);
     // Use a known working imgur URL as default
-    return 'https://i.imgur.com/YeMI4sr.png'; // Fitness Bro
+    return 'https://i.imgur.com/YeMI4sr.png'; // Fitness Bro as fallback
   }
   
   // Trim any whitespace
   spritePath = spritePath.trim();
   
-  // If it's an imgur URL, return it as is (preferred format)
+  // CASE 1: If it's already an imgur URL, return it as is (preferred format)
   if (spritePath.includes('imgur.com')) {
-    console.log("Using existing imgur URL sprite:", spritePath);
+    if (debug) console.log("✅ Using existing imgur URL sprite:", spritePath);
+    
+    // Fix imgur URLs that don't have the proper https:// prefix
+    if (!spritePath.startsWith('http')) {
+      return 'https://' + spritePath;
+    }
+    
     return spritePath;
   }
   
-  // For other URLs, leave as is
+  // CASE 2: For other complete URLs, leave as is
   if (spritePath.startsWith('http')) {
-    console.log("Using non-imgur URL sprite:", spritePath);
-    // We could convert known URLs to imgur here if needed
+    if (debug) console.log("✅ Using non-imgur URL sprite:", spritePath);
     return spritePath;
   }
   
-  console.log("Converting local sprite path to imgur URL:", spritePath);
+  if (debug) console.log("🔄 Converting local sprite path to imgur URL:", spritePath);
   
-  // Map character names to imgur URLs for consistency across game modes
+  // CASE 3: Comprehensive character name to imgur URL mapping for consistency
   const nameToImgurMap = {
     // Main characters
     'Fitness Bro': 'https://i.imgur.com/YeMI4sr.png',
@@ -2196,52 +2208,80 @@ function standardizeSpritePath(spritePath) {
     'Homeless YN': 'https://i.imgur.com/LRVrieF.png',
     'Rich Techbro': 'https://i.imgur.com/GmlKf6u.png',
     'Gamer Unemployed': 'https://i.imgur.com/b5pnt7o.png',
-    'Earthy': 'https://i.imgur.com/1SuHgnZ.png'
+    'Earthy': 'https://i.imgur.com/1SuHgnZ.png',
+    // Nicknames/shorter versions
+    'Fitness': 'https://i.imgur.com/YeMI4sr.png',
+    'Rasta': 'https://i.imgur.com/dZWWrrs.png',
+    'Tech': 'https://i.imgur.com/VVa9pm9.png',
+    'Cool': 'https://i.imgur.com/2n71aSJ.png',
+    'Homie': 'https://i.imgur.com/UkE9crR.png',
+    'Jokes': 'https://i.imgur.com/9hFTFQt.png',
+    'Nerd': 'https://i.imgur.com/knA2Yxz.png',
+    'Addict': 'https://i.imgur.com/G3xfSjU.png',
+    'Gamer': 'https://i.imgur.com/vFvQKap.png',
+    'Serial': 'https://i.imgur.com/Kwe1HpA.png',
+    'Homeless': 'https://i.imgur.com/LRVrieF.png',
+    'Rich': 'https://i.imgur.com/GmlKf6u.png',
+    'Unemployed': 'https://i.imgur.com/b5pnt7o.png'
   };
   
-  // Check for character name in local data
+  // CASE 4: Check if the path itself is a character name (exact match)
+  if (nameToImgurMap[spritePath]) {
+    if (debug) console.log("✅ Found exact character name match:", spritePath);
+    return nameToImgurMap[spritePath];
+  }
+  
+  // CASE 5: Check for character name in global currentCharacter
   if (window.currentCharacter && window.currentCharacter.name && nameToImgurMap[window.currentCharacter.name]) {
-    console.log("Found matching character in currentCharacter:", window.currentCharacter.name);
+    if (debug) console.log("✅ Found matching character in currentCharacter:", window.currentCharacter.name);
     return nameToImgurMap[window.currentCharacter.name];
   }
   
-  // Map path-based identifiers to known imgur URLs
-  if (spritePath.includes('fitness') || spritePath.includes('gym')) {
-    return 'https://i.imgur.com/YeMI4sr.png'; // Fitness Bro
-  } else if (spritePath.includes('rasta') || spritePath.includes('plant')) {
-    return 'https://i.imgur.com/dZWWrrs.png'; // Rasta
-  } else if (spritePath.includes('tech') || spritePath.includes('electric')) {
-    return 'https://i.imgur.com/VVa9pm9.png'; // Techy
-  } else if (spritePath.includes('vibe') || spritePath.includes('cool')) {
-    return 'https://i.imgur.com/2n71aSJ.png'; // Vibe
-  } else if (spritePath.includes('9-5') || spritePath.includes('office')) {
-    return 'https://i.imgur.com/UkE9crR.png'; // 9-5
-  } else if (spritePath.includes('jokes') || spritePath.includes('all jokes')) {
-    return 'https://i.imgur.com/9hFTFQt.png'; // All jokes
-  } else if (spritePath.includes('nerd') || spritePath.includes('closet')) {
-    return 'https://i.imgur.com/knA2Yxz.png'; // Closet nerd
-  } else if (spritePath.includes('functional') || spritePath.includes('addict')) {
-    return 'https://i.imgur.com/G3xfSjU.png'; // Functional addict
-  } else if (spritePath.includes('homeless')) {
-    return 'https://i.imgur.com/LRVrieF.png'; // Homeless YN
-  } else if (spritePath.includes('gamer')) {
-    return 'https://i.imgur.com/vFvQKap.png'; // Gamer YN
-  } else if (spritePath.includes('serial')) {
-    return 'https://i.imgur.com/Kwe1HpA.png'; // Serial YN
-  } else if (spritePath.includes('rich') || spritePath.includes('techbro')) {
-    return 'https://i.imgur.com/GmlKf6u.png'; // Rich techbro
-  } else if (spritePath.includes('unemployed')) {
-    return 'https://i.imgur.com/b5pnt7o.png'; // Gamer unemployed
-  } else if (spritePath.includes('earthy')) {
-    return 'https://i.imgur.com/1SuHgnZ.png'; // Earthy
-  } else if (spritePath.includes('dysfunctional')) {
-    return 'https://i.imgur.com/yA0lUbo.png'; // Dysfunctional
+  // CASE 6: Check for character name in activePlayerCharacter or activeOpponent
+  if (window.activePlayerCharacter && window.activePlayerCharacter.name && nameToImgurMap[window.activePlayerCharacter.name]) {
+    if (debug) console.log("✅ Found matching character in activePlayerCharacter:", window.activePlayerCharacter.name);
+    return nameToImgurMap[window.activePlayerCharacter.name];
   }
   
-  // Special case for player movement sprites
+  if (window.activeOpponent && window.activeOpponent.name && nameToImgurMap[window.activeOpponent.name]) {
+    if (debug) console.log("✅ Found matching character in activeOpponent:", window.activeOpponent.name);
+    return nameToImgurMap[window.activeOpponent.name];
+  }
+  
+  // CASE 7: Map path-based identifiers to known imgur URLs (partial match)
+  const pathMatches = [
+    { keywords: ['fitness', 'gym', 'workout'], url: 'https://i.imgur.com/YeMI4sr.png' },
+    { keywords: ['rasta', 'plant', 'weed', 'jamaica'], url: 'https://i.imgur.com/dZWWrrs.png' },
+    { keywords: ['tech', 'electric', 'computer', 'geek'], url: 'https://i.imgur.com/VVa9pm9.png' },
+    { keywords: ['vibe', 'cool', 'chill'], url: 'https://i.imgur.com/2n71aSJ.png' },
+    { keywords: ['9-5', 'office', 'work', 'homie'], url: 'https://i.imgur.com/UkE9crR.png' },
+    { keywords: ['jokes', 'funny', 'comedy', 'all jokes'], url: 'https://i.imgur.com/9hFTFQt.png' },
+    { keywords: ['nerd', 'closet', 'glasses'], url: 'https://i.imgur.com/knA2Yxz.png' },
+    { keywords: ['functional', 'addict', 'drugs'], url: 'https://i.imgur.com/G3xfSjU.png' },
+    { keywords: ['homeless', 'street'], url: 'https://i.imgur.com/LRVrieF.png' },
+    { keywords: ['gamer', 'gaming', 'game'], url: 'https://i.imgur.com/vFvQKap.png' },
+    { keywords: ['serial', 'killer'], url: 'https://i.imgur.com/Kwe1HpA.png' },
+    { keywords: ['rich', 'techbro', 'money'], url: 'https://i.imgur.com/GmlKf6u.png' },
+    { keywords: ['unemployed', 'jobless'], url: 'https://i.imgur.com/b5pnt7o.png' },
+    { keywords: ['earthy', 'earth', 'nature'], url: 'https://i.imgur.com/1SuHgnZ.png' },
+    { keywords: ['dysfunctional'], url: 'https://i.imgur.com/yA0lUbo.png' }
+  ];
+  
+  // Check for keyword matches
+  for (const match of pathMatches) {
+    for (const keyword of match.keywords) {
+      if (spritePath.toLowerCase().includes(keyword.toLowerCase())) {
+        if (debug) console.log(`✅ Found keyword match: ${keyword} → ${match.url}`);
+        return match.url;
+      }
+    }
+  }
+  
+  // CASE 8: Special case for player movement sprites in overworld
   if (spritePath.includes('back') || spritePath.includes('fwd') || 
       spritePath.includes('right') || spritePath.includes('left')) {
-    // Keep these as local paths for the overworld character
+    
+    if (debug) console.log("🏃 Detected movement sprite:", spritePath);
     
     // Fix paths starting with ./public/ to use public/ instead
     if (spritePath.startsWith('./public/')) {
@@ -2249,16 +2289,16 @@ function standardizeSpritePath(spritePath) {
     }
     
     // Ensure it starts with public/ if needed
-    if (!spritePath.startsWith('public/')) {
+    if (!spritePath.startsWith('public/') && !spritePath.startsWith('/public/')) {
       return 'public/' + spritePath;
     }
     
     return spritePath;
   }
   
-  // Default to fitness bro for any local paths we can't map
-  console.log("Using fallback imgur URL for sprite:", spritePath);
-  return 'https://i.imgur.com/YeMI4sr.png';
+  // CASE 9: Default to fallback - this happens rarely
+  if (debug) console.warn("⚠️ Using fallback imgur URL for sprite:", spritePath);
+  return 'https://i.imgur.com/YeMI4sr.png'; // Fitness Bro as default fallback
 }
 
 // Expose the standardizeSpritePath function globally for other modules to use
@@ -2685,28 +2725,34 @@ function updateBattleUI() {
       document.body.appendChild(battleScreen);
     }
     
-    // Create battle background
+    // Create battle background with purple cityscape
     const newBattleBackground = document.createElement("div");
     newBattleBackground.id = "battle-background";
     
-    // Add player and opponent info areas
+    // Add player and opponent info areas matching the screenshot layout
     newBattleBackground.innerHTML = `
-      <div id="player-info">
-        <span id="player-name">${activePlayerCharacter.name}</span>
-        <div class="hp-bar">
-          <div id="player-hp-fill" class="hp-fill" style="width: 100%;"></div>
+      <div id="fade-display" style="position: absolute; top: 10px; left: 10px; z-index: 999;">Fades: ${fadeCount}</div>
+      
+      <div id="player-info" style="position: absolute; top: 60px; left: 50%; transform: translateX(-50%); text-align: center; z-index: 100;">
+        <span id="player-name" style="color: white; background-color: #5b00a0; padding: 4px 20px; display: block; margin-bottom: 2px;">${activePlayerCharacter.name}</span>
+        <div class="hp-bar" style="background: #333; height: 12px; width: 150px; position: relative; border: 2px solid black;">
+          <div id="player-hp-fill" class="hp-fill" style="width: 100%; height: 100%; background: #ff5252;"></div>
         </div>
-        <span id="player-hp">${activePlayerCharacter.hp}/${activePlayerCharacter.maxHp}</span>
+        <span id="player-hp" style="color: white; font-size: 12px; display: block; margin-top: 2px;">${activePlayerCharacter.hp}/${activePlayerCharacter.maxHp}</span>
         <span id="player-status-icon" class="status-icon"></span>
       </div>
-      <div id="opponent-info">
-        <span id="opponent-name">${activeOpponent.name}</span>
-        <div class="hp-bar">
-          <div id="opponent-hp-fill" class="hp-fill" style="width: 100%;"></div>
+      
+      <div id="opponent-info" style="position: absolute; top: 210px; right: 10%; text-align: center; z-index: 100;">
+        <span id="opponent-name" style="color: white; background-color: #5b00a0; padding: 4px 20px; display: block; margin-bottom: 2px;">${activeOpponent.name}</span>
+        <div class="hp-bar" style="background: #333; height: 12px; width: 150px; position: relative; border: 2px solid black;">
+          <div id="opponent-hp-fill" class="hp-fill" style="width: 100%; height: 100%; background: #ff5252;"></div>
         </div>
-        <span id="opponent-hp">${activeOpponent.hp}/${activeOpponent.maxHp}</span>
+        <span id="opponent-hp" style="color: white; font-size: 12px; display: block; margin-top: 2px;">${activeOpponent.hp}/${activeOpponent.maxHp}</span>
         <span id="opponent-status-icon" class="status-icon"></span>
       </div>
+      
+      <!-- Empty platform for player character -->
+      <div style="position: absolute; left: 20%; bottom: 30%; width: 200px; height: 50px; background-image: url('https://i.imgur.com/MmJyYoO.png'); background-size: contain; background-repeat: no-repeat; z-index: 5;"></div>
     `;
     
     battleScreen.appendChild(newBattleBackground);
