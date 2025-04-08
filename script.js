@@ -1658,7 +1658,7 @@ function startExploreMode() {
   // Helper function to initialize the overworld
   function initializeOverworld() {
     try {
-      console.log("Initializing new overworld system...");
+      console.log("Initializing overworld system...");
       
       // Make sure the selected character has sprite information
       if (playerTeam[0]) {
@@ -1669,8 +1669,9 @@ function startExploreMode() {
         }
       }
       
-      // Initialize overworld with selected character
+      // Try to use the clean overworld system first
       if (typeof window.NewOverworldSystem?.initOverworld === 'function') {
+        console.log("Using clean overworld system");
         const selectedCharacter = playerTeam[0];
         window.NewOverworldSystem.initOverworld(selectedCharacter);
         
@@ -1679,9 +1680,23 @@ function startExploreMode() {
           playOverworldMusic();
         }
         
-        console.log("New overworld system initialized successfully");
-      } else {
-        console.error("New overworld system not found or initialization function missing");
+        console.log("Clean overworld system initialized successfully");
+      } 
+      // Fall back to the original overworld system if needed
+      else if (typeof initOverworld === 'function') {
+        console.log("Using original overworld system");
+        const selectedCharacter = playerTeam[0];
+        initOverworld(selectedCharacter);
+        
+        // Play overworld music
+        if (typeof playOverworldMusic === 'function') {
+          playOverworldMusic();
+        }
+        
+        console.log("Original overworld system initialized successfully");
+      } 
+      else {
+        console.error("No overworld system found or initialization function missing");
         alert("Failed to initialize overworld. Please try again.");
         const selectionScreen = document.getElementById('selection-screen');
         if (selectionScreen) selectionScreen.style.display = 'flex';

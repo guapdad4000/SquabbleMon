@@ -262,169 +262,199 @@ const NewOverworldSystem = (function() {
   function initOverworld(selectedCharacter) {
     console.log("Initializing clean overworld system...");
     
-    // Create or get overworld container
-    overworldContainer = document.getElementById('overworld-container');
-    if (!overworldContainer) {
-      overworldContainer = document.createElement('div');
-      overworldContainer.id = 'overworld-container';
-      document.body.appendChild(overworldContainer);
+    // Load the urban renderer and tiles if they're not already loaded
+    if (typeof URBAN_RENDERER === 'undefined' || typeof URBAN_TILES === 'undefined') {
+      console.log("Loading urban renderer and tiles...");
+      
+      // Load urban renderer
+      const rendererScript = document.createElement('script');
+      rendererScript.src = 'public/assets/urban_renderer.js';
+      document.head.appendChild(rendererScript);
+      
+      // Load urban tiles
+      const tilesScript = document.createElement('script');
+      tilesScript.src = 'public/assets/urban_tiles.js';
+      document.head.appendChild(tilesScript);
+      
+      // Load NPC sprites
+      const npcSpritesScript = document.createElement('script');
+      npcSpritesScript.src = 'public/assets/npc_sprites.js';
+      document.head.appendChild(npcSpritesScript);
+      
+      // Give a small delay to ensure scripts load
+      setTimeout(() => {
+        console.log("Urban assets loaded, continuing initialization...");
+        continueInitialization();
+      }, 100);
+    } else {
+      continueInitialization();
     }
     
-    // Clear any existing content
-    overworldContainer.innerHTML = '';
-    overworldContainer.style.display = 'block';
-    
-    // Set styles
-    overworldContainer.style.position = 'relative';
-    overworldContainer.style.width = '100vw';
-    overworldContainer.style.height = '100vh';
-    overworldContainer.style.backgroundColor = '#222';
-    overworldContainer.style.overflow = 'hidden';
-    
-    // Add CSS classes if needed
-    const style = document.createElement('style');
-    style.textContent = `
-      #overworld-container {
-        position: relative;
-        width: 100vw;
-        height: 100vh;
-        background-color: #222;
-        overflow: hidden;
-        font-family: 'Press Start 2P', monospace;
+    function continueInitialization() {
+      // Create or get overworld container
+      overworldContainer = document.getElementById('overworld-container');
+      if (!overworldContainer) {
+        overworldContainer = document.createElement('div');
+        overworldContainer.id = 'overworld-container';
+        document.body.appendChild(overworldContainer);
       }
       
-      .map-container {
-        position: relative;
-        width: 640px;
-        height: 640px;
-        margin: 0 auto;
-        top: 50%;
-        transform: translateY(-50%);
-        background-color: #333;
-        border: 4px solid #555;
-      }
+      // Clear any existing content
+      overworldContainer.innerHTML = '';
+      overworldContainer.style.display = 'block';
       
-      .tile {
-        position: absolute;
-        width: 64px;
-        height: 64px;
-      }
+      // Set styles
+      overworldContainer.style.position = 'relative';
+      overworldContainer.style.width = '100vw';
+      overworldContainer.style.height = '100vh';
+      overworldContainer.style.backgroundColor = '#222';
+      overworldContainer.style.overflow = 'hidden';
       
-      .wall {
-        background-color: #555;
-        border: 1px solid #666;
-      }
+      // Add CSS classes if needed
+      const style = document.createElement('style');
+      style.textContent = `
+        #overworld-container {
+          position: relative;
+          width: 100vw;
+          height: 100vh;
+          background-color: #222;
+          overflow: hidden;
+          font-family: 'Press Start 2P', monospace;
+        }
+        
+        .map-container {
+          position: relative;
+          width: 640px;
+          height: 640px;
+          margin: 0 auto;
+          top: 50%;
+          transform: translateY(-50%);
+          background-color: #333;
+          border: 4px solid #555;
+        }
+        
+        .tile {
+          position: absolute;
+          width: 64px;
+          height: 64px;
+        }
+        
+        .wall {
+          background-color: #555;
+          border: 1px solid #666;
+        }
+        
+        .empty {
+          background-color: #333;
+        }
+        
+        .door {
+          background-color: #854;
+          border: 1px solid #965;
+        }
+        
+        .encounter {
+          background-color: #474;
+        }
+        
+        .player-sprite, .npc-sprite {
+          position: absolute;
+          width: 64px;
+          height: 64px;
+          background-size: contain;
+          background-repeat: no-repeat;
+          background-position: center;
+          z-index: 10;
+          transition: top 0.2s, left 0.2s;
+        }
+        
+        .dialogue-box {
+          position: absolute;
+          bottom: 20px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 80%;
+          max-width: 600px;
+          background-color: rgba(0, 0, 0, 0.8);
+          border: 2px solid #ccc;
+          border-radius: 8px;
+          padding: 15px;
+          color: white;
+          z-index: 100;
+          display: none;
+        }
+        
+        .dialogue-name {
+          color: #ffcc00;
+          font-weight: bold;
+          margin-bottom: 8px;
+        }
+        
+        .dialogue-text {
+          line-height: 1.5;
+        }
+        
+        .zone-name {
+          position: absolute;
+          top: 20px;
+          left: 20px;
+          background-color: rgba(0, 0, 0, 0.6);
+          color: white;
+          padding: 8px 16px;
+          border-radius: 4px;
+          font-size: 14px;
+          z-index: 100;
+        }
+      `;
+      document.head.appendChild(style);
       
-      .empty {
-        background-color: #333;
-      }
+      // Create map container
+      mapContainer = document.createElement('div');
+      mapContainer.className = 'map-container';
+      overworldContainer.appendChild(mapContainer);
       
-      .door {
-        background-color: #854;
-        border: 1px solid #965;
-      }
+      // Create zone name display
+      const zoneNameDisplay = document.createElement('div');
+      zoneNameDisplay.className = 'zone-name';
+      zoneNameDisplay.textContent = ZONE_DATA[currentZone].name;
+      overworldContainer.appendChild(zoneNameDisplay);
       
-      .encounter {
-        background-color: #474;
-      }
+      // Create dialogue box
+      dialogueBox = document.createElement('div');
+      dialogueBox.className = 'dialogue-box';
       
-      .player-sprite, .npc-sprite {
-        position: absolute;
-        width: 64px;
-        height: 64px;
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center;
-        z-index: 10;
-        transition: top 0.2s, left 0.2s;
-      }
+      dialogueNpcName = document.createElement('div');
+      dialogueNpcName.className = 'dialogue-name';
+      dialogueBox.appendChild(dialogueNpcName);
       
-      .dialogue-box {
-        position: absolute;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 80%;
-        max-width: 600px;
-        background-color: rgba(0, 0, 0, 0.8);
-        border: 2px solid #ccc;
-        border-radius: 8px;
-        padding: 15px;
-        color: white;
-        z-index: 100;
-        display: none;
-      }
+      dialogueText = document.createElement('div');
+      dialogueText.className = 'dialogue-text';
+      dialogueBox.appendChild(dialogueText);
       
-      .dialogue-name {
-        color: #ffcc00;
-        font-weight: bold;
-        margin-bottom: 8px;
-      }
+      overworldContainer.appendChild(dialogueBox);
       
-      .dialogue-text {
-        line-height: 1.5;
-      }
+      // Create player sprite
+      playerSprite = document.createElement('div');
+      playerSprite.className = 'player-sprite';
+      mapContainer.appendChild(playerSprite);
       
-      .zone-name {
-        position: absolute;
-        top: 20px;
-        left: 20px;
-        background-color: rgba(0, 0, 0, 0.6);
-        color: white;
-        padding: 8px 16px;
-        border-radius: 4px;
-        font-size: 14px;
-        z-index: 100;
-      }
-    `;
-    document.head.appendChild(style);
-    
-    // Create map container
-    mapContainer = document.createElement('div');
-    mapContainer.className = 'map-container';
-    overworldContainer.appendChild(mapContainer);
-    
-    // Create zone name display
-    const zoneNameDisplay = document.createElement('div');
-    zoneNameDisplay.className = 'zone-name';
-    zoneNameDisplay.textContent = ZONE_DATA[currentZone].name;
-    overworldContainer.appendChild(zoneNameDisplay);
-    
-    // Create dialogue box
-    dialogueBox = document.createElement('div');
-    dialogueBox.className = 'dialogue-box';
-    
-    dialogueNpcName = document.createElement('div');
-    dialogueNpcName.className = 'dialogue-name';
-    dialogueBox.appendChild(dialogueNpcName);
-    
-    dialogueText = document.createElement('div');
-    dialogueText.className = 'dialogue-text';
-    dialogueBox.appendChild(dialogueText);
-    
-    overworldContainer.appendChild(dialogueBox);
-    
-    // Create player sprite
-    playerSprite = document.createElement('div');
-    playerSprite.className = 'player-sprite';
-    mapContainer.appendChild(playerSprite);
-    
-    // Set initial player position
-    player.x = 5;
-    player.y = 5;
-    player.direction = 'down';
-    player.moving = false;
-    player.sprite = selectedCharacter?.sprite || 'default';
-    
-    updatePlayerVisual();
-    
-    // Render the map
-    renderMap();
-    
-    // Set up controls
-    setupControls();
-    
-    console.log("Overworld initialized successfully");
+      // Set initial player position
+      player.x = 5;
+      player.y = 5;
+      player.direction = 'down';
+      player.moving = false;
+      player.sprite = selectedCharacter?.sprite || 'default';
+      
+      updatePlayerVisual();
+      
+      // Render the map
+      renderMap();
+      
+      // Set up controls
+      setupControls();
+      
+      console.log("Overworld initialized successfully");
+    }
   }
 
   /**
@@ -547,6 +577,73 @@ const NewOverworldSystem = (function() {
     
     // Helper function to add decorative elements to tiles
     function addTileDecoration(tile, tileType) {
+      // If urban renderer is available, use it for special tiles
+      if (typeof URBAN_RENDERER !== 'undefined' && typeof URBAN_TILES !== 'undefined') {
+        // Map our tile types to urban tiles
+        let urbanTileType = null;
+        
+        switch(tileType) {
+          case TILE_TYPES.STREET_HORIZONTAL:
+            urbanTileType = 'STREET_HORIZONTAL';
+            break;
+          case TILE_TYPES.STREET_VERTICAL:
+            urbanTileType = 'STREET_VERTICAL';
+            break;
+          case TILE_TYPES.STREET_INTERSECTION:
+            urbanTileType = 'STREET_INTERSECTION';
+            break;
+          case TILE_TYPES.HYDRANT:
+            urbanTileType = 'FIRE_HYDRANT';
+            break;
+          case TILE_TYPES.TRAP_HOUSE_EXTERIOR:
+            urbanTileType = 'TRAP_HOUSE';
+            break;
+          case TILE_TYPES.MOMMAS_KITCHEN_EXTERIOR:
+            urbanTileType = 'MOMMAS_KITCHEN';
+            break;
+          case TILE_TYPES.CORNER_STORE_EXTERIOR:
+            urbanTileType = 'CORNER_STORE';
+            break;
+          case TILE_TYPES.FADE_PARK_ENTRANCE:
+            urbanTileType = 'FADE_PARK';
+            break;
+          case TILE_TYPES.THE_OPPS_TERRITORY:
+            urbanTileType = 'THE_OPPS_TERRITORY';
+            break;
+          case TILE_TYPES.TRASH_CAN:
+            urbanTileType = 'TRASH_CAN';
+            break;
+          case TILE_TYPES.BENCH:
+            urbanTileType = 'BENCH';
+            break;
+          case TILE_TYPES.STREETLIGHT:
+            urbanTileType = 'STREET_LIGHT';
+            break;
+          case TILE_TYPES.BASKETBALL_HOOP:
+            urbanTileType = 'BASKETBALL_HOOP';
+            break;
+        }
+        
+        // If we have a mapping, use urban renderer
+        if (urbanTileType && URBAN_TILES[urbanTileType]) {
+          try {
+            // Clear any existing content
+            tile.innerHTML = '';
+            
+            // Create the urban tile
+            const urbanTile = URBAN_RENDERER.createTile(urbanTileType, 64);
+            
+            // Append it to our tile
+            tile.appendChild(urbanTile);
+            return;
+          } catch (error) {
+            console.error("Failed to create urban tile:", error);
+            // Fall back to default decoration
+          }
+        }
+      }
+      
+      // Fallback to original decorations if urban renderer isn't available or fails
       switch(tileType) {
         case TILE_TYPES.STREET_HORIZONTAL:
           tile.innerHTML = '<div style="height: 2px; background-color: #fff; opacity: 0.3; margin-top: 30px;"></div>';
@@ -675,15 +772,29 @@ const NewOverworldSystem = (function() {
       return spritePath;
     }
     
-    // Known sprite mappings
+    // Check if we have NPC_SPRITES available from our new module
+    if (typeof NPC_SPRITES !== 'undefined') {
+      // Try to match with a sprite id
+      for (const key in NPC_SPRITES) {
+        if (key === spritePath || NPC_SPRITES[key].name.toLowerCase() === spritePath.toLowerCase()) {
+          console.log("Found NPC sprite match:", spritePath, "->", NPC_SPRITES[key].sprite);
+          return NPC_SPRITES[key].sprite;
+        }
+      }
+    }
+    
+    // Fallback to known sprite mappings
     const spriteMap = {
       'default': 'https://i.imgur.com/YeMI4sr.png',
       'rasta': 'https://i.imgur.com/dZWWrrs.png',
       'fitness': 'https://i.imgur.com/YeMI4sr.png',
       'karen': 'https://i.imgur.com/KVEOAYh.png',
-      'dealer': 'https://i.imgur.com/nsFpkQK.png',
-      'shopkeeper': 'https://i.imgur.com/NJ8ItLM.png',
-      'mom': 'https://i.imgur.com/KVEOAYh.png'
+      'dealer': 'https://i.imgur.com/UkE9crR.png',
+      'shopkeeper': 'https://i.imgur.com/q0vYI2v.png',
+      'mom': 'https://i.imgur.com/fgArxwB.png',
+      'hood_kid': 'https://i.imgur.com/G3xfSjU.png',
+      'beat_boxer': 'https://i.imgur.com/2n71aSJ.png',
+      'hacker_kid': 'https://i.imgur.com/m7Rup7S.png'
     };
     
     return spriteMap[spritePath] || spriteMap['default'];
