@@ -2154,6 +2154,16 @@ function populateCharacterSelection() {
 
 // Helper function to standardize sprite paths
 function standardizeSpritePath(spritePath) {
+  // Use FixedSpriteManager if available
+  if (window.FixedSpriteManager && typeof window.FixedSpriteManager.standardizeSpritePath === 'function') {
+    try {
+      return window.FixedSpriteManager.standardizeSpritePath(spritePath);
+    } catch (err) {
+      console.error("Error using FixedSpriteManager:", err);
+      // Continue with original implementation as fallback
+    }
+  }
+
   try {
     // Add global debugging property if it doesn't exist
     if (typeof window.debugSpritePaths === 'undefined') {
@@ -2177,6 +2187,25 @@ function standardizeSpritePath(spritePath) {
     // Trim any whitespace
     spritePath = spritePath.trim();
     logSprite("Processing sprite path:", spritePath);
+    
+    // Simple direct mappings for common sprites (new)
+    const spriteMap = {
+      'fwd 1.png': 'https://i.imgur.com/qxnS0SH.png',
+      'fwd 2.png': 'https://i.imgur.com/aXt732G.png',
+      'back 1.png': 'https://i.imgur.com/1rSNlYO.png',
+      'back 2.png': 'https://i.imgur.com/zyQYr6k.png',
+      'left 1.png': 'https://i.imgur.com/LlMLcyZ.png',
+      'left 2.png': 'https://i.imgur.com/oW9gHVE.png',
+      'right 1.png': 'https://i.imgur.com/7D40jZG.png',
+      'right 2.png': 'https://i.imgur.com/0uheBxU.png'
+    };
+    
+    // Check if this is a simple filename that we can directly map
+    const fileName = spritePath.split('/').pop();
+    if (spriteMap[fileName]) {
+      logSprite(`Mapped filename ${fileName} to direct URL`, spriteMap[fileName]);
+      return spriteMap[fileName];
+    }
     
     // Fix common issues with imgur URLs
     if (spritePath.includes('imgur.com')) {
@@ -2211,11 +2240,8 @@ function standardizeSpritePath(spritePath) {
   
   // For other URLs, leave as is but log
   if (spritePath.startsWith('http')) {
-    logSprite("Using non-imgur URL sprite:", spritePath);
     return spritePath;
   }
-  
-  logSprite("Converting local path to standardized URL:", spritePath);
   
   // Map character names to imgur URLs for consistency across game modes
   const nameToImgurMap = {
@@ -2249,7 +2275,6 @@ function standardizeSpritePath(spritePath) {
   // Try to find a direct name match
   for (const [charName, imgurUrl] of Object.entries(nameToImgurMap)) {
     if (lowercasePath.includes(normalizeCharacterName(charName))) {
-      logSprite(`Found character name match: ${charName}`, imgurUrl);
       return imgurUrl;
     }
   }
@@ -2258,7 +2283,6 @@ function standardizeSpritePath(spritePath) {
   if (window.currentCharacter && window.currentCharacter.name) {
     const characterName = window.currentCharacter.name;
     if (nameToImgurMap[characterName]) {
-      logSprite(`Found match for current character: ${characterName}`, nameToImgurMap[characterName]);
       return nameToImgurMap[characterName];
     }
   }
@@ -2267,7 +2291,6 @@ function standardizeSpritePath(spritePath) {
   if (window.activePlayerCharacter && window.activePlayerCharacter.name) {
     const characterName = window.activePlayerCharacter.name;
     if (nameToImgurMap[characterName]) {
-      logSprite(`Found match for active player character: ${characterName}`, nameToImgurMap[characterName]);
       return nameToImgurMap[characterName];
     }
   }
@@ -2308,28 +2331,19 @@ function standardizeSpritePath(spritePath) {
   // Special case for player movement sprites in overworld
   if (lowercasePath.includes('back') || lowercasePath.includes('fwd') || 
       lowercasePath.includes('right') || lowercasePath.includes('left')) {
-    // Keep these as local paths for the overworld character
-    logSprite("Handling movement sprite for overworld:", spritePath);
-    
-    // Fix paths starting with ./public/ to use public/ instead
-    if (spritePath.startsWith('./public/')) {
-      const fixedPath = spritePath.replace('./public/', 'public/');
-      logSprite("Fixed path from ./public/ to public/", fixedPath);
-      return fixedPath;
+    // Map to direct imgur URLs
+    if (lowercasePath.includes('back')) {
+      return lowercasePath.includes('2') ? 'https://i.imgur.com/zyQYr6k.png' : 'https://i.imgur.com/1rSNlYO.png';
+    } else if (lowercasePath.includes('fwd')) {
+      return lowercasePath.includes('2') ? 'https://i.imgur.com/aXt732G.png' : 'https://i.imgur.com/qxnS0SH.png';
+    } else if (lowercasePath.includes('left')) {
+      return lowercasePath.includes('2') ? 'https://i.imgur.com/oW9gHVE.png' : 'https://i.imgur.com/LlMLcyZ.png';
+    } else if (lowercasePath.includes('right')) {
+      return lowercasePath.includes('2') ? 'https://i.imgur.com/0uheBxU.png' : 'https://i.imgur.com/7D40jZG.png';
     }
-    
-    // Ensure it starts with public/ if needed
-    if (!spritePath.startsWith('public/')) {
-      const fixedPath = 'public/' + spritePath;
-      logSprite("Added public/ prefix to path", fixedPath);
-      return fixedPath;
-    }
-    
-    return spritePath;
   }
   
   // Default to fitness bro for any local paths we can't map
-  logSprite("⚠️ Using fallback imgur URL for sprite:", spritePath);
   return 'https://i.imgur.com/YeMI4sr.png';
 }
 
