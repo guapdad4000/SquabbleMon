@@ -1117,86 +1117,86 @@ function startNpcBattle(npc) {
     if (window.characters && window.characters.length > 0) {
       battleCharacters = window.characters;
     } else {
-      // Fallback characters for battles
+      // Fallback characters for battles - use characters from our actual game data
       battleCharacters = [
         {
           id: "battle1",
-          name: "DJ Scratch",
-          sprite: "public/dj-scratch.png",
-          type: "Electric",
-          hp: 120,
-          attack: 80,
-          defense: 60,
-          speed: 100,
+          name: "Rastamon",
+          sprite: "public/sprites/rastamon.png",
+          type: "Plant",
+          hp: 200,
+          attack: 150,
+          defense: 130,
+          speed: 130,
           moves: [
-            { name: "Turntable Scratch", type: "Electric", power: 50, pp: 15, maxPp: 15, description: "A scratching attack that deals damage" },
-            { name: "Bass Drop", type: "Electric", power: 70, pp: 10, maxPp: 10, description: "A powerful sound attack" },
-            { name: "Mix Tape", type: "Normal", power: 40, pp: 20, maxPp: 20, description: "A normal attack with decent power" },
-            { name: "Energize", type: "Electric", power: 0, pp: 10, maxPp: 10, effect: 'buff', stat: 'speed', amount: 1.5, description: "Increases the user's speed" }
+            { name: "Dreadlock Whip", type: "Plant", power: 50, pp: 15, maxPp: 15, description: "Plant-type whip attack with dreadlocks." },
+            { name: "6 Rasclaat Eggs?!", type: "Fire", power: 70, pp: 10, maxPp: 10, description: "Fiery attack that may cause 'sleep' status." },
+            { name: "Irie Recharge", type: "Plant", power: 0, pp: 5, maxPp: 5, effect: 'heal', amount: 40, description: "Healing move that restores HP." },
+            { name: "Chill Vibes", type: "Normal", power: 40, pp: 10, maxPp: 10, effect: 'debuff', stat: 'speed', amount: 0.8, description: "Lowers opponent's speed with relaxed energy." }
           ]
         },
         {
           id: "battle2",
-          name: "Graffiti King",
-          sprite: "public/graffiti-king.png",
-          type: "Poison",
-          hp: 150,
-          attack: 90,
-          defense: 70,
-          speed: 70,
+          name: "Fitness Bro",
+          sprite: "public/sprites/fitness.png",
+          type: "Fire",
+          hp: 230,
+          attack: 170,
+          defense: 130,
+          speed: 120,
           moves: [
-            { name: "Spray Paint", type: "Poison", power: 50, pp: 15, maxPp: 15, description: "A poison spray attack" },
-            { name: "Wall Art", type: "Normal", power: 60, pp: 15, maxPp: 15, description: "A powerful normal attack" },
-            { name: "Tag", type: "Poison", power: 40, pp: 20, maxPp: 20, effect: 'status', status: 'poison', chance: 0.3, description: "May poison the opponent" },
-            { name: "Masterpiece", type: "Poison", power: 80, pp: 5, maxPp: 5, description: "A devastating poison attack" }
+            { name: "Squat Slap", type: "Normal", power: 45, pp: 15, maxPp: 15, description: "Physical attack with leg strength." },
+            { name: "Protein Powder Burn", type: "Fire", power: 45, pp: 10, maxPp: 10, effect: 'status', status: 'burn', chance: 0.3, description: "Fire-type attack that may cause 'burn' status." },
+            { name: "Flex on 'Em", type: "Normal", power: 0, pp: 5, maxPp: 5, effect: 'buff', stat: 'defense', amount: 1.5, description: "Boosts defense by showing off muscles." },
+            { name: "Gym Motivation", type: "Fire", power: 50, pp: 10, maxPp: 10, description: "Energetic attack with fiery passion." }
           ]
         },
         {
           id: "battle3",
-          name: "MC Crazy Legs",
-          sprite: "public/mc-crazy-legs.png",
-          type: "Fighting",
-          hp: 140,
-          attack: 100,
-          defense: 65,
-          speed: 90,
+          name: "Techy",
+          sprite: "https://i.imgur.com/m7Rup7S.png",
+          type: "Electric",
+          hp: 170,
+          attack: 150,
+          defense: 150,
+          speed: 190,
           moves: [
-            { name: "Breakdance", type: "Fighting", power: 60, pp: 15, maxPp: 15, description: "A dancing fighting attack" },
-            { name: "Pop and Lock", type: "Fighting", power: 50, pp: 20, maxPp: 20, effect: 'debuff', stat: 'defense', amount: 0.8, description: "Lowers opponent's defense" },
-            { name: "Headspin", type: "Fighting", power: 70, pp: 10, maxPp: 10, description: "A powerful fighting attack" },
-            { name: "Freestyle", type: "Normal", power: 40, pp: 20, maxPp: 20, description: "A normal attack with decent power" }
+            { name: "Keyboard Smash", type: "Electric", power: 60, pp: 15, maxPp: 15, description: "Electric attack that may cause 'paralysis'." },
+            { name: "404 Headshot", type: "Dark", power: 80, pp: 10, maxPp: 10, description: "Powerful dark-type attack with high damage." },
+            { name: "Caffeine Overload", type: "Electric", power: 0, pp: 5, maxPp: 5, effect: 'buff', stat: 'speed', amount: 1.5, description: "Boosts speed with excessive caffeine." },
+            { name: "Code Error", type: "Electric", power: 65, pp: 10, maxPp: 10, effect: 'status', status: 'confusion', chance: 0.3, description: "Buggy attack that may confuse the opponent." }
           ]
         },
         {
           id: "battle4",
-          name: "Beat Box Wizard",
-          sprite: "public/beatbox-wizard.png",
-          type: "Psychic",
-          hp: 130,
-          attack: 85,
-          defense: 70,
-          speed: 85,
+          name: "Cool Vibe YN",
+          sprite: "https://i.imgur.com/2n71aSJ.png",
+          type: "Water",
+          hp: 190,
+          attack: 170,
+          defense: 130,
+          speed: 150,
           moves: [
-            { name: "Sound Wave", type: "Psychic", power: 55, pp: 15, maxPp: 15, description: "A psychic sound attack" },
-            { name: "Mind Beat", type: "Psychic", power: 65, pp: 10, maxPp: 10, description: "A powerful psychic attack" },
-            { name: "Beat Drop", type: "Normal", power: 45, pp: 20, maxPp: 20, description: "A normal sound attack" },
-            { name: "Flow State", type: "Psychic", power: 0, pp: 10, maxPp: 10, effect: 'buff', stat: 'attack', amount: 1.4, description: "Increases the user's attack" }
+            { name: "Splash Dat Ass", type: "Water", power: 50, pp: 15, maxPp: 15, description: "Water attack that causes 'wet' status." },
+            { name: "Wave Check Fade", type: "Water", power: 70, pp: 10, maxPp: 10, effect: 'status', status: 'sleep', chance: 0.3, description: "Wave-based attack that might put opponent to sleep." },
+            { name: "Call Girls for Gang", type: "Water", power: 0, pp: 5, maxPp: 5, effect: 'heal', amount: 50, description: "Healing move that restores HP." },
+            { name: "Flow State", type: "Water", power: 60, pp: 10, maxPp: 10, description: "Smooth attack with increased critical hit chance." }
           ]
         },
         {
           id: "battle5",
-          name: "Flow Master",
-          sprite: "public/flow-master.png",
-          type: "Water",
-          hp: 135,
-          attack: 75,
-          defense: 80,
-          speed: 95,
+          name: "9-5 Homie",
+          sprite: "https://i.imgur.com/UkE9crR.png",
+          type: "Rock",
+          hp: 210,
+          attack: 130,
+          defense: 150,
+          speed: 180,
           moves: [
-            { name: "Lyrical Flow", type: "Water", power: 50, pp: 15, maxPp: 15, description: "A flowing water attack" },
-            { name: "Splash Verse", type: "Water", power: 60, pp: 10, maxPp: 10, description: "A powerful water attack" },
-            { name: "Rhyme Scheme", type: "Normal", power: 45, pp: 20, maxPp: 20, description: "A normal attack with decent power" },
-            { name: "Deep Current", type: "Water", power: 0, pp: 10, maxPp: 10, effect: 'buff', stat: 'defense', amount: 1.5, description: "Increases the user's defense" }
+            { name: "Cubicle Clapback", type: "Normal", power: 50, pp: 15, maxPp: 15, description: "Office-themed attack with moderate damage." },
+            { name: "Overtime Overload", type: "Electric", power: 65, pp: 10, maxPp: 10, effect: 'status', status: 'paralysis', chance: 0.3, description: "Stressful attack that may cause paralysis." },
+            { name: "PTO Prayer", type: "Normal", power: 0, pp: 5, maxPp: 5, effect: 'heal', amount: 45, description: "Healing move that gives a much-needed break." },
+            { name: "Monday Mayhem", type: "Rock", power: 55, pp: 10, maxPp: 10, description: "Rock-solid attack fueled by beginning-of-week dread." }
           ]
         }
       ];
@@ -1384,12 +1384,12 @@ function createRandomOpponent(zone) {
   
   // Use local sprite options for random enemies - make sure paths are correct
   const spriteOptions = [
-    'public/sprites/og_ras.png',
-    'public/sprites/lil_brick.png',
-    'public/sprites/street_runner.png',
-    'public/sprites/default_npc.png',
-    'public/sprites/rastamon.png',
-    'public/sprites/fitness.png'
+    'sprites/og_ras.png',
+    'sprites/lil_brick.png',
+    'sprites/street_runner.png',
+    'sprites/default_npc.png',
+    'sprites/rastamon.png',
+    'sprites/fitness.png'
   ];
   // Ensure paths are standardized
   const sprite = spriteOptions[Math.floor(Math.random() * spriteOptions.length)];

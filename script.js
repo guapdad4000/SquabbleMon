@@ -2154,6 +2154,28 @@ function standardizeSpritePath(spritePath) {
   // Remove any leading './' prefix
   spritePath = spritePath.replace(/^\.\//, '');
   
+  // Check the location of the main character sprite files
+  // If the file is one of our main character sprites like dj-scratch.png, beatbox-wizard.png, etc.
+  const mainCharacterSprites = [
+    'dj-scratch', 'beatbox-wizard', 'boom-bap', 'copycat', 'flow-master', 
+    'graffiti-king', 'mc-crazy-legs', 'mixtape-master', 'mumble-rapper', 
+    'one-hit-wonder', 'pop-sellout', 'street-styler', 'internet-troll'
+  ];
+  
+  // Check if it's one of the main character sprites (without extension)
+  const isMainCharacter = mainCharacterSprites.some(name => 
+    spritePath === name || 
+    spritePath === name + '.png' || 
+    spritePath.endsWith('/' + name) || 
+    spritePath.endsWith('/' + name + '.png')
+  );
+  
+  if (isMainCharacter) {
+    // Extract just the filename without path or extension
+    const fileName = spritePath.split('/').pop().replace(/\.[^/.]+$/, "");
+    return fileName + '.png'; // These are in the root public folder
+  }
+  
   // Remove any 'public/' or './public/' prefix first to normalize
   spritePath = spritePath.replace(/^(\.\/)?public\//, '');
   
