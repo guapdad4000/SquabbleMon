@@ -1165,12 +1165,14 @@ function createRandomOpponent(zone) {
   const name = namePool[Math.floor(Math.random() * namePool.length)];
   const type = types[Math.floor(Math.random() * types.length)];
   
-  // Use local sprite options for random enemies
+  // Use local sprite options for random enemies - make sure paths are correct
   const spriteOptions = [
-    './public/sprites/og_ras.png',
-    './public/sprites/lil_brick.png',
-    './public/sprites/street_runner.png',
-    './public/sprites/default_npc.png'
+    'public/sprites/og_ras.png',
+    'public/sprites/lil_brick.png',
+    'public/sprites/street_runner.png',
+    'public/sprites/default_npc.png',
+    'public/sprites/rastamon.png',
+    'public/sprites/fitness.png'
   ];
   const sprite = spriteOptions[Math.floor(Math.random() * spriteOptions.length)];
   

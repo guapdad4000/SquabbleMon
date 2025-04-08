@@ -38,8 +38,8 @@ const characters = [
   {
     id: 1,
     name: "Rastamon",
-    sprite: "./public/sprites/rastamon.png", 
-    image: "./public/sprites/rastamon.png", 
+    sprite: "public/sprites/rastamon.png", 
+    image: "public/sprites/rastamon.png", 
     hp: 200,
     attack: 150,
     defense: 130,
@@ -58,8 +58,8 @@ const characters = [
   {
     id: 2,
     name: "Fitness Bro",
-    sprite: "./public/sprites/fitness.png", 
-    image: "./public/sprites/fitness.png", 
+    sprite: "public/sprites/fitness.png", 
+    image: "public/sprites/fitness.png", 
     hp: 230,
     attack: 170,
     defense: 130,
@@ -2176,10 +2176,25 @@ function startBattle() {
   playerTeam.forEach(character => {
     // Set maxHp for each character if not already set
     character.maxHp = character.maxHp || character.hp;
+    // Make sure sprite paths are valid
+    if (character.sprite && !character.sprite.startsWith('http')) {
+      // Use relative paths correctly
+      character.sprite = character.sprite.replace(/^\.\//, '');
+    }
   });
   
-  activePlayerCharacter = { ...playerTeam[0] };
-  activeOpponent = { ...opponents[opponentIndex] };
+  // Deep clone to avoid reference issues
+  activePlayerCharacter = JSON.parse(JSON.stringify(playerTeam[0]));
+  
+  // For opponent, check if it's an NPC battle or regular battle
+  if (window.activeOpponent && window.activeOpponent.name) {
+    // NPC battle - deep clone to avoid reference issues
+    activeOpponent = JSON.parse(JSON.stringify(window.activeOpponent));
+    console.log("Using NPC opponent:", activeOpponent.name);
+  } else {
+    // Regular battle - use the opponent from the opponents array
+    activeOpponent = JSON.parse(JSON.stringify(opponents[opponentIndex]));
+  }
   
   // Set maxHp for opponent
   activeOpponent.maxHp = activeOpponent.maxHp || activeOpponent.hp;
@@ -2285,12 +2300,40 @@ function updateBattleUI() {
   
   // Update HP display using maxHp
   document.getElementById("player-hp").textContent = `${activePlayerCharacter.hp}/${activePlayerCharacter.maxHp}`;
-  document.getElementById("player-sprite").src = activePlayerCharacter.sprite;
+  
+  // Debug sprite paths
+  console.log("Player sprite path:", activePlayerCharacter.sprite);
+  console.log("Opponent sprite path:", activeOpponent.sprite);
+  
+  // Make sure sprite paths are correct and exist
+  const playerSprite = document.getElementById("player-sprite");
+  playerSprite.src = activePlayerCharacter.sprite;
+  playerSprite.onerror = function() {
+    console.error("Failed to load player sprite:", activePlayerCharacter.sprite);
+    // Try with a fallback path format
+    if (!activePlayerCharacter.sprite.startsWith('./public/')) {
+      const fallbackPath = './public/' + activePlayerCharacter.sprite;
+      console.log("Trying fallback player sprite path:", fallbackPath);
+      playerSprite.src = fallbackPath;
+    }
+  };
   
   // Update opponent display
   document.getElementById("opponent-name").textContent = activeOpponent.name;
   document.getElementById("opponent-hp").textContent = `${activeOpponent.hp}/${activeOpponent.maxHp}`;
-  document.getElementById("opponent-sprite").src = activeOpponent.sprite;
+  
+  // Handle opponent sprite with error handling
+  const opponentSprite = document.getElementById("opponent-sprite");
+  opponentSprite.src = activeOpponent.sprite;
+  opponentSprite.onerror = function() {
+    console.error("Failed to load opponent sprite:", activeOpponent.sprite);
+    // Try with a fallback path format
+    if (!activeOpponent.sprite.startsWith('./public/')) {
+      const fallbackPath = './public/' + activeOpponent.sprite;
+      console.log("Trying fallback opponent sprite path:", fallbackPath);
+      opponentSprite.src = fallbackPath;
+    }
+  };
   
   // Update HP bars using maxHp directly
   document.getElementById("player-hp-fill").style.width = `${(activePlayerCharacter.hp / activePlayerCharacter.maxHp) * 100}%`;
