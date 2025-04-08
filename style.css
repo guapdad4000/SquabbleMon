@@ -332,8 +332,8 @@ body {
 #battle-screen {
   width: 95vw;
   max-width: 700px; /* Slightly smaller to match selection screen */
-  height: 570px; /* Slightly smaller height */
-  max-height: 85vh; /* Reduced height to avoid scrollbars */
+  height: 700px; /* Increased height to accommodate larger player sprite */
+  max-height: 90vh; /* Increased max height */
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
@@ -451,8 +451,6 @@ body {
 #player-platform,
 #opponent-platform {
   position: absolute;
-  height: 48px;
-  width: 192px;
   background-image: url("https://i.imgur.com/fEPAiIJ.png");
   background-size: contain;
   background-repeat: no-repeat;
@@ -462,11 +460,19 @@ body {
   z-index: 2; /* Below characters but above background */
   image-rendering: pixelated;
 }
+
+/* Much larger platform for player */
 #player-platform {
+  height: 72px; /* 50% larger */
+  width: 288px; /* 50% larger */
   bottom: 3%;
-  left: 8%;
+  left: 5%; /* Match player area position */
 }
+
+/* Standard platform for opponent */
 #opponent-platform {
+  height: 48px;
+  width: 192px;
   top: 35%; /* Lowered further to fix position */
   right: 8%;
 }
@@ -475,19 +481,23 @@ body {
 #player-area,
 #opponent-area {
   position: absolute;
-  width: 180px;
   display: flex;
   flex-direction: column;
   align-items: center;
   z-index: 5;
-  min-height: 280px; /* Set minimum height for better spacing */
 }
+
 #player-area {
-  bottom: calc(5% + 20px);
-  left: 9%;
+  width: 320px; /* Wider for player area to match larger sprite */
+  min-height: 350px; /* Taller for player area */
+  bottom: calc(2% + 20px); /* Move player area down slightly */
+  left: 5%; /* Move player area left for more space */
   justify-content: flex-end; /* Align content to bottom */
 }
+
 #opponent-area {
+  width: 180px; /* Standard width for opponent */
+  min-height: 250px; /* Standard height for opponent */
   top: 7%; /* Adjusted top further up */
   right: 9%;
   justify-content: flex-start; /* Align content to top */
@@ -496,10 +506,10 @@ body {
 /* Sprites */
 #player-sprite,
 #opponent-sprite {
-  max-width: 180px; /* Increased max-width */
-  max-height: 180px; /* Increased max-height */
-  width: 160px; /* Increased width for better visibility */
-  height: 160px; /* Increased height to match width */
+  max-width: 160px; /* Standard size for opponent */
+  max-height: 160px; /* Standard size for opponent */
+  width: 120px; /* Smaller width for opponent */
+  height: 120px; /* Smaller height for opponent */
   object-fit: contain;
   z-index: 10;
   position: relative;
@@ -514,11 +524,26 @@ body {
   margin: 0 auto; /* Center the sprite */
 }
 
+/* Make player sprites MUCH larger (300%) */
+#player-sprite {
+  max-width: 320px !important; /* Much larger for player */
+  max-height: 320px !important; /* Much larger for player */
+  width: 300px !important; /* Much larger for player - 300% of opponent */
+  height: 300px !important; /* Much larger for player - 300% of opponent */
+}
+
 /* Special handling for local file sprites */
-#player-sprite[src^="public/"],
 #opponent-sprite[src^="public/"] {
-  width: 180px; /* Even larger for local sprites */
-  height: 180px; /* Match width */
+  width: 120px; /* Standard size for opponent with local files */
+  height: 120px; /* Standard size for opponent */
+  object-fit: contain;
+  transform-origin: bottom center;
+}
+
+/* Special handling for local file player sprites */
+#player-sprite[src^="public/"] {
+  width: 300px !important; /* Much larger for player - 300% */
+  height: 300px !important; /* Much larger for player - 300% */
   object-fit: contain;
   transform-origin: bottom center;
 }
@@ -616,7 +641,7 @@ body {
   order: 4;
   margin-top: 5px;
   width: 100%;
-  height: 180px; /* Increased to match larger sprite size */
+  height: 300px; /* Increased to match much larger player sprite */
   text-align: center;
   display: flex;
   justify-content: center;
@@ -627,7 +652,7 @@ body {
   order: 1;
   margin-bottom: 5px;
   width: 100%;
-  height: 180px; /* Increased to match larger sprite size */
+  height: 120px; /* Decreased for smaller opponent sprites */
   text-align: center;
   display: flex;
   justify-content: center;
