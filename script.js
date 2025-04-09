@@ -6026,7 +6026,33 @@ function openShop(shop) {
 
 // Close shop
 function closeShop() {
-  document.getElementById("shop-screen").style.display = "none";
+  console.log("Closing shop and returning to overworld");
+  
+  // Hide the shop screen
+  const shopScreen = document.getElementById("shop-screen");
+  if (shopScreen) {
+    shopScreen.style.display = "none";
+  }
+  
+  // Show the overworld container
+  const overworldContainer = document.getElementById("overworld-container");
+  if (overworldContainer) {
+    overworldContainer.style.display = "block";
+  }
+  
+  // For compatibility with different systems, also try alternate containers
+  const exploreContainer = document.getElementById("explore-mode-container");
+  if (exploreContainer) {
+    exploreContainer.style.display = "block";
+  }
+  
+  // Make sure battle screen is hidden
+  const battleScreen = document.getElementById("battle-screen");
+  if (battleScreen) {
+    battleScreen.style.display = "none";
+  }
+  
+  console.log("Shop closed, overworld displayed");
 }
 
 // Buy an item from the shop

@@ -933,9 +933,19 @@ const NewOverworldSystem = (function() {
   function handleKeyDown(e) {
     console.log("Overworld keydown:", e.key);
     
-    // In dialogue mode, only handle action key
+    // In dialogue mode, handle both action key and escape/B keys
     if (dialogueBox && dialogueBox.style.display !== 'none') {
       console.log("In dialogue mode, handling:", e.key);
+      
+      // Escape or B button closes the dialogue immediately
+      if (e.key === 'Escape' || e.key === 'B' || e.key === 'b') {
+        console.log("Closing dialogue with escape/B key");
+        dialogueBox.style.display = 'none';
+        currentDialogueNpc = null;
+        return;
+      }
+      
+      // Action keys advance dialogue
       if (e.key === ' ' || e.key === 'Enter' || e.key === 'e' || e.key === 'E' || e.key === 'A' || e.key === 'a') {
         console.log("Advancing dialogue with key:", e.key);
         advanceDialogue();
