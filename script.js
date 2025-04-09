@@ -2963,6 +2963,10 @@ function updateBattleUI() {
   const existingPlayerContainer = document.getElementById("player-sprite-container");
   const existingOpponentContainer = document.getElementById("opponent-sprite-container");
   
+  // Also clean up any leftover player-area and opponent-area
+  const existingPlayerArea = document.getElementById("player-area");
+  const existingOpponentArea = document.getElementById("opponent-area");
+  
   if (existingPlayerContainer) {
     console.log("Removing existing player sprite container");
     existingPlayerContainer.remove();
@@ -2971,6 +2975,28 @@ function updateBattleUI() {
   if (existingOpponentContainer) {
     console.log("Removing existing opponent sprite container");
     existingOpponentContainer.remove();
+  }
+  
+  if (existingPlayerArea) {
+    console.log("Removing existing player area");
+    existingPlayerArea.remove();
+  }
+  
+  if (existingOpponentArea) {
+    console.log("Removing existing opponent area");
+    existingOpponentArea.remove();
+  }
+  
+  // Clean up any leftover platforms
+  const existingPlayerPlatform = document.getElementById("player-platform");
+  const existingOpponentPlatform = document.getElementById("opponent-platform");
+  
+  if (existingPlayerPlatform) {
+    existingPlayerPlatform.remove();
+  }
+  
+  if (existingOpponentPlatform) {
+    existingOpponentPlatform.remove();
   }
   
   // Get the parent container for our sprites
@@ -3022,7 +3048,27 @@ function updateBattleUI() {
     // Special handling for Fitness Bro
     if (activePlayerCharacter.name === "Fitness Bro") {
       console.log("⚡ Setting HARDCODED Fitness Bro sprite source immediately");
+      // Use direct URL, preloaded image, and set both src and srcset for maximum compatibility
       playerSprite.src = "https://i.imgur.com/qxnS0SH.png";
+      playerSprite.srcset = "https://i.imgur.com/qxnS0SH.png";
+      playerSprite.style.height = "220px";
+      playerSprite.style.width = "220px";
+      
+      // Force image to display
+      playerSprite.style.display = "block";
+      playerSprite.style.visibility = "visible";
+      playerSprite.style.opacity = "1";
+      
+      // Set a background color that matches Fitness Bro to prevent blank spots
+      playerSpriteContainer.style.backgroundColor = "transparent";
+      
+      // Also set image directly
+      if (window.PRELOADED_FITNESS_BRO) {
+        console.log("Using preloaded Fitness Bro image");
+        setTimeout(() => {
+          playerSprite.src = window.PRELOADED_FITNESS_BRO.src;
+        }, 100);
+      }
     } else {
       playerSprite.src = standardizeSpritePath(activePlayerCharacter.sprite);
     }

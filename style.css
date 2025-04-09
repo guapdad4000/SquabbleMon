@@ -2283,6 +2283,9 @@ body {
   visibility: visible !important;
   opacity: 1 !important;
   pointer-events: none !important; /* Allow clicks through to buttons */
+  background-color: transparent !important; /* No background */
+  border: none !important; /* No border */
+  box-shadow: none !important; /* No shadow */
 }
 
 #battle-background #opponent-sprite-container,
@@ -2299,6 +2302,9 @@ body {
   visibility: visible !important;
   opacity: 1 !important;
   pointer-events: none !important; /* Allow clicks through to buttons */
+  background-color: transparent !important; /* No background */
+  border: none !important; /* No border */
+  box-shadow: none !important; /* No shadow */
 }
 
 /* Global fix for all battle sprite images */
@@ -2309,4 +2315,12 @@ body {
   opacity: 1 !important;
   position: relative !important;
   z-index: 100 !important;
+}
+
+/* Remove any platform and area decorations */
+#player-platform, #opponent-platform, #player-area, #opponent-area {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
 }

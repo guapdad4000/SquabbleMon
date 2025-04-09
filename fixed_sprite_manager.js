@@ -3,6 +3,17 @@
  * A robust, error-resistant sprite management system
  */
 
+// Explicitly preload Fitness Bro sprite to ensure it's available
+(function preloadFitnessBro() {
+  const fitnessBroUrl = "https://i.imgur.com/qxnS0SH.png";
+  const img = new Image();
+  img.src = fitnessBroUrl;
+  console.log("Preloading Fitness Bro sprite:", fitnessBroUrl);
+  
+  // Save to window for direct access
+  window.PRELOADED_FITNESS_BRO = img;
+})();
+
 (function() {
   // Debug mode
   const DEBUG = true;
