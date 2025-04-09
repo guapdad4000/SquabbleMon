@@ -2636,8 +2636,39 @@ function startBattle() {
     if (typeof ensureBattleSpritesVisible === 'function') {
       console.log("Running battle sprite visibility fix");
       ensureBattleSpritesVisible();
+      
+      // ADDITIONAL DIRECT FIX FOR FITNESS BRO - Force specific character sprites
+      const playerSprite = document.getElementById("player-sprite");
+      if (playerSprite && activePlayerCharacter) {
+        // Force explicit sprite URL - especially for Fitness Bro
+        if (activePlayerCharacter.name === "Fitness Bro") {
+          console.log("🔥 FORCING FITNESS BRO SPRITE");
+          playerSprite.src = "https://i.imgur.com/qxnS0SH.png"; // Fitness Bro direct URL
+        } else if (activePlayerCharacter.sprite) {
+          playerSprite.src = standardizeSpritePath(activePlayerCharacter.sprite);
+        }
+        
+        // Force visibility again
+        playerSprite.style.display = "block";
+        playerSprite.style.visibility = "visible";
+        playerSprite.style.opacity = "1";
+      }
     } else {
       console.warn("ensureBattleSpritesVisible function not available yet");
+      
+      // Fallback direct sprite forcing since the function isn't available
+      const playerSprite = document.getElementById("player-sprite");
+      if (playerSprite && activePlayerCharacter) {
+        console.log("🔧 Direct sprite fallback for:", activePlayerCharacter.name);
+        if (activePlayerCharacter.name === "Fitness Bro") {
+          playerSprite.src = "https://i.imgur.com/qxnS0SH.png";
+        } else if (activePlayerCharacter.sprite) {
+          playerSprite.src = activePlayerCharacter.sprite;
+        }
+        playerSprite.style.display = "block";
+        playerSprite.style.visibility = "visible";
+        playerSprite.style.opacity = "1";
+      }
     }
   }, 300);
   
@@ -2665,8 +2696,15 @@ function startBattle() {
   playerTeam.forEach(character => {
     // Set maxHp for each character if not already set
     character.maxHp = character.maxHp || character.hp;
-    // Standardize sprite paths for all characters
-    character.sprite = standardizeSpritePath(character.sprite);
+    
+    // Special case for Fitness Bro
+    if (character.name === "Fitness Bro") {
+      console.log("💪 Setting hardcoded Fitness Bro sprite path");
+      character.sprite = "https://i.imgur.com/qxnS0SH.png";
+    } else {
+      // Standardize sprite paths for all other characters
+      character.sprite = standardizeSpritePath(character.sprite);
+    }
   });
   
   // Debug sprite paths before creating the active player character
@@ -2705,6 +2743,12 @@ function startBattle() {
   
   // Deep clone to avoid reference issues
   activePlayerCharacter = JSON.parse(JSON.stringify(playerTeam[0]));
+  
+  // Special handling for Fitness Bro and explicit sprite assignment
+  if (activePlayerCharacter.name === "Fitness Bro") {
+    console.log("⚠️ Ensuring Fitness Bro sprite is explicitly set on activePlayerCharacter");
+    activePlayerCharacter.sprite = "https://i.imgur.com/qxnS0SH.png";
+  }
   
   // For opponent, check if it's an NPC battle or regular battle
   if (window.activeOpponent && window.activeOpponent.name) {
