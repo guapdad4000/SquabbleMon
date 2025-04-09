@@ -805,7 +805,7 @@ body {
   width: 100%;
   padding: 2px;
   position: relative;
-  z-index: 10;
+  z-index: 600; /* Much higher z-index to appear above sprites */
   max-height: 130px; /* Fixed at 130px as requested */
   display: grid;
   grid-template-columns: 2fr 1fr; /* Adjusted ratio to give more space to moves/items */
@@ -824,7 +824,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  z-index: 20;
+  z-index: 700; /* Even higher z-index than menu */
 }
 
 #battle-log {
@@ -2279,9 +2279,10 @@ body {
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;
-  z-index: 50 !important;
+  z-index: 500 !important; /* Much higher z-index */
   visibility: visible !important;
   opacity: 1 !important;
+  pointer-events: none !important; /* Allow clicks through to buttons */
 }
 
 #battle-background #opponent-sprite-container,
@@ -2294,9 +2295,10 @@ body {
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;
-  z-index: 50 !important;
+  z-index: 400 !important; /* High z-index but lower than player */
   visibility: visible !important;
   opacity: 1 !important;
+  pointer-events: none !important; /* Allow clicks through to buttons */
 }
 
 /* Global fix for all battle sprite images */

@@ -2996,7 +2996,8 @@ function updateBattleUI() {
   playerSpriteContainer.style.bottom = "20%";
   playerSpriteContainer.style.justifyContent = "center";
   playerSpriteContainer.style.alignItems = "center";
-  playerSpriteContainer.style.zIndex = "50";
+  playerSpriteContainer.style.zIndex = "500"; // Much higher z-index
+  playerSpriteContainer.style.pointerEvents = "none"; // Allow clicks through
   
   // Add to battle container
   container.appendChild(playerSpriteContainer);
@@ -3053,7 +3054,8 @@ function updateBattleUI() {
   opponentSpriteContainer.style.top = "20%";
   opponentSpriteContainer.style.justifyContent = "center";
   opponentSpriteContainer.style.alignItems = "center";
-  opponentSpriteContainer.style.zIndex = "50";
+  opponentSpriteContainer.style.zIndex = "400"; // Higher z-index
+  opponentSpriteContainer.style.pointerEvents = "none"; // Allow clicks through
   
   // Add to battle container
   container.appendChild(opponentSpriteContainer);
