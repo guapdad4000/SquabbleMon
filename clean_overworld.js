@@ -775,14 +775,21 @@ const NewOverworldSystem = (function() {
       return spritePath;
     }
     
-    // Check if we have NPC_SPRITES available from our new module
-    if (typeof NPC_SPRITES !== 'undefined') {
+    // Check if we have NPC_SPRITES available as a global object
+    if (typeof window.NPC_SPRITES !== 'undefined') {
       // Try to match with a sprite id
-      for (const key in NPC_SPRITES) {
-        if (key === spritePath || NPC_SPRITES[key].name.toLowerCase() === spritePath.toLowerCase()) {
-          console.log("Found NPC sprite match:", spritePath, "->", NPC_SPRITES[key].sprite);
-          return NPC_SPRITES[key].sprite;
+      for (const key in window.NPC_SPRITES) {
+        // Direct access to NPC_SPRITES since they're now stored as direct URLs
+        if (key.toLowerCase() === spritePath.toLowerCase()) {
+          console.log("Found NPC sprite match:", spritePath, "->", window.NPC_SPRITES[key]);
+          return window.NPC_SPRITES[key];
         }
+      }
+      
+      // Special direct check for Fitness Bro
+      if (spritePath.toLowerCase().includes('fitness')) {
+        console.log("Found Fitness Bro via special check");
+        return "https://i.imgur.com/qxnS0SH.png";
       }
     }
     
