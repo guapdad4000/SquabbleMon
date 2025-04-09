@@ -2315,12 +2315,64 @@ body {
   opacity: 1 !important;
   position: relative !important;
   z-index: 100 !important;
+  object-fit: contain !important; /* Ensure sprite fits within container */
 }
 
-/* Remove any platform and area decorations */
-#player-platform, #opponent-platform, #player-area, #opponent-area {
+/* Specific sizes to ensure better proportions */
+#player-sprite {
+  max-width: 170px !important;
+  max-height: 170px !important;
+}
+
+#opponent-sprite {
+  max-width: 140px !important;
+  max-height: 140px !important;
+}
+
+/* Platform styling - more subtle and modern pixel look */
+#player-platform, #opponent-platform {
+  width: 100% !important;
+  height: 10px !important;
+  background-color: rgba(60, 60, 60, 0.7) !important;
+  border-top: 2px solid #666 !important;
+  border-radius: 2px !important;
+  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.2) !important;
+  margin-top: 10px !important;
+  position: absolute !important;
+  bottom: 10px !important;
+  left: 0 !important;
+  z-index: 90 !important; /* Below sprite but above background */
+}
+
+/* Remove any area decorations that might cause the floating box */
+#player-area, #opponent-area {
   background-color: transparent !important;
   border: none !important;
   box-shadow: none !important;
   outline: none !important;
+}
+
+/* Mobile Controls Container - Hide in battle mode */
+#mobile-controls-container,
+#mobile-controls-frame {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  width: 0 !important;
+  overflow: hidden !important;
+  position: absolute !important;
+  z-index: -999 !important;
+}
+
+/* Only show mobile controls when explicitly enabled */
+body.mobile-controls-active #mobile-controls-container,
+body.mobile-controls-active #mobile-controls-frame {
+  display: block !important;
+  visibility: visible !important;
+  height: 120px !important;
+  width: 100% !important;
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  z-index: 9999 !important;
 }
