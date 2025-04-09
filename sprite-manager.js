@@ -25,13 +25,20 @@ const NINJA_CHARACTER_SPRITES = {
   ]
 };
 
-// NPC character sprites
-const NPC_SPRITES = {
-  'OG Ras': 'public/sprites/og_ras.png',
-  'Lil Brick': 'public/sprites/lil_brick.png',
-  'Street Runner': 'public/sprites/street_runner.png',
-  'Default': 'public/sprites/default_npc.png'
-};
+// NPC character sprites - check if already defined in window
+if (typeof window.NPC_SPRITES === 'undefined') {
+  window.NPC_SPRITES = {
+    'OG Ras': 'public/sprites/og_ras.png',
+    'Lil Brick': 'public/sprites/lil_brick.png',
+    'Street Runner': 'public/sprites/street_runner.png',
+    'Default': 'public/sprites/default_npc.png',
+    // Add Fitness Bro directly for easy access
+    'Fitness Bro': 'https://i.imgur.com/qxnS0SH.png',
+    'fitness': 'https://i.imgur.com/qxnS0SH.png'
+  };
+}
+// Use the global NPC_SPRITES for consistency
+const NPC_SPRITES = window.NPC_SPRITES;
 
 // Animation timers for each character
 const animationTimers = new Map();
