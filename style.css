@@ -568,6 +568,20 @@ body {
   object-fit: contain;
   transform-origin: bottom center;
 }
+
+/* Specific rule for Fitness Bro sprite - URGENT FIX */
+#player-sprite[src*="qxnS0SH"],
+#player-sprite[src*="fitness"] {
+  width: 220px !important;
+  height: 220px !important;
+  object-fit: contain !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 999 !important; /* Extra high z-index to ensure visibility */
+  position: relative !important;
+  background-color: transparent !important; /* Ensure no background color is interfering */
+}
 #opponent-sprite {
   transform: scaleX(-1);
   animation: floatFlipped 2s ease-in-out infinite;

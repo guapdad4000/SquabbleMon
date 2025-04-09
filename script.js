@@ -3013,6 +3013,29 @@ function updateBattleUI() {
   playerSprite.style.height = "220px";
   playerSprite.style.position = "relative";
   playerSprite.style.zIndex = "100";
+  
+  // CRITICAL: Set sprite source immediately when creating element
+  if (activePlayerCharacter) {
+    console.log("Active player found, setting sprite source immediately:", activePlayerCharacter.name);
+    
+    // Special handling for Fitness Bro
+    if (activePlayerCharacter.name === "Fitness Bro") {
+      console.log("⚡ Setting HARDCODED Fitness Bro sprite source immediately");
+      playerSprite.src = "https://i.imgur.com/qxnS0SH.png";
+    } else {
+      playerSprite.src = standardizeSpritePath(activePlayerCharacter.sprite);
+    }
+  }
+  
+  // Add explicit onload handler
+  playerSprite.onload = function() {
+    console.log("Player sprite loaded from initial source setting");
+    playerSprite.style.display = "block";
+    playerSprite.style.visibility = "visible";
+    playerSprite.style.opacity = "1";
+  };
+  
+  // Add to DOM
   playerSpriteContainer.appendChild(playerSprite);
   
   // Create fresh opponent sprite container
