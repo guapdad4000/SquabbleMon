@@ -940,8 +940,7 @@ const NewOverworldSystem = (function() {
       // Escape or B button closes the dialogue immediately
       if (e.key === 'Escape' || e.key === 'B' || e.key === 'b') {
         console.log("Closing dialogue with escape/B key");
-        dialogueBox.style.display = 'none';
-        currentDialogueNpc = null;
+        closeDialogue(); // Use our new function to properly close dialogues
         return;
       }
       
@@ -1237,6 +1236,12 @@ const NewOverworldSystem = (function() {
       return;
     }
     
+    // If already in dialogue with this NPC, don't restart
+    if (currentDialogueNpc === npc && dialogueBox.style.display === 'block') {
+      console.log("Already in dialogue with this NPC, not restarting");
+      return;
+    }
+    
     currentDialogueNpc = npc;
     dialogueIndex = 0;
     
@@ -1303,25 +1308,42 @@ const NewOverworldSystem = (function() {
     
     if (dialogueIndex >= dialogueArray.length) {
       // End of dialogue
-      dialogueBox.style.display = 'none';
-      
-      // Check for post-dialogue actions
-      if (currentDialogueNpc.battleOnEnd) {
-        startNpcBattle(currentDialogueNpc);
-      } else if (currentDialogueNpc.healOnEnd) {
-        if (typeof window.healPlayerTeam === 'function') {
-          window.healPlayerTeam();
-          alert("Your squad has been healed!");
-        }
-      } else if (currentDialogueNpc.isShop) {
-        openShop(currentDialogueNpc.shopType);
-      }
-      
-      currentDialogueNpc = null;
+      closeDialogue();
     } else {
       // Show next dialogue line
       dialogueText.textContent = dialogueArray[dialogueIndex];
     }
+  }
+  
+  /**
+   * Close dialogue and handle any post-dialogue actions
+   */
+  function closeDialogue() {
+    if (!currentDialogueNpc) {
+      dialogueBox.style.display = 'none';
+      return;
+    }
+    
+    dialogueBox.style.display = 'none';
+    
+    // Check for post-dialogue actions
+    if (currentDialogueNpc.battleOnEnd) {
+      startNpcBattle(currentDialogueNpc);
+    } else if (currentDialogueNpc.healOnEnd) {
+      if (typeof window.healPlayerTeam === 'function') {
+        window.healPlayerTeam();
+        alert("Your squad has been healed!");
+      }
+    } else if (currentDialogueNpc.isShop) {
+      openShop(currentDialogueNpc.shopType);
+    }
+    
+    // Reset dialogue state
+    const previousNpc = currentDialogueNpc;
+    currentDialogueNpc = null;
+    dialogueIndex = 0;
+    
+    console.log("Dialogue closed with NPC:", previousNpc.name);
   }
 
   /**
