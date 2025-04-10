@@ -1,0 +1,35 @@
+/* Emergency background fixes with !important and high specificity */
+
+body, html {
+  background: url('https://i.imgur.com/Zg7XCl1.jpg') no-repeat center center fixed !important;
+  background-size: cover !important;
+  background-color: #333 !important;
+}
+
+#mode-selection-screen {
+  background-image: url('https://i.imgur.com/GdNpKUK.jpg') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+#selection-screen {
+  background-image: url('https://i.imgur.com/ZvMKSyp.jpg') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+#battle-screen {
+  background-image: url('https://i.imgur.com/Rb03YLf.jpg') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+#battle-arena {
+  background-image: url('https://i.imgur.com/nY7oky9.jpg') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
