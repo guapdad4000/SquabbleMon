@@ -171,25 +171,45 @@ body {
   width: 100%;
   text-align: center;
   margin-bottom: 20px;
+  padding: 15px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
 }
 
 .selection-header h2 {
   color: white;
   font-size: 24px;
   margin-bottom: 10px;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+  text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #e60073, 0 0 20px #e60073;
   animation: glow 2s ease-in-out infinite;
+  letter-spacing: 1px;
 }
 
 .selection-description {
   color: white;
-  font-size: 16px;
+  font-size: 12px;
   margin-bottom: 20px;
-  text-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
+  text-shadow: 0 0 5px #fff, 0 0 10px #fff;
   animation: textPulse 3s ease-in-out infinite;
-  max-width: 80%;
+  max-width: 85%;
   margin-left: auto;
   margin-right: auto;
+  line-height: 1.4;
+}
+
+.character-desc {
+  color: white;
+  font-size: 10px;
+  margin-top: 5px;
+  font-style: italic;
+  text-align: center;
+  max-height: 40px;
+  overflow: hidden;
+  text-shadow: 0 0 5px #fff, 0 0 10px #fff;
+  line-height: 1.2;
+  animation: textPulse 3s ease-in-out infinite;
+  opacity: 0.9;
 }
 
 .character-card {
