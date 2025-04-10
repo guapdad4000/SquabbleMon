@@ -31,9 +31,12 @@ const PlayerSpriteManager = (function() {
     ]
   };
   
-  // Sprite frame size (pixels)
+  // Sprite frame size (pixels) - based on the provided sprite sheet
   const FRAME_WIDTH = 32;
   const FRAME_HEIGHT = 32;
+  
+  // Set frame count per direction
+  const FRAMES_PER_DIRECTION = 3;
   
   // Animation timing
   const ANIMATION_SPEED = 150; // ms per frame - slightly faster animation
@@ -103,7 +106,8 @@ const PlayerSpriteManager = (function() {
     
     // Set up animation loop
     animationTimer = setInterval(() => {
-      currentFrame = (currentFrame + 1) % SPRITE_FRAMES[currentDirection].length;
+      currentFrame = (currentFrame + 1) % FRAMES_PER_DIRECTION;
+      console.log('[PLAYER SPRITE] Animation frame updated:', currentFrame);
     }, ANIMATION_SPEED);
   }
   
@@ -153,6 +157,19 @@ const PlayerSpriteManager = (function() {
     element.style.imageRendering = 'pixelated';
   }
   
+  /**
+   * Update animation frame - can be called from a game loop for smoother animation
+   */
+  function updateAnimationFrame() {
+    if (isMoving) {
+      // Manually update the frame without waiting for the interval
+      currentFrame = (currentFrame + 1) % FRAMES_PER_DIRECTION;
+      console.log('[PLAYER SPRITE] Manual frame update:', currentFrame);
+      return true;
+    }
+    return false;
+  }
+  
   // Public API
   return {
     init,
@@ -160,6 +177,7 @@ const PlayerSpriteManager = (function() {
     startAnimation,
     stopAnimation,
     applyToElement,
+    updateAnimationFrame,
     isLoaded: () => spriteSheetLoaded
   };
 })();

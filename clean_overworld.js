@@ -626,6 +626,9 @@ const NewOverworldSystem = (function () {
 
       // Set up controls
       setupControls();
+      
+      // Start animation game loop for player sprite
+      startAnimationLoop();
 
       console.log("Overworld initialized successfully");
     }
@@ -1175,6 +1178,13 @@ const NewOverworldSystem = (function () {
         // Update the player direction in the sprite manager
         PlayerSpriteManager.setDirection(player.direction);
         
+        // Start animation if player is moving
+        if (player.moving && PlayerSpriteManager.isLoaded()) {
+          // We don't call startAnimation here since it's already started in attemptMove
+          // This just ensures the animation visuals are applied
+          console.log("Player is moving, applying animation frame");
+        }
+        
         // Apply the sprite to the player element
         PlayerSpriteManager.applyToElement(playerSprite);
         
@@ -1182,7 +1192,7 @@ const NewOverworldSystem = (function () {
         playerSprite.style.width = "64px";
         playerSprite.style.height = "64px";
         
-        console.log("Using animated player sprite sheet");
+        console.log("Using dedicated player sprite manager");
       } else {
         // Fallback to static sprite if sprite manager not loaded
         const playerOverworldSprite = "https://i.imgur.com/FjAwMlb.png";
