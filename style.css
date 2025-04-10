@@ -110,43 +110,70 @@ body {
 #selection-screen::-webkit-scrollbar-track {
   background-color: #333;
 }
-/* Selection screen layout */
+/* Selection screen layout - Single Column Version */
+#selection-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  height: 100%;
+  overflow-y: auto;
+  background-image: url('https://i.imgur.com/ZvMKSyp.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
 .selection-container {
   display: flex;
+  flex-direction: column;
   width: 100%;
+  max-width: 500px;
   height: 100%;
+  margin: 0 auto;
 }
 
 .selection-side-text {
-  width: 28%;
-  padding: 40px 15px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
+  text-align: center;
+  margin-bottom: 15px;
+  padding: 10px;
 }
 
 .selection-main {
-  width: 72%;
-  height: 100%;
   display: flex;
   flex-direction: column;
-  background-color: rgba(20, 0, 40, 0.75);
-  border-left: 2px solid rgba(255, 255, 255, 0.2);
-  box-shadow: -5px 0 20px rgba(0, 0, 0, 0.5);
-  padding: 20px;
+  background-color: rgba(20, 0, 40, 0.8);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  padding: 15px;
+  flex: 1;
+}
+
+.selection-info-box {
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+#character-list {
+  overflow-y: auto;
+  flex: 1;
 }
 
 .team-section {
   margin-top: 20px;
   text-align: center;
+  padding: 10px;
+  background-color: rgba(40, 0, 60, 0.7);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .action-buttons {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   margin-top: 20px;
-  padding: 0 30px;
+  padding: 0 10px;
+  width: 100%;
 }
 
 #selection-screen h1 {
@@ -196,17 +223,17 @@ body {
 
 #character-list {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
+  flex-direction: column; /* Vertical layout */
+  align-items: center;
+  gap: 8px;
   width: 100%;
   background-color: rgba(20, 0, 40, 0.7);
   border: 2px solid #4a148c;
   border-radius: 6px;
-  height: 400px;
+  height: 350px;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 15px;
+  padding: 10px;
   scrollbar-width: thin;
   scrollbar-color: #6d28d9 #210a40;
 }
@@ -271,18 +298,17 @@ body {
 
 .character-card {
   cursor: pointer;
-  padding: 5px;
+  padding: 8px;
   border: 2px solid var(--pixel-border);
   background-color: var(--pixel-bg-light);
   color: var(--pixel-text);
   transition: transform 0.1s linear, box-shadow 0.1s linear;
-  flex-basis: 80px; /* Match screenshot width */
-  flex-grow: 0;
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
+  width: 95%; /* Take most of container width */
+  display: flex; /* Row layout */
+  flex-direction: row; /* Items side by side */
   align-items: center;
-  text-align: center;
+  text-align: left;
+  border-radius: 4px;
   image-rendering: pixelated;
 }
 
@@ -300,36 +326,39 @@ body {
 }
 
 .character-card img {
-  width: 60px; /* Match screenshot size */
-  height: 60px; /* Match screenshot size */
+  width: 50px; /* Smaller for row layout */
+  height: 50px;
   object-fit: contain;
   display: block;
-  margin-bottom: 5px;
+  margin-right: 10px; /* Space between image and text */
   background-color: #e0e0e0;
   border: 1px solid #a0a0a0;
+  border-radius: 4px;
 }
+
+.character-card .card-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
 .character-card p {
   margin: 0;
-  font-size: 0.85em; /* Slightly larger text */
+  font-size: 1em; /* Larger text for easier reading */
   font-family: inherit;
-  line-height: 1.2; /* Better line spacing */
-  width: 100%;
-  padding: 2px 0;
-  color: #222; /* Darker text for better contrast */
-  font-weight: bold; /* Make text bolder */
+  line-height: 1.2;
+  color: #222;
+  font-weight: bold;
 }
 
 .character-card .character-desc {
-  font-size: 9px;
+  font-size: 0.75em;
   font-weight: normal;
-  color: #444;
+  color: #333;
   margin-top: 3px;
-  padding: 0 5px;
-  text-align: center;
-  height: 40px;
   overflow: hidden;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
 
