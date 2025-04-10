@@ -223,17 +223,17 @@ body {
 
 #character-list {
   display: flex;
-  flex-direction: column; /* Vertical layout */
-  align-items: center;
-  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
   width: 100%;
   background-color: rgba(20, 0, 40, 0.7);
   border: 2px solid #4a148c;
   border-radius: 6px;
-  height: 350px;
+  height: 450px;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 10px;
+  padding: 15px;
   scrollbar-width: thin;
   scrollbar-color: #6d28d9 #210a40;
 }
@@ -298,68 +298,56 @@ body {
 
 .character-card {
   cursor: pointer;
-  padding: 8px;
+  padding: 5px;
+  width: 100px;
+  height: 120px;
   border: 2px solid var(--pixel-border);
   background-color: var(--pixel-bg-light);
   color: var(--pixel-text);
-  transition: transform 0.1s linear, box-shadow 0.1s linear;
-  width: 95%; /* Take most of container width */
-  display: flex; /* Row layout */
-  flex-direction: row; /* Items side by side */
+  transition: transform 0.1s ease-out, box-shadow 0.1s ease-out;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  text-align: left;
-  border-radius: 4px;
+  text-align: center;
   image-rendering: pixelated;
+  position: relative;
 }
 
 .character-card:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: 2px 2px 0px 0px var(--pixel-border);
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
   border-color: var(--pixel-accent);
+  z-index: 2;
 }
 
 .character-card.selected {
-  border-color: #4caf50;
-  background-color: #c6f6d5;
-  box-shadow: inset 0 0 0 2px #4caf50, 
-              1px 1px 3px rgba(0, 0, 0, 0.2);
+  border: 2px solid #4caf50;
+  background-color: #e0f2e3;
+  box-shadow: 0 0 10px #4caf50;
 }
 
 .character-card img {
-  width: 50px; /* Smaller for row layout */
-  height: 50px;
+  width: 70px;
+  height: 70px;
   object-fit: contain;
   display: block;
-  margin-right: 10px; /* Space between image and text */
-  background-color: #e0e0e0;
-  border: 1px solid #a0a0a0;
-  border-radius: 4px;
-}
-
-.character-card .card-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
+  margin-bottom: 5px;
+  background-color: #dddddd;
+  border: 1px solid #999999;
 }
 
 .character-card p {
   margin: 0;
-  font-size: 1em; /* Larger text for easier reading */
+  padding: 0;
+  font-size: 0.85em;
   font-family: inherit;
-  line-height: 1.2;
+  line-height: 1.1;
   color: #222;
   font-weight: bold;
 }
 
 .character-card .character-desc {
-  font-size: 0.75em;
-  font-weight: normal;
-  color: #333;
-  margin-top: 3px;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+  display: none; /* Hide description - not shown in grid layout */
 }
 
 @keyframes textPulse {

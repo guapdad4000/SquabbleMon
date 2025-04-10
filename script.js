@@ -2142,8 +2142,8 @@ function populateCharacterSelection() {
   const selectionTitle = document.createElement("div");
   selectionTitle.className = "selection-header";
   selectionTitle.innerHTML = `
-    <h2>Select Your Squad</h2>
-    <p class="selection-description">Choose three characters to form your team. Each has unique strengths and abilities.</p>
+    <h2>Build Your Gang (Pick 3)</h2>
+    <p class="selection-description">Click on 3 characters to form your squad. Hover to see stats!</p>
   `;
   characterList.appendChild(selectionTitle);
   
