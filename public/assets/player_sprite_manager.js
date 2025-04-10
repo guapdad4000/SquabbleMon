@@ -32,9 +32,9 @@ const PlayerSpriteManager = (function() {
     ]
   };
   
-  // Sprite frame size (pixels) - measured from the sprite sheet
-  const FRAME_WIDTH = 32;
-  const FRAME_HEIGHT = 32;
+  // Sprite frame size (pixels) - adjusted based on the actual dimensions of the sprite sheet
+  const FRAME_WIDTH = 48;
+  const FRAME_HEIGHT = 56;
   
   // Number of frames per direction
   const FRAMES_PER_DIRECTION = 3;
@@ -154,8 +154,15 @@ const PlayerSpriteManager = (function() {
     element.style.backgroundSize = frameCSS.backgroundSize;
     element.style.backgroundRepeat = 'no-repeat';
     
+    // Set appropriate element size to fit the sprite
+    element.style.width = '48px';
+    element.style.height = '56px';
+    
     // Add additional styling for pixel art
     element.style.imageRendering = 'pixelated';
+    
+    // Set player sprite z-index to be above the map
+    element.style.zIndex = '10';
   }
   
   /**
