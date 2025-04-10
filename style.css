@@ -509,17 +509,19 @@ body {
 #player-area {
   width: 320px; /* Wider for player area to match larger sprite */
   min-height: 350px; /* Taller for player area */
-  bottom: calc(2% + 25px); /* Positioned down 25px from original as requested */
-  left: calc(5% - 10px); /* Positioned 10px left from original as requested */
+  bottom: 5%; /* Much more visible adjustment: moved down */
+  left: 2%; /* Much more visible adjustment: shifted more to the left */
   justify-content: flex-end; /* Align content to bottom */
+  transform: translateX(-10px) translateY(25px); /* Explicit offset as requested: 10px left, 25px down */
 }
 
 #opponent-area {
   width: 180px; /* Standard width for opponent */
   min-height: 250px; /* Standard height for opponent */
   top: 7%; /* Adjusted top further up */
-  right: calc(9% - 5px); /* Positioned 5px to the right of original position */
+  right: 5%; /* Much more visible adjustment: moved right */
   justify-content: flex-start; /* Align content to top */
+  transform: translateX(5px); /* Explicit 5px rightward shift as requested */
 }
 
 /* Sprites */
@@ -935,6 +937,54 @@ body {
   text-transform: uppercase; /* All caps for retro feel */
   box-shadow: 2px 2px 0px rgba(0,0,0,0.3); /* Add shadow for depth */
   text-shadow: 1px 1px 1px rgba(0,0,0,0.5); /* Add text shadow for better readability */
+  transition: all 0.2s ease;
+}
+
+/* Selected button state */
+.move-button.selected, 
+.item-button.selected {
+  background-color: #FF9900; /* Orange for selected buttons */
+  border-color: #CC7700;
+  box-shadow: 0 0 10px #FF9900; /* Glow effect */
+  transform: scale(1.05); /* Slightly larger */
+  z-index: 20; /* Ensure it's on top */
+}
+
+/* Hovered button state */
+.move-button:hover:not(.disabled), 
+.item-button:hover:not(.disabled) {
+  background-color: #5ff099; /* Lighter green */
+  border-color: #4aba77;
+  box-shadow: 0 0 8px rgba(75, 219, 136, 0.5); /* Soft glow */
+  transform: scale(1.02);
+}
+
+/* Active (clicking) button state */
+.move-button:active:not(.disabled), 
+.item-button:active:not(.disabled) {
+  background-color: #37a866; /* Darker green for pressed state */
+  border-color: #2a8350;
+  transform: scale(0.98); /* Slightly smaller */
+  box-shadow: 1px 1px 0px rgba(0,0,0,0.3); /* Reduced shadow */
+}
+
+/* Disabled (opponent's turn) button state */
+.move-button.disabled,
+.item-button.disabled {
+  background-color: #555555; /* Gray out */
+  border-color: #444444;
+  color: #aaaaaa; /* Lighter text */
+  cursor: not-allowed;
+  box-shadow: none;
+  opacity: 0.7;
+}
+
+/* When it's the opponent's turn, dim all buttons */
+.opponent-turn .move-button,
+.opponent-turn .item-button,
+.opponent-turn #toggle-switch {
+  pointer-events: none;
+  filter: grayscale(70%) brightness(70%);
 }
 
 .move-button .pp-count {
@@ -976,6 +1026,7 @@ body {
   text-transform: uppercase; /* All caps for retro feel */
   box-shadow: 2px 2px 0px rgba(0,0,0,0.3); /* Add shadow for depth */
   text-shadow: 1px 1px 1px rgba(0,0,0,0.5); /* Add text shadow for better readability */
+  transition: all 0.2s ease; /* Match move button transition */
 }
 
 .item-icon {
