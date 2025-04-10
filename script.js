@@ -2164,8 +2164,10 @@ function populateCharacterSelection() {
     
     card.innerHTML = `
       <img src="${spritePath}" alt="${character.name}" onerror="console.error('Failed to load sprite: ${spritePath}')">
-      <p>${character.name}</p>
-      <p class="character-desc">${character.description || ''}</p>
+      <div class="card-content">
+        <p>${character.name}</p>
+        <p class="character-desc">${character.description || ''}</p>
+      </div>
     `;
     
     // Add tooltip data
