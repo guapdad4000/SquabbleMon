@@ -4034,6 +4034,23 @@ function useMove(move) {
   // Check if it's a stat change move (buffs and debuffs)
   const isStatModifyingMove = ["Flex on 'Em", "Caffeine Overload", "Hustle Hard", "VC Funded Flex", "Low Battery", "Game On Bro"].includes(move.name);
   
+  // Check accuracy first for non-healing moves (healing/status moves always hit)
+  if (!isZeroDamageMove && !isHealingMove && !isStatModifyingMove) {
+    const effectiveAccuracy = move.accuracy * playerStatModifiers.accuracy;
+    if (Math.random() * 100 > effectiveAccuracy) {
+      // Miss - don't show any attack animations
+      addToBattleLog(`${activePlayerCharacter.name}'s attack missed!`, 'attack', { effectiveness: 'miss' }, activePlayerCharacter);
+      showFloatingLog("MISSED!");
+      
+      // Keep UI as is - don't hide move and item buttons
+      setTimeout(() => endPlayerTurn(), 600);
+      
+      return;
+    }
+  }
+  
+  // If we're here, the attack hit (or is a healing/status move which always hits)
+  
   // Only play attack sound for damage moves (not healing/stat moves)
   if (!isZeroDamageMove && !isHealingMove) {
     // Play hit sound
@@ -4143,29 +4160,13 @@ function useMove(move) {
     battleArena.classList.remove(`effect-${move.type}`);
   }, 1200);
   
-  // Check accuracy including status effects
-  const effectiveAccuracy = move.accuracy * playerStatModifiers.accuracy;
-  if (Math.random() * 100 > effectiveAccuracy) {
-    // Miss
-    addToBattleLog(`${activePlayerCharacter.name}'s attack missed!`, 'attack', { effectiveness: 'miss' }, activePlayerCharacter);
-    showFloatingLog("MISSED!");
-    
-    // Keep UI as is - don't hide move and item buttons
-    
-    setTimeout(() => endPlayerTurn(), 600);
-    
-    // Remove animation
-    setTimeout(() => {
-      // Reset to default animation
-      setPlayerAnimation("default");
-      canAct = true;
-    }, 1000);
-    return;
-  }
-  
   // Check if this is a healing move
   if (isHealingMove) {
+    // Immediately apply healing with no delay
     handleStatusMove(move, "player");
+    
+    // Update the UI to show the healed HP
+    updateBattleUI();
     
     // Keep battle UI as-is - don't hide moves or items
     
@@ -4284,6 +4285,20 @@ function executeOpponentMove(move) {
   // Check if it's a stat change move (buffs and debuffs)
   const isStatModifyingMove = ["Flex on 'Em", "Caffeine Overload", "Hustle Hard", "VC Funded Flex", "Low Battery", "Game On Bro"].includes(move.name);
   
+  // Check accuracy first for non-healing moves (healing/status moves always hit)
+  if (!isZeroDamageMove && !isHealingMove && !isStatModifyingMove) {
+    const effectiveAccuracy = move.accuracy * opponentStatModifiers.accuracy;
+    if (Math.random() * 100 > effectiveAccuracy) {
+      // Miss - don't show any attack animations
+      addToBattleLog(`${activeOpponent.name}'s attack missed!`, 'attack', { effectiveness: 'miss' }, activeOpponent);
+      showFloatingLog("MISSED!");
+      setTimeout(() => endOpponentTurn(), 600);
+      return;
+    }
+  }
+  
+  // If we're here, the attack hit (or is a healing/status move which always hits)
+  
   // Only play attack sound for damage moves (not healing/stat moves)
   if (!isZeroDamageMove && !isHealingMove) {
     // Play hit sound
@@ -4393,25 +4408,6 @@ function executeOpponentMove(move) {
   setTimeout(() => {
     battleArena.classList.remove(`effect-${move.type}`);
   }, 1200);
-  
-  // Check accuracy including status effects
-  const effectiveAccuracy = move.accuracy * opponentStatModifiers.accuracy;
-  if (Math.random() * 100 > effectiveAccuracy) {
-    // Miss
-    addToBattleLog(`${activeOpponent.name}'s attack missed!`, 'attack', { effectiveness: 'miss' }, activeOpponent);
-    showFloatingLog("MISSED!");
-    setTimeout(() => endOpponentTurn(), 600);
-    
-    // Remove animation
-    setTimeout(() => {
-      const opponentElement = document.getElementById("opponent-sprite");
-      if (opponentElement) {
-        opponentElement.classList.remove("attack-animation-reverse");
-      }
-      setOpponentAnimation("default");
-    }, 1000);
-    return;
-  }
   
   // Check if this is a healing move
   if (isHealingMove) {
