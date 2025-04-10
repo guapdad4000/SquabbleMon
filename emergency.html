@@ -3,60 +3,59 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SQUABBLE</title>
+  <title>SQUABBLE - Hood Fantasy</title>
   <style>
+    /* Reset and base styles */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
     
-    @font-face {
-      font-family: 'PixelFont';
-      src: url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-      font-weight: normal;
-      font-style: normal;
-    }
-    
     body {
       background-color: #000;
-      font-family: 'PixelFont', 'Press Start 2P', monospace, sans-serif;
+      background-image: url('https://i.imgur.com/OH3B6YT.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: #fff;
+      font-family: monospace, Arial, sans-serif;
       height: 100vh;
-      overflow: hidden;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
+      overflow: hidden;
     }
     
     .container {
       width: 100%;
       max-width: 500px;
+      padding: 20px;
       text-align: center;
+      background-color: rgba(0, 0, 0, 0.7);
+      border-radius: 10px;
     }
     
-    .title {
-      color: #fff;
+    h1 {
       font-size: 48px;
+      color: #ff69b4;
       margin-bottom: 20px;
       text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
       animation: glow 1.5s ease-in-out infinite alternate;
+      text-transform: uppercase;
     }
     
     @keyframes glow {
-      from {
-        text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
-      }
-      to {
-        text-shadow: 0 0 20px #ff00ff, 0 0 30px #ff00ff, 0 0 40px #ff00ff;
-      }
+      from { text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff; }
+      to { text-shadow: 0 0 20px #ff00ff, 0 0 30px #ff00ff, 0 0 40px #ff00ff; }
     }
     
-    .subtitle {
-      color: #fff;
-      margin-bottom: 50px;
+    p {
+      margin-bottom: 40px;
+      font-size: 16px;
     }
     
-    .btn {
+    .mode-button {
       display: block;
       width: 100%;
       background-color: #4ecca4;
@@ -67,31 +66,35 @@
       font-size: 18px;
       font-weight: bold;
       cursor: pointer;
-      font-family: inherit;
+      text-align: left;
+      border-radius: 5px;
+      transition: all 0.3s ease;
     }
     
-    .btn:hover {
+    .mode-button:hover {
       background-color: #6edfb5;
+      transform: translateY(-3px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
     
     .description {
-      font-size: 12px;
-      margin-top: 8px;
+      font-size: 14px;
+      margin-top: 5px;
       opacity: 0.8;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1 class="title">SQUABBLE</h1>
-    <p class="subtitle">Hood Fantasy Battle System</p>
+    <h1>SQUABBLE</h1>
+    <p>Hood Fantasy Battle System</p>
     
-    <button class="btn" onclick="alert('Fade Mode selected!')">
+    <button class="mode-button" onclick="window.location.href='game.html?mode=fade'">
       Fade Mode 👊
       <div class="description">Quick battles against opponents</div>
     </button>
     
-    <button class="btn" onclick="alert('Story Mode selected!')">
+    <button class="mode-button" onclick="window.location.href='game.html?mode=story'">
       Story Mode 🗺️
       <div class="description">Explore the hood, meet characters, build your squad</div>
     </button>

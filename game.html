@@ -1,153 +1,240 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Squabble - Hood Fantasy</title>
-    <!-- Styles -->
-    <link rel="stylesheet" href="style.css" />
-    <link rel="stylesheet" href="overworld-styles.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
-      rel="stylesheet"
-    />
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQUABBLE - Hood Fantasy</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="overworld-styles.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: monospace, Arial, sans-serif;
+      background-color: #000;
+      overflow: hidden;
+    }
     
-    <!-- Fix background issues with inline styles -->
-    <style>
-      #mode-selection-screen {
-        background-color: #000000 !important;
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: center !important;
-        align-items: center !important;
-        min-height: 100vh !important;
-        padding: 20px !important;
-      }
-      
-      .neon-title {
-        color: #ffffff !important;
-        font-size: 48px !important;
-        text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff !important;
-        text-align: center !important;
-        margin-bottom: 10px !important;
-        animation: glow 1.5s ease-in-out infinite alternate !important;
-        text-transform: uppercase !important;
-      }
-      
-      @keyframes glow {
-        from { text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff !important; }
-        to { text-shadow: 0 0 20px #ff00ff, 0 0 30px #ff00ff, 0 0 40px #ff00ff !important; }
-      }
-      
-      .square-mode-button {
-        background-color: #4ecca4 !important;
-        color: #000000 !important;
-        border: none !important;
-        padding: 20px !important;
-        width: 90% !important;
-        max-width: 400px !important;
-        margin: 10px auto !important;
-        display: block !important;
-        text-align: center !important;
-        font-size: 18px !important;
-        font-weight: bold !important;
-        cursor: pointer !important;
-        transition: background-color 0.2s !important;
-      }
-      
-      .square-mode-button:hover {
-        background-color: #6edfb5 !important;
-      }
-      
-      #selection-screen {
-        background-image: url('https://i.imgur.com/ZvMKSyp.jpg') !important;
-        background-size: cover !important;
-        background-position: center !important;
-        background-repeat: no-repeat !important;
-      }
-      
-      #battle-screen {
-        background-image: url('https://i.imgur.com/Rb03YLf.jpg') !important;
-        background-size: cover !important;
-        background-position: center !important;
-        background-repeat: no-repeat !important;
-      }
-      
-      #battle-arena {
-        background-image: url('https://i.imgur.com/nY7oky9.jpg') !important;
-        background-size: cover !important;
-        background-position: center !important;
-        background-repeat: no-repeat !important;
-      }
-    </style>
+    #loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      color: white;
+    }
     
-    <!-- Mode loader for direct URL parameter loading -->
-    <script src="mode_loader.js"></script>
-  </head>
-  <body style="background-color: #000;">
-    <!-- Audio Controls -->
-    <div id="audio-controls">
-      <button id="toggle-music" class="audio-button" title="Toggle Music">
-        <span id="music-icon">🔊</span>
-      </button>
-      <button id="toggle-sound" class="audio-button" title="Toggle Sound Effects">
-        <span id="sound-icon">🔊</span>
-      </button>
+    #loading-text {
+      font-size: 24px;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+    }
+    
+    #loading-bar {
+      width: 200px;
+      height: 20px;
+      background-color: #222;
+      border: 1px solid #fff;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    
+    #loading-progress {
+      height: 100%;
+      width: 0%;
+      background-color: #4ecca4;
+      transition: width 0.5s;
+    }
+    
+    #selection-screen {
+      display: none;
+      background-image: url('https://i.imgur.com/ZvMKSyp.jpg') !important;
+      background-size: cover !important;
+      background-position: center !important;
+      background-repeat: no-repeat !important;
+    }
+    
+    #battle-screen {
+      display: none;
+      background-image: url('https://i.imgur.com/Rb03YLf.jpg') !important;
+      background-size: cover !important;
+      background-position: center !important;
+      background-repeat: no-repeat !important;
+    }
+    
+    #overworld-container {
+      display: none;
+    }
+    
+    #character-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+    
+    .character-card {
+      background-color: rgba(0, 0, 0, 0.7);
+      border-radius: 10px;
+      padding: 15px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .character-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    .character-img {
+      width: 100%;
+      height: auto;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+    
+    .character-name {
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #fff;
+    }
+    
+    .character-type {
+      font-size: 0.8em;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+    <div id="loading-text">LOADING GAME...</div>
+    <div id="loading-bar">
+      <div id="loading-progress"></div>
     </div>
+  </div>
 
-    <!-- Game Mode Selection Screen -->
-    <div id="mode-selection-screen">
-      <div class="mode-title">
-        <h1 class="neon-title">SQUABBLE</h1>
-        <p class="mode-subtitle">Hood Fantasy Battle System</p>
-      </div>
-      <div class="mode-buttons">
-        <button
-          id="fade-mode-button"
-          class="square-mode-button"
-          onclick="window.selectGameMode('fade');"
-        >
-          Fade Mode <span style="font-size: 1.2em;">👊</span>
-          <div class="mode-description">Quick battles against opponents</div>
-        </button>
-        <button
-          id="story-mode-button"
-          class="square-mode-button"
-          onclick="window.selectGameMode('story');"
-        >
-          Story Mode <span style="font-size: 1.2em;">🗺️</span>
-          <div class="mode-description">Explore the hood, meet characters, build your squad</div>
-        </button>
-      </div>
+  <!-- Character Selection Screen -->
+  <div id="selection-screen">
+    <h2 style="text-align: center; padding: 20px;">Select Your Character</h2>
+    <div id="character-grid"></div>
+    <div id="selected-team" style="padding: 20px; text-align: center;">
+      <h3>Your Team</h3>
+      <div id="team-slots" style="display: flex; justify-content: center; gap: 10px;"></div>
+      <button id="start-button" style="margin-top: 20px; padding: 10px 20px; background-color: #4ecca4; border: none; cursor: pointer; display: none;">Start Game</button>
     </div>
+  </div>
+  
+  <!-- Battle Screen -->
+  <div id="battle-screen"></div>
+  
+  <!-- Overworld Screen -->
+  <div id="overworld-container"></div>
+  
+  <!-- Load scripts -->
+  <script src="level-system.js"></script>
+  <script src="inventory-system.js"></script>
+  <script src="shop-system.js"></script>
+  <script src="animations.js"></script>
+  <script src="battle-dialogue.js"></script>
+  <script src="sprite-manager.js"></script>
+  <script src="fixed_sprite_manager.js"></script>
+  <script src="overworld.js"></script>
+  <script src="clean_overworld.js"></script>
+  <script src="script.js"></script>
+  
+  <script>
+    // Helper to get URL parameters
+    function getUrlParameter(name) {
+      name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+      const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+      const results = regex.exec(location.search);
+      return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    }
     
-    <!-- Character Selection Screen (initially hidden) -->
-    <div id="selection-screen" style="display: none;">
-      <!-- This will be populated by JS -->
-    </div>
+    // Simulate loading
+    function simulateLoading() {
+      const loadingProgress = document.getElementById('loading-progress');
+      let progress = 0;
+      
+      const interval = setInterval(() => {
+        progress += 5;
+        loadingProgress.style.width = progress + '%';
+        
+        if (progress >= 100) {
+          clearInterval(interval);
+          
+          // Hide loading screen and start game
+          setTimeout(() => {
+            document.getElementById('loading-screen').style.display = 'none';
+            startGame();
+          }, 500);
+        }
+      }, 100);
+    }
     
-    <!-- Battle Screen (Initially Hidden) -->
-    <div id="battle-screen" style="display: none;">
-      <!-- This will be populated by JS -->
-    </div>
+    // Start game with selected mode
+    function startGame() {
+      // Get mode from URL
+      const mode = getUrlParameter('mode') || 'fade';
+      console.log('Starting game in mode:', mode);
+      
+      // Initialize game if it exists
+      if (typeof window.initGame === 'function') {
+        window.initGame();
+      }
+      
+      // Start with selected mode if function exists
+      if (typeof window.selectGameMode === 'function') {
+        window.selectGameMode(mode);
+      } else {
+        console.log('Game mode selection not found, showing basic character selection');
+        showBasicCharacterSelection();
+      }
+    }
     
-    <!-- Overworld Container (initially hidden) -->
-    <div id="overworld-container" style="display: none;">
-      <!-- This will be populated by JS -->
-    </div>
+    // Fallback character selection
+    function showBasicCharacterSelection() {
+      document.getElementById('selection-screen').style.display = 'block';
+      
+      const characters = [
+        { name: 'Rasta', type: 'Herb', sprite: 'https://i.imgur.com/dZWWrrs.png' },
+        { name: 'Fitness', type: 'Grind', sprite: 'https://i.imgur.com/YeMI4sr.png' },
+        { name: 'Slime', type: 'Drip', sprite: 'https://i.imgur.com/4pLfUMF.png' },
+        { name: 'Demon', type: 'Dark', sprite: 'https://i.imgur.com/C6DW2Zm.png' },
+        { name: 'Hood', type: 'Street', sprite: 'https://i.imgur.com/K4c6dTy.png' },
+        { name: 'Money', type: 'Flex', sprite: 'https://i.imgur.com/PmLGSm0.png' }
+      ];
+      
+      const grid = document.getElementById('character-grid');
+      
+      // Create character cards
+      characters.forEach(char => {
+        const card = document.createElement('div');
+        card.className = 'character-card';
+        card.innerHTML = `
+          <img src="${char.sprite}" alt="${char.name}" class="character-img">
+          <div class="character-name">${char.name}</div>
+          <div class="character-type">Type: ${char.type}</div>
+        `;
+        
+        // Click handler
+        card.addEventListener('click', () => {
+          alert(`Selected ${char.name}! (This is a fallback interface)`);
+        });
+        
+        grid.appendChild(card);
+      });
+    }
     
-    <!-- Load all scripts -->
-    <script src="level-system.js"></script>
-    <script src="inventory-system.js"></script>
-    <script src="shop-system.js"></script>
-    <script src="animations.js"></script>
-    <script src="battle-dialogue.js"></script>
-    <script src="fixed_sprite_manager.js"></script>
-    <script src="sprite-manager.js"></script>
-    <script src="overworld.js"></script>
-    <script src="clean_overworld.js"></script>
-    <script src="script.js"></script>
-  </body>
+    // Start on page load
+    document.addEventListener('DOMContentLoaded', simulateLoading);
+  </script>
+</body>
 </html>
