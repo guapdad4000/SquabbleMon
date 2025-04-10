@@ -5,41 +5,42 @@
 
 const PlayerSpriteManager = (function() {
   // Sprite sheet configuration - use our sprite sheet from attached assets 
-  const SPRITE_SHEET_URL = 'https://i.imgur.com/FjAwMlb.png';
+  const SPRITE_SHEET_URL = '/attached_assets/main sprite sheet.png';
   
-  // Sprite frame configuration (based on the provided sprite sheet)
+  // Sprite frame configuration - updated based on the actual sprite sheet
+  // The first row (0) is down/front, second row (1) is left, third row (2) is right
   const SPRITE_FRAMES = {
     down: [
-      { x: 0, y: 0 },   // First row, first column
-      { x: 1, y: 0 },   // First row, second column
-      { x: 2, y: 0 }    // First row, third column
-    ],
-    up: [
-      { x: 0, y: 3 },   // Fourth row, first column
-      { x: 1, y: 3 },   // Fourth row, second column
-      { x: 2, y: 3 }    // Fourth row, third column
+      { x: 0, y: 0 },   // First row, first frame
+      { x: 1, y: 0 },   // First row, second frame
+      { x: 2, y: 0 }    // First row, third frame
     ],
     left: [
-      { x: 0, y: 1 },   // Second row, first column
-      { x: 1, y: 1 },   // Second row, second column
-      { x: 2, y: 1 }    // Second row, third column
+      { x: 0, y: 1 },   // Second row, first frame
+      { x: 1, y: 1 },   // Second row, second frame 
+      { x: 2, y: 1 }    // Second row, third frame
     ],
     right: [
-      { x: 0, y: 2 },   // Third row, first column
-      { x: 1, y: 2 },   // Third row, second column
-      { x: 2, y: 2 }    // Third row, third column
+      { x: 0, y: 2 },   // Third row, first frame
+      { x: 1, y: 2 },   // Third row, second frame
+      { x: 2, y: 2 }    // Third row, third frame
+    ],
+    up: [
+      { x: 0, y: 0 },   // Using down frames for up (temporary)
+      { x: 1, y: 0 },   // Using down frames for up (temporary)
+      { x: 2, y: 0 }    // Using down frames for up (temporary)
     ]
   };
   
-  // Sprite frame size (pixels) - based on the provided sprite sheet
+  // Sprite frame size (pixels) - measured from the sprite sheet
   const FRAME_WIDTH = 32;
   const FRAME_HEIGHT = 32;
   
-  // Set frame count per direction
+  // Number of frames per direction
   const FRAMES_PER_DIRECTION = 3;
   
   // Animation timing
-  const ANIMATION_SPEED = 150; // ms per frame - slightly faster animation
+  const ANIMATION_SPEED = 200; // ms per frame - slightly slower for better visibility
   
   // Current animation state
   let currentDirection = 'down';
@@ -77,7 +78,7 @@ const PlayerSpriteManager = (function() {
       return {
         backgroundImage: `url(${SPRITE_SHEET_URL})`,
         backgroundPosition: '0px 0px',
-        backgroundSize: `${FRAME_WIDTH * 3}px ${FRAME_HEIGHT * 4}px`
+        backgroundSize: `${FRAME_WIDTH * 3}px ${FRAME_HEIGHT * 3}px` // Updated to match sprite sheet (3x3 grid)
       };
     }
     
@@ -91,7 +92,7 @@ const PlayerSpriteManager = (function() {
     return {
       backgroundImage: `url(${SPRITE_SHEET_URL})`,
       backgroundPosition: `-${posX}px -${posY}px`,
-      backgroundSize: `${FRAME_WIDTH * 3}px ${FRAME_HEIGHT * 4}px`
+      backgroundSize: `${FRAME_WIDTH * 3}px ${FRAME_HEIGHT * 3}px` // Updated to match sprite sheet (3x3 grid)
     };
   }
   

@@ -2156,6 +2156,9 @@ const NewOverworldSystem = (function () {
     // Map functions
     renderMap,
     attemptMove,
+    
+    // Animation
+    startAnimationLoop,
 
     // Get current zone
     getCurrentZone: function () {
