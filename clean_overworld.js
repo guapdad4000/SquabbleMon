@@ -1477,17 +1477,19 @@ const NewOverworldSystem = (function () {
       // Reset cooldown
       lastMoveTime = now;
 
-      // Reset moving state after a delay
+      // Reset moving state after a slightly longer delay to allow animation to be visible
       setTimeout(() => {
         player.moving = false;
         
         // Stop walking animation
         if (typeof PlayerSpriteManager !== 'undefined') {
           PlayerSpriteManager.stopAnimation();
+          // Apply the stopped animation frame
+          PlayerSpriteManager.applyToElement(playerSprite);
         }
         
         updatePlayerVisual();
-      }, 100);
+      }, 250);
     } else {
       // Just face the direction even if we can't move
       updatePlayerVisual();

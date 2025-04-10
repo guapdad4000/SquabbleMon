@@ -4,10 +4,10 @@
  */
 
 const PlayerSpriteManager = (function() {
-  // Sprite sheet configuration
-  const SPRITE_SHEET_URL = '/assets/sprites/player_sprite_sheet.png';
+  // Sprite sheet configuration - use our sprite sheet from attached assets 
+  const SPRITE_SHEET_URL = 'https://i.imgur.com/FjAwMlb.png';
   
-  // Sprite frame configuration (based on the uploaded sprite sheet)
+  // Sprite frame configuration (based on the provided sprite sheet)
   const SPRITE_FRAMES = {
     down: [
       { x: 0, y: 0 },   // First row, first column
