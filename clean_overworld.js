@@ -810,26 +810,26 @@ const NewOverworldSystem = (function() {
       // Special direct check for Fitness Bro
       if (spritePath.toLowerCase().includes('fitness')) {
         console.log("Found Fitness Bro via special check");
-        return "https://i.imgur.com/qxnS0SH.png";
+        return "https://i.imgur.com/lKgsziT.png"; // New Fitness sprite
       }
     }
     
     // Comprehensive fallback mappings for all character types
     const spriteMap = {
-      // Common NPC types
-      'default': 'https://i.imgur.com/YeMI4sr.png',
-      'rasta': 'https://i.imgur.com/dZWWrrs.png',
-      'rastamon': 'https://i.imgur.com/dZWWrrs.png',
-      'fitness': 'https://i.imgur.com/YeMI4sr.png',
-      'karen': 'https://i.imgur.com/KVEOAYh.png',
-      'dealer': 'https://i.imgur.com/UkE9crR.png',
-      'shopkeeper': 'https://i.imgur.com/q0vYI2v.png',
-      'mom': 'https://i.imgur.com/fgArxwB.png',
-      'hood_kid': 'https://i.imgur.com/G3xfSjU.png',
-      'beat_boxer': 'https://i.imgur.com/2n71aSJ.png',
-      'hacker_kid': 'https://i.imgur.com/m7Rup7S.png',
+      // New NPC sprites
+      'default': 'https://i.imgur.com/gdXycTa.png', // Default now uses the first NPC sprite
+      'rasta': 'https://i.imgur.com/gdXycTa.png', // First NPC sprite
+      'rastamon': 'https://i.imgur.com/gdXycTa.png', // First NPC sprite
+      'fitness': 'https://i.imgur.com/lKgsziT.png', // Second NPC sprite
+      'karen': 'https://i.imgur.com/5CFFE9P.png', // Third NPC sprite
+      'dealer': 'https://i.imgur.com/gdXycTa.png', // First NPC sprite
+      'shopkeeper': 'https://i.imgur.com/5CFFE9P.png', // Third NPC sprite
+      'mom': 'https://i.imgur.com/5CFFE9P.png', // Third NPC sprite
+      'hood_kid': 'https://i.imgur.com/gdXycTa.png', // First NPC sprite
+      'beat_boxer': 'https://i.imgur.com/lKgsziT.png', // Second NPC sprite
+      'hacker_kid': 'https://i.imgur.com/lKgsziT.png', // Second NPC sprite
       
-      // Character types from the main game
+      // Character types from the main game - we keep their battle sprites for consistency
       'Fitness Bro': 'https://i.imgur.com/YeMI4sr.png',
       'Rastamon': 'https://i.imgur.com/dZWWrrs.png',
       'Techy': 'https://i.imgur.com/VVa9pm9.png',
@@ -889,10 +889,15 @@ const NewOverworldSystem = (function() {
     playerSprite.style.top = `${player.y * 64}px`;
     
     try {
-      // Use a fixed sprite for overworld movement
-      console.log("Using fixed overworld sprite rather than character-specific sprite");
-      const spriteUrl = standardizeSpritePath(player.sprite);
-      playerSprite.style.backgroundImage = `url(${spriteUrl})`;
+      // Always use the dedicated player overworld sprite 
+      const playerOverworldSprite = "https://i.imgur.com/FjAwMlb.png";
+      console.log("Using dedicated player overworld sprite");
+      playerSprite.style.backgroundImage = `url(${playerOverworldSprite})`;
+      
+      // Apply additional styling for the overworld player sprite
+      playerSprite.style.backgroundSize = "cover";
+      playerSprite.style.width = "64px";
+      playerSprite.style.height = "64px";
     } catch (error) {
       console.error("Failed to set player sprite:", error);
       playerSprite.style.backgroundColor = '#00f'; // Blue fallback
