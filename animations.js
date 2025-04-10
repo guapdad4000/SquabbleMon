@@ -731,11 +731,25 @@ function applyVisualEffectGif(moveType, user) {
     // Determine target sprite based on who's using the move
     const targetUser = isAttackEffect ? (user === 'player' ? 'opponent' : 'player') : user;
     
-    // Get the appropriate sprite based on who is the target
-    const targetSprite = document.getElementById(targetUser === 'player' ? 'player-sprite' : 'opponent-sprite');
-    const battleScreen = document.getElementById('battle-screen') || document.querySelector('.battle-screen');
-    
-    if (targetSprite && battleScreen) {
+    function positionAndShowEffect() {
+      // Find DOM elements we need
+      const battleScreen = document.getElementById('battle-screen') || document.querySelector('.battle-screen');
+      if (!battleScreen) {
+        console.warn("Battle screen not found, cannot add visual effect");
+        return;
+      }
+      
+      // Get the appropriate sprite based on who is the target
+      const targetSprite = document.getElementById(targetUser === 'player' ? 'player-sprite' : 'opponent-sprite');
+      if (!targetSprite) {
+        console.warn(`Target sprite for ${targetUser} not found, using fallback positioning`);
+        // Fallback positioning
+        effectDiv.style.left = targetUser === 'player' ? '60%' : '20%';
+        effectDiv.style.top = targetUser === 'player' ? '60%' : '40%';
+        battleScreen.appendChild(effectDiv);
+        return;
+      }
+      
       // Get the target sprite position
       const targetRect = targetSprite.getBoundingClientRect();
       const battleRect = battleScreen.getBoundingClientRect();
@@ -759,36 +773,25 @@ function applyVisualEffectGif(moveType, user) {
         topPos = ((targetRect.bottom - battleRect.top) / battleRect.height * 100) - 25; // Align with bottom
       }
       
+      // Set the position
       effectDiv.style.left = `${leftPos}%`;
       effectDiv.style.top = `${topPos}%`;
       effectDiv.style.transform = 'translateX(-50%)'; // Center the effect
       console.log(`Positioned effect (${moveType}) at bottom of ${targetUser} at:`, leftPos, topPos);
-    } else {
-      // Fallback if sprite or battle screen not found
-      console.warn("Target sprite or battle screen not found, using fallback positioning");
-      if (targetUser === 'player') {
-        effectDiv.style.left = '60%';
-        effectDiv.style.top = '60%';
-      } else {
-        effectDiv.style.left = '20%';
-        effectDiv.style.top = '40%';
-      }
+      
+      // Add to battle screen
+      battleScreen.appendChild(effectDiv);
     }
     
-    // Add to battle screen
-    const battleScreen = document.getElementById('battle-screen') || document.querySelector('.battle-screen');
-    if (battleScreen) {
-      battleScreen.appendChild(effectDiv);
-      
-      // Remove after animation completes - reduced time to 1200ms for even faster battles
-      setTimeout(() => {
-        if (effectDiv && effectDiv.parentNode) {
-          effectDiv.parentNode.removeChild(effectDiv);
-        }
-      }, 1200);
-    } else {
-      console.warn("Battle screen not found, cannot add visual effect");
-    }
+    // Position and show the effect
+    positionAndShowEffect();
+    
+    // Remove after animation completes - reduced time to 1200ms for even faster battles
+    setTimeout(() => {
+      if (effectDiv && effectDiv.parentNode) {
+        effectDiv.parentNode.removeChild(effectDiv);
+      }
+    }, 1200);
   } catch (error) {
     console.error("Error applying visual effect GIF:", error);
   }
