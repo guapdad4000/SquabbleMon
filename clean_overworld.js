@@ -1643,8 +1643,39 @@ const NewOverworldSystem = (function () {
     );
 
     if (facingDoor) {
-      console.log("Using door to", facingDoor.targetZone);
-      changeZone(facingDoor.targetZone, facingDoor.targetX, facingDoor.targetY);
+      console.log("Using door to", facingDoor.targetZone, "at coordinates", facingDoor.targetX, facingDoor.targetY);
+      
+      // Make sure the target zone exists
+      if (!ZONE_DATA[facingDoor.targetZone]) {
+        console.error(`Target zone ${facingDoor.targetZone} does not exist!`);
+        return;
+      }
+      
+      // Add a small delay to show the transition
+      const message = `Entering ${ZONE_DATA[facingDoor.targetZone].name}...`;
+      console.log(message);
+      
+      // Show a transition message if UI exists
+      const transitionMessage = document.createElement('div');
+      transitionMessage.className = 'zone-transition-message';
+      transitionMessage.textContent = message;
+      transitionMessage.style.position = 'absolute';
+      transitionMessage.style.top = '50%';
+      transitionMessage.style.left = '50%';
+      transitionMessage.style.transform = 'translate(-50%, -50%)';
+      transitionMessage.style.background = 'rgba(0, 0, 0, 0.7)';
+      transitionMessage.style.color = 'white';
+      transitionMessage.style.padding = '20px';
+      transitionMessage.style.borderRadius = '5px';
+      transitionMessage.style.zIndex = '1000';
+      document.body.appendChild(transitionMessage);
+      
+      // Process the zone change with a slight delay for visual feedback
+      setTimeout(() => {
+        document.body.removeChild(transitionMessage);
+        changeZone(facingDoor.targetZone, facingDoor.targetX, facingDoor.targetY);
+      }, 800);
+      
       return;
     }
 

@@ -5,27 +5,30 @@
  */
 
 const PlayerSpriteManager = (function() {
-  // Define image URLs for each frame by direction - using remote URLs for consistent access
+  // Define image URLs for each frame by direction - using a known working sprite
+  // We'll use the same sprite for all directions with a default character
+  const DEFAULT_CHARACTER_SPRITE = 'https://i.imgur.com/dZWWrrs.png'; // Rasta character as player
+  
   const SPRITE_FRAMES = {
     down: [
-      'https://i.imgur.com/NqENPVH.png',   // Down, first frame - fwd 1
-      'https://i.imgur.com/mZYjkJo.png',   // Down, second frame - fwd 2
-      'https://i.imgur.com/NqENPVH.png'    // Down, third frame (repeat first for smooth animation)
+      DEFAULT_CHARACTER_SPRITE,
+      DEFAULT_CHARACTER_SPRITE,
+      DEFAULT_CHARACTER_SPRITE
     ],
     up: [
-      'https://i.imgur.com/3QcHLNL.png',   // Up, first frame - back 1
-      'https://i.imgur.com/0yLuZUX.png',   // Up, second frame - back 2
-      'https://i.imgur.com/3QcHLNL.png'    // Up, third frame (repeat first for smooth animation)
+      DEFAULT_CHARACTER_SPRITE,
+      DEFAULT_CHARACTER_SPRITE,
+      DEFAULT_CHARACTER_SPRITE
     ],
     left: [
-      'https://i.imgur.com/JNAwDUE.png',   // Left, first frame - left 1
-      'https://i.imgur.com/IY5Fihx.png',   // Left, second frame - left 2
-      'https://i.imgur.com/JNAwDUE.png'    // Left, third frame (repeat first for smooth animation)
+      DEFAULT_CHARACTER_SPRITE,
+      DEFAULT_CHARACTER_SPRITE,
+      DEFAULT_CHARACTER_SPRITE
     ],
     right: [
-      'https://i.imgur.com/uf5OnFV.png',  // Right, first frame - right 1
-      'https://i.imgur.com/jt4WvKU.png',  // Right, second frame - right 2
-      'https://i.imgur.com/uf5OnFV.png'   // Right, third frame (repeat first for smooth animation)
+      DEFAULT_CHARACTER_SPRITE,
+      DEFAULT_CHARACTER_SPRITE,
+      DEFAULT_CHARACTER_SPRITE
     ]
   };
   
