@@ -27,20 +27,24 @@ function handleGlobalKeyPress(event) {
   if (now - lastKeyPressTime < KEY_COOLDOWN) {
     return;
   }
-  
+
   // Store the current time as last keypress time
   lastKeyPressTime = now;
-  
+
   // Log the key press
   log(`Key pressed: ${event.key}`);
-  
+
   // Detect what screen is active
-  const isOnOverworld = document.getElementById('overworld-container') && 
-                       window.getComputedStyle(document.getElementById('overworld-container')).display !== 'none';
-  
-  const isInBattle = document.getElementById('battle-screen') && 
-                    window.getComputedStyle(document.getElementById('battle-screen')).display !== 'none';
-  
+  const isOnOverworld =
+    document.getElementById("overworld-container") &&
+    window.getComputedStyle(document.getElementById("overworld-container"))
+      .display !== "none";
+
+  const isInBattle =
+    document.getElementById("battle-screen") &&
+    window.getComputedStyle(document.getElementById("battle-screen"))
+      .display !== "none";
+
   // Handle overworld controls
   if (isOnOverworld) {
     handleOverworldKeyPress(event);
@@ -48,88 +52,88 @@ function handleGlobalKeyPress(event) {
   // Handle battle controls
   else if (isInBattle) {
     // Forward to existing battle key handlers if needed
-    log('In battle - delegating to battle system');
+    log("In battle - delegating to battle system");
   }
   // Handle other screens
   else {
-    log('Not in overworld or battle - delegating to default handlers');
+    log("Not in overworld or battle - delegating to default handlers");
   }
 }
 
 // Handle overworld-specific keypresses
 function handleOverworldKeyPress(event) {
   log(`Handling overworld key: ${event.key}`);
-  
+
   // Check if dialogue is active
-  const dialogueBox = document.getElementById('dialogue-box');
-  const isDialogueActive = dialogueBox && 
-                          window.getComputedStyle(dialogueBox).display !== 'none';
-  
+  const dialogueBox = document.getElementById("dialogue-box");
+  const isDialogueActive =
+    dialogueBox && window.getComputedStyle(dialogueBox).display !== "none";
+
   // If dialogue is active, only handle dialogue advancement keys
   if (isDialogueActive) {
-    log('Dialogue is active');
-    if (event.key === ' ' || event.key === 'Enter') {
-      log('Advancing dialogue');
+    log("Dialogue is active");
+    if (event.key === " " || event.key === "Enter") {
+      log("Advancing dialogue");
       // Call the dialogue advancement function if it exists
-      if (typeof window.advanceDialogue === 'function') {
+      if (typeof window.advanceDialogue === "function") {
         window.advanceDialogue();
       }
     }
     return;
   }
-  
+
   // Handle movement keys
   switch (event.key) {
-    case 'ArrowUp':
-    case 'w':
-    case 'W':
-      log('Moving up');
-      if (typeof window.movePlayer === 'function') {
-        window.movePlayer('up');
+    case "ArrowUp":
+    case "w":
+    case "W":
+      log("Moving up");
+      if (typeof window.movePlayer === "function") {
+        window.movePlayer("up");
       }
       break;
-      
-    case 'ArrowDown':
-    case 's':
-    case 'S':
-      log('Moving down');
-      if (typeof window.movePlayer === 'function') {
-        window.movePlayer('down');
+
+    case "ArrowDown":
+    case "s":
+    case "S":
+      log("Moving down");
+      if (typeof window.movePlayer === "function") {
+        window.movePlayer("down");
       }
       break;
-      
-    case 'ArrowLeft':
-    case 'a':
-    case 'A':
-      log('Moving left');
-      if (typeof window.movePlayer === 'function') {
-        window.movePlayer('left');
+
+    case "ArrowLeft":
+    case "a":
+    case "A":
+      log("Moving left");
+      if (typeof window.movePlayer === "function") {
+        window.movePlayer("left");
       }
       break;
-      
-    case 'ArrowRight':
-    case 'd':
-    case 'D':
-      log('Moving right');
-      if (typeof window.movePlayer === 'function') {
-        window.movePlayer('right');
+
+    case "ArrowRight":
+    case "d":
+    case "D":
+      log("Moving right");
+      if (typeof window.movePlayer === "function") {
+        window.movePlayer("right");
       }
       break;
-      
-    case ' ':
-    case 'Enter':
-    case 'e':
-    case 'E':
-      log('Interaction key pressed');
-      if (typeof window.interactWithFacingTile === 'function') {
+
+    case " ":
+    case "Enter":
+    case "e":
+    case "E":
+      log("Interaction key pressed");
+      if (typeof window.interactWithFacingTile === "function") {
         window.interactWithFacingTile();
       }
       break;
-      
-    case 'Escape':
-    case 'b':
-    case 'B':
-      log('Cancel key pressed');
+
+    case "Escape":
+    case "b":
+    case "B":
+      log("Cancel key pressed");
       // Handle cancellation if needed
       break;
   }
@@ -137,19 +141,19 @@ function handleOverworldKeyPress(event) {
 
 // Function to initialize the global keyboard handler
 function initializeKeyboardHandler() {
-  log('Initializing global keyboard handler');
-  
+  log("Initializing global keyboard handler");
+
   // Remove any existing handlers with the same function (avoid duplicates)
-  document.removeEventListener('keydown', handleGlobalKeyPress);
-  
+  document.removeEventListener("keydown", handleGlobalKeyPress);
+
   // Add the handler
-  document.addEventListener('keydown', handleGlobalKeyPress);
-  
-  log('Global keyboard handler initialized');
+  document.addEventListener("keydown", handleGlobalKeyPress);
+
+  log("Global keyboard handler initialized");
 }
 
 // Initialize the handler immediately
-document.addEventListener('DOMContentLoaded', initializeKeyboardHandler);
+document.addEventListener("DOMContentLoaded", initializeKeyboardHandler);
 
 // Also expose the handler globally for manual initialization
 window.initializeKeyboardHandler = initializeKeyboardHandler;
@@ -161,23 +165,32 @@ window.handleOverworldKeyPress = handleOverworldKeyPress;
 // Make sure movePlayer and interactWithFacingTile are accessible globally
 function exposeRequiredFunctions() {
   // If these functions aren't already global, try to find and expose them
-  if (typeof window.movePlayer !== 'function' && typeof movePlayer === 'function') {
+  if (
+    typeof window.movePlayer !== "function" &&
+    typeof movePlayer === "function"
+  ) {
     window.movePlayer = movePlayer;
   }
-  
-  if (typeof window.interactWithFacingTile !== 'function' && typeof interactWithFacingTile === 'function') {
+
+  if (
+    typeof window.interactWithFacingTile !== "function" &&
+    typeof interactWithFacingTile === "function"
+  ) {
     window.interactWithFacingTile = interactWithFacingTile;
   }
-  
-  if (typeof window.advanceDialogue !== 'function' && typeof advanceDialogue === 'function') {
+
+  if (
+    typeof window.advanceDialogue !== "function" &&
+    typeof advanceDialogue === "function"
+  ) {
     window.advanceDialogue = advanceDialogue;
   }
-  
-  log('Required functions exposed to window object');
+
+  log("Required functions exposed to window object");
 }
 
 // Attempt to expose functions once DOM is loaded
-document.addEventListener('DOMContentLoaded', exposeRequiredFunctions);
+document.addEventListener("DOMContentLoaded", exposeRequiredFunctions);
 
 // Also expose the function itself for manual calling
 window.exposeRequiredFunctions = exposeRequiredFunctions;

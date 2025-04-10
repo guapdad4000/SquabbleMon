@@ -2,10 +2,10 @@
 // Audio URLs
 const AUDIO = {
   menuMusic: "https://audio.jukehost.co.uk/nMJQi5KbwFgvSdkPEfRZW5WLPQrK2ZUu",
-  battleMusic: "https://audio.jukehost.co.uk/D2O32Qb2y6tpAXHw8c35FYoHRJzXoRbG", 
+  battleMusic: "https://audio.jukehost.co.uk/D2O32Qb2y6tpAXHw8c35FYoHRJzXoRbG",
   hitSound: "https://audio.jukehost.co.uk/8tUlDNLpvRgMxmbO1IXqubCDEOXTkvOm",
   successSound: "https://audio.jukehost.co.uk/YXtQw8hsDwVXXqkPoDQwfPrpJ36PnqjB",
-  switchSound: "https://audio.jukehost.co.uk/9E15JVLzv4uKcTgUy6yUYkCRaS6htByd"
+  switchSound: "https://audio.jukehost.co.uk/9E15JVLzv4uKcTgUy6yUYkCRaS6htByd",
 };
 
 // Audio objects
@@ -25,21 +25,22 @@ const ANIMATION_STATE = {
   player: {
     default: "float 2s ease-in-out infinite",
     attack: "attack 1s ease-in-out",
-    current: "float 2s ease-in-out infinite"
+    current: "float 2s ease-in-out infinite",
   },
   opponent: {
     default: "float 2s ease-in-out infinite", // Will be flipped with transform
     attack: "attack 1s ease-in-out",
-    current: "float 2s ease-in-out infinite"
-  }
+    current: "float 2s ease-in-out infinite",
+  },
 };
 
 // Animation helper functions
 function setPlayerAnimation(animationType) {
   const playerSprite = document.getElementById("player-sprite");
   if (!playerSprite) return;
-  
-  const animation = ANIMATION_STATE.player[animationType] || ANIMATION_STATE.player.default;
+
+  const animation =
+    ANIMATION_STATE.player[animationType] || ANIMATION_STATE.player.default;
   playerSprite.style.animation = animation;
   ANIMATION_STATE.player.current = animation;
 }
@@ -47,11 +48,12 @@ function setPlayerAnimation(animationType) {
 function setOpponentAnimation(animationType) {
   const opponentSprite = document.getElementById("opponent-sprite");
   if (!opponentSprite) return;
-  
-  const animation = ANIMATION_STATE.opponent[animationType] || ANIMATION_STATE.opponent.default;
+
+  const animation =
+    ANIMATION_STATE.opponent[animationType] || ANIMATION_STATE.opponent.default;
   opponentSprite.style.animation = animation;
   ANIMATION_STATE.opponent.current = animation;
-  
+
   // Ensure the opponent is always flipped
   opponentSprite.style.transform = "scaleX(-1)";
 }
@@ -62,7 +64,7 @@ const characters = [
   {
     id: 1,
     name: "Rastamon",
-    sprite: "https://i.imgur.com/OH3B6YT.png", 
+    sprite: "https://i.imgur.com/OH3B6YT.png",
     hp: 200,
     attack: 150,
     defense: 130,
@@ -70,18 +72,51 @@ const characters = [
     critRate: 0.1,
     type: "Plant",
     status: "normal",
-    description: "Chill vibes only. Prefers napping in sunbeams to actual squabbling.",
+    description:
+      "Chill vibes only. Prefers napping in sunbeams to actual squabbling.",
     moves: [
-      { name: "Dreadlock Whip", power: 50, accuracy: 95, type: "Plant", description: "Plant-type whip attack with dreadlocks.", pp: 15, maxPp: 15 },
-      { name: "6 Rasclaat Eggs?!", power: 70, accuracy: 85, type: "Fire", description: "Fiery attack that may cause 'sleep' status.", pp: 10, maxPp: 10 },
-      { name: "Irie Recharge", power: 0, accuracy: 100, type: "Plant", description: "Healing move that restores HP.", pp: 5, maxPp: 5 },
-      { name: "Chill Vibes", power: 40, accuracy: 90, type: "status", description: "Lowers opponent's speed with relaxed energy.", pp: 10, maxPp: 10 }
-    ]
+      {
+        name: "Dreadlock Whip",
+        power: 50,
+        accuracy: 95,
+        type: "Plant",
+        description: "Plant-type whip attack with dreadlocks.",
+        pp: 15,
+        maxPp: 15,
+      },
+      {
+        name: "6 Rasclaat Eggs?!",
+        power: 70,
+        accuracy: 85,
+        type: "Fire",
+        description: "Fiery attack that may cause 'sleep' status.",
+        pp: 10,
+        maxPp: 10,
+      },
+      {
+        name: "Irie Recharge",
+        power: 0,
+        accuracy: 100,
+        type: "Plant",
+        description: "Healing move that restores HP.",
+        pp: 5,
+        maxPp: 5,
+      },
+      {
+        name: "Chill Vibes",
+        power: 40,
+        accuracy: 90,
+        type: "status",
+        description: "Lowers opponent's speed with relaxed energy.",
+        pp: 10,
+        maxPp: 10,
+      },
+    ],
   },
   {
     id: 2,
     name: "Fitness Bro",
-    sprite: "https://i.imgur.com/YeMI4sr.png", 
+    sprite: "https://i.imgur.com/YeMI4sr.png",
     hp: 230,
     attack: 170,
     defense: 130,
@@ -89,18 +124,43 @@ const characters = [
     critRate: 0.15,
     type: "Fire",
     status: "normal",
-    description: "NEVER skips leg day. Or arm day. Or any day. Fueled by pure gainz.",
+    description:
+      "NEVER skips leg day. Or arm day. Or any day. Fueled by pure gainz.",
     moves: [
-      { name: "Squat Slap", power: 45, accuracy: 90, type: "Normal", description: "Physical attack with leg strength." },
-      { name: "Protein Powder Burn", power: 45, accuracy: 85, type: "Fire", description: "Fire-type attack that may cause 'burn' status." },
-      { name: "Flex on 'Em", power: 0, accuracy: 100, type: "Normal", description: "Boosts defense by showing off muscles." },
-      { name: "Gym Motivation", power: 50, accuracy: 90, type: "Fire", description: "Energetic attack with fiery passion." }
-    ]
+      {
+        name: "Squat Slap",
+        power: 45,
+        accuracy: 90,
+        type: "Normal",
+        description: "Physical attack with leg strength.",
+      },
+      {
+        name: "Protein Powder Burn",
+        power: 45,
+        accuracy: 85,
+        type: "Fire",
+        description: "Fire-type attack that may cause 'burn' status.",
+      },
+      {
+        name: "Flex on 'Em",
+        power: 0,
+        accuracy: 100,
+        type: "Normal",
+        description: "Boosts defense by showing off muscles.",
+      },
+      {
+        name: "Gym Motivation",
+        power: 50,
+        accuracy: 90,
+        type: "Fire",
+        description: "Energetic attack with fiery passion.",
+      },
+    ],
   },
   {
     id: 3,
     name: "Techy",
-    sprite: "https://i.imgur.com/m7Rup7S.png", 
+    sprite: "https://i.imgur.com/m7Rup7S.png",
     hp: 170,
     attack: 150,
     defense: 150,
@@ -110,16 +170,40 @@ const characters = [
     status: "normal",
     description: "Runs on caffeine and pure code. Might DDoS you for fun.",
     moves: [
-      { name: "Keyboard Smash", power: 60, accuracy: 90, type: "Electric", description: "Electric attack that may cause 'paralysis'." },
-      { name: "404 Headshot", power: 80, accuracy: 80, type: "Dark", description: "Powerful dark-type attack with high damage." },
-      { name: "Caffeine Overload", power: 0, accuracy: 100, type: "Electric", description: "Boosts speed with excessive caffeine." },
-      { name: "Code Error", power: 65, accuracy: 85, type: "Electric", description: "Buggy attack that may confuse the opponent." }
-    ]
+      {
+        name: "Keyboard Smash",
+        power: 60,
+        accuracy: 90,
+        type: "Electric",
+        description: "Electric attack that may cause 'paralysis'.",
+      },
+      {
+        name: "404 Headshot",
+        power: 80,
+        accuracy: 80,
+        type: "Dark",
+        description: "Powerful dark-type attack with high damage.",
+      },
+      {
+        name: "Caffeine Overload",
+        power: 0,
+        accuracy: 100,
+        type: "Electric",
+        description: "Boosts speed with excessive caffeine.",
+      },
+      {
+        name: "Code Error",
+        power: 65,
+        accuracy: 85,
+        type: "Electric",
+        description: "Buggy attack that may confuse the opponent.",
+      },
+    ],
   },
   {
     id: 4,
     name: "Cool Vibe YN",
-    sprite: "https://i.imgur.com/2n71aSJ.png", 
+    sprite: "https://i.imgur.com/2n71aSJ.png",
     hp: 190,
     attack: 170,
     defense: 130,
@@ -127,18 +211,43 @@ const characters = [
     critRate: 0.2,
     type: "Water",
     status: "normal",
-    description: "Smooth operator. Always hydrated and ready to slide into the DMs.",
+    description:
+      "Smooth operator. Always hydrated and ready to slide into the DMs.",
     moves: [
-      { name: "Splash Dat Ass", power: 50, accuracy: 95, type: "Water", description: "Water attack that causes 'wet' status." },
-      { name: "Wave Check Fade", power: 70, accuracy: 85, type: "Water", description: "Wave-based attack that might put opponent to sleep." },
-      { name: "Call Girls for Gang", power: 0, accuracy: 100, type: "Water", description: "Healing move that restores HP." },
-      { name: "Flow State", power: 60, accuracy: 90, type: "Water", description: "Smooth attack with increased critical hit chance." }
-    ]
+      {
+        name: "Splash Dat Ass",
+        power: 50,
+        accuracy: 95,
+        type: "Water",
+        description: "Water attack that causes 'wet' status.",
+      },
+      {
+        name: "Wave Check Fade",
+        power: 70,
+        accuracy: 85,
+        type: "Water",
+        description: "Wave-based attack that might put opponent to sleep.",
+      },
+      {
+        name: "Call Girls for Gang",
+        power: 0,
+        accuracy: 100,
+        type: "Water",
+        description: "Healing move that restores HP.",
+      },
+      {
+        name: "Flow State",
+        power: 60,
+        accuracy: 90,
+        type: "Water",
+        description: "Smooth attack with increased critical hit chance.",
+      },
+    ],
   },
   {
     id: 5,
     name: "9-5 Homie",
-    sprite: "https://i.imgur.com/UkE9crR.png", 
+    sprite: "https://i.imgur.com/UkE9crR.png",
     hp: 210,
     attack: 130,
     defense: 150,
@@ -146,18 +255,43 @@ const characters = [
     critRate: 0.1,
     type: "Rock",
     status: "normal",
-    description: "Just trying to make it to Friday. Powered by lukewarm coffee.",
+    description:
+      "Just trying to make it to Friday. Powered by lukewarm coffee.",
     moves: [
-      { name: "Cubicle Clapback", power: 50, accuracy: 90, type: "Normal", description: "Office-themed attack with moderate damage." },
-      { name: "Overtime Overload", power: 65, accuracy: 85, type: "Electric", description: "Stressful attack that may cause paralysis." },
-      { name: "PTO Prayer", power: 0, accuracy: 100, type: "Normal", description: "Healing move that gives a much-needed break." },
-      { name: "Monday Mayhem", power: 55, accuracy: 85, type: "Rock", description: "Rock-solid attack fueled by beginning-of-week dread." }
-    ]
+      {
+        name: "Cubicle Clapback",
+        power: 50,
+        accuracy: 90,
+        type: "Normal",
+        description: "Office-themed attack with moderate damage.",
+      },
+      {
+        name: "Overtime Overload",
+        power: 65,
+        accuracy: 85,
+        type: "Electric",
+        description: "Stressful attack that may cause paralysis.",
+      },
+      {
+        name: "PTO Prayer",
+        power: 0,
+        accuracy: 100,
+        type: "Normal",
+        description: "Healing move that gives a much-needed break.",
+      },
+      {
+        name: "Monday Mayhem",
+        power: 55,
+        accuracy: 85,
+        type: "Rock",
+        description: "Rock-solid attack fueled by beginning-of-week dread.",
+      },
+    ],
   },
   {
     id: 6,
     name: "All Jokes Roaster",
-    sprite: "https://i.imgur.com/qRtemtQ.png", 
+    sprite: "https://i.imgur.com/qRtemtQ.png",
     hp: 180,
     attack: 170,
     defense: 110,
@@ -167,16 +301,40 @@ const characters = [
     status: "normal",
     description: "Can't take anything seriously. Will ratio you into oblivion.",
     moves: [
-      { name: "Ratio'd Receipts", power: 40, accuracy: 100, type: "Air", description: "Quick aerial attack with high accuracy." },
-      { name: "Clapback Inferno", power: 55, accuracy: 90, type: "Fire", description: "Fiery comeback that may cause burn status." },
-      { name: "Dodge the Shade", power: 0, accuracy: 100, type: "Air", description: "Boosts speed by effortlessly avoiding criticism." },
-      { name: "Viral Diss", power: 65, accuracy: 85, type: "Air", description: "Widespread attack that damages opponent's reputation." }
-    ]
+      {
+        name: "Ratio'd Receipts",
+        power: 40,
+        accuracy: 100,
+        type: "Air",
+        description: "Quick aerial attack with high accuracy.",
+      },
+      {
+        name: "Clapback Inferno",
+        power: 55,
+        accuracy: 90,
+        type: "Fire",
+        description: "Fiery comeback that may cause burn status.",
+      },
+      {
+        name: "Dodge the Shade",
+        power: 0,
+        accuracy: 100,
+        type: "Air",
+        description: "Boosts speed by effortlessly avoiding criticism.",
+      },
+      {
+        name: "Viral Diss",
+        power: 65,
+        accuracy: 85,
+        type: "Air",
+        description: "Widespread attack that damages opponent's reputation.",
+      },
+    ],
   },
   {
     id: 7,
     name: "Closet Nerd",
-    sprite: "https://i.imgur.com/knA2Yxz.png", 
+    sprite: "https://i.imgur.com/knA2Yxz.png",
     hp: 200,
     attack: 140,
     defense: 100,
@@ -184,18 +342,43 @@ const characters = [
     critRate: 0.15,
     type: "Dark",
     status: "normal",
-    description: "Knows more about anime than you know about yourself. Don't ask.",
+    description:
+      "Knows more about anime than you know about yourself. Don't ask.",
     moves: [
-      { name: "Manga Smack", power: 60, accuracy: 95, type: "Normal", description: "Physical attack using heavy manga volumes." },
-      { name: "Weeb Roast", power: 55, accuracy: 85, type: "Fire", description: "Fiery attack that may cause burn status." },
-      { name: "Incognito Glow-Up", power: 0, accuracy: 100, type: "Dark", description: "Dark-type move that raises defense." },
-      { name: "Anime Reference", power: 70, accuracy: 80, type: "Dark", description: "Obscure attack that confuses those who don't get it." }
-    ]
+      {
+        name: "Manga Smack",
+        power: 60,
+        accuracy: 95,
+        type: "Normal",
+        description: "Physical attack using heavy manga volumes.",
+      },
+      {
+        name: "Weeb Roast",
+        power: 55,
+        accuracy: 85,
+        type: "Fire",
+        description: "Fiery attack that may cause burn status.",
+      },
+      {
+        name: "Incognito Glow-Up",
+        power: 0,
+        accuracy: 100,
+        type: "Dark",
+        description: "Dark-type move that raises defense.",
+      },
+      {
+        name: "Anime Reference",
+        power: 70,
+        accuracy: 80,
+        type: "Dark",
+        description: "Obscure attack that confuses those who don't get it.",
+      },
+    ],
   },
   {
     id: 8,
     name: "Dysfunctional YN",
-    sprite: "https://i.imgur.com/yA0lUbo.png", 
+    sprite: "https://i.imgur.com/yA0lUbo.png",
     hp: 160,
     attack: 190,
     defense: 90,
@@ -203,18 +386,44 @@ const characters = [
     critRate: 0.2,
     type: "Fire",
     status: "normal",
-    description: "A walking disaster, but somehow still functioning. Handle with care.",
+    description:
+      "A walking disaster, but somehow still functioning. Handle with care.",
     moves: [
-      { name: "Hot Mess Slap", power: 55, accuracy: 90, type: "Fire", description: "Chaotic attack that may cause burn status." },
-      { name: "Chaos Cookout", power: 85, accuracy: 75, type: "Fire", description: "Powerful but risky attack with recoil damage." },
-      { name: "Trainwreck Tantrum", power: 0, accuracy: 100, type: "Normal", description: "Emotional outburst that raises attack." },
-      { name: "Identity Crisis", power: 60, accuracy: 85, type: "Dark", description: "Confusing attack that may cause opponent to hit themselves." }
-    ]
+      {
+        name: "Hot Mess Slap",
+        power: 55,
+        accuracy: 90,
+        type: "Fire",
+        description: "Chaotic attack that may cause burn status.",
+      },
+      {
+        name: "Chaos Cookout",
+        power: 85,
+        accuracy: 75,
+        type: "Fire",
+        description: "Powerful but risky attack with recoil damage.",
+      },
+      {
+        name: "Trainwreck Tantrum",
+        power: 0,
+        accuracy: 100,
+        type: "Normal",
+        description: "Emotional outburst that raises attack.",
+      },
+      {
+        name: "Identity Crisis",
+        power: 60,
+        accuracy: 85,
+        type: "Dark",
+        description:
+          "Confusing attack that may cause opponent to hit themselves.",
+      },
+    ],
   },
   {
     id: 9,
     name: "Gamer YN",
-    sprite: "https://i.imgur.com/vFvQKap.png", 
+    sprite: "https://i.imgur.com/vFvQKap.png",
     hp: 190,
     attack: 160,
     defense: 140,
@@ -222,18 +431,43 @@ const characters = [
     critRate: 0.15,
     type: "Electric",
     status: "normal",
-    description: "Lives in a digital world. Will pwn you and teabag your avatar.",
+    description:
+      "Lives in a digital world. Will pwn you and teabag your avatar.",
     moves: [
-      { name: "Rapid Button Mash", power: 55, accuracy: 90, type: "Normal", description: "Frantic attack with quick button presses." },
-      { name: "Energy Drink Rush", power: 65, accuracy: 85, type: "Electric", description: "Energized attack that may cause paralysis." },
-      { name: "Paused Game", power: 0, accuracy: 100, type: "Normal", description: "Takes a breather to recover HP." },
-      { name: "Rage Mode", power: 80, accuracy: 75, type: "Dark", description: "Powerful but risky attack when games get serious." }
-    ]
+      {
+        name: "Rapid Button Mash",
+        power: 55,
+        accuracy: 90,
+        type: "Normal",
+        description: "Frantic attack with quick button presses.",
+      },
+      {
+        name: "Energy Drink Rush",
+        power: 65,
+        accuracy: 85,
+        type: "Electric",
+        description: "Energized attack that may cause paralysis.",
+      },
+      {
+        name: "Paused Game",
+        power: 0,
+        accuracy: 100,
+        type: "Normal",
+        description: "Takes a breather to recover HP.",
+      },
+      {
+        name: "Rage Mode",
+        power: 80,
+        accuracy: 75,
+        type: "Dark",
+        description: "Powerful but risky attack when games get serious.",
+      },
+    ],
   },
   {
     id: 10,
     name: "Hooper",
-    sprite: "https://i.imgur.com/nmL74YQ.png", 
+    sprite: "https://i.imgur.com/nmL74YQ.png",
     hp: 210,
     attack: 180,
     defense: 140,
@@ -241,18 +475,43 @@ const characters = [
     critRate: 0.2,
     type: "Air",
     status: "normal",
-    description: "Ball is life. Will cross you up on the court and in conversation.",
+    description:
+      "Ball is life. Will cross you up on the court and in conversation.",
     moves: [
-      { name: "Crossover Break", power: 60, accuracy: 90, type: "Normal", description: "Quick dribble move that breaks ankles." },
-      { name: "Three-Point Shot", power: 75, accuracy: 80, type: "Air", description: "Long-range attack with high damage but lower accuracy." },
-      { name: "Pick & Roll", power: 0, accuracy: 100, type: "Normal", description: "Strategic team move that boosts attack." },
-      { name: "Posterize", power: 85, accuracy: 75, type: "Air", description: "Devastating dunk that may intimidate opponent." }
-    ]
+      {
+        name: "Crossover Break",
+        power: 60,
+        accuracy: 90,
+        type: "Normal",
+        description: "Quick dribble move that breaks ankles.",
+      },
+      {
+        name: "Three-Point Shot",
+        power: 75,
+        accuracy: 80,
+        type: "Air",
+        description: "Long-range attack with high damage but lower accuracy.",
+      },
+      {
+        name: "Pick & Roll",
+        power: 0,
+        accuracy: 100,
+        type: "Normal",
+        description: "Strategic team move that boosts attack.",
+      },
+      {
+        name: "Posterize",
+        power: 85,
+        accuracy: 75,
+        type: "Air",
+        description: "Devastating dunk that may intimidate opponent.",
+      },
+    ],
   },
   {
     id: 11,
     name: "Bikelife YN",
-    sprite: "https://i.imgur.com/i6xU3C7.png", 
+    sprite: "https://i.imgur.com/i6xU3C7.png",
     hp: 180,
     attack: 160,
     defense: 120,
@@ -260,18 +519,43 @@ const characters = [
     critRate: 0.15,
     type: "Rock",
     status: "normal",
-    description: "Wheelies through traffic and problems alike. Cannot be caught.",
+    description:
+      "Wheelies through traffic and problems alike. Cannot be caught.",
     moves: [
-      { name: "Wheelie Strike", power: 60, accuracy: 90, type: "Rock", description: "Front wheel attack with moderate damage." },
-      { name: "Burnout", power: 65, accuracy: 85, type: "Fire", description: "Tire-spinning attack that may cause burn status." },
-      { name: "Rev Engine", power: 0, accuracy: 100, type: "Normal", description: "Revs up to increase speed." },
-      { name: "Stunt Jump", power: 80, accuracy: 75, type: "Air", description: "Aerial bike stunt with high damage but risky landing." }
-    ]
+      {
+        name: "Wheelie Strike",
+        power: 60,
+        accuracy: 90,
+        type: "Rock",
+        description: "Front wheel attack with moderate damage.",
+      },
+      {
+        name: "Burnout",
+        power: 65,
+        accuracy: 85,
+        type: "Fire",
+        description: "Tire-spinning attack that may cause burn status.",
+      },
+      {
+        name: "Rev Engine",
+        power: 0,
+        accuracy: 100,
+        type: "Normal",
+        description: "Revs up to increase speed.",
+      },
+      {
+        name: "Stunt Jump",
+        power: 80,
+        accuracy: 75,
+        type: "Air",
+        description: "Aerial bike stunt with high damage but risky landing.",
+      },
+    ],
   },
   {
     id: 12,
     name: "Streamer",
-    sprite: "https://i.imgur.com/3rCsqGF.png", 
+    sprite: "https://i.imgur.com/3rCsqGF.png",
     hp: 170,
     attack: 150,
     defense: 120,
@@ -279,19 +563,44 @@ const characters = [
     critRate: 0.15,
     type: "Electric",
     status: "normal",
-    description: "Lives for the chat and donations. Will do anything for subscribers.",
+    description:
+      "Lives for the chat and donations. Will do anything for subscribers.",
     moves: [
-      { name: "Clickbait", power: 55, accuracy: 95, type: "Normal", description: "Misleading attack that's surprisingly effective." },
-      { name: "Viral Moment", power: 70, accuracy: 85, type: "Electric", description: "Electric attack powered by viewer energy." },
-      { name: "Sub Goal", power: 0, accuracy: 100, type: "Normal", description: "Rallies support to boost defense and attack." },
-      { name: "Sponsored Content", power: 75, accuracy: 80, type: "Dark", description: "Sold-out attack that generates cash damage." }
-    ]
+      {
+        name: "Clickbait",
+        power: 55,
+        accuracy: 95,
+        type: "Normal",
+        description: "Misleading attack that's surprisingly effective.",
+      },
+      {
+        name: "Viral Moment",
+        power: 70,
+        accuracy: 85,
+        type: "Electric",
+        description: "Electric attack powered by viewer energy.",
+      },
+      {
+        name: "Sub Goal",
+        power: 0,
+        accuracy: 100,
+        type: "Normal",
+        description: "Rallies support to boost defense and attack.",
+      },
+      {
+        name: "Sponsored Content",
+        power: 75,
+        accuracy: 80,
+        type: "Dark",
+        description: "Sold-out attack that generates cash damage.",
+      },
+    ],
   },
   // New characters from the provided list
   {
     id: 13,
     name: "Smoker Jr",
-    sprite: "https://i.imgur.com/vdaAi7h.png", 
+    sprite: "https://i.imgur.com/vdaAi7h.png",
     hp: 185,
     attack: 160,
     defense: 120,
@@ -299,18 +608,43 @@ const characters = [
     critRate: 0.15,
     type: "Fire",
     status: "normal",
-    description: "Always carrying a lighter. Probably shouldn't be smoking, but who's stopping him?",
+    description:
+      "Always carrying a lighter. Probably shouldn't be smoking, but who's stopping him?",
     moves: [
-      { name: "Smoke Screen", power: 50, accuracy: 90, type: "Fire", description: "Creates a cloud of smoke reducing opponent's accuracy." },
-      { name: "Lighter Flick", power: 65, accuracy: 85, type: "Fire", description: "Quick flame attack that may cause burn status." },
-      { name: "Puff Puff Pass", power: 0, accuracy: 100, type: "Fire", description: "Recovers HP while entering a relaxed state." },
-      { name: "Ash Flick", power: 55, accuracy: 95, type: "Fire", description: "Small but irritating attack with high accuracy." }
-    ]
+      {
+        name: "Smoke Screen",
+        power: 50,
+        accuracy: 90,
+        type: "Fire",
+        description: "Creates a cloud of smoke reducing opponent's accuracy.",
+      },
+      {
+        name: "Lighter Flick",
+        power: 65,
+        accuracy: 85,
+        type: "Fire",
+        description: "Quick flame attack that may cause burn status.",
+      },
+      {
+        name: "Puff Puff Pass",
+        power: 0,
+        accuracy: 100,
+        type: "Fire",
+        description: "Recovers HP while entering a relaxed state.",
+      },
+      {
+        name: "Ash Flick",
+        power: 55,
+        accuracy: 95,
+        type: "Fire",
+        description: "Small but irritating attack with high accuracy.",
+      },
+    ],
   },
   {
     id: 14,
     name: "Suburban YN",
-    sprite: "https://i.imgur.com/LKtVgCn.png", 
+    sprite: "https://i.imgur.com/LKtVgCn.png",
     hp: 190,
     attack: 140,
     defense: 150,
@@ -318,18 +652,43 @@ const characters = [
     critRate: 0.1,
     type: "Normal",
     status: "normal",
-    description: "Straight from the cul-de-sac. Has never seen an actual struggle but claims street cred.",
+    description:
+      "Straight from the cul-de-sac. Has never seen an actual struggle but claims street cred.",
     moves: [
-      { name: "HOA Complaint", power: 50, accuracy: 95, type: "Normal", description: "Administrative attack with surprising effectiveness." },
-      { name: "Mall Shopping Spree", power: 60, accuracy: 90, type: "Normal", description: "Shopping bags used as weapons, may confuse opponent." },
-      { name: "Privilege Check", power: 0, accuracy: 100, type: "Normal", description: "Uses advantages to boost defense and attack." },
-      { name: "Lawn Mower Charge", power: 75, accuracy: 80, type: "Rock", description: "Suburban weapon of choice that deals solid damage." }
-    ]
+      {
+        name: "HOA Complaint",
+        power: 50,
+        accuracy: 95,
+        type: "Normal",
+        description: "Administrative attack with surprising effectiveness.",
+      },
+      {
+        name: "Mall Shopping Spree",
+        power: 60,
+        accuracy: 90,
+        type: "Normal",
+        description: "Shopping bags used as weapons, may confuse opponent.",
+      },
+      {
+        name: "Privilege Check",
+        power: 0,
+        accuracy: 100,
+        type: "Normal",
+        description: "Uses advantages to boost defense and attack.",
+      },
+      {
+        name: "Lawn Mower Charge",
+        power: 75,
+        accuracy: 80,
+        type: "Rock",
+        description: "Suburban weapon of choice that deals solid damage.",
+      },
+    ],
   },
   {
     id: 15,
     name: "Ganger Blue",
-    sprite: "https://i.imgur.com/7THvTR0.png", 
+    sprite: "https://i.imgur.com/7THvTR0.png",
     hp: 200,
     attack: 180,
     defense: 130,
@@ -339,16 +698,40 @@ const characters = [
     status: "normal",
     description: "Runs the west side. Don't wear the wrong colors around him.",
     moves: [
-      { name: "Set Trippin'", power: 65, accuracy: 90, type: "Water", description: "Territory defense move with moderate damage." },
-      { name: "Blue Bandana Wave", power: 70, accuracy: 85, type: "Water", description: "Water attack that showcases gang colors." },
-      { name: "Call Backup", power: 0, accuracy: 100, type: "Water", description: "Summons crew to boost attack and defense." },
-      { name: "Drive-By Splash", power: 85, accuracy: 75, type: "Water", description: "Powerful but risky water attack with high damage." }
-    ]
+      {
+        name: "Set Trippin'",
+        power: 65,
+        accuracy: 90,
+        type: "Water",
+        description: "Territory defense move with moderate damage.",
+      },
+      {
+        name: "Blue Bandana Wave",
+        power: 70,
+        accuracy: 85,
+        type: "Water",
+        description: "Water attack that showcases gang colors.",
+      },
+      {
+        name: "Call Backup",
+        power: 0,
+        accuracy: 100,
+        type: "Water",
+        description: "Summons crew to boost attack and defense.",
+      },
+      {
+        name: "Drive-By Splash",
+        power: 85,
+        accuracy: 75,
+        type: "Water",
+        description: "Powerful but risky water attack with high damage.",
+      },
+    ],
   },
   {
     id: 16,
     name: "Ganger Red",
-    sprite: "https://i.imgur.com/DP4RBGB.png", 
+    sprite: "https://i.imgur.com/DP4RBGB.png",
     hp: 190,
     attack: 190,
     defense: 120,
@@ -356,18 +739,44 @@ const characters = [
     critRate: 0.2,
     type: "Fire",
     status: "normal",
-    description: "Controls the east side. Blood runs deep, loyalty runs deeper.",
+    description:
+      "Controls the east side. Blood runs deep, loyalty runs deeper.",
     moves: [
-      { name: "Red Rag Snap", power: 60, accuracy: 90, type: "Fire", description: "Gang sign attack with moderate fire damage." },
-      { name: "Hood Tactics", power: 75, accuracy: 85, type: "Dark", description: "Strategic attack learned from street experience." },
-      { name: "Gang Meeting", power: 0, accuracy: 100, type: "Normal", description: "Plans with crew to increase all stats temporarily." },
-      { name: "Turf War Blaze", power: 90, accuracy: 70, type: "Fire", description: "All-out territorial attack with high damage but lower accuracy." }
-    ]
+      {
+        name: "Red Rag Snap",
+        power: 60,
+        accuracy: 90,
+        type: "Fire",
+        description: "Gang sign attack with moderate fire damage.",
+      },
+      {
+        name: "Hood Tactics",
+        power: 75,
+        accuracy: 85,
+        type: "Dark",
+        description: "Strategic attack learned from street experience.",
+      },
+      {
+        name: "Gang Meeting",
+        power: 0,
+        accuracy: 100,
+        type: "Normal",
+        description: "Plans with crew to increase all stats temporarily.",
+      },
+      {
+        name: "Turf War Blaze",
+        power: 90,
+        accuracy: 70,
+        type: "Fire",
+        description:
+          "All-out territorial attack with high damage but lower accuracy.",
+      },
+    ],
   },
   {
     id: 17,
     name: "Coon",
-    sprite: "https://i.imgur.com/CSvkuRk.png", 
+    sprite: "https://i.imgur.com/CSvkuRk.png",
     hp: 170,
     attack: 150,
     defense: 120,
@@ -375,18 +784,43 @@ const characters = [
     critRate: 0.15,
     type: "Dark",
     status: "normal",
-    description: "Sells out their own people for validation. Always seeking approval from the wrong crowd.",
+    description:
+      "Sells out their own people for validation. Always seeking approval from the wrong crowd.",
     moves: [
-      { name: "Identity Betrayal", power: 65, accuracy: 90, type: "Dark", description: "Self-hating attack that damages opponent's pride." },
-      { name: "Pick Me Dance", power: 50, accuracy: 95, type: "Normal", description: "Desperate approval-seeking move with high accuracy." },
-      { name: "Internalized Hatred", power: 0, accuracy: 100, type: "Dark", description: "Redirects self-loathing to boost attack." },
-      { name: "Token Friend Card", power: 70, accuracy: 85, type: "Dark", description: "Uses tokenism as a weapon with moderate damage." }
-    ]
+      {
+        name: "Identity Betrayal",
+        power: 65,
+        accuracy: 90,
+        type: "Dark",
+        description: "Self-hating attack that damages opponent's pride.",
+      },
+      {
+        name: "Pick Me Dance",
+        power: 50,
+        accuracy: 95,
+        type: "Normal",
+        description: "Desperate approval-seeking move with high accuracy.",
+      },
+      {
+        name: "Internalized Hatred",
+        power: 0,
+        accuracy: 100,
+        type: "Dark",
+        description: "Redirects self-loathing to boost attack.",
+      },
+      {
+        name: "Token Friend Card",
+        power: 70,
+        accuracy: 85,
+        type: "Dark",
+        description: "Uses tokenism as a weapon with moderate damage.",
+      },
+    ],
   },
   {
     id: 18,
     name: "Rapper",
-    sprite: "https://i.imgur.com/HcWNwJT.png", 
+    sprite: "https://i.imgur.com/HcWNwJT.png",
     hp: 185,
     attack: 175,
     defense: 110,
@@ -394,18 +828,43 @@ const characters = [
     critRate: 0.15,
     type: "Electric",
     status: "normal",
-    description: "Spits fire and takes no prisoners. Soundcloud link in bio, of course.",
+    description:
+      "Spits fire and takes no prisoners. Soundcloud link in bio, of course.",
     moves: [
-      { name: "Mic Drop", power: 65, accuracy: 90, type: "Electric", description: "Shocking performance that leaves audience stunned." },
-      { name: "Freestyle Flow", power: 70, accuracy: 85, type: "Air", description: "Off-the-top rhymes that hit with surprising force." },
-      { name: "Hype Man Backup", power: 0, accuracy: 100, type: "Electric", description: "Brings out the entourage to boost attack and speed." },
-      { name: "Diss Track", power: 85, accuracy: 75, type: "Dark", description: "Targeted verbal attack that cuts deep with high damage." }
-    ]
+      {
+        name: "Mic Drop",
+        power: 65,
+        accuracy: 90,
+        type: "Electric",
+        description: "Shocking performance that leaves audience stunned.",
+      },
+      {
+        name: "Freestyle Flow",
+        power: 70,
+        accuracy: 85,
+        type: "Air",
+        description: "Off-the-top rhymes that hit with surprising force.",
+      },
+      {
+        name: "Hype Man Backup",
+        power: 0,
+        accuracy: 100,
+        type: "Electric",
+        description: "Brings out the entourage to boost attack and speed.",
+      },
+      {
+        name: "Diss Track",
+        power: 85,
+        accuracy: 75,
+        type: "Dark",
+        description: "Targeted verbal attack that cuts deep with high damage.",
+      },
+    ],
   },
   {
     id: 19,
     name: "Police",
-    sprite: "https://i.imgur.com/AdCwGHp.png", 
+    sprite: "https://i.imgur.com/AdCwGHp.png",
     hp: 210,
     attack: 160,
     defense: 170,
@@ -413,18 +872,43 @@ const characters = [
     critRate: 0.1,
     type: "Rock",
     status: "normal",
-    description: "Thinks the badge makes them above the law. Has a quota to fill.",
+    description:
+      "Thinks the badge makes them above the law. Has a quota to fill.",
     moves: [
-      { name: "Racial Profiling", power: 60, accuracy: 85, type: "Dark", description: "Discriminatory tactic with moderate damage." },
-      { name: "Taser Shot", power: 70, accuracy: 80, type: "Electric", description: "Electric attack that may cause paralysis." },
-      { name: "Call for Backup", power: 0, accuracy: 100, type: "Rock", description: "Brings in reinforcements to boost defense." },
-      { name: "Excessive Force", power: 90, accuracy: 70, type: "Rock", description: "Powerful but controversial attack with poor accuracy." }
-    ]
+      {
+        name: "Racial Profiling",
+        power: 60,
+        accuracy: 85,
+        type: "Dark",
+        description: "Discriminatory tactic with moderate damage.",
+      },
+      {
+        name: "Taser Shot",
+        power: 70,
+        accuracy: 80,
+        type: "Electric",
+        description: "Electric attack that may cause paralysis.",
+      },
+      {
+        name: "Call for Backup",
+        power: 0,
+        accuracy: 100,
+        type: "Rock",
+        description: "Brings in reinforcements to boost defense.",
+      },
+      {
+        name: "Excessive Force",
+        power: 90,
+        accuracy: 70,
+        type: "Rock",
+        description: "Powerful but controversial attack with poor accuracy.",
+      },
+    ],
   },
   {
     id: 20,
     name: "Snitch",
-    sprite: "https://i.imgur.com/OOZM6eu.png", 
+    sprite: "https://i.imgur.com/OOZM6eu.png",
     hp: 150,
     attack: 130,
     defense: 110,
@@ -432,18 +916,43 @@ const characters = [
     critRate: 0.1,
     type: "Air",
     status: "normal",
-    description: "No loyalty, just self-preservation. Watch what you say around them.",
+    description:
+      "No loyalty, just self-preservation. Watch what you say around them.",
     moves: [
-      { name: "Tell All", power: 55, accuracy: 95, type: "Air", description: "Reveals secrets for a quick, accurate attack." },
-      { name: "Recorded Evidence", power: 65, accuracy: 90, type: "Electric", description: "Uses hidden recordings for moderate damage." },
-      { name: "Witness Protection", power: 0, accuracy: 100, type: "Air", description: "Hides away to recover HP and boost defense." },
-      { name: "Backstab", power: 80, accuracy: 75, type: "Dark", description: "Betrayal attack with high damage to former allies." }
-    ]
+      {
+        name: "Tell All",
+        power: 55,
+        accuracy: 95,
+        type: "Air",
+        description: "Reveals secrets for a quick, accurate attack.",
+      },
+      {
+        name: "Recorded Evidence",
+        power: 65,
+        accuracy: 90,
+        type: "Electric",
+        description: "Uses hidden recordings for moderate damage.",
+      },
+      {
+        name: "Witness Protection",
+        power: 0,
+        accuracy: 100,
+        type: "Air",
+        description: "Hides away to recover HP and boost defense.",
+      },
+      {
+        name: "Backstab",
+        power: 80,
+        accuracy: 75,
+        type: "Dark",
+        description: "Betrayal attack with high damage to former allies.",
+      },
+    ],
   },
   {
     id: 21,
     name: "Cornball",
-    sprite: "https://i.imgur.com/yUUA3of.png", 
+    sprite: "https://i.imgur.com/yUUA3of.png",
     hp: 180,
     attack: 140,
     defense: 130,
@@ -451,18 +960,43 @@ const characters = [
     critRate: 0.15,
     type: "Normal",
     status: "normal",
-    description: "Painfully uncool but blissfully unaware. Always saying the wrong thing at the wrong time.",
+    description:
+      "Painfully uncool but blissfully unaware. Always saying the wrong thing at the wrong time.",
     moves: [
-      { name: "Dad Joke", power: 50, accuracy: 95, type: "Normal", description: "Cringeworthy joke that somehow causes damage." },
-      { name: "Cultural Misfire", power: 65, accuracy: 85, type: "Normal", description: "Awkward attempt to be relevant that confuses opponent." },
-      { name: "Blissful Ignorance", power: 0, accuracy: 100, type: "Normal", description: "Uses lack of awareness to boost defense." },
-      { name: "Accidental Offense", power: 75, accuracy: 80, type: "Dark", description: "Unintentionally hurtful comment with surprising impact." }
-    ]
+      {
+        name: "Dad Joke",
+        power: 50,
+        accuracy: 95,
+        type: "Normal",
+        description: "Cringeworthy joke that somehow causes damage.",
+      },
+      {
+        name: "Cultural Misfire",
+        power: 65,
+        accuracy: 85,
+        type: "Normal",
+        description: "Awkward attempt to be relevant that confuses opponent.",
+      },
+      {
+        name: "Blissful Ignorance",
+        power: 0,
+        accuracy: 100,
+        type: "Normal",
+        description: "Uses lack of awareness to boost defense.",
+      },
+      {
+        name: "Accidental Offense",
+        power: 75,
+        accuracy: 80,
+        type: "Dark",
+        description: "Unintentionally hurtful comment with surprising impact.",
+      },
+    ],
   },
   {
     id: 22,
     name: "Crack Head",
-    sprite: "https://i.imgur.com/cl7GtvK.png", 
+    sprite: "https://i.imgur.com/cl7GtvK.png",
     hp: 150,
     attack: 180,
     defense: 90,
@@ -470,18 +1004,44 @@ const characters = [
     critRate: 0.2,
     type: "Dark",
     status: "normal",
-    description: "Unpredictable and always on edge. Might do anything for the next fix.",
+    description:
+      "Unpredictable and always on edge. Might do anything for the next fix.",
     moves: [
-      { name: "Wild Swing", power: 65, accuracy: 80, type: "Normal", description: "Erratic attack with moderate damage but lower accuracy." },
-      { name: "Paranoid Outburst", power: 75, accuracy: 75, type: "Dark", description: "Fear-driven attack that might confuse both sides." },
-      { name: "Desperate Hustle", power: 0, accuracy: 100, type: "Dark", description: "Uses survival instincts to boost speed and attack." },
-      { name: "Rock Bottom Rage", power: 90, accuracy: 65, type: "Dark", description: "All-out desperate attack with high damage but poor accuracy." }
-    ]
+      {
+        name: "Wild Swing",
+        power: 65,
+        accuracy: 80,
+        type: "Normal",
+        description: "Erratic attack with moderate damage but lower accuracy.",
+      },
+      {
+        name: "Paranoid Outburst",
+        power: 75,
+        accuracy: 75,
+        type: "Dark",
+        description: "Fear-driven attack that might confuse both sides.",
+      },
+      {
+        name: "Desperate Hustle",
+        power: 0,
+        accuracy: 100,
+        type: "Dark",
+        description: "Uses survival instincts to boost speed and attack.",
+      },
+      {
+        name: "Rock Bottom Rage",
+        power: 90,
+        accuracy: 65,
+        type: "Dark",
+        description:
+          "All-out desperate attack with high damage but poor accuracy.",
+      },
+    ],
   },
   {
     id: 23,
     name: "Muslim Homie",
-    sprite: "https://i.imgur.com/dWO1X6j.png", 
+    sprite: "https://i.imgur.com/dWO1X6j.png",
     hp: 200,
     attack: 150,
     defense: 160,
@@ -489,14 +1049,39 @@ const characters = [
     critRate: 0.15,
     type: "Normal",
     status: "normal",
-    description: "Strong in faith and character. Will invite you to dinner and defend you till the end.",
+    description:
+      "Strong in faith and character. Will invite you to dinner and defend you till the end.",
     moves: [
-      { name: "Prayer Focus", power: 60, accuracy: 90, type: "Normal", description: "Spiritual attack with consistent accuracy." },
-      { name: "Cultural Pride", power: 70, accuracy: 85, type: "Fire", description: "Heritage-fueled attack with moderate damage." },
-      { name: "Ramadan Strength", power: 0, accuracy: 100, type: "Normal", description: "Draws on spiritual discipline to boost all stats." },
-      { name: "Hospitality Surprise", power: 75, accuracy: 80, type: "Normal", description: "Disarms opponent with kindness before striking." }
-    ]
-  }
+      {
+        name: "Prayer Focus",
+        power: 60,
+        accuracy: 90,
+        type: "Normal",
+        description: "Spiritual attack with consistent accuracy.",
+      },
+      {
+        name: "Cultural Pride",
+        power: 70,
+        accuracy: 85,
+        type: "Fire",
+        description: "Heritage-fueled attack with moderate damage.",
+      },
+      {
+        name: "Ramadan Strength",
+        power: 0,
+        accuracy: 100,
+        type: "Normal",
+        description: "Draws on spiritual discipline to boost all stats.",
+      },
+      {
+        name: "Hospitality Surprise",
+        power: 75,
+        accuracy: 80,
+        type: "Normal",
+        description: "Disarms opponent with kindness before striking.",
+      },
+    ],
+  },
 ];
 
 // Enemy (Opponent) data
@@ -504,64 +1089,67 @@ const opponents = [
   {
     id: 101,
     name: "Functional Addict",
-    sprite: "https://i.imgur.com/G3xfSjU.png", 
+    sprite: "https://i.imgur.com/G3xfSjU.png",
     hp: 200,
     attack: 150,
     defense: 100,
     speed: 130,
     critRate: 0.15,
     type: "Water",
-    description: "Runs on liquids that aren't always water. Surprisingly coherent.",
+    description:
+      "Runs on liquids that aren't always water. Surprisingly coherent.",
     moves: [
       { name: "Sip & Splash", power: 45, accuracy: 100, type: "Water" },
       { name: "Henny Haze", power: 60, accuracy: 90, type: "Dark" },
       { name: "Sober Up Sis", power: 0, accuracy: 100, type: "Normal" },
-      { name: "Liquid Courage", power: 70, accuracy: 80, type: "Water" }
+      { name: "Liquid Courage", power: 70, accuracy: 80, type: "Water" },
     ],
-    ai: "balanced"
+    ai: "balanced",
   },
   {
     id: 102,
     name: "Gamer Unemployed",
-    sprite: "https://i.imgur.com/b5pnt7o.png", 
+    sprite: "https://i.imgur.com/b5pnt7o.png",
     hp: 210,
     attack: 150,
     defense: 190,
     speed: 150,
     critRate: 0.15,
     type: "Dark",
-    description: "Peak performance involves Cheetos and minimal movement. Hasn't seen the sun in weeks.",
+    description:
+      "Peak performance involves Cheetos and minimal movement. Hasn't seen the sun in weeks.",
     moves: [
       { name: "Cheeto Dust Jab", power: 50, accuracy: 95, type: "Normal" },
       { name: "WiFi Crash", power: 65, accuracy: 85, type: "Electric" },
       { name: "Couch Potato Power", power: 0, accuracy: 100, type: "Normal" },
-      { name: "Rage Quit", power: 75, accuracy: 75, type: "Dark" }
+      { name: "Rage Quit", power: 75, accuracy: 75, type: "Dark" },
     ],
-    ai: "aggressive"
+    ai: "aggressive",
   },
   {
     id: 103,
     name: "Houseless Hustler",
-    sprite: "https://i.imgur.com/LRVrieF.png", 
+    sprite: "https://i.imgur.com/LRVrieF.png",
     hp: 220,
     attack: 170,
     defense: 110,
     speed: 120,
     critRate: 0.1,
     type: "Rock",
-    description: "Resourceful survivor. Turns trash into treasure, and opponents into dust.",
+    description:
+      "Resourceful survivor. Turns trash into treasure, and opponents into dust.",
     moves: [
       { name: "Cardboard Cut", power: 50, accuracy: 95, type: "Normal" },
       { name: "Sidewalk Stomp", power: 60, accuracy: 85, type: "Rock" },
       { name: "Hustle Hard", power: 0, accuracy: 100, type: "Normal" },
-      { name: "Street Wisdom", power: 65, accuracy: 80, type: "Dark" }
+      { name: "Street Wisdom", power: 65, accuracy: 80, type: "Dark" },
     ],
-    ai: "defensive"
+    ai: "defensive",
   },
   {
     id: 104,
     name: "Night Stalker",
-    sprite: "https://i.imgur.com/Kwe1HpA.png", 
+    sprite: "https://i.imgur.com/Kwe1HpA.png",
     hp: 160,
     attack: 200,
     defense: 100,
@@ -573,52 +1161,54 @@ const opponents = [
       { name: "Knife Nightcap", power: 45, accuracy: 85, type: "Dark" },
       { name: "Stalk & Snooze", power: 90, accuracy: 65, type: "Dark" },
       { name: "Killer Instinct", power: 0, accuracy: 100, type: "Dark" },
-      { name: "Shadow Strike", power: 70, accuracy: 80, type: "Dark" }
+      { name: "Shadow Strike", power: 70, accuracy: 80, type: "Dark" },
     ],
-    ai: "aggressive"
+    ai: "aggressive",
   },
   {
     id: 105,
     name: "Techbro Rich",
-    sprite: "https://i.imgur.com/GmlKf6u.png", 
+    sprite: "https://i.imgur.com/GmlKf6u.png",
     hp: 180,
     attack: 180,
     defense: 120,
     speed: 190,
     critRate: 0.15,
     type: "Electric",
-    description: "Disrupting the Squabblemon scene, one NFT at a time. Very rich.",
+    description:
+      "Disrupting the Squabblemon scene, one NFT at a time. Very rich.",
     moves: [
       { name: "Tesla Taze", power: 55, accuracy: 90, type: "Electric" },
       { name: "NFT Nuke", power: 85, accuracy: 70, type: "Normal" },
       { name: "VC Funded Flex", power: 0, accuracy: 100, type: "Electric" },
-      { name: "Crypto Crash", power: 75, accuracy: 80, type: "Dark" }
+      { name: "Crypto Crash", power: 75, accuracy: 80, type: "Dark" },
     ],
-    ai: "balanced"
+    ai: "balanced",
   },
   {
     id: 106,
     name: "Earthy YN",
-    sprite: "https://i.imgur.com/1SuHgnZ.png", 
+    sprite: "https://i.imgur.com/1SuHgnZ.png",
     hp: 210,
     attack: 140,
     defense: 180,
     speed: 120,
     critRate: 0.1,
     type: "Plant",
-    description: "One with nature. Will judge your plastic use while hitting a handmade bamboo bong.",
+    description:
+      "One with nature. Will judge your plastic use while hitting a handmade bamboo bong.",
     moves: [
       { name: "Crystal Healing", power: 50, accuracy: 95, type: "Rock" },
       { name: "Herbal Essence", power: 60, accuracy: 90, type: "Plant" },
       { name: "Meditate", power: 0, accuracy: 100, type: "Normal" },
-      { name: "Compost Bomb", power: 75, accuracy: 80, type: "Plant" }
+      { name: "Compost Bomb", power: 75, accuracy: 80, type: "Plant" },
     ],
-    ai: "defensive"
+    ai: "defensive",
   },
   {
     id: 107,
     name: "The Plug",
-    sprite: "https://i.imgur.com/Mal7dZQ.png", 
+    sprite: "https://i.imgur.com/Mal7dZQ.png",
     hp: 190,
     attack: 190,
     defense: 130,
@@ -630,103 +1220,168 @@ const opponents = [
       { name: "Burner Phone", power: 50, accuracy: 100, type: "Electric" },
       { name: "Product Sample", power: 70, accuracy: 85, type: "Dark" },
       { name: "Re-Up", power: 0, accuracy: 100, type: "Normal" },
-      { name: "Trap House Ambush", power: 85, accuracy: 75, type: "Dark" }
+      { name: "Trap House Ambush", power: 85, accuracy: 75, type: "Dark" },
     ],
-    ai: "aggressive"
+    ai: "aggressive",
   },
   {
     id: 108,
     name: "Scammer",
-    sprite: "https://i.imgur.com/tvAPXl8.png", 
+    sprite: "https://i.imgur.com/tvAPXl8.png",
     hp: 170,
     attack: 160,
     defense: 140,
     speed: 170,
     critRate: 0.15,
     type: "Dark",
-    description: "Always has a sketchy opportunity. Your grandmother already sent him money.",
+    description:
+      "Always has a sketchy opportunity. Your grandmother already sent him money.",
     moves: [
       { name: "Phishing Attack", power: 55, accuracy: 95, type: "Water" },
       { name: "Identity Theft", power: 70, accuracy: 85, type: "Dark" },
       { name: "Nigerian Prince", power: 0, accuracy: 100, type: "Dark" },
-      { name: "Ponzi Scheme", power: 80, accuracy: 75, type: "Dark" }
+      { name: "Ponzi Scheme", power: 80, accuracy: 75, type: "Dark" },
     ],
-    ai: "balanced"
-  }
+    ai: "balanced",
+  },
 ];
 
 // Type effectiveness chart
 const typeEffectiveness = {
   // Player types
-  Fire: { Plant: 1.5, Water: 0.5, Rock: 0.5, Normal: 1.0, Electric: 1.0, Air: 1.0, Dark: 1.0 },
-  Plant: { Water: 1.5, Rock: 1.5, Fire: 0.5, Air: 0.5, Normal: 1.0, Electric: 1.0, Dark: 1.0 },
-  Water: { Fire: 1.5, Rock: 1.5, Plant: 0.5, Electric: 0.5, Normal: 1.0, Air: 1.0, Dark: 1.0 },
-  Rock: { Electric: 1.5, Fire: 1.5, Air: 1.5, Plant: 0.5, Water: 0.5, Normal: 1.0, Dark: 1.0 },
-  Electric: { Water: 1.5, Air: 1.5, Rock: 0.5, Plant: 0.5, Normal: 1.0, Fire: 1.0, Dark: 1.0 },
-  Air: { Plant: 1.5, Electric: 0.5, Rock: 0.5, Normal: 1.0, Water: 1.0, Fire: 1.0, Dark: 1.0 },
-  Dark: { Normal: 1.5, Plant: 1.0, Water: 1.0, Rock: 1.0, Electric: 1.0, Air: 1.0, Fire: 1.0 },
-  Normal: { Dark: 0.5, Rock: 0.5, Plant: 1.0, Water: 1.0, Electric: 1.0, Air: 1.0, Fire: 1.0 }
+  Fire: {
+    Plant: 1.5,
+    Water: 0.5,
+    Rock: 0.5,
+    Normal: 1.0,
+    Electric: 1.0,
+    Air: 1.0,
+    Dark: 1.0,
+  },
+  Plant: {
+    Water: 1.5,
+    Rock: 1.5,
+    Fire: 0.5,
+    Air: 0.5,
+    Normal: 1.0,
+    Electric: 1.0,
+    Dark: 1.0,
+  },
+  Water: {
+    Fire: 1.5,
+    Rock: 1.5,
+    Plant: 0.5,
+    Electric: 0.5,
+    Normal: 1.0,
+    Air: 1.0,
+    Dark: 1.0,
+  },
+  Rock: {
+    Electric: 1.5,
+    Fire: 1.5,
+    Air: 1.5,
+    Plant: 0.5,
+    Water: 0.5,
+    Normal: 1.0,
+    Dark: 1.0,
+  },
+  Electric: {
+    Water: 1.5,
+    Air: 1.5,
+    Rock: 0.5,
+    Plant: 0.5,
+    Normal: 1.0,
+    Fire: 1.0,
+    Dark: 1.0,
+  },
+  Air: {
+    Plant: 1.5,
+    Electric: 0.5,
+    Rock: 0.5,
+    Normal: 1.0,
+    Water: 1.0,
+    Fire: 1.0,
+    Dark: 1.0,
+  },
+  Dark: {
+    Normal: 1.5,
+    Plant: 1.0,
+    Water: 1.0,
+    Rock: 1.0,
+    Electric: 1.0,
+    Air: 1.0,
+    Fire: 1.0,
+  },
+  Normal: {
+    Dark: 0.5,
+    Rock: 0.5,
+    Plant: 1.0,
+    Water: 1.0,
+    Electric: 1.0,
+    Air: 1.0,
+    Fire: 1.0,
+  },
 };
 
 // Status effect definitions
 const statusEffects = {
   normal: { name: "Normal", effect: null, icon: "" },
-  slimed: { 
-    name: "Slimed", 
-    effect: "defDown", 
-    value: 0.8, 
-    duration: 3, 
-    icon: "🤮", 
-    description: "Defense decreased by 20%" 
+  slimed: {
+    name: "Slimed",
+    effect: "defDown",
+    value: 0.8,
+    duration: 3,
+    icon: "🤮",
+    description: "Defense decreased by 20%",
   },
-  dazed: { 
-    name: "Dazed", 
-    effect: "accDown", 
-    value: 0.8, 
-    duration: 2, 
-    icon: "😵", 
-    description: "Accuracy decreased by 20%" 
+  dazed: {
+    name: "Dazed",
+    effect: "accDown",
+    value: 0.8,
+    duration: 2,
+    icon: "😵",
+    description: "Accuracy decreased by 20%",
   },
-  dirtySprite: { 
-    name: "Dirty Sprite", 
-    effect: "dot", 
-    value: 5, 
-    duration: 3, 
-    icon: "🥤", 
-    description: "Takes 5 damage each turn" 
+  dirtySprite: {
+    name: "Dirty Sprite",
+    effect: "dot",
+    value: 5,
+    duration: 3,
+    icon: "🥤",
+    description: "Takes 5 damage each turn",
   },
-  baked: { 
-    name: "Baked", 
-    effect: "spdDown", 
-    value: 0.7, 
-    duration: 3, 
-    icon: "🍃", 
-    description: "Speed decreased by 30%" 
+  baked: {
+    name: "Baked",
+    effect: "spdDown",
+    value: 0.7,
+    duration: 3,
+    icon: "🍃",
+    description: "Speed decreased by 30%",
   },
-  confused: { 
-    name: "Confused", 
-    effect: "confusion", 
-    value: 0.3, 
-    duration: 2, 
-    icon: "🥴", 
-    description: "30% chance to hit yourself" 
+  confused: {
+    name: "Confused",
+    effect: "confusion",
+    value: 0.3,
+    duration: 2,
+    icon: "🥴",
+    description: "30% chance to hit yourself",
   },
-  bleeding: { 
-    name: "Bleeding", 
-    effect: "dot", 
-    value: 8, 
-    duration: 2, 
-    icon: "🩸", 
-    description: "Takes 8 damage each turn" 
+  bleeding: {
+    name: "Bleeding",
+    effect: "dot",
+    value: 8,
+    duration: 2,
+    icon: "🩸",
+    description: "Takes 8 damage each turn",
   },
-  charmed: { 
-    name: "Charmed", 
-    effect: "atkDown", 
-    value: 0.7, 
-    duration: 2, 
-    icon: "😍", 
-    description: "Attack decreased by 30%" 
-  }
+  charmed: {
+    name: "Charmed",
+    effect: "atkDown",
+    value: 0.7,
+    duration: 2,
+    icon: "😍",
+    description: "Attack decreased by 30%",
+  },
 };
 
 // Item effects
@@ -736,7 +1391,7 @@ const items = {
     effect: "heal",
     value: 30,
     description: "Heals 30 HP with positive vibes",
-    icon: "💿"
+    icon: "💿",
   },
   nbayoungboy: {
     name: "NBA Youngboy CD",
@@ -744,13 +1399,13 @@ const items = {
     value: 1.3,
     duration: 3,
     description: "Raises Attack by 30% for 3 turns",
-    icon: "🎵"
+    icon: "🎵",
   },
   weed: {
     name: "Weed",
     effect: "statusCure",
     description: "Cures status effects and gives slight HP boost",
-    icon: "🌿"
+    icon: "🌿",
   },
   crashdummy: {
     name: "Crash Dummy",
@@ -758,8 +1413,8 @@ const items = {
     value: 1.5,
     duration: 2,
     description: "Raises Defense by 50% for 2 turns",
-    icon: "🛡️"
-  }
+    icon: "🛡️",
+  },
 };
 
 // Background images for battle scenes
@@ -769,57 +1424,57 @@ const battleBackgrounds = [
   "https://i.imgur.com/pEs4HJ5.jpeg", // New wallpaper
   "https://i.imgur.com/VTeIMuN.png", // New wallpaper
   "https://i.imgur.com/LhIaHVy.png", // New wallpaper
-  "https://i.imgur.com/OdKFwva.png"  // New wallpaper
+  "https://i.imgur.com/OdKFwva.png", // New wallpaper
 ];
 
 // Type images from provided URLs
 const typeImages = {
-  "Fire": "https://i.imgur.com/SNIiQlg.png",
-  "Water": "https://i.imgur.com/7UM8JDs.png",
-  "Plant": "https://i.imgur.com/rsqXcY7.png",
-  "Earth": "https://i.imgur.com/iOeteHQ.png",
-  "Rock": "https://i.imgur.com/iOeteHQ.png", // Using Earth for Rock
-  "Electric": "https://i.imgur.com/UWi3DFj.png", // Using credit image temporarily
-  "Air": "https://i.imgur.com/UWi3DFj.png", // Using credit image temporarily
-  "Dark": "https://i.imgur.com/UWi3DFj.png", // Using credit image temporarily
-  "Normal": "https://i.imgur.com/UWi3DFj.png" // Using credit image temporarily
+  Fire: "https://i.imgur.com/SNIiQlg.png",
+  Water: "https://i.imgur.com/7UM8JDs.png",
+  Plant: "https://i.imgur.com/rsqXcY7.png",
+  Earth: "https://i.imgur.com/iOeteHQ.png",
+  Rock: "https://i.imgur.com/iOeteHQ.png", // Using Earth for Rock
+  Electric: "https://i.imgur.com/UWi3DFj.png", // Using credit image temporarily
+  Air: "https://i.imgur.com/UWi3DFj.png", // Using credit image temporarily
+  Dark: "https://i.imgur.com/UWi3DFj.png", // Using credit image temporarily
+  Normal: "https://i.imgur.com/UWi3DFj.png", // Using credit image temporarily
 };
 
 // Attack effect animations
 const attackAnimations = {
   // Urban themes
-  "urban": "https://i.imgur.com/nRllcOZ.gif",   // Water splash effect
-  "street": "https://i.imgur.com/ikygIg7.gif",  // Fiery effect
-  "hiphop": "https://i.imgur.com/Z6VXMwT.gif",  // Electric effect
-  "tech": "https://i.imgur.com/2hTPscl.gif",    // Leaf/plant effect
-  "status": "https://i.imgur.com/HNQ2XDC.gif",  // Status/purple effect
-  
-  // Standard types 
-  "Fire": "https://i.imgur.com/ikygIg7.gif",    // Fire animation - Updated
-  "Water": "https://i.imgur.com/nRllcOZ.gif",   // Water animation - Updated
-  "Plant": "https://i.imgur.com/2hTPscl.gif",   // Plant animation
-  "Electric": "https://i.imgur.com/Z6VXMwT.gif", // Electric animation
-  "Dark": "https://i.imgur.com/HNQ2XDC.gif",    // Dark animation
-  "Air": "https://i.imgur.com/yaNJUVn.gif",     // Air animation
-  "Normal": "https://i.imgur.com/B1tVuGQ.gif",  // Normal animation
-  "Rock": "https://i.imgur.com/Z8UgFb1.gif"     // Rock animation
+  urban: "https://i.imgur.com/nRllcOZ.gif", // Water splash effect
+  street: "https://i.imgur.com/ikygIg7.gif", // Fiery effect
+  hiphop: "https://i.imgur.com/Z6VXMwT.gif", // Electric effect
+  tech: "https://i.imgur.com/2hTPscl.gif", // Leaf/plant effect
+  status: "https://i.imgur.com/HNQ2XDC.gif", // Status/purple effect
+
+  // Standard types
+  Fire: "https://i.imgur.com/ikygIg7.gif", // Fire animation - Updated
+  Water: "https://i.imgur.com/nRllcOZ.gif", // Water animation - Updated
+  Plant: "https://i.imgur.com/2hTPscl.gif", // Plant animation
+  Electric: "https://i.imgur.com/Z6VXMwT.gif", // Electric animation
+  Dark: "https://i.imgur.com/HNQ2XDC.gif", // Dark animation
+  Air: "https://i.imgur.com/yaNJUVn.gif", // Air animation
+  Normal: "https://i.imgur.com/B1tVuGQ.gif", // Normal animation
+  Rock: "https://i.imgur.com/Z8UgFb1.gif", // Rock animation
 };
 
 // Status effect animations
 const statusAnimations = {
   // Urban status effects
-  "slimed": "https://i.imgur.com/nRllcOZ.gif", // Water effect - Updated
-  "confused": "https://i.imgur.com/yaNJUVn.gif", // Dizzy stars effect
-  "baked": "https://i.imgur.com/PpxuqBD.gif",   // Sleep effect
-  "bleeding": "https://i.imgur.com/jW8KQD2.gif", // Fire effect - Updated
-  "dazed": "https://i.imgur.com/fP0lG2M.gif",    // Thunder effect
-  
+  slimed: "https://i.imgur.com/nRllcOZ.gif", // Water effect - Updated
+  confused: "https://i.imgur.com/yaNJUVn.gif", // Dizzy stars effect
+  baked: "https://i.imgur.com/PpxuqBD.gif", // Sleep effect
+  bleeding: "https://i.imgur.com/jW8KQD2.gif", // Fire effect - Updated
+  dazed: "https://i.imgur.com/fP0lG2M.gif", // Thunder effect
+
   // Keep original effects for compatibility
-  "burn": "https://i.imgur.com/jW8KQD2.gif", // Use bleeding animation - Updated
-  "paralysis": "https://i.imgur.com/fP0lG2M.gif", // Use dazed animation
-  "sleep": "https://i.imgur.com/PpxuqBD.gif", // Use baked animation
-  "poison": "https://i.imgur.com/nRllcOZ.gif", // Use slimed animation - Updated
-  "heal": "https://i.imgur.com/684Bb2r.gif"   // Healing animation
+  burn: "https://i.imgur.com/jW8KQD2.gif", // Use bleeding animation - Updated
+  paralysis: "https://i.imgur.com/fP0lG2M.gif", // Use dazed animation
+  sleep: "https://i.imgur.com/PpxuqBD.gif", // Use baked animation
+  poison: "https://i.imgur.com/nRllcOZ.gif", // Use slimed animation - Updated
+  heal: "https://i.imgur.com/684Bb2r.gif", // Healing animation
 };
 
 // Win/Lose GIFs
@@ -828,13 +1483,13 @@ const resultGifs = {
     "https://i.gifer.com/ZJF0.gif",
     "https://i.gifer.com/1uIf.gif",
     "https://i.imgur.com/GEXD7bk.gif",
-    "https://i.imgur.com/tzvjhq5.gif"
+    "https://i.imgur.com/tzvjhq5.gif",
   ],
   lose: [
     "https://i.gifer.com/Z6W8.gif",
     "https://i.imgur.com/dR3qDnS.gif",
-    "https://i.imgur.com/i4JWxGP.gif"
-  ]
+    "https://i.imgur.com/i4JWxGP.gif",
+  ],
 };
 
 // ================ GAME STATE ================
@@ -868,7 +1523,7 @@ document.addEventListener("DOMContentLoaded", initGame);
 function initAudio() {
   // Only initialize once
   if (audioInitialized) return;
-  
+
   try {
     // Initialize audio players (wait for user interaction - browser policy)
     if (!menuMusicPlayer) {
@@ -876,32 +1531,36 @@ function initAudio() {
       menuMusicPlayer.loop = true;
       menuMusicPlayer.volume = 0.5;
     }
-    
+
     if (!battleMusicPlayer) {
       battleMusicPlayer = new Audio(AUDIO.battleMusic);
       battleMusicPlayer.loop = true;
       battleMusicPlayer.volume = 0.5;
     }
-    
+
     if (!hitSoundPlayer) {
       hitSoundPlayer = new Audio(AUDIO.hitSound);
       hitSoundPlayer.volume = 0.7;
     }
-    
+
     if (!successSoundPlayer) {
       successSoundPlayer = new Audio(AUDIO.successSound);
       successSoundPlayer.volume = 0.7;
     }
-    
+
     if (!switchSoundPlayer) {
       switchSoundPlayer = new Audio(AUDIO.switchSound);
       switchSoundPlayer.volume = 0.7;
     }
-    
+
     // Set up audio control buttons
-    document.getElementById("toggle-music").addEventListener("click", toggleMusic);
-    document.getElementById("toggle-sound").addEventListener("click", toggleSound);
-    
+    document
+      .getElementById("toggle-music")
+      .addEventListener("click", toggleMusic);
+    document
+      .getElementById("toggle-sound")
+      .addEventListener("click", toggleSound);
+
     audioInitialized = true;
     console.log("Audio initialized successfully");
   } catch (error) {
@@ -913,7 +1572,7 @@ function playMenuMusic() {
   if (battleMusicPlayer) battleMusicPlayer.pause();
   if (menuMusicPlayer && !musicMuted) {
     menuMusicPlayer.currentTime = 0;
-    menuMusicPlayer.play().catch(e => console.log("Audio play failed:", e));
+    menuMusicPlayer.play().catch((e) => console.log("Audio play failed:", e));
   }
 }
 
@@ -921,37 +1580,39 @@ function playBattleMusic() {
   if (menuMusicPlayer) menuMusicPlayer.pause();
   if (battleMusicPlayer && !musicMuted) {
     battleMusicPlayer.currentTime = 0;
-    battleMusicPlayer.play().catch(e => console.log("Audio play failed:", e));
+    battleMusicPlayer.play().catch((e) => console.log("Audio play failed:", e));
   }
 }
 
 function playHitSound() {
   if (hitSoundPlayer && !soundMuted) {
     hitSoundPlayer.currentTime = 0;
-    hitSoundPlayer.play().catch(e => console.log("Audio play failed:", e));
+    hitSoundPlayer.play().catch((e) => console.log("Audio play failed:", e));
   }
 }
 
 function playSuccessSound() {
   if (successSoundPlayer && !soundMuted) {
     successSoundPlayer.currentTime = 0;
-    successSoundPlayer.play().catch(e => console.log("Audio play failed:", e));
+    successSoundPlayer
+      .play()
+      .catch((e) => console.log("Audio play failed:", e));
   }
 }
 
 function playSwitchSound() {
   if (switchSoundPlayer && !soundMuted) {
     switchSoundPlayer.currentTime = 0;
-    switchSoundPlayer.play().catch(e => console.log("Audio play failed:", e));
+    switchSoundPlayer.play().catch((e) => console.log("Audio play failed:", e));
   }
 }
 
 function toggleMusic() {
   musicMuted = !musicMuted;
-  
+
   const musicButton = document.getElementById("toggle-music");
   const musicIcon = document.getElementById("music-icon");
-  
+
   if (musicMuted) {
     if (menuMusicPlayer) menuMusicPlayer.pause();
     if (battleMusicPlayer) battleMusicPlayer.pause();
@@ -970,10 +1631,10 @@ function toggleMusic() {
 
 function toggleSound() {
   soundMuted = !soundMuted;
-  
+
   const soundButton = document.getElementById("toggle-sound");
   const soundIcon = document.getElementById("sound-icon");
-  
+
   if (soundMuted) {
     soundButton.classList.add("muted");
     soundIcon.textContent = "🔇";
@@ -992,25 +1653,25 @@ function initGame() {
   battleCounter = 0;
   opponentIndex = 0;
   updateFadeDisplay();
-  
+
   // Initialize audio controls (but wait for user interaction to play music)
   initAudio();
-  
+
   // Set up a one-time click listener to start audio (browser policy requires user interaction)
   const startAudioOnce = () => {
     // Start menu music
     playMenuMusic();
     // Remove this listener after first click
-    document.removeEventListener('click', startAudioOnce);
+    document.removeEventListener("click", startAudioOnce);
   };
-  document.addEventListener('click', startAudioOnce);
+  document.addEventListener("click", startAudioOnce);
 }
 
 function populateCharacterSelection() {
   const characterList = document.getElementById("character-list");
   characterList.innerHTML = "";
-  
-  characters.forEach(character => {
+
+  characters.forEach((character) => {
     const card = document.createElement("div");
     card.className = "character-card";
     card.dataset.id = character.id;
@@ -1018,23 +1679,26 @@ function populateCharacterSelection() {
       <img src="${character.sprite}" alt="${character.name}">
       <p>${character.name}</p>
     `;
-    
+
     // Add tooltip data
-    card.setAttribute("data-tooltip", JSON.stringify({
-      name: character.name,
-      type: character.type,
-      hp: character.hp,
-      attack: character.attack,
-      defense: character.defense,
-      speed: character.speed,
-      description: character.description,
-      moves: character.moves.map(move => move.name).join(", ")
-    }));
-    
+    card.setAttribute(
+      "data-tooltip",
+      JSON.stringify({
+        name: character.name,
+        type: character.type,
+        hp: character.hp,
+        attack: character.attack,
+        defense: character.defense,
+        speed: character.speed,
+        description: character.description,
+        moves: character.moves.map((move) => move.name).join(", "),
+      }),
+    );
+
     // Add hover event listeners for tooltips
     card.addEventListener("mouseenter", showCharacterTooltip);
     card.addEventListener("mouseleave", hideCharacterTooltip);
-    
+
     card.addEventListener("click", () => selectCharacter(character));
     characterList.appendChild(card);
   });
@@ -1045,82 +1709,91 @@ function selectCharacter(character) {
     showFloatingLog("You can only pick 3 YNs!");
     return;
   }
-  
+
   // Play sound effect
   playSuccessSound();
-  
+
   // Check if character is already selected
-  if (playerTeam.some(c => c.id === character.id)) {
+  if (playerTeam.some((c) => c.id === character.id)) {
     // Remove from team if already selected
-    playerTeam = playerTeam.filter(c => c.id !== character.id);
-    document.querySelector(`.character-card[data-id="${character.id}"]`).classList.remove("selected");
+    playerTeam = playerTeam.filter((c) => c.id !== character.id);
+    document
+      .querySelector(`.character-card[data-id="${character.id}"]`)
+      .classList.remove("selected");
   } else {
     // Add to team
     playerTeam.push(character);
-    document.querySelector(`.character-card[data-id="${character.id}"]`).classList.add("selected");
+    document
+      .querySelector(`.character-card[data-id="${character.id}"]`)
+      .classList.add("selected");
   }
-  
+
   updateTeamSlots();
-  
+
   // Enable/disable start button
   document.getElementById("start-battle").disabled = playerTeam.length !== 3;
 }
 
 function updateTeamSlots() {
   const slots = document.querySelectorAll(".team-slot");
-  
+
   // Clear all slots
-  slots.forEach(slot => {
+  slots.forEach((slot) => {
     slot.innerHTML = "";
   });
-  
+
   // Fill slots with selected characters
   playerTeam.forEach((character, index) => {
     if (index < slots.length) {
-      slots[index].innerHTML = `<img src="${character.sprite}" alt="${character.name}">`;
+      slots[index].innerHTML =
+        `<img src="${character.sprite}" alt="${character.name}">`;
     }
   });
 }
 
 function startBattle() {
   if (playerTeam.length !== 3) return;
-  
+
   // Setup battle screen
   document.getElementById("selection-screen").style.display = "none";
   document.getElementById("battle-screen").style.display = "flex";
-  
+
   // Start battle music
   playBattleMusic();
-  
+
   // Play success sound
   playSuccessSound();
-  
+
   // Choose a random background
-  const randomBg = battleBackgrounds[Math.floor(Math.random() * battleBackgrounds.length)];
-  document.getElementById("battle-arena").style.backgroundImage = `url(${randomBg})`;
-  
+  const randomBg =
+    battleBackgrounds[Math.floor(Math.random() * battleBackgrounds.length)];
+  document.getElementById("battle-arena").style.backgroundImage =
+    `url(${randomBg})`;
+
   // Initialize battle
   gameActive = true;
-  
+
   // Set active characters
   activePlayerCharacter = { ...playerTeam[0] };
   activeOpponent = { ...opponents[opponentIndex] };
-  
+
   // Reset stat modifiers and status effects
   resetBattleModifiers();
-  
+
   // Update UI
   updateBattleUI();
   updateStatusIcons();
   updateMoveButtons();
   updateItemButtons();
-  
+
   // Determine first turn
   currentTurn = determineFirstTurn();
-  
+
   // Add to battle log
-  addToBattleLog(`Battle started! ${activePlayerCharacter.name} vs ${activeOpponent.name}!`);
-  
+  addToBattleLog(
+    `Battle started! ${activePlayerCharacter.name} vs ${activeOpponent.name}!`,
+  );
+
   // Start the first turn after a short delay
   setTimeout(() => {
     processTurn();
@@ -1130,18 +1803,18 @@ function startBattle() {
 function resetBattleModifiers() {
   playerStatModifiers = { attack: 1, defense: 1, speed: 1, accuracy: 1 };
   opponentStatModifiers = { attack: 1, defense: 1, speed: 1, accuracy: 1 };
-  
+
   // Clear status effects
   playerStatusEffect = { type: "normal", duration: 0 };
   opponentStatusEffect = { type: "normal", duration: 0 };
-  
+
   // Reset item counts
   itemUseCounts = { jcole: 2, nbayoungboy: 2, weed: 2, crashdummy: 1 };
-  
+
   // Clear active item effects
   playerActiveItemEffects = [];
   opponentActiveItemEffects = [];
-  
+
   canAct = true;
 }
 
@@ -1150,66 +1823,85 @@ function determineFirstTurn() {
   if (battleCounter === 0 && opponentIndex === 0) {
     return "player";
   }
-  
+
   // Calculate effective speed considering modifiers and status effects
   const playerSpeed = activePlayerCharacter.speed * playerStatModifiers.speed;
   const opponentSpeed = activeOpponent.speed * opponentStatModifiers.speed;
-  
+
   // Add a small random factor (0-10% of speed)
   const playerSpeedRandom = playerSpeed * (1 + Math.random() * 0.1);
   const opponentSpeedRandom = opponentSpeed * (1 + Math.random() * 0.1);
-  
+
   // Return whoever is faster
   return playerSpeedRandom >= opponentSpeedRandom ? "player" : "opponent";
 }
 
 function updateBattleUI() {
   // Update player character display
-  document.getElementById("player-name").textContent = activePlayerCharacter.name;
-  document.getElementById("player-hp").textContent = `${activePlayerCharacter.hp}/${playerTeam[playerTeam.findIndex(c => c.id === activePlayerCharacter.id)].hp}`;
+  document.getElementById("player-name").textContent =
+    activePlayerCharacter.name;
+  document.getElementById("player-hp").textContent =
+    `${activePlayerCharacter.hp}/${playerTeam[playerTeam.findIndex((c) => c.id === activePlayerCharacter.id)].hp}`;
   document.getElementById("player-sprite").src = activePlayerCharacter.sprite;
-  
+
   // Update opponent display
   document.getElementById("opponent-name").textContent = activeOpponent.name;
-  document.getElementById("opponent-hp").textContent = `${activeOpponent.hp}/${opponents[opponentIndex].hp}`;
+  document.getElementById("opponent-hp").textContent =
+    `${activeOpponent.hp}/${opponents[opponentIndex].hp}`;
   document.getElementById("opponent-sprite").src = activeOpponent.sprite;
-  
+
   // Update HP bars
-  const playerMaxHP = playerTeam[playerTeam.findIndex(c => c.id === activePlayerCharacter.id)].hp;
+  const playerMaxHP =
+    playerTeam[playerTeam.findIndex((c) => c.id === activePlayerCharacter.id)]
+      .hp;
   const opponentMaxHP = opponents[opponentIndex].hp;
-  
-  document.getElementById("player-hp-fill").style.width = `${(activePlayerCharacter.hp / playerMaxHP) * 100}%`;
-  document.getElementById("opponent-hp-fill").style.width = `${(activeOpponent.hp / opponentMaxHP) * 100}%`;
-  
+
+  document.getElementById("player-hp-fill").style.width =
+    `${(activePlayerCharacter.hp / playerMaxHP) * 100}%`;
+  document.getElementById("opponent-hp-fill").style.width =
+    `${(activeOpponent.hp / opponentMaxHP) * 100}%`;
+
   // Update player info tooltip with safety checks
   if (activePlayerCharacter && document.getElementById("player-info-text")) {
-    const playerAttack = activePlayerCharacter.stats ? activePlayerCharacter.stats.attack : activePlayerCharacter.attack || 0;
-    const playerDefense = activePlayerCharacter.stats ? activePlayerCharacter.stats.defense : activePlayerCharacter.defense || 0;
-    const playerSpeed = activePlayerCharacter.stats ? activePlayerCharacter.stats.speed : activePlayerCharacter.speed || 0;
-    
+    const playerAttack = activePlayerCharacter.stats
+      ? activePlayerCharacter.stats.attack
+      : activePlayerCharacter.attack || 0;
+    const playerDefense = activePlayerCharacter.stats
+      ? activePlayerCharacter.stats.defense
+      : activePlayerCharacter.defense || 0;
+    const playerSpeed = activePlayerCharacter.stats
+      ? activePlayerCharacter.stats.speed
+      : activePlayerCharacter.speed || 0;
+
     const playerInfo = `
       <div class="character-tooltip">
         <p><strong>${activePlayerCharacter.name}</strong></p>
-        <p>Type: ${activePlayerCharacter.type || 'Unknown'}</p>
+        <p>Type: ${activePlayerCharacter.type || "Unknown"}</p>
         <p>ATK: ${playerAttack} | DEF: ${playerDefense} | SPD: ${playerSpeed}</p>
-        <small>${activePlayerCharacter.description || 'Hover to see stats'}</small>
+        <small>${activePlayerCharacter.description || "Hover to see stats"}</small>
       </div>
     `;
     document.getElementById("player-info-text").innerHTML = playerInfo;
   }
-  
+
   // Update opponent info box for tooltip with safety checks
   if (activeOpponent && document.getElementById("opponent-info-text")) {
-    const opponentAttack = activeOpponent.stats ? activeOpponent.stats.attack : activeOpponent.attack || 0;
-    const opponentDefense = activeOpponent.stats ? activeOpponent.stats.defense : activeOpponent.defense || 0;
-    const opponentSpeed = activeOpponent.stats ? activeOpponent.stats.speed : activeOpponent.speed || 0;
-    
+    const opponentAttack = activeOpponent.stats
+      ? activeOpponent.stats.attack
+      : activeOpponent.attack || 0;
+    const opponentDefense = activeOpponent.stats
+      ? activeOpponent.stats.defense
+      : activeOpponent.defense || 0;
+    const opponentSpeed = activeOpponent.stats
+      ? activeOpponent.stats.speed
+      : activeOpponent.speed || 0;
+
     const characterInfo = `
       <div class="character-tooltip">
         <p><strong>${activeOpponent.name}</strong></p>
-        <p>Type: ${activeOpponent.type || 'Unknown'}</p>
+        <p>Type: ${activeOpponent.type || "Unknown"}</p>
         <p>ATK: ${opponentAttack} | DEF: ${opponentDefense} | SPD: ${opponentSpeed}</p>
-        <small>${activeOpponent.description || 'Hover to see stats'}</small>
+        <small>${activeOpponent.description || "Hover to see stats"}</small>
       </div>
     `;
     document.getElementById("opponent-info-text").innerHTML = characterInfo;
@@ -1227,12 +1919,17 @@ function updateStatusIcons() {
     playerStatusIcon.textContent = "";
     playerStatusIcon.style.display = "none";
   }
-  
+
   // Update opponent status
   const opponentStatusIcon = document.getElementById("opponent-status-icon");
-  if (opponentStatusEffect.type !== "normal" && opponentStatusEffect.duration > 0) {
-    opponentStatusIcon.textContent = statusEffects[opponentStatusEffect.type].icon;
-    opponentStatusIcon.title = statusEffects[opponentStatusEffect.type].description;
+  if (
+    opponentStatusEffect.type !== "normal" &&
+    opponentStatusEffect.duration > 0
+  ) {
+    opponentStatusIcon.textContent =
+      statusEffects[opponentStatusEffect.type].icon;
+    opponentStatusIcon.title =
+      statusEffects[opponentStatusEffect.type].description;
     opponentStatusIcon.style.display = "inline-block";
   } else {
     opponentStatusIcon.textContent = "";
@@ -1242,13 +1939,14 @@ function updateStatusIcons() {
 
 function updateMoveButtons() {
   const movesContainer = document.getElementById("moves");
-  if (!movesContainer || !activePlayerCharacter || !activePlayerCharacter.moves) return;
-  
+  if (!movesContainer || !activePlayerCharacter || !activePlayerCharacter.moves)
+    return;
+
   movesContainer.innerHTML = "";
-  
-  activePlayerCharacter.moves.forEach(move => {
+
+  activePlayerCharacter.moves.forEach((move) => {
     if (!move) return;
-    
+
     // If move doesn't have PP values, set default ones
     if (move.pp === undefined) {
       move.pp = move.power > 0 ? 10 : 5; // Attack moves get 10 PP, status moves get 5 PP
@@ -1256,7 +1954,7 @@ function updateMoveButtons() {
     if (move.maxPp === undefined) {
       move.maxPp = move.pp;
     }
-    
+
     const moveButton = document.createElement("button");
     moveButton.className = "pixel-button";
     moveButton.innerHTML = `${move.name || "Unknown Move"} <span class="pp-counter">${move.pp}/${move.maxPp}</span>`;
@@ -1264,31 +1962,33 @@ function updateMoveButtons() {
     moveButton.addEventListener("click", () => useMove(move));
     moveButton.addEventListener("mouseover", showMoveTooltip);
     moveButton.addEventListener("mouseout", hideMoveTooltip);
-    
+
     // Disable the button if PP is zero
     if (move.pp <= 0) {
       moveButton.disabled = true;
       moveButton.title = "No PP remaining";
     }
-    
+
     movesContainer.appendChild(moveButton);
   });
 }
 
 function updateItemButtons() {
-  const itemButtons = document.querySelectorAll("#items button:not(#toggle-switch)");
+  const itemButtons = document.querySelectorAll(
+    "#items button:not(#toggle-switch)",
+  );
   if (!itemButtons || itemButtons.length === 0) return;
-  
-  itemButtons.forEach(button => {
+
+  itemButtons.forEach((button) => {
     const onclickAttr = button.getAttribute("onclick");
     if (!onclickAttr) return;
-    
+
     const match = onclickAttr.match(/'([^']+)'/);
     if (!match || !match[1]) return;
-    
+
     const itemType = match[1];
     if (!itemUseCounts[itemType] && itemUseCounts[itemType] !== 0) return;
-    
+
     button.disabled = itemUseCounts[itemType] <= 0;
   });
 }
@@ -1311,21 +2011,21 @@ function setupMoveTooltips() {
 
 function showMoveTooltip(e) {
   if (!e || !e.target || !e.target.dataset || !e.target.dataset.move) return;
-  
+
   try {
     const moveData = JSON.parse(e.target.dataset.move);
     const tooltip = document.getElementById("move-tooltip");
     if (!tooltip || !moveData) return;
-    
+
     tooltip.innerHTML = `
-      <p><strong>${moveData.name || 'Unknown Move'}</strong></p>
-      <p>Type: ${moveData.type || 'Normal'}</p>
+      <p><strong>${moveData.name || "Unknown Move"}</strong></p>
+      <p>Type: ${moveData.type || "Normal"}</p>
       <p>Power: ${moveData.power || 0}</p>
       <p>Accuracy: ${moveData.accuracy || 100}%</p>
       <p>PP: ${moveData.pp || 0}/${moveData.maxPp || 0}</p>
       <p>${moveData.description || ""}</p>
     `;
-    
+
     tooltip.style.display = "block";
     tooltip.style.left = `${e.pageX + 10}px`;
     tooltip.style.top = `${e.pageY + 10}px`;
@@ -1342,24 +2042,24 @@ function hideMoveTooltip() {
 // Character tooltip functions
 function showCharacterTooltip(e) {
   if (!e || !e.currentTarget) return;
-  
+
   try {
     const tooltipAttr = e.currentTarget.getAttribute("data-tooltip");
     if (!tooltipAttr) return;
-    
+
     const tooltipData = JSON.parse(tooltipAttr);
     const tooltip = document.getElementById("move-tooltip"); // Reuse the same tooltip element
     if (!tooltip || !tooltipData) return;
-    
+
     tooltip.innerHTML = `
       <div class="character-tooltip">
-        <p><strong>${tooltipData.name || 'Unknown'}</strong> (${tooltipData.type || 'Normal'})</p>
+        <p><strong>${tooltipData.name || "Unknown"}</strong> (${tooltipData.type || "Normal"})</p>
         <p>HP: ${tooltipData.hp || 0} | ATK: ${tooltipData.attack || 0} | DEF: ${tooltipData.defense || 0} | SPD: ${tooltipData.speed || 0}</p>
-        <p>${tooltipData.description || 'No description available'}</p>
-        <p><small>Moves: ${tooltipData.moves || 'None'}</small></p>
+        <p>${tooltipData.description || "No description available"}</p>
+        <p><small>Moves: ${tooltipData.moves || "None"}</small></p>
       </div>
     `;
-    
+
     tooltip.style.display = "block";
     tooltip.style.left = `${e.pageX + 10}px`;
     tooltip.style.top = `${e.pageY + 10}px`;
@@ -1375,35 +2075,40 @@ function hideCharacterTooltip() {
 
 function processTurn() {
   if (!gameActive) return;
-  
+
   if (currentTurn === "player") {
     // Check for confusion (player's turn)
-    if (playerStatusEffect.type === "confused" && Math.random() < statusEffects.confused.value) {
+    if (
+      playerStatusEffect.type === "confused" &&
+      Math.random() < statusEffects.confused.value
+    ) {
       hitSelf(activePlayerCharacter);
       endPlayerTurn();
       return;
     }
-    
+
     // Process status effects at the start of player's turn
     processStatusEffects(activePlayerCharacter, playerStatusEffect, "player");
-    
+
     // Process active item effects at the start of player's turn
     processActiveItemEffects("player");
-    
   } else {
     // Check for confusion (opponent's turn)
-    if (opponentStatusEffect.type === "confused" && Math.random() < statusEffects.confused.value) {
+    if (
+      opponentStatusEffect.type === "confused" &&
+      Math.random() < statusEffects.confused.value
+    ) {
       hitSelf(activeOpponent);
       endOpponentTurn();
       return;
     }
-    
+
     // Process status effects at the start of opponent's turn
     processStatusEffects(activeOpponent, opponentStatusEffect, "opponent");
-    
+
     // Process active item effects at the start of opponent's turn
     processActiveItemEffects("opponent");
-    
+
     // AI chooses a move
     setTimeout(() => {
       const move = chooseOpponentMove();
@@ -1419,25 +2124,29 @@ function processActiveItemEffects(side) {
     if (playerActiveItemEffects.length > 0) {
       // Filter out any expired effects
       const activeEffects = [];
-      
-      playerActiveItemEffects.forEach(effect => {
+
+      playerActiveItemEffects.forEach((effect) => {
         effect.remainingDuration--;
-        
+
         if (effect.remainingDuration <= 0) {
           // Effect has expired, remove the stat modifier
           if (effect.effect === "atkUp") {
             playerStatModifiers.attack /= effect.value;
-            addToBattleLog(`${activePlayerCharacter.name}'s Attack buff wore off.`);
+            addToBattleLog(
+              `${activePlayerCharacter.name}'s Attack buff wore off.`,
+            );
           } else if (effect.effect === "defUp") {
             playerStatModifiers.defense /= effect.value;
-            addToBattleLog(`${activePlayerCharacter.name}'s Defense buff wore off.`);
+            addToBattleLog(
+              `${activePlayerCharacter.name}'s Defense buff wore off.`,
+            );
           }
         } else {
           // Effect is still active
           activeEffects.push(effect);
         }
       });
-      
+
       // Update the active effects array with only non-expired effects
       playerActiveItemEffects = activeEffects;
     }
@@ -1446,10 +2155,10 @@ function processActiveItemEffects(side) {
     if (opponentActiveItemEffects.length > 0) {
       // Filter out any expired effects
       const activeEffects = [];
-      
-      opponentActiveItemEffects.forEach(effect => {
+
+      opponentActiveItemEffects.forEach((effect) => {
         effect.remainingDuration--;
-        
+
         if (effect.remainingDuration <= 0) {
           // Effect has expired, remove the stat modifier
           if (effect.effect === "atkUp") {
@@ -1464,7 +2173,7 @@ function processActiveItemEffects(side) {
           activeEffects.push(effect);
         }
       });
-      
+
       // Update the active effects array with only non-expired effects
       opponentActiveItemEffects = activeEffects;
     }
@@ -1473,17 +2182,19 @@ function processActiveItemEffects(side) {
 
 function processStatusEffects(character, statusEffect, side) {
   if (statusEffect.type === "normal" || statusEffect.duration <= 0) return;
-  
+
   // Process damage-over-time effects
   if (statusEffects[statusEffect.type].effect === "dot") {
     const damage = statusEffects[statusEffect.type].value;
     character.hp = Math.max(0, character.hp - damage);
-    
+
     // Update UI
     updateBattleUI();
-    addToBattleLog(`${character.name} took ${damage} damage from ${statusEffects[statusEffect.type].name}!`);
+    addToBattleLog(
+      `${character.name} took ${damage} damage from ${statusEffects[statusEffect.type].name}!`,
+    );
     showFloatingLog(`${statusEffects[statusEffect.type].name}: -${damage} HP`);
-    
+
     // Check if character fainted
     if (character.hp <= 0) {
       if (side === "player") {
@@ -1494,20 +2205,24 @@ function processStatusEffects(character, statusEffect, side) {
       return;
     }
   }
-  
+
   // Decrease duration
   if (side === "player") {
     playerStatusEffect.duration--;
     if (playerStatusEffect.duration <= 0) {
       playerStatusEffect.type = "normal";
-      addToBattleLog(`${character.name} recovered from ${statusEffects[statusEffect.type].name}!`);
+      addToBattleLog(
+        `${character.name} recovered from ${statusEffects[statusEffect.type].name}!`,
+      );
       updateStatusIcons();
     }
   } else {
     opponentStatusEffect.duration--;
     if (opponentStatusEffect.duration <= 0) {
       opponentStatusEffect.type = "normal";
-      addToBattleLog(`${character.name} recovered from ${statusEffects[statusEffect.type].name}!`);
+      addToBattleLog(
+        `${character.name} recovered from ${statusEffects[statusEffect.type].name}!`,
+      );
       updateStatusIcons();
     }
   }
@@ -1517,16 +2232,18 @@ function hitSelf(character) {
   // Calculate confusion damage (25% of their own attack with no modifiers)
   const damage = Math.floor(character.attack * 0.25);
   character.hp = Math.max(0, character.hp - damage);
-  
-  addToBattleLog(`${character.name} is confused and hit themselves for ${damage} damage!`);
+
+  addToBattleLog(
+    `${character.name} is confused and hit themselves for ${damage} damage!`,
+  );
   showFloatingLog("Confused! Hit self!");
-  
+
   // Add animation
   if (character === activePlayerCharacter) {
     const sprite = document.getElementById("player-sprite");
     sprite.classList.add("player-shake-animation");
     sprite.classList.add("hit-flash");
-    
+
     setTimeout(() => {
       sprite.classList.remove("player-shake-animation");
       sprite.classList.remove("hit-flash");
@@ -1535,16 +2252,16 @@ function hitSelf(character) {
     const sprite = document.getElementById("opponent-sprite");
     sprite.classList.add("shake-animation");
     sprite.classList.add("hit-flash");
-    
+
     setTimeout(() => {
       sprite.classList.remove("shake-animation");
       sprite.classList.remove("hit-flash");
     }, 1000);
   }
-  
+
   // Update UI
   updateBattleUI();
-  
+
   // Check if character fainted
   if (character.hp <= 0) {
     if (character === activePlayerCharacter) {
@@ -1562,59 +2279,62 @@ function useMove(move) {
     return;
   }
   canAct = false;
-  
+
   // Decrease PP
   move.pp--;
-  
+
   // Update move buttons to reflect PP change
   updateMoveButtons();
-  
+
   addToBattleLog(`${activePlayerCharacter.name} used ${move.name}!`);
-  
+
   // Play hit sound
   playHitSound();
-  
+
   // Apply attack animation
   setPlayerAnimation("attack");
-  
+
   // Add visual effect based on move type
   const battleArena = document.getElementById("battle-arena");
   const opponentSprite = document.getElementById("opponent-sprite");
-  
+
   // Create speed lines effect for dynamic attacks
   if (move.power > 50) {
     const speedLines = document.createElement("div");
     speedLines.className = "speed-lines";
     battleArena.appendChild(speedLines);
-    
+
     // Remove speed lines after animation completes
     setTimeout(() => {
       speedLines.remove();
     }, 700);
   }
-  
+
   // Make player sprite move forward when attacking
   playerSprite.classList.add("attack-lunge");
-  
+
   // Get the appropriate animation based on type
-  const animationUrl = attackAnimations[move.type] || attackAnimations["Normal"];
-  
+  const animationUrl =
+    attackAnimations[move.type] || attackAnimations["Normal"];
+
   // Create attack animation element
   const attackAnimation = document.createElement("div");
   attackAnimation.className = "attack-effect";
-  
+
   try {
     // Try to set the background image
     attackAnimation.style.backgroundImage = `url(${animationUrl})`;
-    
+
     // Position the animation centered on the opponent sprite
     const opponentRect = opponentSprite.getBoundingClientRect();
     const battleArenaRect = battleArena.getBoundingClientRect();
-    
+
     // Calculate position relative to battle arena
-    const left = opponentRect.left - battleArenaRect.left + (opponentRect.width / 2) - 75;
-    const top = opponentRect.top - battleArenaRect.top + (opponentRect.height / 2) - 75;
-    
+    const left =
+      opponentRect.left - battleArenaRect.left + opponentRect.width / 2 - 75;
+    const top =
+      opponentRect.top - battleArenaRect.top + opponentRect.height / 2 - 75;
+
     attackAnimation.style.position = "absolute";
     attackAnimation.style.left = `${left}px`;
     attackAnimation.style.top = `${top}px`;
@@ -1624,10 +2344,10 @@ function useMove(move) {
     attackAnimation.style.backgroundPosition = "center center";
     attackAnimation.style.backgroundRepeat = "no-repeat";
     attackAnimation.style.zIndex = "100";
-    
+
     // Add to battle arena
     battleArena.appendChild(attackAnimation);
-    
+
     // Remove animation after it completes
     setTimeout(() => {
       attackAnimation.remove();
@@ -1635,18 +2355,18 @@ function useMove(move) {
   } catch (error) {
     console.error("Animation error:", error);
   }
-  
+
   // Remove lunge animation after a short delay
   setTimeout(() => {
     playerSprite.classList.remove("attack-lunge");
   }, 300);
-  
+
   // Add a class based on the move type for visual feedback
   battleArena.classList.add(`effect-${move.type}`);
   setTimeout(() => {
     battleArena.classList.remove(`effect-${move.type}`);
   }, 1200);
-  
+
   // Check accuracy including status effects
   const effectiveAccuracy = move.accuracy * playerStatModifiers.accuracy;
   if (Math.random() * 100 > effectiveAccuracy) {
@@ -1654,7 +2374,7 @@ function useMove(move) {
     addToBattleLog(`${activePlayerCharacter.name}'s attack missed!`);
     showFloatingLog("MISSED!");
     setTimeout(() => endPlayerTurn(), 1000);
-    
+
     // Remove animation
     setTimeout(() => {
       playerSprite.classList.remove("attack-animation");
@@ -1666,12 +2386,12 @@ function useMove(move) {
     }, 1000);
     return;
   }
-  
+
   // Handle status moves differently
   if (move.type === "status") {
     handleStatusMove(move, "player");
     setTimeout(() => endPlayerTurn(), 1000);
-    
+
     // Remove animation
     setTimeout(() => {
       playerSprite.classList.remove("attack-animation");
@@ -1683,26 +2403,31 @@ function useMove(move) {
     }, 1000);
     return;
   }
-  
+
   // Calculate damage
   const damage = calculateDamage(
     activePlayerCharacter,
     activeOpponent,
     move,
     playerStatModifiers,
-    opponentStatModifiers
+    opponentStatModifiers,
   );
-  
+
   // Apply damage
   setTimeout(() => {
     activeOpponent.hp = Math.max(0, activeOpponent.hp - damage);
     updateBattleUI();
-    
+
     // Show damage in battle log
-    addToBattleLog(`${activePlayerCharacter.name} dealt ${damage} damage to ${activeOpponent.name}!`);
-    
+    addToBattleLog(
+      `${activePlayerCharacter.name} dealt ${damage} damage to ${activeOpponent.name}!`,
+    );
+
     // Show effectiveness message if applicable
-    const effectiveness = calculateTypeEffectiveness(move.type, activeOpponent.type);
+    const effectiveness = calculateTypeEffectiveness(
+      move.type,
+      activeOpponent.type,
+    );
     let message = `${damage} damage!`;
     if (effectiveness > 1.2) {
       message = `Super effective! ${damage} damage!`;
@@ -1710,20 +2435,20 @@ function useMove(move) {
       message = `Not very effective... ${damage} damage.`;
     }
     showFloatingLog(message);
-    
+
     // Apply potential hit effects (status changes, etc.)
     applyHitEffects(move, "player");
-    
+
     // Show opponent reaction
     const opponentSprite = document.getElementById("opponent-sprite");
     opponentSprite.classList.add("shake-animation");
     opponentSprite.classList.add("hit-flash");
-    
+
     setTimeout(() => {
       opponentSprite.classList.remove("shake-animation");
       opponentSprite.classList.remove("hit-flash");
     }, 1000);
-    
+
     // Check if opponent fainted
     if (activeOpponent.hp <= 0) {
       handleOpponentFaint();
@@ -1742,59 +2467,62 @@ function useMove(move) {
 
 function executeOpponentMove(move) {
   if (!gameActive || currentTurn !== "opponent") return;
-  
+
   // Decrease PP for opponent move if it's not the struggle move
   if (move.name !== "Struggle" && move.pp !== undefined) {
     move.pp--;
   }
-  
+
   addToBattleLog(`${activeOpponent.name} used ${move.name}!`);
-  
+
   // Play hit sound
   playHitSound();
-  
+
   // Apply opponent attack animation
   setOpponentAnimation("attack");
-  
+
   // Add visual effect based on move type
   const battleArena = document.getElementById("battle-arena");
   const playerSprite = document.getElementById("player-sprite");
-  
+
   // Create speed lines effect for powerful attacks
   if (move.power > 50) {
     const speedLines = document.createElement("div");
     speedLines.className = "speed-lines";
     speedLines.style.transform = "scaleX(-1)"; // Reverse the direction for opponent
     battleArena.appendChild(speedLines);
-    
+
     // Remove speed lines after animation completes
     setTimeout(() => {
       speedLines.remove();
     }, 700);
   }
-  
+
   // Make opponent sprite move forward when attacking
   opponentSprite.classList.add("attack-lunge-reverse");
-  
+
   // Get the appropriate animation based on type
-  const animationUrl = attackAnimations[move.type] || attackAnimations["Normal"];
-  
+  const animationUrl =
+    attackAnimations[move.type] || attackAnimations["Normal"];
+
   // Create attack animation element
   const attackAnimation = document.createElement("div");
   attackAnimation.className = "attack-effect";
-  
+
   try {
     // Try to set the background image
     attackAnimation.style.backgroundImage = `url(${animationUrl})`;
-    
+
     // Position the animation centered on the player sprite
     const playerRect = playerSprite.getBoundingClientRect();
     const battleArenaRect = battleArena.getBoundingClientRect();
-    
+
     // Calculate position relative to battle arena
-    const left = playerRect.left - battleArenaRect.left + (playerRect.width / 2) - 75;
-    const top = playerRect.top - battleArenaRect.top + (playerRect.height / 2) - 75;
-    
+    const left =
+      playerRect.left - battleArenaRect.left + playerRect.width / 2 - 75;
+    const top =
+      playerRect.top - battleArenaRect.top + playerRect.height / 2 - 75;
+
     attackAnimation.style.position = "absolute";
     attackAnimation.style.left = `${left}px`;
     attackAnimation.style.top = `${top}px`;
@@ -1804,10 +2532,10 @@ function executeOpponentMove(move) {
     attackAnimation.style.backgroundPosition = "center center";
     attackAnimation.style.backgroundRepeat = "no-repeat";
     attackAnimation.style.zIndex = "100";
-    
+
     // Add to battle arena
     battleArena.appendChild(attackAnimation);
-    
+
     // Remove animation after it completes
     setTimeout(() => {
       attackAnimation.remove();
@@ -1815,18 +2543,18 @@ function executeOpponentMove(move) {
   } catch (error) {
     console.error("Animation error:", error);
   }
-  
+
   // Remove lunge animation after a short delay
   setTimeout(() => {
     opponentSprite.classList.remove("attack-lunge-reverse");
   }, 300);
-  
+
   // Add a class based on the move type for visual feedback
   battleArena.classList.add(`effect-${move.type}`);
   setTimeout(() => {
     battleArena.classList.remove(`effect-${move.type}`);
   }, 1200);
-  
+
   // Check accuracy including status effects
   const effectiveAccuracy = move.accuracy * opponentStatModifiers.accuracy;
   if (Math.random() * 100 > effectiveAccuracy) {
@@ -1834,7 +2562,7 @@ function executeOpponentMove(move) {
     addToBattleLog(`${activeOpponent.name}'s attack missed!`);
     showFloatingLog("MISSED!");
     setTimeout(() => endOpponentTurn(), 1000);
-    
+
     // Remove animation
     setTimeout(() => {
       opponentSprite.classList.remove("attack-animation-reverse");
@@ -1846,12 +2574,12 @@ function executeOpponentMove(move) {
     }, 1000);
     return;
   }
-  
+
   // Handle status moves differently
   if (move.type === "status") {
     handleStatusMove(move, "opponent");
     setTimeout(() => endOpponentTurn(), 1000);
-    
+
     // Remove animation
     setTimeout(() => {
       opponentSprite.classList.remove("attack-animation-reverse");
@@ -1863,26 +2591,31 @@ function executeOpponentMove(move) {
     }, 1000);
     return;
   }
-  
+
   // Calculate damage
   const damage = calculateDamage(
     activeOpponent,
     activePlayerCharacter,
     move,
     opponentStatModifiers,
-    playerStatModifiers
+    playerStatModifiers,
   );
-  
+
   // Apply damage
   setTimeout(() => {
     activePlayerCharacter.hp = Math.max(0, activePlayerCharacter.hp - damage);
     updateBattleUI();
-    
+
     // Show damage in battle log
-    addToBattleLog(`${activeOpponent.name} dealt ${damage} damage to ${activePlayerCharacter.name}!`);
-    
+    addToBattleLog(
+      `${activeOpponent.name} dealt ${damage} damage to ${activePlayerCharacter.name}!`,
+    );
+
     // Show effectiveness message if applicable
-    const effectiveness = calculateTypeEffectiveness(move.type, activePlayerCharacter.type);
+    const effectiveness = calculateTypeEffectiveness(
+      move.type,
+      activePlayerCharacter.type,
+    );
     let message = `${damage} damage!`;
     if (effectiveness > 1.2) {
       message = `Super effective! ${damage} damage!`;
@@ -1890,20 +2623,20 @@ function executeOpponentMove(move) {
       message = `Not very effective... ${damage} damage.`;
     }
     showFloatingLog(message);
-    
+
     // Apply potential hit effects (status changes, etc.)
     applyHitEffects(move, "opponent");
-    
+
     // Show player reaction
     const playerSprite = document.getElementById("player-sprite");
     playerSprite.classList.add("player-shake-animation");
     playerSprite.classList.add("hit-flash");
-    
+
     setTimeout(() => {
       playerSprite.classList.remove("player-shake-animation");
       playerSprite.classList.remove("hit-flash");
     }, 1000);
-    
+
     // Check if player fainted
     if (activePlayerCharacter.hp <= 0) {
       handlePlayerFaint();
@@ -1925,40 +2658,46 @@ function calculateDamage(attacker, defender, move, attackerMods, defenderMods) {
   if (move.type === "status" || move.power === 0) {
     return 0;
   }
-  
+
   // Base damage calculation
-  let damage = Math.floor((attacker.attack * attackerMods.attack * move.power) / 110);
-  
+  let damage = Math.floor(
+    (attacker.attack * attackerMods.attack * move.power) / 110,
+  );
+
   // Apply defense reduction - increased defender impact for balance
-  damage = Math.floor(damage / (defender.defense * defenderMods.defense / 40));
-  
+  damage = Math.floor(
+    damage / ((defender.defense * defenderMods.defense) / 40),
+  );
+
   // Apply type effectiveness with balanced multipliers
   const effectiveness = calculateTypeEffectiveness(move.type, defender.type);
   damage = Math.floor(damage * effectiveness);
-  
+
   // Add random factor (85-100% of calculated damage) for variation
   damage = Math.floor(damage * (0.85 + Math.random() * 0.15));
-  
+
   // Cap damage to prevent one-hit KOs (max 60% of defender's max HP)
   let maxHP = 0;
   if (defender === activePlayerCharacter) {
-    maxHP = playerTeam[playerTeam.findIndex(c => c.id === defender.id)].hp;
+    maxHP = playerTeam[playerTeam.findIndex((c) => c.id === defender.id)].hp;
   } else {
     maxHP = opponents[opponentIndex].hp;
   }
   const maxDamage = Math.floor(maxHP * 0.6);
   damage = Math.min(damage, maxDamage);
-  
+
   // Critical hit (based on attacker's critRate, typically 10-20%)
   if (Math.random() < attacker.critRate) {
     damage = Math.floor(damage * 1.3); // Reduced from 1.5 for balance
     addToBattleLog("A critical hit!");
     showFloatingLog("CRITICAL HIT!");
-    
+
     // Add critical hit visual effect
-    const targetSprite = document.getElementById(attacker === activePlayerCharacter ? "opponent-sprite" : "player-sprite");
+    const targetSprite = document.getElementById(
+      attacker === activePlayerCharacter ? "opponent-sprite" : "player-sprite",
+    );
     targetSprite.classList.add("critical-hit");
-    
+
     // Create flash effect for critical hits
     const battleArena = document.getElementById("battle-arena");
     const flashEffect = document.createElement("div");
@@ -1970,26 +2709,29 @@ function calculateDamage(attacker, defender, move, attackerMods, defenderMods) {
     flashEffect.style.backgroundColor = "rgba(255, 255, 0, 0.2)";
     flashEffect.style.zIndex = "50";
     flashEffect.style.animation = "fadeOut 0.5s forwards";
-    
+
     battleArena.appendChild(flashEffect);
-    
+
     // Remove flash effect after animation completes
     setTimeout(() => {
       flashEffect.remove();
       targetSprite.classList.remove("critical-hit");
     }, 700);
   }
-  
+
   // Ensure minimum damage for actual attack moves
   return Math.max(1, damage);
 }
 
 function calculateTypeEffectiveness(attackType, defenderType) {
   // Return 1 (neutral) if type matchup is not defined
-  if (!typeEffectiveness[attackType] || !typeEffectiveness[attackType][defenderType]) {
+  if (
+    !typeEffectiveness[attackType] ||
+    !typeEffectiveness[attackType][defenderType]
+  ) {
     return 1.0;
   }
-  
+
   return typeEffectiveness[attackType][defenderType];
 }
 
@@ -2001,12 +2743,17 @@ function handleStatusMove(move, user) {
         if (move.name === "Irie Recharge") {
           // Healing move
           const healAmount = 30;
-          activePlayerCharacter.hp = Math.min(activePlayerCharacter.hp + healAmount, playerTeam[playerTeam.findIndex(c => c.id === activePlayerCharacter.id)].hp);
-          
+          activePlayerCharacter.hp = Math.min(
+            activePlayerCharacter.hp + healAmount,
+            playerTeam[
+              playerTeam.findIndex((c) => c.id === activePlayerCharacter.id)
+            ].hp,
+          );
+
           // Add visual healing effect
           const playerSprite = document.getElementById("player-sprite");
           playerSprite.classList.add("heal-effect");
-          
+
           // Create healing particles
           const battleArena = document.getElementById("battle-arena");
           for (let i = 0; i < 5; i++) {
@@ -2014,40 +2761,49 @@ function handleStatusMove(move, user) {
             healParticle.style.position = "absolute";
             healParticle.style.width = "30px";
             healParticle.style.height = "30px";
-            healParticle.style.backgroundImage = "url('https://i.imgur.com/5jzg2L3.png')";
+            healParticle.style.backgroundImage =
+              "url('https://i.imgur.com/5jzg2L3.png')";
             healParticle.style.backgroundSize = "contain";
             healParticle.style.backgroundRepeat = "no-repeat";
             healParticle.style.zIndex = "50";
-            
+
             // Random positions around player
             const playerRect = playerSprite.getBoundingClientRect();
             const battleArenaRect = battleArena.getBoundingClientRect();
-            
-            const left = playerRect.left - battleArenaRect.left + Math.random() * playerRect.width;
-            const top = playerRect.top - battleArenaRect.top + Math.random() * playerRect.height;
-            
+
+            const left =
+              playerRect.left -
+              battleArenaRect.left +
+              Math.random() * playerRect.width;
+            const top =
+              playerRect.top -
+              battleArenaRect.top +
+              Math.random() * playerRect.height;
+
             healParticle.style.left = `${left}px`;
             healParticle.style.top = `${top}px`;
             healParticle.style.transform = "translateY(0)";
             healParticle.style.opacity = "1";
             healParticle.style.transition = "all 1.5s ease-out";
-            
+
             battleArena.appendChild(healParticle);
-            
+
             // Animate particles rising up and fading
             setTimeout(() => {
               healParticle.style.transform = "translateY(-50px)";
               healParticle.style.opacity = "0";
             }, 10);
-            
+
             // Remove particles after animation
             setTimeout(() => {
               healParticle.remove();
               playerSprite.classList.remove("heal-effect");
             }, 1500);
           }
-          
-          addToBattleLog(`${activePlayerCharacter.name} recovered ${healAmount} HP!`);
+
+          addToBattleLog(
+            `${activePlayerCharacter.name} recovered ${healAmount} HP!`,
+          );
           showFloatingLog(`+${healAmount} HP`);
         } else {
           applyStatusEffect(activeOpponent, "baked", 3, "opponent");
@@ -2075,12 +2831,17 @@ function handleStatusMove(move, user) {
         if (move.name === "Call Girls for Gang") {
           // Healing move
           const healAmount = 40;
-          activePlayerCharacter.hp = Math.min(activePlayerCharacter.hp + healAmount, playerTeam[playerTeam.findIndex(c => c.id === activePlayerCharacter.id)].hp);
-          
+          activePlayerCharacter.hp = Math.min(
+            activePlayerCharacter.hp + healAmount,
+            playerTeam[
+              playerTeam.findIndex((c) => c.id === activePlayerCharacter.id)
+            ].hp,
+          );
+
           // Add visual healing effect
           const playerSprite = document.getElementById("player-sprite");
           playerSprite.classList.add("heal-effect");
-          
+
           // Create healing particles
           const battleArena = document.getElementById("battle-arena");
           for (let i = 0; i < 6; i++) {
@@ -2088,40 +2849,49 @@ function handleStatusMove(move, user) {
             healParticle.style.position = "absolute";
             healParticle.style.width = "30px";
             healParticle.style.height = "30px";
-            healParticle.style.backgroundImage = "url('https://i.imgur.com/5jzg2L3.png')";
+            healParticle.style.backgroundImage =
+              "url('https://i.imgur.com/5jzg2L3.png')";
             healParticle.style.backgroundSize = "contain";
             healParticle.style.backgroundRepeat = "no-repeat";
             healParticle.style.zIndex = "50";
-            
+
             // Random positions around player
             const playerRect = playerSprite.getBoundingClientRect();
             const battleArenaRect = battleArena.getBoundingClientRect();
-            
-            const left = playerRect.left - battleArenaRect.left + Math.random() * playerRect.width;
-            const top = playerRect.top - battleArenaRect.top + Math.random() * playerRect.height;
-            
+
+            const left =
+              playerRect.left -
+              battleArenaRect.left +
+              Math.random() * playerRect.width;
+            const top =
+              playerRect.top -
+              battleArenaRect.top +
+              Math.random() * playerRect.height;
+
             healParticle.style.left = `${left}px`;
             healParticle.style.top = `${top}px`;
             healParticle.style.transform = "translateY(0)";
             healParticle.style.opacity = "1";
             healParticle.style.transition = "all 1.5s ease-out";
-            
+
             battleArena.appendChild(healParticle);
-            
+
             // Animate particles rising up and fading
             setTimeout(() => {
               healParticle.style.transform = "translateY(-50px)";
               healParticle.style.opacity = "0";
             }, 10);
-            
+
             // Remove particles after animation
             setTimeout(() => {
               healParticle.remove();
               playerSprite.classList.remove("heal-effect");
             }, 1500);
           }
-          
-          addToBattleLog(`${activePlayerCharacter.name} recovered ${healAmount} HP!`);
+
+          addToBattleLog(
+            `${activePlayerCharacter.name} recovered ${healAmount} HP!`,
+          );
           showFloatingLog(`+${healAmount} HP`);
         } else {
           applyStatusEffect(activeOpponent, "slimed", 3, "opponent");
@@ -2131,12 +2901,17 @@ function handleStatusMove(move, user) {
         if (move.name === "PTO Prayer") {
           // Healing move
           const healAmount = 35;
-          activePlayerCharacter.hp = Math.min(activePlayerCharacter.hp + healAmount, playerTeam[playerTeam.findIndex(c => c.id === activePlayerCharacter.id)].hp);
-          
+          activePlayerCharacter.hp = Math.min(
+            activePlayerCharacter.hp + healAmount,
+            playerTeam[
+              playerTeam.findIndex((c) => c.id === activePlayerCharacter.id)
+            ].hp,
+          );
+
           // Add visual healing effect
           const playerSprite = document.getElementById("player-sprite");
           playerSprite.classList.add("heal-effect");
-          
+
           // Create healing particles
           const battleArena = document.getElementById("battle-arena");
           for (let i = 0; i < 5; i++) {
@@ -2144,40 +2919,49 @@ function handleStatusMove(move, user) {
             healParticle.style.position = "absolute";
             healParticle.style.width = "30px";
             healParticle.style.height = "30px";
-            healParticle.style.backgroundImage = "url('https://i.imgur.com/5jzg2L3.png')";
+            healParticle.style.backgroundImage =
+              "url('https://i.imgur.com/5jzg2L3.png')";
             healParticle.style.backgroundSize = "contain";
             healParticle.style.backgroundRepeat = "no-repeat";
             healParticle.style.zIndex = "50";
-            
+
             // Random positions around player
             const playerRect = playerSprite.getBoundingClientRect();
             const battleArenaRect = battleArena.getBoundingClientRect();
-            
-            const left = playerRect.left - battleArenaRect.left + Math.random() * playerRect.width;
-            const top = playerRect.top - battleArenaRect.top + Math.random() * playerRect.height;
-            
+
+            const left =
+              playerRect.left -
+              battleArenaRect.left +
+              Math.random() * playerRect.width;
+            const top =
+              playerRect.top -
+              battleArenaRect.top +
+              Math.random() * playerRect.height;
+
             healParticle.style.left = `${left}px`;
             healParticle.style.top = `${top}px`;
             healParticle.style.transform = "translateY(0)";
             healParticle.style.opacity = "1";
             healParticle.style.transition = "all 1.5s ease-out";
-            
+
             battleArena.appendChild(healParticle);
-            
+
             // Animate particles rising up and fading
             setTimeout(() => {
               healParticle.style.transform = "translateY(-50px)";
               healParticle.style.opacity = "0";
             }, 10);
-            
+
             // Remove particles after animation
             setTimeout(() => {
               healParticle.remove();
               playerSprite.classList.remove("heal-effect");
             }, 1500);
           }
-          
-          addToBattleLog(`${activePlayerCharacter.name} recovered ${healAmount} HP!`);
+
+          addToBattleLog(
+            `${activePlayerCharacter.name} recovered ${healAmount} HP!`,
+          );
           showFloatingLog(`+${healAmount} HP`);
         } else {
           opponentStatModifiers.speed *= 0.7;
@@ -2224,12 +3008,15 @@ function handleStatusMove(move, user) {
         if (move.name === "Sober Up Sis") {
           // Healing move
           const healAmount = 30;
-          activeOpponent.hp = Math.min(activeOpponent.hp + healAmount, opponents[opponentIndex].hp);
-          
+          activeOpponent.hp = Math.min(
+            activeOpponent.hp + healAmount,
+            opponents[opponentIndex].hp,
+          );
+
           // Add visual healing effect
           const opponentSprite = document.getElementById("opponent-sprite");
           opponentSprite.classList.add("heal-effect");
-          
+
           // Create healing particles
           const battleArena = document.getElementById("battle-arena");
           for (let i = 0; i < 5; i++) {
@@ -2237,39 +3024,46 @@ function handleStatusMove(move, user) {
             healParticle.style.position = "absolute";
             healParticle.style.width = "30px";
             healParticle.style.height = "30px";
-            healParticle.style.backgroundImage = "url('https://i.imgur.com/5jzg2L3.png')";
+            healParticle.style.backgroundImage =
+              "url('https://i.imgur.com/5jzg2L3.png')";
             healParticle.style.backgroundSize = "contain";
             healParticle.style.backgroundRepeat = "no-repeat";
             healParticle.style.zIndex = "50";
-            
+
             // Random positions around opponent
             const opponentRect = opponentSprite.getBoundingClientRect();
             const battleArenaRect = battleArena.getBoundingClientRect();
-            
-            const left = opponentRect.left - battleArenaRect.left + Math.random() * opponentRect.width;
-            const top = opponentRect.top - battleArenaRect.top + Math.random() * opponentRect.height;
-            
+
+            const left =
+              opponentRect.left -
+              battleArenaRect.left +
+              Math.random() * opponentRect.width;
+            const top =
+              opponentRect.top -
+              battleArenaRect.top +
+              Math.random() * opponentRect.height;
+
             healParticle.style.left = `${left}px`;
             healParticle.style.top = `${top}px`;
             healParticle.style.transform = "translateY(0)";
             healParticle.style.opacity = "1";
             healParticle.style.transition = "all 1.5s ease-out";
-            
+
             battleArena.appendChild(healParticle);
-            
+
             // Animate particles rising up and fading
             setTimeout(() => {
               healParticle.style.transform = "translateY(-50px)";
               healParticle.style.opacity = "0";
             }, 10);
-            
+
             // Remove particles after animation
             setTimeout(() => {
               healParticle.remove();
               opponentSprite.classList.remove("heal-effect");
             }, 1500);
           }
-          
+
           addToBattleLog(`${activeOpponent.name} recovered ${healAmount} HP!`);
           showFloatingLog(`+${healAmount} HP`);
         } else {
@@ -2331,32 +3125,38 @@ function applyStatusEffect(character, statusType, duration, side) {
     opponentStatusEffect.type = statusType;
     opponentStatusEffect.duration = duration;
   }
-  
+
   // Log the status application
-  addToBattleLog(`${character.name} was afflicted with ${statusEffects[statusType].name}!`);
+  addToBattleLog(
+    `${character.name} was afflicted with ${statusEffects[statusType].name}!`,
+  );
   showFloatingLog(`${statusEffects[statusType].name} applied!`);
-  
+
   // Update the status icons
   updateStatusIcons();
-  
+
   // Show status effect animation if available
   if (statusAnimations[statusType]) {
     const battleArena = document.getElementById("battle-arena");
-    const targetSprite = document.getElementById(side === "player" ? "player-sprite" : "opponent-sprite");
-    
+    const targetSprite = document.getElementById(
+      side === "player" ? "player-sprite" : "opponent-sprite",
+    );
+
     // Create status animation element
     const statusAnimation = document.createElement("div");
     statusAnimation.className = "status-effect";
     statusAnimation.style.backgroundImage = `url(${statusAnimations[statusType]})`;
-    
+
     // Position the animation centered on the character
     const targetRect = targetSprite.getBoundingClientRect();
     const battleArenaRect = battleArena.getBoundingClientRect();
-    
+
     // Calculate position relative to battle arena
-    const left = targetRect.left - battleArenaRect.left + (targetRect.width / 2) - 60;
-    const top = targetRect.top - battleArenaRect.top + (targetRect.height / 2) - 60;
-    
+    const left =
+      targetRect.left - battleArenaRect.left + targetRect.width / 2 - 60;
+    const top =
+      targetRect.top - battleArenaRect.top + targetRect.height / 2 - 60;
+
     statusAnimation.style.position = "absolute";
     statusAnimation.style.left = `${left}px`;
     statusAnimation.style.top = `${top}px`;
@@ -2366,10 +3166,10 @@ function applyStatusEffect(character, statusType, duration, side) {
     statusAnimation.style.backgroundPosition = "center center";
     statusAnimation.style.backgroundRepeat = "no-repeat";
     statusAnimation.style.zIndex = "100";
-    
+
     // Add to battle arena
     battleArena.appendChild(statusAnimation);
-    
+
     // Remove after animation completes
     setTimeout(() => {
       statusAnimation.remove();
@@ -2380,15 +3180,14 @@ function applyStatusEffect(character, statusType, duration, side) {
 function applyHitEffects(move, user) {
   // Random chance to apply various effects based on move type and user
   const chance = Math.random();
-  
+
   if (user === "player") {
     switch (activePlayerCharacter.id) {
       case 1: // Rastamon
         if (move.name === "Dreadlock Whip" && chance < 0.3) {
           // Apply slimed effect
           applyStatusEffect(activeOpponent, "slimed", 2, "opponent");
-        }
-        else if (move.name === "6 Rasclaat Eggs?!" && chance < 0.3) {
+        } else if (move.name === "6 Rasclaat Eggs?!" && chance < 0.3) {
           // Apply sleep effect
           applyStatusEffect(activeOpponent, "baked", 2, "opponent");
         }
@@ -2397,11 +3196,12 @@ function applyHitEffects(move, user) {
         if (move.name === "Protein Powder Burn" && chance < 0.3) {
           // Apply burn effect (bleeding)
           applyStatusEffect(activeOpponent, "bleeding", 2, "opponent");
-        }
-        else if (move.name === "Squat Slap" && chance < 0.2) {
+        } else if (move.name === "Squat Slap" && chance < 0.2) {
           // Increase attack
           playerStatModifiers.attack *= 1.1;
-          addToBattleLog(`${activePlayerCharacter.name}'s Attack slightly rose!`);
+          addToBattleLog(
+            `${activePlayerCharacter.name}'s Attack slightly rose!`,
+          );
           showFloatingLog("ATK ↑");
         }
         break;
@@ -2409,11 +3209,12 @@ function applyHitEffects(move, user) {
         if (move.name === "Keyboard Smash" && chance < 0.3) {
           // Apply paralysis effect
           applyStatusEffect(activeOpponent, "dazed", 2, "opponent");
-        }
-        else if (move.name === "404 Headshot" && chance < 0.3) {
+        } else if (move.name === "404 Headshot" && chance < 0.3) {
           // Chance for critical hit
           playerStatModifiers.attack *= 1.2;
-          addToBattleLog(`${activePlayerCharacter.name}'s targeting system optimized!`);
+          addToBattleLog(
+            `${activePlayerCharacter.name}'s targeting system optimized!`,
+          );
           showFloatingLog("CRIT chance ↑");
         }
         break;
@@ -2421,8 +3222,7 @@ function applyHitEffects(move, user) {
         if (move.name === "Splash Dat Ass" && chance < 0.3) {
           // Apply wet effect (slimed)
           applyStatusEffect(activeOpponent, "slimed", 2, "opponent");
-        }
-        else if (move.name === "Wave Check Fade" && chance < 0.3) {
+        } else if (move.name === "Wave Check Fade" && chance < 0.3) {
           // Apply sleep
           applyStatusEffect(activeOpponent, "baked", 2, "opponent");
         }
@@ -2431,13 +3231,19 @@ function applyHitEffects(move, user) {
         if (move.name === "Overtime Overload" && chance < 0.3) {
           // Apply paralysis
           applyStatusEffect(activeOpponent, "dazed", 2, "opponent");
-        }
-        else if (move.name === "Monday Mayhem" && chance < 0.2) {
+        } else if (move.name === "Monday Mayhem" && chance < 0.2) {
           // Slight drain effect
           const healAmount = Math.floor(move.power * 0.1);
-          activePlayerCharacter.hp = Math.min(playerTeam[playerTeam.findIndex(c => c.id === activePlayerCharacter.id)].hp, activePlayerCharacter.hp + healAmount);
+          activePlayerCharacter.hp = Math.min(
+            playerTeam[
+              playerTeam.findIndex((c) => c.id === activePlayerCharacter.id)
+            ].hp,
+            activePlayerCharacter.hp + healAmount,
+          );
           updateBattleUI();
-          addToBattleLog(`${activePlayerCharacter.name} found a bit of energy!`);
+          addToBattleLog(
+            `${activePlayerCharacter.name} found a bit of energy!`,
+          );
           showFloatingLog(`+${healAmount} HP`);
         }
         break;
@@ -2445,8 +3251,7 @@ function applyHitEffects(move, user) {
         if (move.name === "Clapback Inferno" && chance < 0.3) {
           // Apply burn (bleeding)
           applyStatusEffect(activeOpponent, "bleeding", 2, "opponent");
-        }
-        else if (move.name === "Ratio'd Receipts" && chance < 0.3) {
+        } else if (move.name === "Ratio'd Receipts" && chance < 0.3) {
           // Apply confusion
           applyStatusEffect(activeOpponent, "confused", 2, "opponent");
         }
@@ -2455,11 +3260,12 @@ function applyHitEffects(move, user) {
         if (move.name === "Weeb Roast" && chance < 0.3) {
           // Apply burn
           applyStatusEffect(activeOpponent, "bleeding", 2, "opponent");
-        }
-        else if (move.name === "Manga Smack" && chance < 0.3) {
+        } else if (move.name === "Manga Smack" && chance < 0.3) {
           // Defense increase
           playerStatModifiers.defense *= 1.1;
-          addToBattleLog(`${activePlayerCharacter.name}'s Defense slightly rose!`);
+          addToBattleLog(
+            `${activePlayerCharacter.name}'s Defense slightly rose!`,
+          );
           showFloatingLog("DEF ↑");
         }
         break;
@@ -2467,13 +3273,17 @@ function applyHitEffects(move, user) {
         if (move.name === "Hot Mess Slap" && chance < 0.3) {
           // Apply burn
           applyStatusEffect(activeOpponent, "bleeding", 2, "opponent");
-        }
-        else if (move.name === "Chaos Cookout" && chance < 0.5) {
+        } else if (move.name === "Chaos Cookout" && chance < 0.5) {
           // Recoil damage
           const recoilDamage = Math.floor(move.power * 0.15);
-          activePlayerCharacter.hp = Math.max(0, activePlayerCharacter.hp - recoilDamage);
+          activePlayerCharacter.hp = Math.max(
+            0,
+            activePlayerCharacter.hp - recoilDamage,
+          );
           updateBattleUI();
-          addToBattleLog(`${activePlayerCharacter.name} took ${recoilDamage} recoil damage!`);
+          addToBattleLog(
+            `${activePlayerCharacter.name} took ${recoilDamage} recoil damage!`,
+          );
           showFloatingLog(`Recoil: -${recoilDamage} HP`);
         }
         break;
@@ -2505,8 +3315,7 @@ function applyHitEffects(move, user) {
         if (move.name === "Knife Nightcap" && chance < 0.3) {
           // Apply sleep
           applyStatusEffect(activePlayerCharacter, "baked", 2, "player");
-        }
-        else if (move.name === "Shadow Strike" && chance < 0.3) {
+        } else if (move.name === "Shadow Strike" && chance < 0.3) {
           // Apply bleeding
           applyStatusEffect(activePlayerCharacter, "bleeding", 2, "player");
         }
@@ -2530,19 +3339,19 @@ function endPlayerTurn() {
 function endOpponentTurn() {
   if (!gameActive) return;
   currentTurn = "player";
-  
+
   // Re-enable buttons for player's turn
   canAct = true;
-  
+
   // Update UI for item use counts
   updateItemButtons();
 }
 
 function chooseOpponentMove() {
   const moves = activeOpponent.moves;
-  
+
   // Initialize PP for opponent moves if not already set
-  moves.forEach(move => {
+  moves.forEach((move) => {
     if (move.pp === undefined) {
       move.pp = move.power > 0 ? 10 : 5; // Attack moves get 10 PP, status moves get 5 PP
     }
@@ -2550,10 +3359,10 @@ function chooseOpponentMove() {
       move.maxPp = move.pp;
     }
   });
-  
+
   // Filter out moves with no PP
-  const availableMoves = moves.filter(move => move.pp > 0);
-  
+  const availableMoves = moves.filter((move) => move.pp > 0);
+
   // If no moves with PP, return a default struggle move
   if (availableMoves.length === 0) {
     return {
@@ -2561,23 +3370,25 @@ function chooseOpponentMove() {
       power: 30,
       accuracy: 100,
       type: "Normal",
-      description: "A desperate attack used when no other moves can be used."
+      description: "A desperate attack used when no other moves can be used.",
     };
   }
-  
+
   // Different AI behaviors
   switch (activeOpponent.ai) {
     case "aggressive":
       // Prioritize highest damage moves
       availableMoves.sort((a, b) => b.power - a.power);
       // 70% chance to use one of the two strongest moves
-      return Math.random() < 0.7 ? availableMoves[0] : availableMoves[Math.floor(Math.random() * availableMoves.length)];
-      
+      return Math.random() < 0.7
+        ? availableMoves[0]
+        : availableMoves[Math.floor(Math.random() * availableMoves.length)];
+
     case "defensive":
       // Prioritize status moves when HP is high, damage when low
       if (activeOpponent.hp > opponents[opponentIndex].hp * 0.7) {
         // More likely to use status moves
-        const statusMoves = availableMoves.filter(m => m.type === "status");
+        const statusMoves = availableMoves.filter((m) => m.type === "status");
         if (statusMoves.length > 0 && Math.random() < 0.6) {
           return statusMoves[Math.floor(Math.random() * statusMoves.length)];
         }
@@ -2585,19 +3396,19 @@ function chooseOpponentMove() {
       // Otherwise use any move with preference to higher power
       moves.sort((a, b) => b.power - a.power);
       return moves[Math.floor(Math.random() * Math.min(3, moves.length))];
-      
+
     case "balanced":
       // Mix of status and attack moves
       if (opponentStatusEffect.type === "normal" && Math.random() < 0.3) {
         // Try to use a status move if not already affected
-        const statusMoves = moves.filter(m => m.type === "status");
+        const statusMoves = moves.filter((m) => m.type === "status");
         if (statusMoves.length > 0) {
           return statusMoves[Math.floor(Math.random() * statusMoves.length)];
         }
       }
       // Otherwise use any move
       return moves[Math.floor(Math.random() * moves.length)];
-      
+
     case "random":
     default:
       // Completely random move selection
@@ -2606,132 +3417,154 @@ function chooseOpponentMove() {
 }
 
 function useItem(itemType) {
-  if (!canAct || currentTurn !== "player" || itemUseCounts[itemType] <= 0) return;
-  
+  if (!canAct || currentTurn !== "player" || itemUseCounts[itemType] <= 0)
+    return;
+
   // Prevent multiple actions
   canAct = false;
-  
+
   // Reduce item count
   itemUseCounts[itemType]--;
   updateItemButtons();
-  
+
   const item = items[itemType];
   addToBattleLog(`${activePlayerCharacter.name} used ${item.name}!`);
-  
+
   // Play success sound for item use
   playSuccessSound();
-  
+
   // Add item use animation
   const playerSprite = document.getElementById("player-sprite");
   playerSprite.classList.add("glow-effect");
-  
+
   // Create a floating item effect
   const battleArena = document.getElementById("battle-arena");
   const itemAnimation = document.createElement("div");
   itemAnimation.className = "item-effect";
   itemAnimation.textContent = item.icon || "🎵"; // Default to music note if no icon
-  
+
   // Position above the player
   const playerRect = playerSprite.getBoundingClientRect();
   const battleArenaRect = battleArena.getBoundingClientRect();
-  
-  const left = playerRect.left - battleArenaRect.left + (playerRect.width / 2) - 25;
+
+  const left =
+    playerRect.left - battleArenaRect.left + playerRect.width / 2 - 25;
   const top = playerRect.top - battleArenaRect.top - 50;
-  
+
   itemAnimation.style.position = "absolute";
   itemAnimation.style.left = `${left}px`;
   itemAnimation.style.top = `${top}px`;
   itemAnimation.style.fontSize = "40px";
   itemAnimation.style.zIndex = "100";
   itemAnimation.style.animation = "float 2s ease-in-out";
-  
+
   // Add to battle arena
   battleArena.appendChild(itemAnimation);
-  
+
   // Remove animations after they complete
   setTimeout(() => {
     playerSprite.classList.remove("glow-effect");
     itemAnimation.remove();
     canAct = true;
   }, 1500);
-  
+
   // Apply item effect
   switch (item.effect) {
     case "heal":
       // Find the maximum HP for the current character
-      const playerIndex = playerTeam.findIndex(c => c.id === activePlayerCharacter.id);
+      const playerIndex = playerTeam.findIndex(
+        (c) => c.id === activePlayerCharacter.id,
+      );
       if (playerIndex === -1) {
         console.error("Player character not found in team");
         break;
       }
-      
+
       const maxHp = playerTeam[playerIndex].hp;
       const healAmount = Math.min(item.value, maxHp - activePlayerCharacter.hp);
-      activePlayerCharacter.hp = Math.min(maxHp, activePlayerCharacter.hp + item.value);
-      
-      addToBattleLog(`${activePlayerCharacter.name} recovered ${healAmount} HP!`);
+      activePlayerCharacter.hp = Math.min(
+        maxHp,
+        activePlayerCharacter.hp + item.value,
+      );
+
+      addToBattleLog(
+        `${activePlayerCharacter.name} recovered ${healAmount} HP!`,
+      );
       showFloatingLog(`Healed: +${healAmount} HP`);
       break;
-      
+
     case "atkUp":
       // Apply the stat modifier
       playerStatModifiers.attack *= item.value;
       addToBattleLog(`${activePlayerCharacter.name}'s Attack rose sharply!`);
       showFloatingLog("ATK ↑↑");
-      
+
       // Add to active effects with duration
       if (item.duration) {
         // Remove any existing attack boost effects first to prevent stacking
-        playerActiveItemEffects = playerActiveItemEffects.filter(effect => effect.effect !== "atkUp");
-        
+        playerActiveItemEffects = playerActiveItemEffects.filter(
+          (effect) => effect.effect !== "atkUp",
+        );
+
         // Add the new effect
         playerActiveItemEffects.push({
           itemType: itemType,
           effect: item.effect,
           value: item.value,
-          remainingDuration: item.duration
+          remainingDuration: item.duration,
         });
         addToBattleLog(`The effect will last for ${item.duration} turns.`);
       }
       break;
-      
+
     case "defUp":
       // Apply the stat modifier
       playerStatModifiers.defense *= item.value;
       addToBattleLog(`${activePlayerCharacter.name}'s Defense rose sharply!`);
       showFloatingLog("DEF ↑↑");
-      
+
       // Add to active effects with duration
       if (item.duration) {
         // Remove any existing defense boost effects first to prevent stacking
-        playerActiveItemEffects = playerActiveItemEffects.filter(effect => effect.effect !== "defUp");
-        
+        playerActiveItemEffects = playerActiveItemEffects.filter(
+          (effect) => effect.effect !== "defUp",
+        );
+
         // Add the new effect
         playerActiveItemEffects.push({
           itemType: itemType,
           effect: item.effect,
           value: item.value,
-          remainingDuration: item.duration
+          remainingDuration: item.duration,
         });
         addToBattleLog(`The effect will last for ${item.duration} turns.`);
       }
       break;
-      
+
     case "statusCure":
       if (playerStatusEffect.type !== "normal") {
-        addToBattleLog(`${activePlayerCharacter.name} was cured of ${statusEffects[playerStatusEffect.type].name}!`);
+        addToBattleLog(
+          `${activePlayerCharacter.name} was cured of ${statusEffects[playerStatusEffect.type].name}!`,
+        );
         showFloatingLog("Status cured!");
         playerStatusEffect.type = "normal";
         playerStatusEffect.duration = 0;
         updateStatusIcons();
-        
+
         // Small HP recovery bonus
-        const playerIdx = playerTeam.findIndex(c => c.id === activePlayerCharacter.id);
+        const playerIdx = playerTeam.findIndex(
+          (c) => c.id === activePlayerCharacter.id,
+        );
         if (playerIdx !== -1) {
           const maxHp = playerTeam[playerIdx].hp;
           const cureHealAmount = Math.floor(maxHp * 0.1);
-          activePlayerCharacter.hp = Math.min(maxHp, activePlayerCharacter.hp + cureHealAmount);
-          addToBattleLog(`${activePlayerCharacter.name} recovered ${cureHealAmount} HP!`);
+          activePlayerCharacter.hp = Math.min(
+            maxHp,
+            activePlayerCharacter.hp + cureHealAmount,
+          );
+          addToBattleLog(
+            `${activePlayerCharacter.name} recovered ${cureHealAmount} HP!`,
+          );
         }
       } else {
         addToBattleLog(`It had no effect...`);
@@ -2739,29 +3572,29 @@ function useItem(itemType) {
       }
       break;
   }
-  
+
   // Update UI
   updateBattleUI();
-  
+
   // End turn
   setTimeout(() => endPlayerTurn(), 1000);
 }
 
 function switchYN() {
   if (!canAct || currentTurn !== "player") return;
-  
+
   // Play switch sound
   playSwitchSound();
-  
+
   // Show switch screen with available characters
   const switchScreen = document.getElementById("switch-screen");
   const switchOptions = document.getElementById("switch-options");
   switchOptions.innerHTML = "";
-  
+
   playerTeam.forEach((character, index) => {
     const isCurrentActive = character.id === activePlayerCharacter.id;
     const isFainted = character.hp <= 0;
-    
+
     const option = document.createElement("div");
     option.className = `switch-option ${isFainted ? "fainted" : ""} ${isCurrentActive ? "current" : ""}`;
     option.innerHTML = `
@@ -2771,37 +3604,39 @@ function switchYN() {
         <div class="hp-indicator-fill" style="width: ${(character.hp / playerTeam[index].hp) * 100}%"></div>
       </div>
     `;
-    
+
     if (!isFainted && !isCurrentActive) {
       option.addEventListener("click", () => confirmSwitch(index));
     }
-    
+
     switchOptions.appendChild(option);
   });
-  
+
   switchScreen.style.display = "block";
 }
 
 function confirmSwitch(index) {
   // Hide switch screen
   document.getElementById("switch-screen").style.display = "none";
-  
+
   // Play success sound
   playSuccessSound();
-  
+
   // Get the new active character
   const newActive = playerTeam[index];
-  addToBattleLog(`${activePlayerCharacter.name} switched out for ${newActive.name}!`);
+  addToBattleLog(
+    `${activePlayerCharacter.name} switched out for ${newActive.name}!`,
+  );
   showFloatingLog(`Go, ${newActive.name}!`);
-  
+
   // Update active character
   activePlayerCharacter = newActive;
-  
+
   // Update UI
   updateBattleUI();
   updateStatusIcons();
   updateMoveButtons();
-  
+
   // End turn
   setTimeout(() => endPlayerTurn(), 1000);
 }
@@ -2813,17 +3648,17 @@ function cancelSwitch() {
 function handlePlayerFaint() {
   addToBattleLog(`${activePlayerCharacter.name} got faded!`);
   showFloatingLog(`${activePlayerCharacter.name} faded!`);
-  
+
   // Play hit sound
   playHitSound();
-  
+
   // Mark character as fainted (hp = 0)
-  const index = playerTeam.findIndex(c => c.id === activePlayerCharacter.id);
+  const index = playerTeam.findIndex((c) => c.id === activePlayerCharacter.id);
   playerTeam[index].hp = 0;
-  
+
   // Check if all team members are fainted
-  const allFainted = playerTeam.every(character => character.hp <= 0);
-  
+  const allFainted = playerTeam.every((character) => character.hp <= 0);
+
   if (allFainted) {
     // Game over - player lost
     setTimeout(() => showGameOver(false), 1500);
@@ -2838,20 +3673,20 @@ function handlePlayerFaint() {
 function handleOpponentFaint() {
   // Increment battle counter
   battleCounter++;
-  
+
   // Only increase fade count after 3 battles
   if (battleCounter >= 3) {
     fadeCount++;
     battleCounter = 0; // Reset battle counter for next fade
     updateFadeDisplay();
   }
-  
+
   addToBattleLog(`${activeOpponent.name} got faded!`);
   showFloatingLog(`${activeOpponent.name} faded!`);
-  
+
   // Play success sound
   playSuccessSound();
-  
+
   // Check if all opponents are defeated
   if (opponentIndex >= opponents.length - 1) {
     // Game over - player won
@@ -2866,71 +3701,81 @@ function showNextOpponentScreen() {
   // Set up game-over screen as "continue" screen
   const gameOverScreen = document.getElementById("game-over");
   const continueButton = document.getElementById("continue-battle");
-  const againButton = document.querySelector("#game-over button:not(#continue-battle)");
-  
-  document.getElementById("game-over-message").textContent = `${activeOpponent.name} got faded!`;
+  const againButton = document.querySelector(
+    "#game-over button:not(#continue-battle)",
+  );
+
+  document.getElementById("game-over-message").textContent =
+    `${activeOpponent.name} got faded!`;
   document.getElementById("fade-counter").textContent = `Fades: ${fadeCount}`;
-  document.getElementById("win-lose-gif").src = resultGifs.win[Math.floor(Math.random() * resultGifs.win.length)];
-  
+  document.getElementById("win-lose-gif").src =
+    resultGifs.win[Math.floor(Math.random() * resultGifs.win.length)];
+
   continueButton.style.display = "block";
   againButton.style.display = "none";
   document.getElementById("share-buttons").style.display = "none";
-  
+
   gameOverScreen.style.display = "block";
 }
 
 function showGameOver(playerWon) {
   const gameOverScreen = document.getElementById("game-over");
   const continueButton = document.getElementById("continue-battle");
-  const againButton = document.querySelector("#game-over button:not(#continue-battle)");
-  
+  const againButton = document.querySelector(
+    "#game-over button:not(#continue-battle)",
+  );
+
   // Play appropriate sound
   if (playerWon) {
     playSuccessSound();
-    document.getElementById("game-over-message").textContent = "You won! All opponents got faded!";
-    document.getElementById("win-lose-gif").src = resultGifs.win[Math.floor(Math.random() * resultGifs.win.length)];
+    document.getElementById("game-over-message").textContent =
+      "You won! All opponents got faded!";
+    document.getElementById("win-lose-gif").src =
+      resultGifs.win[Math.floor(Math.random() * resultGifs.win.length)];
   } else {
     playHitSound(); // Use hit sound for losing
-    document.getElementById("game-over-message").textContent = "You lost! Your whole squad got faded!";
-    document.getElementById("win-lose-gif").src = resultGifs.lose[Math.floor(Math.random() * resultGifs.lose.length)];
+    document.getElementById("game-over-message").textContent =
+      "You lost! Your whole squad got faded!";
+    document.getElementById("win-lose-gif").src =
+      resultGifs.lose[Math.floor(Math.random() * resultGifs.lose.length)];
   }
-  
+
   document.getElementById("fade-counter").textContent = `Fades: ${fadeCount}`;
-  
+
   continueButton.style.display = "none";
   againButton.style.display = "block";
   document.getElementById("share-buttons").style.display = "flex";
-  
+
   gameOverScreen.style.display = "block";
   gameActive = false;
 }
 
 function continueBattle() {
   document.getElementById("game-over").style.display = "none";
-  
+
   // Play success sound
   playSuccessSound();
-  
+
   // Move to next opponent
   opponentIndex++;
   activeOpponent = { ...opponents[opponentIndex] };
-  
+
   // Reset battle modifiers
   resetBattleModifiers();
-  
+
   // Update UI
   updateBattleUI();
   updateStatusIcons();
   updateMoveButtons();
   updateItemButtons();
-  
+
   // Start battle with next opponent
   addToBattleLog(`${activePlayerCharacter.name} vs ${activeOpponent.name}!`);
   showFloatingLog(`New opponent: ${activeOpponent.name}`);
-  
+
   // Determine first turn
   currentTurn = determineFirstTurn();
-  
+
   // Start the turn after a delay
   setTimeout(() => {
     processTurn();
@@ -2942,14 +3787,14 @@ function restartGame() {
   document.getElementById("game-over").style.display = "none";
   document.getElementById("battle-screen").style.display = "none";
   document.getElementById("selection-screen").style.display = "block";
-  
+
   // Switch back to menu music
   playMenuMusic();
-  
+
   // Clear battle log
   const battleLogElement = document.getElementById("battle-log");
   battleLogElement.innerHTML = "";
-  
+
   // Reset game state
   playerTeam = [];
   fadeCount = 0;
@@ -2957,18 +3802,18 @@ function restartGame() {
   opponentIndex = 0;
   battleLog = [];
   gameActive = false;
-  
+
   // Reset character selection
-  document.querySelectorAll(".character-card").forEach(card => {
+  document.querySelectorAll(".character-card").forEach((card) => {
     card.classList.remove("selected");
   });
-  
+
   // Clear team slots
   updateTeamSlots();
-  
+
   // Disable start button
   document.getElementById("start-battle").disabled = true;
-  
+
   // Update fade display
   updateFadeDisplay();
 }
@@ -2979,10 +3824,10 @@ function addToBattleLog(text) {
   entry.className = "log-entry";
   entry.textContent = text;
   battleLogElement.appendChild(entry);
-  
+
   // Auto-scroll to bottom
   battleLogElement.scrollTop = battleLogElement.scrollHeight;
-  
+
   // Also store in array for history
   battleLog.push(text);
 }
@@ -2991,7 +3836,7 @@ function showFloatingLog(text) {
   const floatingLog = document.getElementById("floating-log");
   floatingLog.textContent = text;
   floatingLog.classList.add("visible");
-  
+
   // Hide after a delay
   setTimeout(() => {
     floatingLog.classList.remove("visible");
@@ -2999,22 +3844,22 @@ function showFloatingLog(text) {
 }
 
 function share(platform) {
-  const message = `I just played Squabblemon and got ${fadeCount} fade${fadeCount !== 1 ? 's' : ''}!`;
-  
+  const message = `I just played Squabblemon and got ${fadeCount} fade${fadeCount !== 1 ? "s" : ""}!`;
+
   let url;
   switch (platform) {
-    case 'facebook':
+    case "facebook":
       url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent(message)}`;
       break;
-    case 'reddit':
+    case "reddit":
       url = `https://www.reddit.com/submit?url=${encodeURIComponent(window.location.href)}&title=${encodeURIComponent(message)}`;
       break;
-    case 'bluesky':
-      url = `https://bsky.app/intent/compose?text=${encodeURIComponent(message + ' ' + window.location.href)}`;
+    case "bluesky":
+      url = `https://bsky.app/intent/compose?text=${encodeURIComponent(message + " " + window.location.href)}`;
       break;
     default:
       return;
   }
-  
-  window.open(url, '_blank');
+
+  window.open(url, "_blank");
 }

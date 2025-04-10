@@ -16,7 +16,7 @@ const battleStartPhrases = [
   "We outside and ready to battle!",
   "It's giving winner energy!",
   "Main character energy activated!",
-  "It's the moment we've all been waiting for!"
+  "It's the moment we've all been waiting for!",
 ];
 
 // Phrases for when a player attacks
@@ -36,7 +36,7 @@ const attackPhrases = {
     "This attack is hitting different!",
     "No printer, just fax!",
     "Talk to 'em!",
-    "It's giving power moves!"
+    "It's giving power moves!",
   ],
   critical: [
     "SHEESH! That's a violation!",
@@ -53,7 +53,7 @@ const attackPhrases = {
     "THAT'S A VIOLATION AND A HALF!",
     "RIP in the chat!",
     "That's what you call a critical hit!",
-    "Sent them to the shadow realm!"
+    "Sent them to the shadow realm!",
   ],
   weak: [
     "That ain't it, chief...",
@@ -70,7 +70,7 @@ const attackPhrases = {
     "My grandma hits harder than that!",
     "Call that a paper cut at best!",
     "You can't be serious with that!",
-    "I know they ain't just try that weak move!"
+    "I know they ain't just try that weak move!",
   ],
   miss: [
     "Swing and a miss!",
@@ -82,8 +82,8 @@ const attackPhrases = {
     "Matrix dodged that one!",
     "That's embarrassing!",
     "Whiffed it completely!",
-    "Big yikes on that aim!"
-  ]
+    "Big yikes on that aim!",
+  ],
 };
 
 // Reactions to getting hit
@@ -96,7 +96,7 @@ const hitReactionPhrases = {
     "Is that all you got?",
     "That stung a bit!",
     "I'm good, I'm good!",
-    "Nice try!"
+    "Nice try!",
   ],
   critical: [
     "YOOOO! That was dirty!",
@@ -106,7 +106,7 @@ const hitReactionPhrases = {
     "Not the combo!",
     "That's actually crazy!",
     "The audacity!",
-    "Emotional damage!"
+    "Emotional damage!",
   ],
   resisted: [
     "That's light work!",
@@ -116,8 +116,8 @@ const hitReactionPhrases = {
     "That's cute!",
     "I eat those for breakfast!",
     "Couldn't be me taking damage from that!",
-    "Is that supposed to hurt?"
-  ]
+    "Is that supposed to hurt?",
+  ],
 };
 
 // Status effect dialogue
@@ -130,7 +130,7 @@ const statusEffectPhrases = {
     "Too zooted to function!",
     "It's giving confusion!",
     "The vibes are off!",
-    "Can't even think straight!"
+    "Can't even think straight!",
   ],
   poisoned: [
     "That's toxic!",
@@ -140,7 +140,7 @@ const statusEffectPhrases = {
     "That's foul play!",
     "Need some milk!",
     "Feeling green right now!",
-    "Who put something in my drink?"
+    "Who put something in my drink?",
   ],
   paralyzed: [
     "Can't move, no cap!",
@@ -150,7 +150,7 @@ const statusEffectPhrases = {
     "It's giving statue vibes!",
     "Lagging IRL!",
     "Connection issues!",
-    "Someone hit my reset button!"
+    "Someone hit my reset button!",
   ],
   sleep: [
     "Catching these Z's mid-battle!",
@@ -160,8 +160,8 @@ const statusEffectPhrases = {
     "Dreamland express!",
     "Someone hit the snooze!",
     "That's a hard reset!",
-    "Night night!"
-  ]
+    "Night night!",
+  ],
 };
 
 // Healing and buff dialogue
@@ -174,7 +174,7 @@ const buffPhrases = {
     "Rejuvenated!",
     "That hit different!",
     "We back and better!",
-    "That's that good good!"
+    "That's that good good!",
   ],
   attackUp: [
     "Power levels rising!",
@@ -184,7 +184,7 @@ const buffPhrases = {
     "Damage about to be disrespectful!",
     "Hitting gym paid off!",
     "Strength increase activated!",
-    "About to catch a body!"
+    "About to catch a body!",
   ],
   defenseUp: [
     "Shield gang activated!",
@@ -194,7 +194,7 @@ const buffPhrases = {
     "Try breaking through this!",
     "Defense on swole!",
     "You can't hurt me now!",
-    "Fortified and ready!"
+    "Fortified and ready!",
   ],
   speedUp: [
     "Zooming like that!",
@@ -204,8 +204,8 @@ const buffPhrases = {
     "Nyoom!",
     "Moving at the speed of light!",
     "Too fast to track!",
-    "Sonic WHO?"
-  ]
+    "Sonic WHO?",
+  ],
 };
 
 // Victory phrases
@@ -223,7 +223,7 @@ const victoryPhrases = [
   "Victory secured, as expected!",
   "The outcome was never in question!",
   "Didn't even break a sweat!",
-  "That's just how I'm built!"
+  "That's just how I'm built!",
 ];
 
 // Defeat phrases
@@ -241,7 +241,7 @@ const defeatPhrases = [
   "Run it back!",
   "That's actually crazy!",
   "This game is rigged!",
-  "I wasn't even trying for real."
+  "I wasn't even trying for real.",
 ];
 
 // Get random phrase from an array
@@ -254,68 +254,74 @@ function getRandomPhrase(phraseArray) {
 function generateBattleDialogue(action, context = {}) {
   // Ensure context is an object
   context = context || {};
-  
+
   switch (action) {
-    case 'battle-start':
+    case "battle-start":
       return getRandomPhrase(battleStartPhrases);
-      
-    case 'attack':
-      if (context.missed || context.effectiveness === 'miss') {
+
+    case "attack":
+      if (context.missed || context.effectiveness === "miss") {
         return getRandomPhrase(attackPhrases.miss);
-      } else if (context.effectiveness === 'critical' || context.isCritical) {
+      } else if (context.effectiveness === "critical" || context.isCritical) {
         return getRandomPhrase(attackPhrases.critical);
-      } else if (context.effectiveness === 'weak' || (context.damage !== undefined && context.damage < 10)) {
+      } else if (
+        context.effectiveness === "weak" ||
+        (context.damage !== undefined && context.damage < 10)
+      ) {
         return getRandomPhrase(attackPhrases.weak);
       } else {
         return getRandomPhrase(attackPhrases.normal);
       }
-      
-    case 'hit-reaction':
-      if (context.effectiveness === 'critical' || context.isCritical) {
+
+    case "hit-reaction":
+      if (context.effectiveness === "critical" || context.isCritical) {
         return getRandomPhrase(hitReactionPhrases.critical);
-      } else if (context.effectiveness === 'resisted' || (context.damage !== undefined && context.damage < 5)) {
+      } else if (
+        context.effectiveness === "resisted" ||
+        (context.damage !== undefined && context.damage < 5)
+      ) {
         return getRandomPhrase(hitReactionPhrases.resisted);
       } else {
         return getRandomPhrase(hitReactionPhrases.normal);
       }
-      
-    case 'status-effect':
+
+    case "status-effect":
       if (context.type && statusEffectPhrases[context.type]) {
         return getRandomPhrase(statusEffectPhrases[context.type]);
       }
       return getRandomPhrase(statusEffectPhrases.confused); // Default to confused
-      
-    case 'heal':
+
+    case "heal":
       return getRandomPhrase(buffPhrases.heal);
-      
-    case 'buff':
-      if (context.stat === 'attack') {
+
+    case "buff":
+      if (context.stat === "attack") {
         return getRandomPhrase(buffPhrases.attackUp);
-      } else if (context.stat === 'defense') {
+      } else if (context.stat === "defense") {
         return getRandomPhrase(buffPhrases.defenseUp);
-      } else if (context.stat === 'speed') {
+      } else if (context.stat === "speed") {
         return getRandomPhrase(buffPhrases.speedUp);
       }
       return getRandomPhrase(buffPhrases.attackUp); // Default to attack
-      
-    case 'miss':
+
+    case "miss":
       return getRandomPhrase(attackPhrases.miss);
-    
-    case 'switch':
+
+    case "switch":
       return "Switching it up! New challenger approaching!";
-    
-    case 'item-use':
+
+    case "item-use":
       return "Using that item strategically!";
-      
-    case 'victory':
+
+    case "victory":
       return getRandomPhrase(victoryPhrases);
-      
-    case 'defeat':
+
+    case "defeat":
       return getRandomPhrase(defeatPhrases);
-      
-    case 'faint':
+
+    case "faint":
       return "Completely bodied! Down for the count!";
-      
+
     default:
       return "Let's go!"; // Default phrase
   }
@@ -328,48 +334,48 @@ const characterActions = {
     "*types rapidly*",
     "*scrolls through phone*",
     "*hacks the mainframe*",
-    "*pushes up glasses*"
+    "*pushes up glasses*",
   ],
   hiphop: [
     "*drops mic*",
     "*spins on head*",
     "*does the shoot dance*",
     "*makes it rain*",
-    "*hits the woah*"
+    "*hits the woah*",
   ],
   street: [
     "*throws up gang sign*",
     "*mean mugs*",
     "*flexes*",
     "*pops collar*",
-    "*does the two-step*"
+    "*does the two-step*",
   ],
   urban: [
     "*poses*",
     "*flips hair*",
     "*struts*",
     "*snaps fingers*",
-    "*straightens fit*"
-  ]
+    "*straightens fit*",
+  ],
 };
 
 // Character-specific dialogue formatting
 function formatDialogue(character, dialogue) {
   if (!character) return dialogue;
-  
+
   // Get random action for character type
   const getRandomAction = (type) => {
-    if (!characterActions[type]) return '';
+    if (!characterActions[type]) return "";
     const actions = characterActions[type];
     return actions[Math.floor(Math.random() * actions.length)];
   };
-  
+
   // For certain character types, we can modify the dialogue style
   if (character.type && characterActions[character.type]) {
     const action = getRandomAction(character.type);
     return `"${dialogue}" ${action}`;
   }
-  
+
   return `"${dialogue}"`;
 }
 
@@ -380,48 +386,42 @@ const moveTypeDescriptions = {
     "[Hood Classic]",
     "[Street Cred]",
     "[Block Hot]",
-    "[Streets Talking]"
+    "[Streets Talking]",
   ],
   hiphop: [
     "[Bars]",
     "[Straight Fire]",
     "[Mic Drop]",
     "[Flow Master]",
-    "[Beat Killer]"
+    "[Beat Killer]",
   ],
-  tech: [
-    "[Tech]",
-    "[Digital]",
-    "[Algorithm]",
-    "[Megabyte]",
-    "[Cyber]"
-  ],
+  tech: ["[Tech]", "[Digital]", "[Algorithm]", "[Megabyte]", "[Cyber]"],
   urban: [
     "[Urban Legend]",
     "[City Style]",
     "[Metropolitan]",
     "[Downtown]",
-    "[Urban Jungle]"
-  ]
+    "[Urban Jungle]",
+  ],
 };
 
 // Add character flavor to move descriptions
 function enhanceMoveName(move) {
-  if (!move) return '';
-  
+  if (!move) return "";
+
   // Get random description for move type
   const getRandomDesc = (type) => {
-    if (!moveTypeDescriptions[type]) return '';
+    if (!moveTypeDescriptions[type]) return "";
     const descriptions = moveTypeDescriptions[type];
     return descriptions[Math.floor(Math.random() * descriptions.length)];
   };
-  
+
   // Add urban flavor to move names for display purposes
   if (move.type && moveTypeDescriptions[move.type]) {
     const typeDesc = getRandomDesc(move.type);
     return `${move.name} ${typeDesc}`;
   }
-  
+
   return move.name;
 }
 
@@ -429,5 +429,5 @@ function enhanceMoveName(move) {
 window.BattleDialogue = {
   generateBattleDialogue,
   formatDialogue,
-  enhanceMoveName
+  enhanceMoveName,
 };

@@ -1,8 +1,11 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
     <title>Squabblemon - Retro Fade v2</title>
     <!-- Updated Title -->
     <link rel="stylesheet" href="style.css" />
@@ -20,7 +23,11 @@
       <button id="toggle-music" class="audio-button" title="Toggle Music">
         <span id="music-icon">🔊</span>
       </button>
-      <button id="toggle-sound" class="audio-button" title="Toggle Sound Effects">
+      <button
+        id="toggle-sound"
+        class="audio-button"
+        title="Toggle Sound Effects"
+      >
         <span id="sound-icon">🔊</span>
       </button>
     </div>
@@ -35,7 +42,7 @@
           class="pixel-button mode-button"
           onclick="window.selectGameMode('fade');"
         >
-          Fade Mode <span style="font-size: 1.2em;">👊</span>
+          Fade Mode <span style="font-size: 1.2em">👊</span>
           <div class="mode-description">Quick battles against opponents</div>
         </button>
         <button
@@ -43,16 +50,20 @@
           class="pixel-button mode-button"
           onclick="window.selectGameMode('story');"
         >
-          Story Mode <span style="font-size: 1.2em;">🗺️</span>
-          <div class="mode-description">Explore the hood, meet characters, build your squad</div>
+          Story Mode <span style="font-size: 1.2em">🗺️</span>
+          <div class="mode-description">
+            Explore the hood, meet characters, build your squad
+          </div>
         </button>
       </div>
     </div>
-    
+
     <!-- Character Selection Screen (initially hidden) -->
-    <div id="selection-screen" style="display: none;">
+    <div id="selection-screen" style="display: none">
       <h1>Build Your Gang (Pick 3)</h1>
-      <p class="selection-instruction">Click on 3 characters to form your squad. Hover to see stats!</p>
+      <p class="selection-instruction">
+        Click on 3 characters to form your squad. Hover to see stats!
+      </p>
       <div id="character-list"></div>
       <div id="team-preview">
         <h2>The Gang</h2>
@@ -83,17 +94,17 @@
             class="pixel-button"
             onclick="window.startExploreMode();"
           >
-            Explore <span style="font-size: 1.2em;">🗺️</span>
+            Explore <span style="font-size: 1.2em">🗺️</span>
           </button>
         </div>
       </div>
     </div>
-    
+
     <!-- Overworld Container (initially hidden) -->
-    <div id="overworld-container" style="display: none;">
+    <div id="overworld-container" style="display: none">
       <div id="overworld-canvas"></div>
       <div id="overworld-ui">
-        <div id="dialogue-box" style="display: none;">
+        <div id="dialogue-box" style="display: none">
           <p id="npc-name">NPC Name</p>
           <p id="dialogue-text">Dialogue text will appear here...</p>
           <button id="next-dialogue" class="pixel-button">Next</button>
@@ -111,7 +122,7 @@
         <!-- Platforms moved outside of flex containers for absolute positioning -->
         <div id="opponent-platform"></div>
         <div id="player-platform"></div>
-        
+
         <div id="opponent-area">
           <p id="opponent-name" class="yn-name"></p>
           <!-- Name ABOVE -->
@@ -123,7 +134,9 @@
           <!-- Value BELOW -->
           <div class="opponent-sprite-container">
             <img id="opponent-sprite" src="" alt="" />
-            <div id="opponent-info-box" class="opponent-tooltip"><p id="opponent-info-text"></p></div>
+            <div id="opponent-info-box" class="opponent-tooltip">
+              <p id="opponent-info-text"></p>
+            </div>
           </div>
         </div>
         <div id="player-area">
@@ -137,28 +150,50 @@
           <!-- Value BELOW -->
           <div class="player-sprite-container">
             <img id="player-sprite" src="" alt="" />
-            <div id="player-info-box" class="player-tooltip"><p id="player-info-text"></p></div>
+            <div id="player-info-box" class="player-tooltip">
+              <p id="player-info-text"></p>
+            </div>
           </div>
         </div>
       </div>
       <div id="battle-menu">
         <!-- Action container - for compatibility -->
-        <div id="action-container" style="display: none;">
+        <div id="action-container" style="display: none">
           <!-- This is kept for compatibility, but we don't use it in the new UI -->
         </div>
 
         <!-- Moves section - 4 buttons for moves -->
         <div id="moves">
           <!-- Move buttons are generated in JavaScript, but we'll create a template -->
-          <button class="move-button" onclick="useMove(activePlayerCharacter.moves[0])">Move 1</button>
-          <button class="move-button" onclick="useMove(activePlayerCharacter.moves[1])">Move 2</button>
-          <button class="move-button" onclick="useMove(activePlayerCharacter.moves[2])">Move 3</button>
-          <button class="move-button" onclick="useMove(activePlayerCharacter.moves[3])">Move 4</button>
+          <button
+            class="move-button"
+            onclick="useMove(activePlayerCharacter.moves[0])"
+          >
+            Move 1
+          </button>
+          <button
+            class="move-button"
+            onclick="useMove(activePlayerCharacter.moves[1])"
+          >
+            Move 2
+          </button>
+          <button
+            class="move-button"
+            onclick="useMove(activePlayerCharacter.moves[2])"
+          >
+            Move 3
+          </button>
+          <button
+            class="move-button"
+            onclick="useMove(activePlayerCharacter.moves[3])"
+          >
+            Move 4
+          </button>
         </div>
-        
+
         <!-- Divider between moves and items -->
         <div class="menu-divider"></div>
-        
+
         <!-- Items section -->
         <div id="items">
           <button class="item-button" onclick="useItem('jcole')">
@@ -174,22 +209,24 @@
             <span class="item-icon">🔄</span> Dummy
           </button>
         </div>
-        
+
         <!-- Battle log with fixed header -->
         <div id="battle-log-container">
           <h3 id="battle-log-header">Battle Log:</h3>
-          <div id="battle-log-text">Battle started! Closet Nerd vs Functional Addict!</div>
+          <div id="battle-log-text">
+            Battle started! Closet Nerd vs Functional Addict!
+          </div>
         </div>
 
         <!-- Move info box (initially hidden) -->
-        <div id="move-info-box" style="display: none;">
+        <div id="move-info-box" style="display: none">
           <h3>Move Info:</h3>
           <!-- Move details will be filled dynamically -->
         </div>
-        
+
         <!-- Bag button for using items -->
         <button id="toggle-bag" onclick="showItems()">BAG</button>
-        
+
         <!-- Switch button styled like in screenshot -->
         <button id="toggle-switch" onclick="switchYN()">SWITCH</button>
       </div>
@@ -239,35 +276,46 @@
         Cancel
       </button>
     </div>
-    
+
     <!-- Simple Switch Prompt -->
     <div id="simple-switch-prompt" class="pixel-popup" style="display: none">
       <h2>Switch Character?</h2>
       <p id="simple-switch-message">Do you want to switch your character?</p>
       <div class="button-row">
-        <button class="pixel-button" onclick="window.handleSimpleSwitchYes()">Yes</button>
-        <button class="pixel-button" onclick="window.handleSimpleSwitchNo()">No</button>
+        <button class="pixel-button" onclick="window.handleSimpleSwitchYes()">
+          Yes
+        </button>
+        <button class="pixel-button" onclick="window.handleSimpleSwitchNo()">
+          No
+        </button>
       </div>
     </div>
-    
+
     <div id="move-tooltip" style="display: none"></div>
-    
+
     <!-- Mobile Controls Iframe -->
     <div id="mobile-controls-container">
-      <iframe id="mobile-controls-frame" src="mobile-controls.html" frameborder="0"></iframe>
+      <iframe
+        id="mobile-controls-frame"
+        src="mobile-controls.html"
+        frameborder="0"
+      ></iframe>
     </div>
-    
+
     <!-- Level Up Notification -->
     <div id="level-up-notification" class="pixel-popup" style="display: none">
       <h2>Level Up!</h2>
       <div id="level-up-content">
         <!-- Content will be filled dynamically -->
       </div>
-      <button class="pixel-button" onclick="document.getElementById('level-up-notification').style.display = 'none'">
+      <button
+        class="pixel-button"
+        onclick="document.getElementById('level-up-notification').style.display = 'none'"
+      >
         Got it!
       </button>
     </div>
-    
+
     <!-- Shop Screen (Initially Hidden) -->
     <div id="shop-screen" class="pixel-popup" style="display: none">
       <h2 id="shop-name">Shop</h2>
@@ -277,42 +325,48 @@
       <div id="shop-inventory-summary">
         Your Cash: $<span id="player-money">0</span>
       </div>
-      <button class="pixel-button" onclick="closeShop()">
-        Exit Shop
-      </button>
+      <button class="pixel-button" onclick="closeShop()">Exit Shop</button>
     </div>
-    
+
     <!-- New System Scripts (Load BEFORE main game script) -->
     <script src="level-system.js"></script>
     <script src="inventory-system.js"></script>
     <script src="shop-system.js"></script>
     <script src="animations.js"></script>
-<!-- Ensure animation functions are globally accessible -->
-<script>
-  // Make sure animation functions are accessible
-  window.setPlayerAnimation = function(animationType) {
-    if (window.AnimationSystem && window.AnimationSystem.setPlayerAnimation) {
-      return window.AnimationSystem.setPlayerAnimation(animationType);
-    } else {
-      console.error("Animation system not properly initialized");
-    }
-  }
-  
-  window.setOpponentAnimation = function(animationType) {
-    if (window.AnimationSystem && window.AnimationSystem.setOpponentAnimation) {
-      return window.AnimationSystem.setOpponentAnimation(animationType);
-    } else {
-      console.error("Animation system not properly initialized");
-    }
-  }
-</script>
+    <!-- Ensure animation functions are globally accessible -->
+    <script>
+      // Make sure animation functions are accessible
+      window.setPlayerAnimation = function (animationType) {
+        if (
+          window.AnimationSystem &&
+          window.AnimationSystem.setPlayerAnimation
+        ) {
+          return window.AnimationSystem.setPlayerAnimation(animationType);
+        } else {
+          console.error("Animation system not properly initialized");
+        }
+      };
+
+      window.setOpponentAnimation = function (animationType) {
+        if (
+          window.AnimationSystem &&
+          window.AnimationSystem.setOpponentAnimation
+        ) {
+          return window.AnimationSystem.setOpponentAnimation(animationType);
+        } else {
+          console.error("Animation system not properly initialized");
+        }
+      };
+    </script>
     <script src="battle-dialogue.js"></script>
-    <script src="fixed_sprite_manager.js"></script> <!-- Fixed sprite manager -->
+    <script src="fixed_sprite_manager.js"></script>
+    <!-- Fixed sprite manager -->
     <script src="sprite-manager.js"></script>
     <script src="overworld.js"></script>
-    <script src="clean_overworld.js"></script> <!-- Updated overworld system with urban assets -->
+    <script src="clean_overworld.js"></script>
+    <!-- Updated overworld system with urban assets -->
     <script src="script.js"></script>
-    
+
     <!-- Emergency Fix -->
     <script src="emergency_controls.js"></script>
   </body>
