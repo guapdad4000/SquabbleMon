@@ -2323,9 +2323,9 @@ function standardizeSpritePath(spritePath) {
   
   // Map keywords in path to known imgur URLs
   if (lowercasePath.includes('fitness') || lowercasePath.includes('gym')) {
-    return 'https://i.imgur.com/YeMI4sr.png'; // Fitness Bro
+    return 'https://i.imgur.com/YeMI4sr.png'; // Correct Fitness Bro URL
   } else if (lowercasePath.includes('rasta') || lowercasePath.includes('plant')) {
-    return 'https://i.imgur.com/dZWWrrs.png'; // Rasta
+    return 'https://i.imgur.com/OH3B6YT.png'; // Updated Rasta Mon URL
   } else if (lowercasePath.includes('tech') || lowercasePath.includes('electric')) {
     return 'https://i.imgur.com/VVa9pm9.png'; // Techy
   } else if (lowercasePath.includes('vibe') || lowercasePath.includes('cool')) {
