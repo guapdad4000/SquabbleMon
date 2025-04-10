@@ -1,39 +1,31 @@
 /**
  * Player Sprite Manager
- * Handles player sprite animations from the main sprite sheet
- * Fixed version that correctly handles the sprite sheet structure
+ * Handles player sprite animations using individual frame images
+ * Updated version that uses separate images instead of a sprite sheet
  */
 
 const PlayerSpriteManager = (function() {
-  // Sprite sheet configuration - use the local sprite sheet from attached assets
-  const SPRITE_SHEET_URL = './attached_assets/main sprite sheet.png';
-  
-  // Total dimensions of the sprite sheet
-  const SPRITE_SHEET_WIDTH = 144;  // 3 columns x 48px width
-  const SPRITE_SHEET_HEIGHT = 168; // 3 rows x 56px height
-  
-  // Simplified sprite configuration with absolute pixel positions
-  // This avoids issues with fractional calculations
+  // Define image URLs for each frame by direction
   const SPRITE_FRAMES = {
     down: [
-      { x: 0, y: 0 },      // Down, first frame (top-left corner)
-      { x: 48, y: 0 },     // Down, second frame
-      { x: 96, y: 0 }      // Down, third frame
-    ],
-    left: [
-      { x: 0, y: 56 },     // Left, first frame
-      { x: 48, y: 56 },    // Left, second frame 
-      { x: 96, y: 56 }     // Left, third frame
-    ],
-    right: [
-      { x: 0, y: 112 },    // Right, first frame
-      { x: 48, y: 112 },   // Right, second frame
-      { x: 96, y: 112 }    // Right, third frame
+      './attached_assets/fwd 1.png',   // Down, first frame
+      './attached_assets/fwd 2.png',   // Down, second frame
+      './attached_assets/fwd 1.png'    // Down, third frame (repeat first for smooth animation)
     ],
     up: [
-      { x: 0, y: 0 },      // Using down frames for up (temporary)
-      { x: 48, y: 0 },     // Using down frames for up (temporary)
-      { x: 96, y: 0 }      // Using down frames for up (temporary)
+      './attached_assets/back 1.png',   // Up, first frame
+      './attached_assets/back 2.png',   // Up, second frame
+      './attached_assets/back 1.png'    // Up, third frame (repeat first for smooth animation)
+    ],
+    left: [
+      './attached_assets/left 1.png',   // Left, first frame
+      './attached_assets/left 2.png',   // Left, second frame
+      './attached_assets/left 1.png'    // Left, third frame (repeat first for smooth animation)
+    ],
+    right: [
+      './attached_assets/right 1.png',  // Right, first frame
+      './attached_assets/right 2.png',  // Right, second frame
+      './attached_assets/right 1.png'   // Right, third frame (repeat first for smooth animation)
     ]
   };
   
@@ -53,8 +45,8 @@ const PlayerSpriteManager = (function() {
   let animationTimer = null;
   let isMoving = false;
   
-  // Check if sprite sheet is loaded
-  let spriteSheetLoaded = false;
+  // Track loaded images
+  let imagesLoaded = {};
   
   /**
    * Initialize the sprite manager
@@ -62,42 +54,34 @@ const PlayerSpriteManager = (function() {
   function init() {
     console.log('[PLAYER SPRITE] Initializing player sprite manager');
     
-    // Preload the sprite sheet
-    const img = new Image();
-    img.onload = function() {
-      console.log('[PLAYER SPRITE] Sprite sheet loaded successfully');
-      spriteSheetLoaded = true;
-    };
-    img.onerror = function() {
-      console.error('[PLAYER SPRITE] Failed to load sprite sheet:', SPRITE_SHEET_URL);
-    };
-    img.src = SPRITE_SHEET_URL;
+    // Preload all frame images
+    for (const direction in SPRITE_FRAMES) {
+      SPRITE_FRAMES[direction].forEach(imgUrl => {
+        const img = new Image();
+        img.onload = function() {
+          console.log(`[PLAYER SPRITE] Image loaded: ${imgUrl}`);
+          imagesLoaded[imgUrl] = true;
+        };
+        img.onerror = function() {
+          console.error(`[PLAYER SPRITE] Failed to load image: ${imgUrl}`);
+        };
+        img.src = imgUrl;
+      });
+    }
   }
   
   /**
    * Get the current sprite frame CSS
    */
   function getCurrentFrameCSS() {
-    if (!spriteSheetLoaded) {
-      // Return a default frame position if sprite sheet isn't loaded yet
-      return {
-        backgroundImage: `url(${SPRITE_SHEET_URL})`,
-        backgroundPosition: '0px 0px',
-        backgroundSize: `${SPRITE_SHEET_WIDTH}px ${SPRITE_SHEET_HEIGHT}px` // Using total sprite sheet dimensions
-      };
-    }
-    
-    // Get the current frame based on direction
-    const frame = SPRITE_FRAMES[currentDirection][currentFrame];
-    
-    // Use absolute pixel positions from our frame data
-    const posX = frame.x;
-    const posY = frame.y;
+    // Get the current frame URL based on direction
+    const frameUrl = SPRITE_FRAMES[currentDirection][currentFrame];
     
     return {
-      backgroundImage: `url(${SPRITE_SHEET_URL})`,
-      backgroundPosition: `-${posX}px -${posY}px`,
-      backgroundSize: `${SPRITE_SHEET_WIDTH}px ${SPRITE_SHEET_HEIGHT}px` // Using total sprite sheet dimensions
+      backgroundImage: `url(${frameUrl})`,
+      backgroundPosition: 'center',
+      backgroundSize: 'contain',
+      backgroundRepeat: 'no-repeat'
     };
   }
   
@@ -157,17 +141,19 @@ const PlayerSpriteManager = (function() {
     element.style.backgroundImage = frameCSS.backgroundImage;
     element.style.backgroundPosition = frameCSS.backgroundPosition;
     element.style.backgroundSize = frameCSS.backgroundSize;
-    element.style.backgroundRepeat = 'no-repeat';
+    element.style.backgroundRepeat = frameCSS.backgroundRepeat;
     
     // Set appropriate element size to fit the sprite
-    element.style.width = '48px';
-    element.style.height = '56px';
+    element.style.width = '64px';
+    element.style.height = '64px';
     
     // Add additional styling for pixel art
     element.style.imageRendering = 'pixelated';
     
     // Set player sprite z-index to be above the map
     element.style.zIndex = '10';
+    
+    console.log(`[PLAYER SPRITE] Applied ${currentDirection} frame ${currentFrame} to element`);
   }
   
   /**
@@ -183,6 +169,20 @@ const PlayerSpriteManager = (function() {
     return false;
   }
   
+  /**
+   * Check if at least one image is loaded for each direction
+   */
+  function isLoaded() {
+    // We only need one image for each direction to be loaded to start
+    for (const direction in SPRITE_FRAMES) {
+      // Check if at least the first frame is loaded
+      if (!imagesLoaded[SPRITE_FRAMES[direction][0]]) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   // Public API
   return {
     init,
@@ -191,7 +191,7 @@ const PlayerSpriteManager = (function() {
     stopAnimation,
     applyToElement,
     updateAnimationFrame,
-    isLoaded: () => spriteSheetLoaded
+    isLoaded
   };
 })();
 
