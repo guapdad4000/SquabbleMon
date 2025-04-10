@@ -166,6 +166,32 @@ body {
   border-radius: 4px; /* Rounded track */
 }
 
+/* Selection Header with Title and Description */
+.selection-header {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.selection-header h2 {
+  color: white;
+  font-size: 24px;
+  margin-bottom: 10px;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+  animation: glow 2s ease-in-out infinite;
+}
+
+.selection-description {
+  color: white;
+  font-size: 16px;
+  margin-bottom: 20px;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
+  animation: textPulse 3s ease-in-out infinite;
+  max-width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .character-card {
   cursor: pointer;
   padding: 8px; /* More padding inside the card */
@@ -217,6 +243,27 @@ body {
   padding: 2px 0;
   color: #222; /* Darker text for better contrast */
   font-weight: bold; /* Make text bolder */
+}
+
+.character-card .character-desc {
+  font-size: 9px;
+  font-weight: normal;
+  color: white;
+  margin-top: 3px;
+  padding: 0 5px;
+  text-align: center;
+  height: 40px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+@keyframes textPulse {
+  0% { opacity: 0.8; text-shadow: 0 0 4px rgba(255, 255, 255, 0.5); }
+  50% { opacity: 1; text-shadow: 0 0 10px rgba(255, 255, 255, 0.9), 0 0 20px rgba(255, 255, 255, 0.5); }
+  100% { opacity: 0.8; text-shadow: 0 0 4px rgba(255, 255, 255, 0.5); }
 }
 #team-preview {
   margin-top: 25px;

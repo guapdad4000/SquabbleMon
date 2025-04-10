@@ -2138,6 +2138,15 @@ function populateCharacterSelection() {
   
   console.log("Filtered player characters:", playerCharacters.length);
   
+  // Add character selection title and description with glow effect
+  const selectionTitle = document.createElement("div");
+  selectionTitle.className = "selection-header";
+  selectionTitle.innerHTML = `
+    <h2>Select Your Squad</h2>
+    <p class="selection-description">Choose three characters to form your team. Each has unique strengths and abilities.</p>
+  `;
+  characterList.appendChild(selectionTitle);
+  
   playerCharacters.forEach(character => {
     console.log(`Processing character: ${character.name}`, character);
     console.log(`Character sprite path: ${character.sprite}`);
@@ -2156,6 +2165,7 @@ function populateCharacterSelection() {
     card.innerHTML = `
       <img src="${spritePath}" alt="${character.name}" onerror="console.error('Failed to load sprite: ${spritePath}')">
       <p>${character.name}</p>
+      <p class="character-desc">${character.description || ''}</p>
     `;
     
     // Add tooltip data
