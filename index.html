@@ -1,153 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Squabble - Hood Fantasy</title>
-    <!-- Styles -->
-    <link rel="stylesheet" href="style.css" />
-    <link rel="stylesheet" href="overworld-styles.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
-      rel="stylesheet"
-    />
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQUABBLE</title>
+  <style>
+    /* Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
     
-    <!-- Fix background issues with inline styles -->
-    <style>
-      #mode-selection-screen {
-        background-color: #000000 !important;
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: center !important;
-        align-items: center !important;
-        min-height: 100vh !important;
-        padding: 20px !important;
-      }
-      
-      .neon-title {
-        color: #ffffff !important;
-        font-size: 48px !important;
-        text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff !important;
-        text-align: center !important;
-        margin-bottom: 10px !important;
-        animation: glow 1.5s ease-in-out infinite alternate !important;
-        text-transform: uppercase !important;
-      }
-      
-      @keyframes glow {
-        from { text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff !important; }
-        to { text-shadow: 0 0 20px #ff00ff, 0 0 30px #ff00ff, 0 0 40px #ff00ff !important; }
-      }
-      
-      .square-mode-button {
-        background-color: #4ecca4 !important;
-        color: #000000 !important;
-        border: none !important;
-        padding: 20px !important;
-        width: 90% !important;
-        max-width: 400px !important;
-        margin: 10px auto !important;
-        display: block !important;
-        text-align: center !important;
-        font-size: 18px !important;
-        font-weight: bold !important;
-        cursor: pointer !important;
-        transition: background-color 0.2s !important;
-      }
-      
-      .square-mode-button:hover {
-        background-color: #6edfb5 !important;
-      }
-      
-      #selection-screen {
-        background-image: url('https://i.imgur.com/ZvMKSyp.jpg') !important;
-        background-size: cover !important;
-        background-position: center !important;
-        background-repeat: no-repeat !important;
-      }
-      
-      #battle-screen {
-        background-image: url('https://i.imgur.com/Rb03YLf.jpg') !important;
-        background-size: cover !important;
-        background-position: center !important;
-        background-repeat: no-repeat !important;
-      }
-      
-      #battle-arena {
-        background-image: url('https://i.imgur.com/nY7oky9.jpg') !important;
-        background-size: cover !important;
-        background-position: center !important;
-        background-repeat: no-repeat !important;
-      }
-    </style>
+    body {
+      font-family: monospace;
+      background-color: #000;
+      color: #fff;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
     
-    <!-- Mode loader for direct URL parameter loading -->
-    <script src="mode_loader.js"></script>
-  </head>
-  <body style="background-color: #000;">
-    <!-- Audio Controls -->
-    <div id="audio-controls">
-      <button id="toggle-music" class="audio-button" title="Toggle Music">
-        <span id="music-icon">🔊</span>
-      </button>
-      <button id="toggle-sound" class="audio-button" title="Toggle Sound Effects">
-        <span id="sound-icon">🔊</span>
-      </button>
-    </div>
+    .container {
+      width: 100%;
+      max-width: 500px;
+      padding: 20px;
+      text-align: center;
+    }
+    
+    h1 {
+      font-size: 48px;
+      color: #fff;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+      animation: glow 1.5s ease-in-out infinite alternate;
+    }
+    
+    @keyframes glow {
+      from { text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff; }
+      to { text-shadow: 0 0 20px #ff00ff, 0 0 30px #ff00ff, 0 0 40px #ff00ff; }
+    }
+    
+    p {
+      margin-bottom: 40px;
+    }
+    
+    .button {
+      display: block;
+      width: 100%;
+      background-color: #4ecca4;
+      color: #000;
+      border: none;
+      padding: 20px;
+      margin-bottom: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    
+    .button:hover {
+      background-color: #6edfb5;
+    }
+    
+    .description {
+      font-size: 14px;
+      margin-top: 5px;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <!-- Mode Selection Screen -->
+  <div class="container" id="mode-selection-screen">
+    <h1>SQUABBLE</h1>
+    <p>Hood Fantasy Battle System</p>
+    
+    <a href="index.html?mode=fade" class="button">
+      Fade Mode 👊
+      <div class="description">Quick battles against opponents</div>
+    </a>
+    
+    <a href="index.html?mode=story" class="button">
+      Story Mode 🗺️
+      <div class="description">Explore the hood, meet characters, build your squad</div>
+    </a>
+  </div>
+  
+  <!-- Character Selection Screen (initially hidden) -->
+  <div id="selection-screen" style="display: none; background-image: url('https://i.imgur.com/ZvMKSyp.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+    <!-- Content will be populated by JS -->
+  </div>
+  
+  <!-- Battle Screen (Initially Hidden) -->
+  <div id="battle-screen" style="display: none; background-image: url('https://i.imgur.com/Rb03YLf.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+    <!-- Content will be populated by JS -->
+  </div>
+  
+  <!-- Overworld Container (initially hidden) -->
+  <div id="overworld-container" style="display: none;">
+    <!-- Content will be populated by JS -->
+  </div>
 
-    <!-- Game Mode Selection Screen -->
-    <div id="mode-selection-screen">
-      <div class="mode-title">
-        <h1 class="neon-title">SQUABBLE</h1>
-        <p class="mode-subtitle">Hood Fantasy Battle System</p>
-      </div>
-      <div class="mode-buttons">
-        <button
-          id="fade-mode-button"
-          class="square-mode-button"
-          onclick="window.selectGameMode('fade');"
-        >
-          Fade Mode <span style="font-size: 1.2em;">👊</span>
-          <div class="mode-description">Quick battles against opponents</div>
-        </button>
-        <button
-          id="story-mode-button"
-          class="square-mode-button"
-          onclick="window.selectGameMode('story');"
-        >
-          Story Mode <span style="font-size: 1.2em;">🗺️</span>
-          <div class="mode-description">Explore the hood, meet characters, build your squad</div>
-        </button>
-      </div>
-    </div>
-    
-    <!-- Character Selection Screen (initially hidden) -->
-    <div id="selection-screen" style="display: none;">
-      <!-- This will be populated by JS -->
-    </div>
-    
-    <!-- Battle Screen (Initially Hidden) -->
-    <div id="battle-screen" style="display: none;">
-      <!-- This will be populated by JS -->
-    </div>
-    
-    <!-- Overworld Container (initially hidden) -->
-    <div id="overworld-container" style="display: none;">
-      <!-- This will be populated by JS -->
-    </div>
-    
-    <!-- Load all scripts -->
-    <script src="level-system.js"></script>
-    <script src="inventory-system.js"></script>
-    <script src="shop-system.js"></script>
-    <script src="animations.js"></script>
-    <script src="battle-dialogue.js"></script>
-    <script src="fixed_sprite_manager.js"></script>
-    <script src="sprite-manager.js"></script>
-    <script src="overworld.js"></script>
-    <script src="clean_overworld.js"></script>
-    <script src="script.js"></script>
-  </body>
+  <!-- Game HUD elements (hidden initially) -->
+  <div id="audio-controls" style="display: none; position: absolute; top: 10px; right: 10px; z-index: 9999;">
+    <button id="toggle-music" style="margin-right: 5px;">🔊</button>
+    <button id="toggle-sound">🔊</button>
+  </div>
+
+  <!-- Main game scripts -->
+  <script src="level-system.js"></script>
+  <script src="inventory-system.js"></script>
+  <script src="shop-system.js"></script>
+  <script src="animations.js"></script>
+  <script src="battle-dialogue.js"></script>
+  <script src="fixed_sprite_manager.js"></script>
+  <script src="sprite-manager.js"></script>
+  <script src="overworld.js"></script>
+  <script src="clean_overworld.js"></script>
+  <script src="script.js"></script>
+  
+  <script>
+    // This function will handle mode selection directly
+    document.addEventListener('DOMContentLoaded', function() {
+      const buttons = document.querySelectorAll('.button');
+      
+      buttons.forEach(button => {
+        button.addEventListener('click', function(e) {
+          e.preventDefault();
+          
+          const href = this.getAttribute('href');
+          const mode = href.split('=')[1];
+          
+          console.log('Selected mode:', mode);
+          
+          // If we have the game's selectGameMode function, use it directly
+          if (typeof window.selectGameMode === 'function') {
+            console.log('Using game\'s selectGameMode function');
+            window.selectGameMode(mode);
+          } else {
+            console.log('Game functions not available');
+            alert('Game mode selection: ' + mode);
+          }
+        });
+      });
+    });
+  </script>
+</body>
 </html>
