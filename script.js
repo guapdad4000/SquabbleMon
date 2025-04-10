@@ -2088,6 +2088,9 @@ function initGame() {
   opponentIndex = 0;
   updateFadeDisplay();
   
+  // Initialize or reset defeated NPCs list
+  window.defeatedNPCs = [];
+  
   // Initialize player inventory
   playerInventory = window.InventorySystem.createPlayerInventory();
   
