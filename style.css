@@ -472,7 +472,7 @@ body {
   background-position: center bottom;
   border: none;
   box-shadow: none;
-  z-index: 2; /* Below characters but above background */
+  z-index: 10; /* Ensure platforms appear below characters but above background */
   image-rendering: pixelated;
 }
 
@@ -2330,20 +2330,20 @@ body {
   max-height: 140px !important;
 }
 
-/* Platform styling - more subtle and modern pixel look */
+/* Unified platform styling that works for both direct and overworld-triggered battles */
+/* This style is intentionally commented out to prevent conflicts with the main platform styling above
 #player-platform, #opponent-platform {
-  width: 100% !important;
-  height: 10px !important;
-  background-color: rgba(60, 60, 60, 0.7) !important;
-  border-top: 2px solid #666 !important;
-  border-radius: 2px !important;
-  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.2) !important;
-  margin-top: 10px !important;
-  position: absolute !important;
-  bottom: 10px !important;
-  left: 0 !important;
-  z-index: 90 !important; /* Below sprite but above background */
+  position: absolute;
+  background-image: url("https://i.imgur.com/fEPAiIJ.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  border: none;
+  box-shadow: none;
+  z-index: 20;
+  image-rendering: pixelated;
 }
+*/
 
 /* Remove any area decorations that might cause the floating box */
 #player-area, #opponent-area {

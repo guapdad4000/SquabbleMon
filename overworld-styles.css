@@ -2,6 +2,8 @@
 #overworld-container {
   position: relative;
   width: 100%;
+  max-width: 1200px; /* Added max-width to constrain the map */
+  margin: 0 auto; /* Center the container */
   height: calc(100vh - 160px); /* Reduced height to leave room for mobile controls */
   display: flex;
   flex-direction: column;
@@ -48,7 +50,8 @@
   box-shadow: 0 0 30px rgba(0,0,0,0.5);
   border-radius: 4px;
   margin: 20px auto;
-  transform: scale(0.9); /* Scale down slightly to fit better on smaller screens */
+  transform: scale(0.95); /* Slightly larger to fit better inside the constrained container */
+  max-width: 100%; /* Make sure map respects parent container width */
 }
 
 .map-tile {
