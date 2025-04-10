@@ -38,7 +38,7 @@ if (typeof window.NPC_SPRITES === 'undefined') {
   };
 }
 // Use the global NPC_SPRITES for consistency
-const NPC_SPRITES = window.NPC_SPRITES;
+// Do not redeclare NPC_SPRITES as a constant - just reference the global one where needed
 
 // Animation timers for each character
 const animationTimers = new Map();
@@ -59,7 +59,7 @@ function preloadSprites() {
   });
   
   // Preload NPC sprites
-  Object.values(NPC_SPRITES).forEach(src => {
+  Object.values(window.NPC_SPRITES || {}).forEach(src => {
     const img = new Image();
     img.src = src;
   });

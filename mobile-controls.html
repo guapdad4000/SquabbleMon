@@ -184,7 +184,8 @@
   </div>
   
   <div class="mobile-instructions">
-    D-pad: Navigate menus | A: Select | B: Back
+    <div style="margin-bottom: 4px;">Battle Mode: D-pad - Navigate menus | A - Select move | B - Back</div>
+    <div>Explore Mode: D-pad - Move character | A - Interact/Talk | B - Cancel</div>
   </div>
 
   <script>
@@ -209,25 +210,60 @@
       }
     }
 
-    // D-pad buttons
-    document.getElementById('dpad-up').addEventListener('mousedown', () => sendKeyPress('ArrowUp'));
-    document.getElementById('dpad-up').addEventListener('touchstart', () => sendKeyPress('ArrowUp'));
+    // D-pad buttons with both arrow keys and WASD mapping
+    // Up
+    document.getElementById('dpad-up').addEventListener('mousedown', () => {
+      sendKeyPress('ArrowUp');
+      // Also send W key for overworld movement
+      setTimeout(() => sendKeyPress('w'), 10);
+    });
+    document.getElementById('dpad-up').addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      sendKeyPress('ArrowUp');
+      setTimeout(() => sendKeyPress('w'), 10);
+    });
 
-    document.getElementById('dpad-down').addEventListener('mousedown', () => sendKeyPress('ArrowDown'));
-    document.getElementById('dpad-down').addEventListener('touchstart', () => sendKeyPress('ArrowDown'));
+    // Down
+    document.getElementById('dpad-down').addEventListener('mousedown', () => {
+      sendKeyPress('ArrowDown');
+      setTimeout(() => sendKeyPress('s'), 10);
+    });
+    document.getElementById('dpad-down').addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      sendKeyPress('ArrowDown');
+      setTimeout(() => sendKeyPress('s'), 10);
+    });
 
-    document.getElementById('dpad-left').addEventListener('mousedown', () => sendKeyPress('ArrowLeft'));
-    document.getElementById('dpad-left').addEventListener('touchstart', () => sendKeyPress('ArrowLeft'));
+    // Left
+    document.getElementById('dpad-left').addEventListener('mousedown', () => {
+      sendKeyPress('ArrowLeft');
+      setTimeout(() => sendKeyPress('a'), 10);
+    });
+    document.getElementById('dpad-left').addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      sendKeyPress('ArrowLeft');
+      setTimeout(() => sendKeyPress('a'), 10);
+    });
 
-    document.getElementById('dpad-right').addEventListener('mousedown', () => sendKeyPress('ArrowRight'));
-    document.getElementById('dpad-right').addEventListener('touchstart', () => sendKeyPress('ArrowRight'));
+    // Right
+    document.getElementById('dpad-right').addEventListener('mousedown', () => {
+      sendKeyPress('ArrowRight');
+      setTimeout(() => sendKeyPress('d'), 10);
+    });
+    document.getElementById('dpad-right').addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      sendKeyPress('ArrowRight');
+      setTimeout(() => sendKeyPress('d'), 10);
+    });
 
-    // Action buttons - Make sure buttons are consistent with both script.js and overworld.js expectations
+    // Action buttons - Make sure buttons are consistent with all game modes
     document.getElementById('a-button').addEventListener('mousedown', () => {
       console.log("A button pressed");
       sendKeyPress('A'); // Send A for game menu navigation 
       // Also send Enter as a backup for systems expecting Enter key
       setTimeout(() => sendKeyPress('Enter'), 10);
+      // Send 'e' key for overworld interaction
+      setTimeout(() => sendKeyPress('e'), 20);
     });
     document.getElementById('a-button').addEventListener('touchstart', (e) => {
       e.preventDefault();
@@ -235,6 +271,8 @@
       sendKeyPress('A');
       // Also send Enter as a backup for systems expecting Enter key
       setTimeout(() => sendKeyPress('Enter'), 10);
+      // Send 'e' key for overworld interaction
+      setTimeout(() => sendKeyPress('e'), 20);
     });
 
     document.getElementById('b-button').addEventListener('mousedown', () => {
