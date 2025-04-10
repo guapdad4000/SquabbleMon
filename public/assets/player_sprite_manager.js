@@ -5,9 +5,9 @@
  */
 
 const PlayerSpriteManager = (function() {
-  // Define image URLs for each frame by direction - using a known working sprite
-  // We'll use the same sprite for all directions with a default character
-  const DEFAULT_CHARACTER_SPRITE = 'https://i.imgur.com/dZWWrrs.png'; // Rasta character as player
+  // Define image URLs for each frame by direction - using NPCs from our sprite sheet
+  // We'll use the beat_boxer character since it matches the hood kid style
+  const DEFAULT_CHARACTER_SPRITE = 'https://i.imgur.com/2n71aSJ.png'; // Beat boxer character as player
   
   const SPRITE_FRAMES = {
     down: [
