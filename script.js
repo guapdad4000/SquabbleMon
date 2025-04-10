@@ -4231,7 +4231,19 @@ function useMove(move) {
   
   // Apply damage
   setTimeout(() => {
-    activeOpponent.hp = Math.max(0, activeOpponent.hp - damage);
+    // Prevent HP from erroneously going below 0 with integer math
+    const currentHP = activeOpponent.hp;
+    const newHP = Math.max(0, currentHP - damage);
+    
+    // Ensure the HP update is always visible in the UI
+    // by enforcing a minimum decrease of 1 point if there's any damage
+    if (damage > 0 && currentHP > 0 && newHP === currentHP) {
+      activeOpponent.hp = Math.max(0, currentHP - 1);
+    } else {
+      activeOpponent.hp = newHP;
+    }
+    
+    console.log(`Opponent HP: ${currentHP} → ${activeOpponent.hp} (Damage: ${damage})`);
     updateBattleUI();
     
     // Show damage in battle log with reaction
@@ -4484,6 +4496,8 @@ function executeOpponentMove(move) {
   
   // Apply damage
   setTimeout(() => {
+    // HP reduction is now handled below in the cases
+    
     // Check if player has an imposter (Crash Dummy) effect active
     const hasImposterEffect = playerActiveItemEffects.some(effect => effect.effect === "imposter");
     
