@@ -283,6 +283,25 @@
     <script src="inventory-system.js"></script>
     <script src="shop-system.js"></script>
     <script src="animations.js"></script>
+<!-- Ensure animation functions are globally accessible -->
+<script>
+  // Make sure animation functions are accessible
+  window.setPlayerAnimation = function(animationType) {
+    if (window.AnimationSystem && window.AnimationSystem.setPlayerAnimation) {
+      return window.AnimationSystem.setPlayerAnimation(animationType);
+    } else {
+      console.error("Animation system not properly initialized");
+    }
+  }
+  
+  window.setOpponentAnimation = function(animationType) {
+    if (window.AnimationSystem && window.AnimationSystem.setOpponentAnimation) {
+      return window.AnimationSystem.setOpponentAnimation(animationType);
+    } else {
+      console.error("Animation system not properly initialized");
+    }
+  }
+</script>
     <script src="battle-dialogue.js"></script>
     <script src="fixed_sprite_manager.js"></script> <!-- Fixed sprite manager -->
     <script src="sprite-manager.js"></script>

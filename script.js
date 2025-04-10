@@ -2464,6 +2464,14 @@ function updateTeamSlots() {
   // Clear all slots
   slots.forEach(slot => {
     slot.innerHTML = "";
+    // Make sure slots are visible for debugging
+    slot.style.border = "2px solid #444";
+    slot.style.width = "100px";
+    slot.style.height = "100px";
+    slot.style.display = "flex";
+    slot.style.justifyContent = "center";
+    slot.style.alignItems = "center";
+    slot.style.backgroundColor = "rgba(0, 0, 0, 0.3)";
   });
   
   // Fill slots with selected characters
@@ -2475,13 +2483,29 @@ function updateTeamSlots() {
       const spritePath = standardizeSpritePath(character.sprite);
       console.log(`Using sprite path for team slot ${index}: ${spritePath}`);
       
-      slots[index].innerHTML = `
-        <img 
-          src="${spritePath}" 
-          alt="${character.name}" 
-          onerror="console.error('Failed to load team sprite: ${spritePath}')"
-          onload="console.log('Team slot ${index} sprite loaded successfully: ${spritePath}')"
-        >`;
+      // Create the image element directly instead of using innerHTML
+      const img = document.createElement('img');
+      img.src = spritePath;
+      img.alt = character.name;
+      img.style.maxWidth = "90px";
+      img.style.maxHeight = "90px";
+      img.style.objectFit = "contain";
+      img.style.display = "block";
+      
+      // Add error and load handlers
+      img.onerror = function() {
+        console.error(`Failed to load team sprite: ${spritePath}`);
+        // Fall back to a default sprite or text when image fails to load
+        slots[index].textContent = character.name.substring(0, 3);
+      };
+      
+      img.onload = function() {
+        console.log(`Team slot ${index} sprite loaded successfully: ${spritePath}`);
+      };
+      
+      // Clear and append
+      slots[index].innerHTML = "";
+      slots[index].appendChild(img);
     }
   });
 }
