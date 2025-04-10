@@ -560,6 +560,7 @@ body {
   max-width: 700px; /* Slightly smaller to match selection screen */
   height: 700px; /* Increased height to accommodate larger player sprite */
   max-height: 90vh; /* Increased max height */
+  background: url('https://i.imgur.com/Rb03YLf.jpg');
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
@@ -575,7 +576,7 @@ body {
 #battle-arena {
   flex-grow: 1;
   position: relative;
-  background: transparent;
+  background: url('https://i.imgur.com/nY7oky9.jpg') no-repeat center center;
   overflow: hidden;
   min-height: 320px;
   background-repeat: no-repeat;
