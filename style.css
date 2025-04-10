@@ -478,28 +478,22 @@ body {
   background-color: transparent !important;
 }
 
-/* Player platform correctly positioned */
+/* Player platform - positioned exactly as shown in screenshot */
 #player-platform {
-  position: absolute;
-  width: 130px;
-  height: 30px; 
-  bottom: 145px; /* Fixed position */
-  left: 50px;
+  width: 300px;
+  height: 50px; 
+  bottom: 15%; /* Position above the menu */
+  left: 3%;
   z-index: 5;
-  background-image: url('https://i.imgur.com/AJFTQO7.png');
-  background-size: cover;
 }
 
-/* Opponent platform correctly positioned */
+/* Opponent platform - positioned exactly as shown in screenshot */
 #opponent-platform {
-  position: absolute;
-  width: 130px;
-  height: 30px;
-  top: 100px;
-  right: 60px;
+  width: 250px;
+  height: 40px;
+  top: 33%;
+  right: 1%;
   z-index: 5;
-  background-image: url('https://i.imgur.com/AJFTQO7.png');
-  background-size: cover;
 }
 
 /* Positioning Areas */
@@ -513,28 +507,28 @@ body {
 }
 
 #player-area {
-  width: 160px; /* Width of player area */
-  min-height: 200px; /* Height of player area */
-  bottom: 145px; /* Match platform position */
-  left: 35px; /* Align with platform */
+  width: 320px; /* Wider for player area to match larger sprite */
+  min-height: 350px; /* Taller for player area */
+  bottom: calc(2% + 20px); /* Move player area down slightly */
+  left: 5%; /* Move player area left for more space */
   justify-content: flex-end; /* Align content to bottom */
 }
 
 #opponent-area {
-  width: 120px; /* Width of opponent area */
-  min-height: 150px; /* Height of opponent area */
-  top: 70px; /* Match platform position */
-  right: 65px; /* Align with platform */
+  width: 180px; /* Standard width for opponent */
+  min-height: 250px; /* Standard height for opponent */
+  top: 7%; /* Adjusted top further up */
+  right: 9%;
   justify-content: flex-start; /* Align content to top */
 }
 
 /* Sprites */
 #player-sprite,
 #opponent-sprite {
-  max-width: 100px; /* Smaller standard size */
-  max-height: 100px; /* Smaller standard size */
-  width: 80px; /* Smaller size */
-  height: 80px; /* Smaller size */
+  max-width: 160px; /* Standard size for opponent */
+  max-height: 160px; /* Standard size for opponent */
+  width: 140px; /* Opponent sprite size */
+  height: 140px; /* Opponent sprite size */
   object-fit: contain;
   z-index: 10;
   position: relative;
@@ -551,18 +545,16 @@ body {
   visibility: visible !important; /* Force visibility */
 }
 
-/* Make player sprites properly sized to match platforms */
+/* Make player sprites larger (200% of opponent) */
 #player-sprite {
-  max-width: 120px !important;
-  max-height: 120px !important;
-  width: 100px !important;
-  height: 100px !important;
+  max-width: 240px !important; /* Larger but not too large (200%) */
+  max-height: 240px !important;
+  width: 220px !important; /* Larger but not too large (about 160% of opponent) */
+  height: 220px !important;
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
   z-index: 100 !important;
-  position: relative;
-  bottom: -10px; /* Adjust to align with platform */
 }
 
 /* Special handling for local file sprites */
@@ -688,7 +680,7 @@ body {
   order: 4;
   margin-top: 5px;
   width: 100%;
-  height: 120px; /* Reduced to match the smaller sprite */
+  height: 220px; /* Match the player sprite height */
   text-align: center;
   display: flex !important;
   justify-content: center;
@@ -702,7 +694,7 @@ body {
   order: 1;
   margin-bottom: 5px;
   width: 100%;
-  height: 80px; /* Reduced to match the smaller sprite */
+  height: 140px; /* Match the opponent sprite height */
   text-align: center;
   display: flex !important;
   justify-content: center;
