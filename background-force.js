@@ -14,8 +14,27 @@
     // Mode selection screen
     const modeScreen = document.getElementById('mode-selection-screen');
     if (modeScreen) {
-      modeScreen.style.background = "url('https://i.imgur.com/GdNpKUK.jpg') no-repeat center center";
-      modeScreen.style.backgroundSize = "cover";
+      modeScreen.style.backgroundColor = "#000000";
+      
+      // Make sure the green buttons are properly styled
+      const modeButtons = document.querySelectorAll('.square-mode-button');
+      modeButtons.forEach(button => {
+        button.style.backgroundColor = "#4ecca4";
+        button.style.color = "#000000";
+        button.style.width = "90%";
+        button.style.maxWidth = "400px";
+        button.style.padding = "20px";
+        button.style.margin = "10px auto";
+        button.style.display = "block";
+        button.style.textAlign = "center";
+      });
+      
+      // Style the neon title
+      const neonTitle = document.querySelector('.neon-title');
+      if (neonTitle) {
+        neonTitle.style.color = "#ffffff";
+        neonTitle.style.textShadow = "0 0 10px #ff00ff, 0 0 20px #ff00ff";
+      }
     }
     
     // Selection screen
@@ -51,8 +70,27 @@
           
           // Re-apply background if display is changed
           if (element.id === 'mode-selection-screen' && element.style.display !== 'none') {
-            element.style.background = "url('https://i.imgur.com/GdNpKUK.jpg') no-repeat center center";
-            element.style.backgroundSize = "cover";
+            element.style.backgroundColor = "#000000";
+            
+            // Make sure the green buttons are properly styled
+            const modeButtons = document.querySelectorAll('.square-mode-button');
+            modeButtons.forEach(button => {
+              button.style.backgroundColor = "#4ecca4";
+              button.style.color = "#000000";
+              button.style.width = "90%";
+              button.style.maxWidth = "400px";
+              button.style.padding = "20px";
+              button.style.margin = "10px auto";
+              button.style.display = "block";
+              button.style.textAlign = "center";
+            });
+            
+            // Style the neon title
+            const neonTitle = document.querySelector('.neon-title');
+            if (neonTitle) {
+              neonTitle.style.color = "#ffffff";
+              neonTitle.style.textShadow = "0 0 10px #ff00ff, 0 0 20px #ff00ff";
+            }
           }
           else if (element.id === 'selection-screen' && element.style.display !== 'none') {
             element.style.background = "url('https://i.imgur.com/ZvMKSyp.jpg') no-repeat center center";

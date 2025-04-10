@@ -7,10 +7,80 @@ body, html {
 }
 
 #mode-selection-screen {
-  background-image: url('https://i.imgur.com/GdNpKUK.jpg') !important;
-  background-size: cover !important;
-  background-position: center !important;
-  background-repeat: no-repeat !important;
+  background-color: #000000 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  min-height: 100vh !important;
+  padding: 20px !important;
+}
+
+/* Mode screen title styling */
+.neon-title {
+  color: #ffffff !important;
+  font-size: 48px !important;
+  text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff !important;
+  text-align: center !important;
+  margin-bottom: 10px !important;
+  animation: glow 1.5s ease-in-out infinite alternate !important;
+  text-transform: uppercase !important;
+}
+
+@keyframes glow {
+  from {
+    text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff !important;
+  }
+  to {
+    text-shadow: 0 0 20px #ff00ff, 0 0 30px #ff00ff, 0 0 40px #ff00ff !important;
+  }
+}
+
+.mode-subtitle {
+  color: #ffffff !important;
+  font-size: 16px !important;
+  text-align: center !important;
+  margin-bottom: 30px !important;
+}
+
+.mode-title {
+  margin-bottom: 40px !important;
+}
+
+/* Square mode buttons styled like in the screenshot */
+.square-mode-button {
+  background-color: #4ecca4 !important; /* Mint green color */
+  color: #000000 !important;
+  border: none !important;
+  padding: 20px !important;
+  width: 90% !important;
+  max-width: 400px !important;
+  margin: 10px auto !important;
+  display: block !important;
+  text-align: center !important;
+  font-size: 18px !important;
+  font-weight: bold !important;
+  cursor: pointer !important;
+  transition: background-color 0.2s, transform 0.2s !important;
+}
+
+.square-mode-button:hover {
+  background-color: #6edfb5 !important; /* Lighter green on hover */
+  transform: scale(1.02) !important;
+}
+
+.mode-buttons {
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+}
+
+.mode-description {
+  font-size: 14px !important;
+  margin-top: 8px !important;
+  font-weight: normal !important;
+  opacity: 0.9 !important;
 }
 
 #selection-screen {

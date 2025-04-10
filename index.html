@@ -27,13 +27,15 @@
     </div>
 
     <!-- Game Mode Selection Screen -->
-    <div id="mode-selection-screen" style="background: url('https://i.imgur.com/GdNpKUK.jpg') no-repeat center center; background-size: cover;">
-      <h1>SQUABBLE</h1>
-      <p class="mode-subtitle">Hood Fantasy Battle System</p>
+    <div id="mode-selection-screen" style="background-color: #000000;">
+      <div class="mode-title">
+        <h1 class="neon-title">SQUABBLE</h1>
+        <p class="mode-subtitle">Hood Fantasy Battle System</p>
+      </div>
       <div class="mode-buttons">
         <button
           id="fade-mode-button"
-          class="pixel-button mode-button"
+          class="square-mode-button"
           onclick="window.selectGameMode('fade');"
         >
           Fade Mode <span style="font-size: 1.2em;">👊</span>
@@ -41,7 +43,7 @@
         </button>
         <button
           id="story-mode-button"
-          class="pixel-button mode-button"
+          class="square-mode-button"
           onclick="window.selectGameMode('story');"
         >
           Story Mode <span style="font-size: 1.2em;">🗺️</span>
