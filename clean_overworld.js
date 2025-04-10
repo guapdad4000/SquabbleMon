@@ -1635,11 +1635,33 @@ const NewOverworldSystem = (function () {
       console.log("Facing position out of bounds:", facingX, facingY);
       return;
     }
+    
+    // Check the tile type at the facing position
+    const facingTileType = map[facingY][facingX];
+    console.log("Facing tile type:", facingTileType, "at position", facingX, facingY);
 
-    // Check for doors
+    // Special case handling for building doors in the map (BUILDING_DOOR)
+    if (facingTileType === TILE_TYPES.BUILDING_DOOR) {
+      console.log("Found a building door! Checking door registry for details...");
+    }
+    
+    // Check for special locations in the map that should trigger zone changes
+    if (facingTileType === TILE_TYPES.TRAP_HOUSE_EXTERIOR || 
+        facingTileType === TILE_TYPES.MOMMAS_KITCHEN_EXTERIOR || 
+        facingTileType === TILE_TYPES.CORNER_STORE_EXTERIOR || 
+        facingTileType === TILE_TYPES.FADE_PARK_ENTRANCE) {
+      console.log("Found a special location tile - checking door registry");
+    }
+
+    // Check for doors in the door registry
     const doors = ZONE_DATA[currentZone].doors || [];
+    
+    // Look for matching door in both x,y position OR by tile type at that position
     const facingDoor = doors.find(
-      (door) => door.x === facingX && door.y === facingY,
+      (door) => (door.x === facingX && door.y === facingY) || 
+                (map[door.y] && map[door.y][door.x] === map[facingY][facingX] && 
+                // Check if player is adjacent to the door 
+                (Math.abs(door.x - facingX) <= 1 && Math.abs(door.y - facingY) <= 1))
     );
 
     if (facingDoor) {
@@ -1677,6 +1699,50 @@ const NewOverworldSystem = (function () {
       }, 800);
       
       return;
+    }
+    
+    // Special case: check if the player is near any of the special locations by proximity
+    // This is a fallback mechanism to make doors easier to interact with
+    for (const door of doors) {
+      // Check if player is very close to the door (within 2 tiles)
+      if (Math.abs(door.x - player.x) <= 2 && Math.abs(door.y - player.y) <= 2) {
+        console.log("Player is near a door to", door.targetZone);
+        
+        // Check if player is also facing in the general direction of the door
+        let isDirectionCorrect = false;
+        
+        if (player.direction === "up" && door.y < player.y) isDirectionCorrect = true;
+        if (player.direction === "down" && door.y > player.y) isDirectionCorrect = true;
+        if (player.direction === "left" && door.x < player.x) isDirectionCorrect = true;
+        if (player.direction === "right" && door.x > player.x) isDirectionCorrect = true;
+        
+        if (isDirectionCorrect) {
+          console.log("Player is facing toward the door - activating door transition");
+          const message = `Entering ${ZONE_DATA[door.targetZone].name}...`;
+          console.log(message);
+          
+          const transitionMessage = document.createElement('div');
+          transitionMessage.className = 'zone-transition-message';
+          transitionMessage.textContent = message;
+          transitionMessage.style.position = 'absolute';
+          transitionMessage.style.top = '50%';
+          transitionMessage.style.left = '50%';
+          transitionMessage.style.transform = 'translate(-50%, -50%)';
+          transitionMessage.style.background = 'rgba(0, 0, 0, 0.7)';
+          transitionMessage.style.color = 'white';
+          transitionMessage.style.padding = '20px';
+          transitionMessage.style.borderRadius = '5px';
+          transitionMessage.style.zIndex = '1000';
+          document.body.appendChild(transitionMessage);
+          
+          setTimeout(() => {
+            document.body.removeChild(transitionMessage);
+            changeZone(door.targetZone, door.targetX, door.targetY);
+          }, 800);
+          
+          return;
+        }
+      }
     }
 
     // Check for NPCs at the facing position
@@ -2126,6 +2192,64 @@ const NewOverworldSystem = (function () {
    */
   function forceInteract() {
     console.log("Force interaction triggered");
+    
+    // Look for any nearby doors first as a fallback for mobile users
+    // This makes door interactions more forgiving
+    const doors = ZONE_DATA[currentZone].doors || [];
+    let nearestDoor = null;
+    let shortestDistance = Infinity;
+    
+    for (const door of doors) {
+      const distance = Math.sqrt(
+        Math.pow(door.x - player.x, 2) + Math.pow(door.y - player.y, 2)
+      );
+      
+      // If we're close to a door (within 3 tiles)
+      if (distance < 3 && distance < shortestDistance) {
+        nearestDoor = door;
+        shortestDistance = distance;
+      }
+    }
+    
+    // If we found a nearby door, prioritize it
+    if (nearestDoor) {
+      console.log(`Found a door to ${nearestDoor.targetZone} nearby! Activating...`);
+      // Make sure the target zone exists
+      if (!ZONE_DATA[nearestDoor.targetZone]) {
+        console.error(`Target zone ${nearestDoor.targetZone} does not exist!`);
+        interact(); // Fall back to normal interaction
+        return;
+      }
+      
+      // Add a small delay to show the transition
+      const message = `Entering ${ZONE_DATA[nearestDoor.targetZone].name}...`;
+      console.log(message);
+      
+      // Show a transition message if UI exists
+      const transitionMessage = document.createElement('div');
+      transitionMessage.className = 'zone-transition-message';
+      transitionMessage.textContent = message;
+      transitionMessage.style.position = 'absolute';
+      transitionMessage.style.top = '50%';
+      transitionMessage.style.left = '50%';
+      transitionMessage.style.transform = 'translate(-50%, -50%)';
+      transitionMessage.style.background = 'rgba(0, 0, 0, 0.7)';
+      transitionMessage.style.color = 'white';
+      transitionMessage.style.padding = '20px';
+      transitionMessage.style.borderRadius = '5px';
+      transitionMessage.style.zIndex = '1000';
+      document.body.appendChild(transitionMessage);
+      
+      // Process the zone change with a slight delay for visual feedback
+      setTimeout(() => {
+        document.body.removeChild(transitionMessage);
+        changeZone(nearestDoor.targetZone, nearestDoor.targetX, nearestDoor.targetY);
+      }, 800);
+      
+      return;
+    }
+    
+    // Fall back to standard interaction if no nearby door was found
     interact();
   }
   
