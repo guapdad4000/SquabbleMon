@@ -950,12 +950,12 @@ const items = {
 
 // Background images for battle scenes
 const battleBackgrounds = [
-  "./public/backgrounds/bg3.png", // Urban city background
-  "./public/backgrounds/bg4.png", // Alleyway background
-  "./public/backgrounds/bg5.png", // Street scene background
-  "./public/backgrounds/bg6.png", // Urban night background
-  "./public/backgrounds/bg3.png", // Urban city background (duplicate)
-  "./public/backgrounds/bg4.png"  // Alleyway background (duplicate)
+  "https://i.imgur.com/ZvMKSyp.jpg", // Urban city background
+  "https://i.imgur.com/QNsJH3D.jpg", // Alleyway background
+  "https://i.imgur.com/GdNpKUK.jpg", // Street scene background
+  "https://i.imgur.com/nY7oky9.jpg", // Urban night background
+  "https://i.imgur.com/Zg7XCl1.jpg", // Additional city background
+  "https://i.imgur.com/XO2cC9N.jpg"  // Additional urban background
 ];
 
 // Type images from provided URLs
