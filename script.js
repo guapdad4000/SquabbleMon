@@ -2927,27 +2927,29 @@ function updateBattleUI() {
     newBattleArena.id = "battle-arena";
     battleScreen.appendChild(newBattleArena);
     
-    // Create platforms
+    // Create platforms that blend with the background better
     const playerPlatform = document.createElement("div");
     playerPlatform.id = "player-platform";
     playerPlatform.style.position = "absolute";
     playerPlatform.style.bottom = "15%";
     playerPlatform.style.left = "10%";
-    playerPlatform.style.width = "200px";
-    playerPlatform.style.height = "10px";
-    playerPlatform.style.backgroundColor = "#555";
-    playerPlatform.style.zIndex = "10";
+    playerPlatform.style.width = "60px";
+    playerPlatform.style.height = "6px";
+    playerPlatform.style.backgroundColor = "rgba(100, 100, 100, 0.5)";
+    playerPlatform.style.borderRadius = "3px";
+    playerPlatform.style.zIndex = "5"; // Lower z-index so it stays behind sprites
     newBattleArena.appendChild(playerPlatform);
     
     const opponentPlatform = document.createElement("div");
     opponentPlatform.id = "opponent-platform";
     opponentPlatform.style.position = "absolute";
-    opponentPlatform.style.top = "30%";
-    opponentPlatform.style.right = "10%";
-    opponentPlatform.style.width = "200px";
-    opponentPlatform.style.height = "10px";
-    opponentPlatform.style.backgroundColor = "#555";
-    opponentPlatform.style.zIndex = "10";
+    opponentPlatform.style.top = "35%";
+    opponentPlatform.style.right = "15%";
+    opponentPlatform.style.width = "60px";
+    opponentPlatform.style.height = "6px";
+    opponentPlatform.style.backgroundColor = "rgba(100, 100, 100, 0.5)";
+    opponentPlatform.style.borderRadius = "3px";
+    opponentPlatform.style.zIndex = "5"; // Lower z-index so it stays behind sprites
     newBattleArena.appendChild(opponentPlatform);
     
     // Create player area with all necessary elements
