@@ -461,9 +461,19 @@ const NewOverworldSystem = (function() {
    * Render the map based on current zone
    */
   function renderMap() {
-    // Clear existing map
-    const existingTiles = mapContainer.querySelectorAll('.tile, .npc-sprite');
-    existingTiles.forEach(tile => tile.remove());
+    // Check for map wrapper
+    let mapWrapper = document.querySelector('.map-wrapper');
+    if (!mapWrapper) {
+      console.log("Creating map wrapper for the first time");
+      mapWrapper = document.createElement('div');
+      mapWrapper.className = 'map-wrapper';
+      mapContainer.appendChild(mapWrapper);
+    } else {
+      // Clear existing map content in the wrapper
+      while (mapWrapper.firstChild) {
+        mapWrapper.removeChild(mapWrapper.firstChild);
+      }
+    }
     
     const zoneMap = ZONE_DATA[currentZone].map;
     
@@ -715,7 +725,7 @@ const NewOverworldSystem = (function() {
         // Position the tile
         tile.style.left = `${x * 64}px`;
         tile.style.top = `${y * 64}px`;
-        mapContainer.appendChild(tile);
+        mapWrapper.appendChild(tile);
       }
     }
     
@@ -757,8 +767,19 @@ const NewOverworldSystem = (function() {
         npcElement.dataset.shopType = npc.shopType;
       }
       
-      mapContainer.appendChild(npcElement);
+      mapWrapper.appendChild(npcElement);
     });
+    
+    // Create player sprite within the wrapper
+    playerSprite = document.createElement('div');
+    playerSprite.id = 'player-sprite';
+    mapWrapper.appendChild(playerSprite);
+    
+    // Update player position with the new player sprite
+    updatePlayerVisual();
+    
+    // Update camera to center on player
+    updateCameraPosition();
   }
 
   /**
@@ -863,6 +884,7 @@ const NewOverworldSystem = (function() {
       }
     }
     
+    // Set player sprite position
     playerSprite.style.left = `${player.x * 64}px`;
     playerSprite.style.top = `${player.y * 64}px`;
     
@@ -879,6 +901,50 @@ const NewOverworldSystem = (function() {
     // Log current position and tile type
     const tileType = ZONE_DATA[currentZone].map[player.y]?.[player.x] || 0;
     console.log(`Player at position (${player.x},${player.y}) on tile type: ${tileType}`);
+    
+    // Camera follow system
+    updateCameraPosition();
+  }
+  
+  /**
+   * Update camera position to follow the player
+   */
+  function updateCameraPosition() {
+    // Find or create the map wrapper
+    let mapWrapper = document.querySelector('.map-wrapper');
+    
+    if (!mapWrapper) {
+      console.log("Creating map wrapper for camera system");
+      // Create a wrapper around all map contents
+      mapWrapper = document.createElement('div');
+      mapWrapper.className = 'map-wrapper';
+      
+      // Move all existing children of map container to the wrapper
+      const mapChildren = Array.from(mapContainer.children);
+      mapChildren.forEach(child => mapWrapper.appendChild(child));
+      
+      // Add the wrapper to the map container
+      mapContainer.appendChild(mapWrapper);
+    }
+    
+    // Get map container dimensions
+    const mapContainerWidth = mapContainer.offsetWidth;
+    const mapContainerHeight = mapContainer.offsetHeight;
+    
+    // Calculate the pixel position of the player
+    const playerPixelX = player.x * 64 + 32; // Center of player sprite
+    const playerPixelY = player.y * 64 + 32; // Center of player sprite
+    
+    // Calculate the desired position of the map wrapper
+    // We want the player to be centered in the viewport
+    const offsetX = mapContainerWidth / 2 - playerPixelX;
+    const offsetY = mapContainerHeight / 2 - playerPixelY;
+    
+    // Apply transformation to the map wrapper
+    mapWrapper.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+    
+    // Log camera position
+    console.log(`Camera position updated: offsetX=${offsetX}, offsetY=${offsetY}`);
   }
 
   /**
