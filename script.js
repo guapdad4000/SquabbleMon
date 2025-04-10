@@ -4183,7 +4183,11 @@ function useMove(move) {
   
   // Handle status moves differently
   if (move.type === "status") {
+    // Immediately apply status effects
     handleStatusMove(move, "player");
+    
+    // Update the UI to show any stat changes
+    updateBattleUI();
     
     // Keep battle UI as-is - don't hide moves or items
     
@@ -4411,7 +4415,12 @@ function executeOpponentMove(move) {
   
   // Check if this is a healing move
   if (isHealingMove) {
+    // Immediately apply healing with no delay
     handleStatusMove(move, "opponent");
+    
+    // Update the UI to show the healed HP
+    updateBattleUI();
+    
     setTimeout(() => endOpponentTurn(), 600);
     
     // Remove animation
@@ -4427,7 +4436,12 @@ function executeOpponentMove(move) {
   
   // Handle status moves differently
   if (move.type === "status") {
+    // Immediately apply status effects
     handleStatusMove(move, "opponent");
+    
+    // Update the UI to show any stat changes
+    updateBattleUI();
+    
     setTimeout(() => endOpponentTurn(), 600);
     
     // Remove animation
