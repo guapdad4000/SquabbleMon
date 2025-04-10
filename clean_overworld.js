@@ -2097,6 +2097,49 @@ const NewOverworldSystem = (function () {
     console.log("Force interaction triggered");
     interact();
   }
+  
+  /**
+   * Start animation loop for player sprite
+   */
+  function startAnimationLoop() {
+    console.log("Starting player animation loop");
+    
+    // Animation frame ID for requestAnimationFrame
+    let animationFrameId = null;
+    
+    // Last time we updated the animation
+    let lastAnimationTime = 0;
+    
+    // Animation frame update rate in milliseconds
+    const ANIMATION_UPDATE_RATE = 120; // slightly faster than the internal timer
+    
+    // The animation loop
+    function animationLoop(timestamp) {
+      // Calculate time since last update
+      const elapsed = timestamp - lastAnimationTime;
+      
+      // Only update animation if enough time has passed and player is moving
+      if (elapsed > ANIMATION_UPDATE_RATE && player.moving) {
+        // Update animation frame if sprite manager is available
+        if (typeof PlayerSpriteManager !== 'undefined' && PlayerSpriteManager.isLoaded()) {
+          // Update the frame
+          PlayerSpriteManager.updateAnimationFrame();
+          
+          // Apply the updated frame
+          PlayerSpriteManager.applyToElement(playerSprite);
+          
+          // Record the time we updated
+          lastAnimationTime = timestamp;
+        }
+      }
+      
+      // Continue the animation loop
+      animationFrameId = requestAnimationFrame(animationLoop);
+    }
+    
+    // Start the animation loop
+    animationFrameId = requestAnimationFrame(animationLoop);
+  }
 
   // Export the public API
   return {
