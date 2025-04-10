@@ -462,34 +462,34 @@ body {
   opacity: 1;
 }
 
-/* Platforms */
+/* Platforms - Simplified consistent styles */
 #player-platform,
 #opponent-platform {
-  position: absolute;
+  width: 100%;
+  height: 20px;
   background-image: url("https://i.imgur.com/fEPAiIJ.png");
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center bottom;
-  border: none;
-  box-shadow: none;
-  z-index: 10; /* Ensure platforms appear below characters but above background */
+  margin-top: 0;
+  position: relative;
+  z-index: 5;
   image-rendering: pixelated;
+  display: block;
 }
 
-/* Platform for player - proportional to sprite size */
+/* Platform for player - specific adjustments */
 #player-platform {
-  height: 58px; /* Sized for player sprite */
-  width: 232px; /* Sized for player sprite */
-  bottom: 3%;
-  left: 5%; /* Match player area position */
+  width: 95%;
+  margin: 0 auto;
+  margin-top: -10px;
 }
 
 /* Standard platform for opponent */
 #opponent-platform {
-  height: 45px;
-  width: 180px;
-  top: 35%; /* Lowered further to fix position */
-  right: 8%;
+  width: 95%;
+  margin: 0 auto;
+  margin-top: -10px;
 }
 
 /* Positioning Areas */
