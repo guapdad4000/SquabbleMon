@@ -8,24 +8,24 @@ const PlayerSpriteManager = (function() {
   // Define image URLs for each frame by direction
   const SPRITE_FRAMES = {
     down: [
-      './attached_assets/fwd 1.png',   // Down, first frame
-      './attached_assets/fwd 2.png',   // Down, second frame
-      './attached_assets/fwd 1.png'    // Down, third frame (repeat first for smooth animation)
+      './assets/sprites/fwd 1.png',   // Down, first frame
+      './assets/sprites/fwd 2.png',   // Down, second frame
+      './assets/sprites/fwd 1.png'    // Down, third frame (repeat first for smooth animation)
     ],
     up: [
-      './attached_assets/back 1.png',   // Up, first frame
-      './attached_assets/back 2.png',   // Up, second frame
-      './attached_assets/back 1.png'    // Up, third frame (repeat first for smooth animation)
+      './assets/sprites/back 1.png',   // Up, first frame
+      './assets/sprites/back 2.png',   // Up, second frame
+      './assets/sprites/back 1.png'    // Up, third frame (repeat first for smooth animation)
     ],
     left: [
-      './attached_assets/left 1.png',   // Left, first frame
-      './attached_assets/left 2.png',   // Left, second frame
-      './attached_assets/left 1.png'    // Left, third frame (repeat first for smooth animation)
+      './assets/sprites/left 1.png',   // Left, first frame
+      './assets/sprites/left 2.png',   // Left, second frame
+      './assets/sprites/left 1.png'    // Left, third frame (repeat first for smooth animation)
     ],
     right: [
-      './attached_assets/right 1.png',  // Right, first frame
-      './attached_assets/right 2.png',  // Right, second frame
-      './attached_assets/right 1.png'   // Right, third frame (repeat first for smooth animation)
+      './assets/sprites/right 1.png',  // Right, first frame
+      './assets/sprites/right 2.png',  // Right, second frame
+      './assets/sprites/right 1.png'   // Right, third frame (repeat first for smooth animation)
     ]
   };
   
