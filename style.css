@@ -199,16 +199,14 @@ body {
 }
 
 .character-desc {
-  color: white;
+  color: #333;
   font-size: 10px;
   margin-top: 5px;
   font-style: italic;
   text-align: center;
   max-height: 40px;
   overflow: hidden;
-  text-shadow: 0 0 5px #fff, 0 0 10px #fff;
   line-height: 1.2;
-  animation: textPulse 3s ease-in-out infinite;
   opacity: 0.9;
 }
 
@@ -268,7 +266,7 @@ body {
 .character-card .character-desc {
   font-size: 9px;
   font-weight: normal;
-  color: white;
+  color: #444;
   margin-top: 3px;
   padding: 0 5px;
   text-align: center;
@@ -277,7 +275,6 @@ body {
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
-  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
 }
 
 @keyframes textPulse {
