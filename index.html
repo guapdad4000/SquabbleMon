@@ -1,96 +1,319 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SQUABBLE - Mode Selection</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #000;
-      color: #fff;
-      font-family: monospace, Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      background-image: url('https://i.imgur.com/OH3B6YT.png');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-    }
-    
-    .container {
-      width: 90%;
-      max-width: 500px;
-      padding: 30px;
-      background-color: rgba(0, 0, 0, 0.7);
-      border-radius: 15px;
-      text-align: center;
-    }
-    
-    h1 {
-      font-size: 48px;
-      margin: 0 0 20px 0;
-      color: #ff69b4;
-      text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
-    }
-    
-    p {
-      margin: 0 0 30px 0;
-      font-size: 16px;
-    }
-    
-    .button {
-      display: inline-block;
-      width: 100%;
-      padding: 15px;
-      margin-bottom: 15px;
-      background-color: #4ecca4;
-      color: #000;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 18px;
-      border-radius: 5px;
-      text-align: left;
-      border: none;
-      cursor: pointer;
-    }
-    
-    .button:hover {
-      background-color: #6edfb5;
-    }
-    
-    .description {
-      display: block;
-      font-size: 14px;
-      margin-top: 5px;
-      opacity: 0.8;
-      font-weight: normal;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>SQUABBLE</h1>
-    <p>Hood Fantasy Battle System</p>
-    
-    <form action="game.html" method="get">
-      <input type="hidden" name="mode" value="fade">
-      <button type="submit" class="button">
-        Fade Mode 👊
-        <span class="description">Quick battles against opponents</span>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Squabblemon - Retro Fade v2</title>
+    <!-- Updated Title -->
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="overworld-styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Audio Controls -->
+    <div id="audio-controls">
+      <button id="toggle-music" class="audio-button" title="Toggle Music">
+        <span id="music-icon">🔊</span>
       </button>
-    </form>
-    
-    <form action="game.html" method="get">
-      <input type="hidden" name="mode" value="story">
-      <button type="submit" class="button">
-        Story Mode 🗺️
-        <span class="description">Explore the hood, meet characters, build your squad</span>
+      <button id="toggle-sound" class="audio-button" title="Toggle Sound Effects">
+        <span id="sound-icon">🔊</span>
       </button>
-    </form>
-  </div>
-</body>
+    </div>
+
+    <!-- Game Mode Selection Screen -->
+    <div id="mode-selection-screen">
+      <h1>SQUABBLE</h1>
+      <p class="mode-subtitle">Hood Fantasy Battle System</p>
+      <div class="mode-buttons">
+        <button
+          id="fade-mode-button"
+          class="pixel-button mode-button"
+          onclick="window.selectGameMode('fade');"
+        >
+          Fade Mode <span style="font-size: 1.2em;">👊</span>
+          <div class="mode-description">Quick battles against opponents</div>
+        </button>
+        <button
+          id="story-mode-button"
+          class="pixel-button mode-button"
+          onclick="window.selectGameMode('story');"
+        >
+          Story Mode <span style="font-size: 1.2em;">🗺️</span>
+          <div class="mode-description">Explore the hood, meet characters, build your squad</div>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Character Selection Screen (initially hidden) -->
+    <div id="selection-screen" style="display: none;">
+      <h1>Build Your Gang (Pick 3)</h1>
+      <p class="selection-instruction">Click on 3 characters to form your squad. Hover to see stats!</p>
+      <div id="character-list"></div>
+      <div id="team-preview">
+        <h2>The Gang</h2>
+        <div id="team-slots">
+          <div class="team-slot"></div>
+          <div class="team-slot"></div>
+          <div class="team-slot"></div>
+        </div>
+        <div class="button-group">
+          <button
+            id="start-battle"
+            class="pixel-button"
+            disabled
+            onclick="window.startBattle();"
+          >
+            Start Fade <img src="https://i.gifer.com/ZS3t.gif" alt="Start" />
+          </button>
+          <!-- Disabling shop button on character select screen until it's functional -->
+          <!--<button
+            id="shop-button"
+            class="pixel-button"
+            onclick="window.openShop(window.gameShops.cornerStore);"
+          >
+            Shop <span style="font-size: 1.2em;">🛒</span>
+          </button>-->
+          <button
+            id="explore-button"
+            class="pixel-button"
+            onclick="window.startExploreMode();"
+          >
+            Explore <span style="font-size: 1.2em;">🗺️</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Overworld Container (initially hidden) -->
+    <div id="overworld-container" style="display: none;">
+      <div id="overworld-canvas"></div>
+      <div id="overworld-ui">
+        <div id="dialogue-box" style="display: none;">
+          <p id="npc-name">NPC Name</p>
+          <p id="dialogue-text">Dialogue text will appear here...</p>
+          <button id="next-dialogue" class="pixel-button">Next</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Battle Screen (Initially Hidden) -->
+    <div id="battle-screen" style="display: none">
+      <div id="ui-overlay">
+        <div id="fade-display">Fades: 0</div>
+        <div id="floating-log-container"><div id="floating-log"></div></div>
+      </div>
+      <div id="battle-arena">
+        <!-- Platforms moved outside of flex containers for absolute positioning -->
+        <div id="opponent-platform"></div>
+        <div id="player-platform"></div>
+        
+        <div id="opponent-area">
+          <p id="opponent-name" class="yn-name"></p>
+          <!-- Name ABOVE -->
+          <div class="hp-bar">
+            <div class="hp-fill" id="opponent-hp-fill"></div>
+            <span id="opponent-status-icon" class="status-icon"></span>
+          </div>
+          <p id="opponent-hp" class="yn-hp-value"></p>
+          <!-- Value BELOW -->
+          <div class="opponent-sprite-container">
+            <img id="opponent-sprite" src="" alt="" />
+            <div id="opponent-info-box" class="opponent-tooltip"><p id="opponent-info-text"></p></div>
+          </div>
+        </div>
+        <div id="player-area">
+          <p id="player-name" class="yn-name"></p>
+          <!-- Name ABOVE -->
+          <div class="hp-bar">
+            <div class="hp-fill" id="player-hp-fill"></div>
+            <span id="player-status-icon" class="status-icon"></span>
+          </div>
+          <p id="player-hp" class="yn-hp-value"></p>
+          <!-- Value BELOW -->
+          <div class="player-sprite-container">
+            <img id="player-sprite" src="" alt="" />
+            <div id="player-info-box" class="player-tooltip"><p id="player-info-text"></p></div>
+          </div>
+        </div>
+      </div>
+      <div id="battle-menu">
+        <!-- Action container - for compatibility -->
+        <div id="action-container" style="display: none;">
+          <!-- This is kept for compatibility, but we don't use it in the new UI -->
+        </div>
+
+        <!-- Moves section - 4 buttons for moves -->
+        <div id="moves">
+          <!-- Move buttons are generated in JavaScript, but we'll create a template -->
+          <button class="move-button" onclick="useMove(activePlayerCharacter.moves[0])">Move 1</button>
+          <button class="move-button" onclick="useMove(activePlayerCharacter.moves[1])">Move 2</button>
+          <button class="move-button" onclick="useMove(activePlayerCharacter.moves[2])">Move 3</button>
+          <button class="move-button" onclick="useMove(activePlayerCharacter.moves[3])">Move 4</button>
+        </div>
+        
+        <!-- Divider between moves and items -->
+        <div class="menu-divider"></div>
+        
+        <!-- Items section -->
+        <div id="items">
+          <button class="item-button" onclick="useItem('jcole')">
+            <span class="item-icon">💿</span> J Cole CD
+          </button>
+          <button class="item-button" onclick="useItem('nbayoungboy')">
+            <span class="item-icon">🎵</span> NBA CD
+          </button>
+          <button class="item-button" onclick="useItem('weed')">
+            <span class="item-icon">🌿</span> Weed
+          </button>
+          <button class="item-button" onclick="useItem('crashdummy')">
+            <span class="item-icon">🔄</span> Dummy
+          </button>
+        </div>
+        
+        <!-- Battle log with fixed header -->
+        <div id="battle-log-container">
+          <h3 id="battle-log-header">Battle Log:</h3>
+          <div id="battle-log-text">Battle started! Closet Nerd vs Functional Addict!</div>
+        </div>
+
+        <!-- Move info box (initially hidden) -->
+        <div id="move-info-box" style="display: none;">
+          <h3>Move Info:</h3>
+          <!-- Move details will be filled dynamically -->
+        </div>
+        
+        <!-- Bag button for using items -->
+        <button id="toggle-bag" onclick="showItems()">BAG</button>
+        
+        <!-- Switch button styled like in screenshot -->
+        <button id="toggle-switch" onclick="switchYN()">SWITCH</button>
+      </div>
+    </div>
+
+    <!-- Popups -->
+    <div id="game-over" class="pixel-popup" style="display: none">
+      <p id="game-over-message"></p>
+      <p id="fade-counter">Fades: 0</p>
+      <img id="win-lose-gif" src="" alt="Result Animation" />
+      <div id="share-buttons">
+        <p>Share:</p>
+        <img
+          src="https://s.imgur.com/desktop-assets/desktop-assets/facebook_share.8a1a86eac5223496bcac.svg"
+          alt="Share on Facebook"
+          onclick="share('facebook')"
+        />
+        <img
+          src="https://s.imgur.com/desktop-assets/desktop-assets/reddit_share.baa45974c901969819f8.svg"
+          alt="Share on Reddit"
+          onclick="share('reddit')"
+        />
+        <img
+          src="https://s.imgur.com/desktop-assets/desktop-assets/bluesky_share.221053c1008cd5c901fd.svg"
+          alt="Share on Bluesky"
+          onclick="share('bluesky')"
+        />
+      </div>
+      <button class="pixel-button" onclick="restartGame()">Again</button>
+      <button
+        id="continue-battle"
+        class="pixel-button"
+        style="display: none"
+        onclick="continueBattle()"
+      >
+        Next Fade
+      </button>
+    </div>
+    <div id="switch-screen" class="pixel-popup" style="display: none">
+      <h2>Switch YN</h2>
+      <div id="switch-options"></div>
+      <button
+        class="pixel-button"
+        onclick="cancelSwitch()"
+        style="margin-top: 15px"
+      >
+        Cancel
+      </button>
+    </div>
+    
+    <!-- Simple Switch Prompt -->
+    <div id="simple-switch-prompt" class="pixel-popup" style="display: none">
+      <h2>Switch Character?</h2>
+      <p id="simple-switch-message">Do you want to switch your character?</p>
+      <div class="button-row">
+        <button class="pixel-button" onclick="window.handleSimpleSwitchYes()">Yes</button>
+        <button class="pixel-button" onclick="window.handleSimpleSwitchNo()">No</button>
+      </div>
+    </div>
+    
+    <div id="move-tooltip" style="display: none"></div>
+    
+    <!-- Mobile Controls Iframe -->
+    <div id="mobile-controls-container">
+      <iframe id="mobile-controls-frame" src="mobile-controls.html" frameborder="0"></iframe>
+    </div>
+    
+    <!-- Level Up Notification -->
+    <div id="level-up-notification" class="pixel-popup" style="display: none">
+      <h2>Level Up!</h2>
+      <div id="level-up-content">
+        <!-- Content will be filled dynamically -->
+      </div>
+      <button class="pixel-button" onclick="document.getElementById('level-up-notification').style.display = 'none'">
+        Got it!
+      </button>
+    </div>
+    
+    <!-- Shop Screen (Initially Hidden) -->
+    <div id="shop-screen" class="pixel-popup" style="display: none">
+      <h2 id="shop-name">Shop</h2>
+      <div id="shop-items-container">
+        <!-- Items will be filled dynamically -->
+      </div>
+      <div id="shop-inventory-summary">
+        Your Cash: $<span id="player-money">0</span>
+      </div>
+      <button class="pixel-button" onclick="closeShop()">
+        Exit Shop
+      </button>
+    </div>
+    
+    <!-- New System Scripts (Load BEFORE main game script) -->
+    <script src="level-system.js"></script>
+    <script src="inventory-system.js"></script>
+    <script src="shop-system.js"></script>
+    <script src="animations.js"></script>
+<!-- Ensure animation functions are globally accessible -->
+<script>
+  // Make sure animation functions are accessible
+  window.setPlayerAnimation = function(animationType) {
+    if (window.AnimationSystem && window.AnimationSystem.setPlayerAnimation) {
+      return window.AnimationSystem.setPlayerAnimation(animationType);
+    } else {
+      console.error("Animation system not properly initialized");
+    }
+  }
+  
+  window.setOpponentAnimation = function(animationType) {
+    if (window.AnimationSystem && window.AnimationSystem.setOpponentAnimation) {
+      return window.AnimationSystem.setOpponentAnimation(animationType);
+    } else {
+      console.error("Animation system not properly initialized");
+    }
+  }
+</script>
+    <script src="battle-dialogue.js"></script>
+    <script src="fixed_sprite_manager.js"></script> <!-- Fixed sprite manager -->
+    <script src="sprite-manager.js"></script>
+    <script src="overworld.js"></script>
+    <script src="clean_overworld.js"></script> <!-- Updated overworld system with urban assets -->
+    <script src="script.js"></script>
+    
+    <!-- Emergency Fix -->
+    <script src="emergency_controls.js"></script>
+  </body>
 </html>
