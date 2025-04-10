@@ -5,27 +5,27 @@
  */
 
 const PlayerSpriteManager = (function() {
-  // Define image URLs for each frame by direction
+  // Define image URLs for each frame by direction - using remote URLs for consistent access
   const SPRITE_FRAMES = {
     down: [
-      './assets/sprites/fwd 1.png',   // Down, first frame
-      './assets/sprites/fwd 2.png',   // Down, second frame
-      './assets/sprites/fwd 1.png'    // Down, third frame (repeat first for smooth animation)
+      'https://i.imgur.com/NqENPVH.png',   // Down, first frame - fwd 1
+      'https://i.imgur.com/mZYjkJo.png',   // Down, second frame - fwd 2
+      'https://i.imgur.com/NqENPVH.png'    // Down, third frame (repeat first for smooth animation)
     ],
     up: [
-      './assets/sprites/back 1.png',   // Up, first frame
-      './assets/sprites/back 2.png',   // Up, second frame
-      './assets/sprites/back 1.png'    // Up, third frame (repeat first for smooth animation)
+      'https://i.imgur.com/3QcHLNL.png',   // Up, first frame - back 1
+      'https://i.imgur.com/0yLuZUX.png',   // Up, second frame - back 2
+      'https://i.imgur.com/3QcHLNL.png'    // Up, third frame (repeat first for smooth animation)
     ],
     left: [
-      './assets/sprites/left 1.png',   // Left, first frame
-      './assets/sprites/left 2.png',   // Left, second frame
-      './assets/sprites/left 1.png'    // Left, third frame (repeat first for smooth animation)
+      'https://i.imgur.com/JNAwDUE.png',   // Left, first frame - left 1
+      'https://i.imgur.com/IY5Fihx.png',   // Left, second frame - left 2
+      'https://i.imgur.com/JNAwDUE.png'    // Left, third frame (repeat first for smooth animation)
     ],
     right: [
-      './assets/sprites/right 1.png',  // Right, first frame
-      './assets/sprites/right 2.png',  // Right, second frame
-      './assets/sprites/right 1.png'   // Right, third frame (repeat first for smooth animation)
+      'https://i.imgur.com/uf5OnFV.png',  // Right, first frame - right 1
+      'https://i.imgur.com/jt4WvKU.png',  // Right, second frame - right 2
+      'https://i.imgur.com/uf5OnFV.png'   // Right, third frame (repeat first for smooth animation)
     ]
   };
   
