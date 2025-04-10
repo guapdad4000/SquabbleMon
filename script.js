@@ -3592,8 +3592,28 @@ function showMoves() {
 }
 
 function showItems() {
-  // In our new UI, we don't have separate views - both sections are always shown
-  showMoves();
+  // Show items section more prominently and scroll to it if needed
+  const itemsSection = document.getElementById('items');
+  const movesSection = document.getElementById('moves');
+  
+  if (itemsSection && movesSection) {
+    // Highlight items section
+    itemsSection.style.boxShadow = '0 0 8px #4CAF50';
+    itemsSection.style.animation = 'pulseHighlight 1s';
+    
+    // Dim moves section slightly
+    movesSection.style.opacity = '0.7';
+    
+    // Remove highlight after 2 seconds
+    setTimeout(() => {
+      itemsSection.style.boxShadow = '';
+      itemsSection.style.animation = '';
+      movesSection.style.opacity = '1';
+    }, 2000);
+    
+    // Scroll to items section if needed
+    itemsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
 }
 
 function setupMoveTooltips() {

@@ -982,7 +982,8 @@ body {
 /* When it's the opponent's turn, dim all buttons */
 .opponent-turn .move-button,
 .opponent-turn .item-button,
-.opponent-turn #toggle-switch {
+.opponent-turn #toggle-switch,
+.opponent-turn #toggle-bag {
   pointer-events: none;
   filter: grayscale(70%) brightness(70%);
 }
@@ -1035,6 +1036,37 @@ body {
 
 /* Switch button styled like in screenshot */
 /* Removed grid positioning for toggle-switch as it's now part of action-container */
+#toggle-bag {
+  position: absolute;
+  top: -15px; /* Position above battle log */
+  right: 75px; /* Position to the left of the switch button */
+  transform: none;
+  background-color: #4CAF50; /* Green color for the bag button */
+  color: white;
+  border: 2px solid #2e7d32; /* Darker green border */
+  text-align: center;
+  font-size: 11px;
+  padding: 5px 12px;
+  font-weight: bold;
+  cursor: pointer;
+  height: 23px;
+  width: 45px; /* Slightly smaller than switch button */
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  font-family: 'Press Start 2P', monospace;
+  letter-spacing: -1px;
+  box-shadow: 3px 3px 0px #000;
+}
+
+#toggle-bag:hover:not(:disabled) {
+  background-color: #5bc75f; /* Lighter green on hover */
+  transform: translateY(-2px);
+  box-shadow: 3px 5px 0px #000;
+}
+
 #toggle-switch {
   position: absolute;
   top: -15px; /* Position above battle log instead of bottom */
