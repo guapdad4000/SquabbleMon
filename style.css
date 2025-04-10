@@ -509,8 +509,8 @@ body {
 #player-area {
   width: 320px; /* Wider for player area to match larger sprite */
   min-height: 350px; /* Taller for player area */
-  bottom: calc(2% + 35px); /* Move player area down 15px more as requested */
-  left: calc(5% - 30px); /* Move player area 30px more to the left as requested */
+  bottom: calc(2% + 25px); /* Positioned down 25px from original as requested */
+  left: calc(5% - 10px); /* Positioned 10px left from original as requested */
   justify-content: flex-end; /* Align content to bottom */
 }
 
@@ -518,7 +518,7 @@ body {
   width: 180px; /* Standard width for opponent */
   min-height: 250px; /* Standard height for opponent */
   top: 7%; /* Adjusted top further up */
-  right: calc(9% - 15px); /* Move opponent area 15px to the right (by reducing right distance) */
+  right: calc(9% - 5px); /* Positioned 5px to the right of original position */
   justify-content: flex-start; /* Align content to top */
 }
 
