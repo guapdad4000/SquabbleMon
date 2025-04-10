@@ -5726,6 +5726,20 @@ function handleOpponentFaint() {
   addToBattleLog(`${activeOpponent.name} got faded!`);
   showFloatingLog(`${activeOpponent.name} faded!`);
   
+  // Save the defeated NPC ID in story mode to avoid lingering with 1 HP
+  if (currentGameMode === 'story' && activeOpponent && activeOpponent.id) {
+    // Initialize the defeated NPCs array if it doesn't exist
+    if (!window.defeatedNPCs) {
+      window.defeatedNPCs = [];
+    }
+    
+    // Add this opponent to the defeated list
+    if (!window.defeatedNPCs.includes(activeOpponent.id)) {
+      window.defeatedNPCs.push(activeOpponent.id);
+      console.log(`Added NPC ID ${activeOpponent.id} to defeated list:`, window.defeatedNPCs);
+    }
+  }
+  
   // Play success sound
   playSuccessSound();
   
