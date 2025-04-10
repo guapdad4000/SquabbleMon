@@ -5671,7 +5671,25 @@ function confirmSwitch(index) {
   // Update UI
   updateBattleUI();
   updateStatusIcons();
+  
+  // Make sure we re-enable game actions after switching
+  canAct = true;
+  gameActive = true;
+  
+  // Force the battle-menu opponent-turn class to be removed
+  const battleMenu = document.getElementById("battle-menu");
+  if (battleMenu) {
+    battleMenu.classList.remove("opponent-turn");
+  }
+  
+  // If it was the player's turn before switching, keep it as player's turn
+  if (isForced) {
+    currentTurn = "player";
+  }
+  
+  // Update move buttons with the new character's moves
   updateMoveButtons();
+  updateItemButtons();
   
   // In our new UI, both moves and items are always visible
   // This is kept for compatibility with the navigation system
@@ -5680,6 +5698,15 @@ function confirmSwitch(index) {
   if (isForced || (currentTurn === "player" && canAct)) {
     // Start the next turn after a brief delay
     setTimeout(() => {
+      // Set turn to player to ensure player can take action
+      currentTurn = "player";
+      canAct = true;
+      
+      // Force update UI once more after delay
+      updateBattleUI();
+      updateMoveButtons();
+      
+      // Continue turn processing
       processTurn();
     }, 600);
   } else {
@@ -5737,9 +5764,22 @@ function handlePlayerFaint() {
       showGameOver(false);
     }, 500);
   } else {
+    // Force reset the battle menu class to remove opponent-turn styling
+    const battleMenu = document.getElementById("battle-menu");
+    if (battleMenu) {
+      battleMenu.classList.remove("opponent-turn");
+    }
+    
     // Immediately show switch screen to choose next character
+    currentTurn = "player"; // Force current turn to player
     canAct = true; // Re-enable actions before showing switch screen
-    switchYN(); // Show switch screen right away
+    gameActive = true; // Ensure game is active
+    
+    // Show the switch screen after a brief delay
+    setTimeout(() => {
+      addToBattleLog("Choose your next character!");
+      switchYN(); // Show switch screen right away
+    }, 300);
   }
 }
 
