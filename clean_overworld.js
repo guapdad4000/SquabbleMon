@@ -1170,15 +1170,28 @@ const NewOverworldSystem = (function () {
     playerSprite.style.top = `${player.y * 64}px`;
 
     try {
-      // Always use the dedicated player overworld sprite
-      const playerOverworldSprite = "https://i.imgur.com/FjAwMlb.png";
-      console.log("Using dedicated player overworld sprite");
-      playerSprite.style.backgroundImage = `url(${playerOverworldSprite})`;
-
-      // Apply additional styling for the overworld player sprite
-      playerSprite.style.backgroundSize = "cover";
-      playerSprite.style.width = "64px";
-      playerSprite.style.height = "64px";
+      // Check if the PlayerSpriteManager is available
+      if (typeof PlayerSpriteManager !== 'undefined') {
+        // Update the player direction in the sprite manager
+        PlayerSpriteManager.setDirection(player.direction);
+        
+        // Apply the sprite to the player element
+        PlayerSpriteManager.applyToElement(playerSprite);
+        
+        // Make sure the sprite fits properly within the tile
+        playerSprite.style.width = "64px";
+        playerSprite.style.height = "64px";
+        
+        console.log("Using animated player sprite sheet");
+      } else {
+        // Fallback to static sprite if sprite manager not loaded
+        const playerOverworldSprite = "https://i.imgur.com/FjAwMlb.png";
+        console.log("Using fallback player overworld sprite");
+        playerSprite.style.backgroundImage = `url(${playerOverworldSprite})`;
+        playerSprite.style.backgroundSize = "cover";
+        playerSprite.style.width = "64px";
+        playerSprite.style.height = "64px";
+      }
     } catch (error) {
       console.error("Failed to set player sprite:", error);
       playerSprite.style.backgroundColor = "#00f"; // Blue fallback
@@ -1407,6 +1420,12 @@ const NewOverworldSystem = (function () {
 
     // Always update the direction
     player.direction = direction;
+    
+    // Update sprite animation for the new direction
+    if (typeof PlayerSpriteManager !== 'undefined') {
+      PlayerSpriteManager.setDirection(direction);
+      PlayerSpriteManager.applyToElement(playerSprite);
+    }
 
     // Calculate potential new position
     let newX = player.x;
@@ -1429,6 +1448,11 @@ const NewOverworldSystem = (function () {
 
     // Check for collisions
     if (isValidMove(newX, newY)) {
+      // Start walking animation
+      if (typeof PlayerSpriteManager !== 'undefined') {
+        PlayerSpriteManager.startAnimation();
+      }
+      
       // Update player position
       player.x = newX;
       player.y = newY;
@@ -1456,8 +1480,17 @@ const NewOverworldSystem = (function () {
       // Reset moving state after a delay
       setTimeout(() => {
         player.moving = false;
+        
+        // Stop walking animation
+        if (typeof PlayerSpriteManager !== 'undefined') {
+          PlayerSpriteManager.stopAnimation();
+        }
+        
         updatePlayerVisual();
       }, 100);
+    } else {
+      // Just face the direction even if we can't move
+      updatePlayerVisual();
     }
   }
 
