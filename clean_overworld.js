@@ -1212,11 +1212,69 @@ const NewOverworldSystem = (function () {
     console.log(
       `Player at position (${player.x},${player.y}) on tile type: ${tileType}`,
     );
+    
+    // Check for doors near the player and show indicators
+    updateDoorIndicators();
 
     // Camera follow system
     updateCameraPosition();
   }
 
+  /**
+   * Check if player is near a door and show an indicator if so
+   */
+  function updateDoorIndicators() {
+    // Remove any existing indicators first
+    const existingIndicators = document.querySelectorAll('.door-indicator');
+    existingIndicators.forEach(indicator => indicator.remove());
+    
+    // Check for doors in this zone
+    const doors = ZONE_DATA[currentZone].doors || [];
+    
+    for (const door of doors) {
+      // Check if player is close to a door (within 2 tiles)
+      if (Math.abs(door.x - player.x) <= 2 && Math.abs(door.y - player.y) <= 2) {
+        // Create a door indicator
+        const indicator = document.createElement('div');
+        indicator.className = 'door-indicator';
+        indicator.style.position = 'absolute';
+        indicator.style.left = `${door.x * 64 + 32 - 12}px`; // Center on the door tile
+        indicator.style.top = `${door.y * 64 - 20}px`; // Above the door tile
+        indicator.style.width = '24px';
+        indicator.style.height = '24px';
+        indicator.style.backgroundColor = 'rgba(255, 255, 0, 0.7)';
+        indicator.style.borderRadius = '50%';
+        indicator.style.border = '2px solid black';
+        indicator.style.zIndex = '100';
+        indicator.style.boxShadow = '0 0 10px white';
+        indicator.style.animation = 'pulse 1s infinite';
+        
+        // Create animation if it doesn't exist yet
+        if (!document.getElementById('door-indicator-animation')) {
+          const style = document.createElement('style');
+          style.id = 'door-indicator-animation';
+          style.textContent = `
+            @keyframes pulse {
+              0% { transform: scale(1); }
+              50% { transform: scale(1.2); }
+              100% { transform: scale(1); }
+            }
+          `;
+          document.head.appendChild(style);
+        }
+        
+        // Add tooltip text
+        indicator.title = `Enter ${ZONE_DATA[door.targetZone].name}`;
+        
+        // Add to the map wrapper
+        const mapWrapper = document.querySelector('.map-wrapper');
+        if (mapWrapper) {
+          mapWrapper.appendChild(indicator);
+        }
+      }
+    }
+  }
+  
   /**
    * Update camera position to follow the player
    */
