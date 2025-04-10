@@ -28,7 +28,8 @@
 
 body {
   font-family: "Press Start 2P", cursive;
-  background: linear-gradient(to bottom, #5a5a5a, #3a3a3a);
+  background: url('https://i.imgur.com/QNsJH3D.jpg') no-repeat center center fixed;
+  background-size: cover;
   color: var(--pixel-text-light);
   margin: 0;
   display: flex;
@@ -127,7 +128,7 @@ body {
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 500px;
+  max-width: 800px;
   height: 100%;
   margin: 0 auto;
 }
@@ -230,7 +231,7 @@ body {
   background-color: rgba(20, 0, 40, 0.7);
   border: 2px solid #4a148c;
   border-radius: 6px;
-  height: 450px;
+  height: 380px;
   overflow-y: auto;
   overflow-x: hidden;
   padding: 15px;
