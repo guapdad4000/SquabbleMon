@@ -51,40 +51,60 @@
     
     <!-- Character Selection Screen (initially hidden) -->
     <div id="selection-screen" style="display: none;">
-      <h1>Build Your Gang (Pick 3)</h1>
-      <p class="selection-instruction">Click on 3 characters to form your squad. Hover to see stats!</p>
-      <div id="character-list"></div>
-      <div id="team-preview">
-        <h2>The Gang</h2>
-        <div id="team-slots">
-          <div class="team-slot"></div>
-          <div class="team-slot"></div>
-          <div class="team-slot"></div>
+      <div class="selection-container">
+        <!-- Text on left side -->
+        <div class="selection-side-text">
+          <h1>Build<br>Your<br>Gang<br>(Pick<br>3)</h1>
         </div>
-        <div class="button-group">
-          <button
-            id="start-battle"
-            class="pixel-button"
-            disabled
-            onclick="window.startBattle();"
-          >
-            Start Fade <img src="https://i.gifer.com/ZS3t.gif" alt="Start" />
-          </button>
-          <!-- Disabling shop button on character select screen until it's functional -->
-          <!--<button
-            id="shop-button"
-            class="pixel-button"
-            onclick="window.openShop(window.gameShops.cornerStore);"
-          >
-            Shop <span style="font-size: 1.2em;">🛒</span>
-          </button>-->
-          <button
-            id="explore-button"
-            class="pixel-button"
-            onclick="window.startExploreMode();"
-          >
-            Explore <span style="font-size: 1.2em;">🗺️</span>
-          </button>
+        
+        <!-- Main selection content -->
+        <div class="selection-main">
+          <!-- Info box at top -->
+          <div class="selection-info-box">
+            <h2>Select Your Squad</h2>
+            <p>Choose three characters to form your team. Each has unique strengths and abilities.</p>
+          </div>
+          
+          <!-- Character grid -->
+          <div id="character-list"></div>
+          
+          <!-- Team preview at bottom -->
+          <div class="team-section">
+            <h2>The Gang</h2>
+            <div id="team-slots">
+              <div class="team-slot"></div>
+              <div class="team-slot"></div>
+              <div class="team-slot"></div>
+            </div>
+          </div>
+          
+          <!-- Buttons at bottom -->
+          <div class="action-buttons">
+            <button
+              id="start-battle"
+              class="pixel-button battle-button"
+              disabled
+              onclick="window.startBattle();"
+            >
+              Start<br>Fade
+            </button>
+            
+            <button
+              id="free-style"
+              class="pixel-button freestyle-button"
+              disabled
+            >
+              FREE<br>STYLE
+            </button>
+            
+            <button
+              id="explore-button" 
+              class="pixel-button explore-button"
+              onclick="window.selectGameMode('explore');"
+            >
+              Explore<br>🌆
+            </button>
+          </div>
         </div>
       </div>
     </div>
