@@ -195,8 +195,11 @@ function updateNpcSprite(npcElement, npcData) {
     return;
   }
   
-  // Get base sprite URL for this NPC
-  const baseUrl = npcData.sprite || NPC_SPRITES[npcData.name] || NPC_SPRITES['Default'];
+  // Get base sprite URL for this NPC - using window.NPC_SPRITES to avoid duplicate declaration issues
+  const baseUrl = npcData.sprite || 
+                 (window.NPC_SPRITES && window.NPC_SPRITES[npcData.name]) || 
+                 (window.NPC_SPRITES && window.NPC_SPRITES['Default']) || 
+                 'https://i.imgur.com/YeMI4sr.png';
   
   // Resolve the sprite URL
   const spriteUrl = getGameSpriteUrl(baseUrl);
@@ -497,6 +500,6 @@ window.SpriteManager = {
   updateNpcSprite,
   getGameSpriteUrl,
   debugSpriteIssues,
-  NINJA_CHARACTER_SPRITES,
-  NPC_SPRITES
+  NINJA_CHARACTER_SPRITES
+  // Remove NPC_SPRITES reference here to avoid duplication
 };
