@@ -462,24 +462,38 @@ body {
   opacity: 1;
 }
 
-/* Platforms - Simplified consistent styles */
+/* Platform styling based on the screenshot */
 #player-platform,
 #opponent-platform {
-  width: 95%;
-  height: 30px;
   background-image: url("https://i.imgur.com/fEPAiIJ.png");
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center bottom;
-  margin: 0 auto;
-  position: relative;
+  position: absolute;
   z-index: 5;
   image-rendering: pixelated;
-  display: block;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  display: block !important;
   border: none !important;
   border-radius: 0 !important;
   background-color: transparent !important;
+}
+
+/* Player platform - positioned exactly as shown in screenshot */
+#player-platform {
+  width: 300px;
+  height: 50px; 
+  bottom: 15%; /* Position above the menu */
+  left: 3%;
+  z-index: 5;
+}
+
+/* Opponent platform - positioned exactly as shown in screenshot */
+#opponent-platform {
+  width: 250px;
+  height: 40px;
+  top: 33%;
+  right: 1%;
+  z-index: 5;
 }
 
 /* Positioning Areas */
@@ -674,11 +688,7 @@ body {
   visibility: visible !important;
   opacity: 1 !important;
 } /* Sprite container LAST */
-#player-area #player-platform {
-  order: 5;
-  margin-top: -25px; /* Position slightly overlapping with sprite container */
-  z-index: 4; /* Below sprite but above background */
-}
+/* Player platform is now positioned absolutely outside the flex container */
 
 #opponent-area .opponent-sprite-container {
   order: 1;
@@ -704,11 +714,7 @@ body {
   order: 4;
   margin-top: 3px;
 }
-#opponent-area #opponent-platform {
-  order: 0; /* Ensure it appears before the sprite */
-  margin-bottom: -25px; /* Position slightly overlapping with sprite container */
-  z-index: 4; /* Below sprite but above background */
-}
+/* Opponent platform is now positioned absolutely outside the flex container */
 
 /* Shared Styles for Name/Value/Bar */
 .yn-name {

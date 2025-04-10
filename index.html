@@ -107,6 +107,10 @@
         <div id="floating-log-container"><div id="floating-log"></div></div>
       </div>
       <div id="battle-arena">
+        <!-- Platforms moved outside of flex containers for absolute positioning -->
+        <div id="opponent-platform"></div>
+        <div id="player-platform"></div>
+        
         <div id="opponent-area">
           <p id="opponent-name" class="yn-name"></p>
           <!-- Name ABOVE -->
@@ -120,7 +124,6 @@
             <img id="opponent-sprite" src="" alt="" />
             <div id="opponent-info-box" class="opponent-tooltip"><p id="opponent-info-text"></p></div>
           </div>
-          <div id="opponent-platform"></div>
         </div>
         <div id="player-area">
           <p id="player-name" class="yn-name"></p>
@@ -135,7 +138,6 @@
             <img id="player-sprite" src="" alt="" />
             <div id="player-info-box" class="player-tooltip"><p id="player-info-text"></p></div>
           </div>
-          <div id="player-platform"></div>
         </div>
       </div>
       <div id="battle-menu">
