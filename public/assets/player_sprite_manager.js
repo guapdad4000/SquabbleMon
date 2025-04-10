@@ -11,8 +11,13 @@ const PlayerSpriteManager = (function() {
   const SPRITE_FRAMES = {
     down: [
       { x: 0, y: 0 },   // First row, first column
-      { x: 1, y: 0 },   // First row, second column 
+      { x: 1, y: 0 },   // First row, second column
       { x: 2, y: 0 }    // First row, third column
+    ],
+    up: [
+      { x: 0, y: 3 },   // Fourth row, first column
+      { x: 1, y: 3 },   // Fourth row, second column
+      { x: 2, y: 3 }    // Fourth row, third column
     ],
     left: [
       { x: 0, y: 1 },   // Second row, first column
@@ -23,11 +28,6 @@ const PlayerSpriteManager = (function() {
       { x: 0, y: 2 },   // Third row, first column
       { x: 1, y: 2 },   // Third row, second column
       { x: 2, y: 2 }    // Third row, third column
-    ],
-    up: [
-      { x: 0, y: 0 },   // Using the first row as fallback for up direction
-      { x: 1, y: 0 },
-      { x: 2, y: 0 }
     ]
   };
   
@@ -36,7 +36,7 @@ const PlayerSpriteManager = (function() {
   const FRAME_HEIGHT = 32;
   
   // Animation timing
-  const ANIMATION_SPEED = 200; // ms per frame
+  const ANIMATION_SPEED = 150; // ms per frame - slightly faster animation
   
   // Current animation state
   let currentDirection = 'down';
@@ -74,7 +74,7 @@ const PlayerSpriteManager = (function() {
       return {
         backgroundImage: `url(${SPRITE_SHEET_URL})`,
         backgroundPosition: '0px 0px',
-        backgroundSize: `${FRAME_WIDTH * 3}px ${FRAME_HEIGHT * 3}px`
+        backgroundSize: `${FRAME_WIDTH * 3}px ${FRAME_HEIGHT * 4}px`
       };
     }
     
@@ -88,7 +88,7 @@ const PlayerSpriteManager = (function() {
     return {
       backgroundImage: `url(${SPRITE_SHEET_URL})`,
       backgroundPosition: `-${posX}px -${posY}px`,
-      backgroundSize: `${FRAME_WIDTH * 3}px ${FRAME_HEIGHT * 3}px`
+      backgroundSize: `${FRAME_WIDTH * 3}px ${FRAME_HEIGHT * 4}px`
     };
   }
   
@@ -116,6 +116,9 @@ const PlayerSpriteManager = (function() {
     isMoving = false;
     clearInterval(animationTimer);
     currentFrame = 0; // Reset to standing frame
+    
+    // Important: Apply this frame update to make the change visible
+    console.log('[PLAYER SPRITE] Animation stopped, reset to frame 0');
   }
   
   /**

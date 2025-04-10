@@ -1424,6 +1424,8 @@ const NewOverworldSystem = (function () {
     // Update sprite animation for the new direction
     if (typeof PlayerSpriteManager !== 'undefined') {
       PlayerSpriteManager.setDirection(direction);
+      // Start animation immediately as the player attempts to move
+      PlayerSpriteManager.startAnimation();
       PlayerSpriteManager.applyToElement(playerSprite);
     }
 
@@ -1448,11 +1450,6 @@ const NewOverworldSystem = (function () {
 
     // Check for collisions
     if (isValidMove(newX, newY)) {
-      // Start walking animation
-      if (typeof PlayerSpriteManager !== 'undefined') {
-        PlayerSpriteManager.startAnimation();
-      }
-      
       // Update player position
       player.x = newX;
       player.y = newY;
