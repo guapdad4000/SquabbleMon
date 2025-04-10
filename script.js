@@ -3640,11 +3640,19 @@ function showMoves() {
 }
 
 function showItems() {
+  if (!canAct || currentTurn !== "player") return;
+  
   // Show items section more prominently and scroll to it if needed
   const itemsSection = document.getElementById('items');
   const movesSection = document.getElementById('moves');
   
+  // Update button states based on the player's inventory
+  updateItemButtons();
+  
   if (itemsSection && movesSection) {
+    // Make sure moves don't overshadow items
+    movesSection.style.boxShadow = 'none';
+    
     // Highlight items section
     itemsSection.style.boxShadow = '0 0 8px #4CAF50';
     itemsSection.style.animation = 'pulseHighlight 1s';
@@ -3661,6 +3669,16 @@ function showItems() {
     
     // Scroll to items section if needed
     itemsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    
+    // Make sure items are displayed
+    itemsSection.style.display = 'grid';
+    
+    // Refresh navigation for mobile controls
+    setTimeout(() => {
+      if (typeof initNav === 'function') {
+        initNav();
+      }
+    }, 50);
   }
 }
 
