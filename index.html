@@ -1,100 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SQUABBLE</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Squabble - Hood Fantasy</title>
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="overworld-styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
     
-    @font-face {
-      font-family: 'PixelFont';
-      src: url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-      font-weight: normal;
-      font-style: normal;
-    }
-    
-    body {
-      background-color: #000;
-      font-family: 'PixelFont', 'Press Start 2P', monospace, sans-serif;
-      height: 100vh;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    .container {
-      width: 100%;
-      max-width: 500px;
-      text-align: center;
-    }
-    
-    .title {
-      color: #fff;
-      font-size: 48px;
-      margin-bottom: 20px;
-      text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
-      animation: glow 1.5s ease-in-out infinite alternate;
-    }
-    
-    @keyframes glow {
-      from {
-        text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+    <!-- Fix background issues with inline styles -->
+    <style>
+      #mode-selection-screen {
+        background-color: #000000 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+        min-height: 100vh !important;
+        padding: 20px !important;
       }
-      to {
-        text-shadow: 0 0 20px #ff00ff, 0 0 30px #ff00ff, 0 0 40px #ff00ff;
+      
+      .neon-title {
+        color: #ffffff !important;
+        font-size: 48px !important;
+        text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff !important;
+        text-align: center !important;
+        margin-bottom: 10px !important;
+        animation: glow 1.5s ease-in-out infinite alternate !important;
+        text-transform: uppercase !important;
       }
-    }
+      
+      @keyframes glow {
+        from { text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff !important; }
+        to { text-shadow: 0 0 20px #ff00ff, 0 0 30px #ff00ff, 0 0 40px #ff00ff !important; }
+      }
+      
+      .square-mode-button {
+        background-color: #4ecca4 !important;
+        color: #000000 !important;
+        border: none !important;
+        padding: 20px !important;
+        width: 90% !important;
+        max-width: 400px !important;
+        margin: 10px auto !important;
+        display: block !important;
+        text-align: center !important;
+        font-size: 18px !important;
+        font-weight: bold !important;
+        cursor: pointer !important;
+        transition: background-color 0.2s !important;
+      }
+      
+      .square-mode-button:hover {
+        background-color: #6edfb5 !important;
+      }
+      
+      #selection-screen {
+        background-image: url('https://i.imgur.com/ZvMKSyp.jpg') !important;
+        background-size: cover !important;
+        background-position: center !important;
+        background-repeat: no-repeat !important;
+      }
+      
+      #battle-screen {
+        background-image: url('https://i.imgur.com/Rb03YLf.jpg') !important;
+        background-size: cover !important;
+        background-position: center !important;
+        background-repeat: no-repeat !important;
+      }
+      
+      #battle-arena {
+        background-image: url('https://i.imgur.com/nY7oky9.jpg') !important;
+        background-size: cover !important;
+        background-position: center !important;
+        background-repeat: no-repeat !important;
+      }
+    </style>
     
-    .subtitle {
-      color: #fff;
-      margin-bottom: 50px;
-    }
+    <!-- Mode loader for direct URL parameter loading -->
+    <script src="mode_loader.js"></script>
+  </head>
+  <body style="background-color: #000;">
+    <!-- Audio Controls -->
+    <div id="audio-controls">
+      <button id="toggle-music" class="audio-button" title="Toggle Music">
+        <span id="music-icon">🔊</span>
+      </button>
+      <button id="toggle-sound" class="audio-button" title="Toggle Sound Effects">
+        <span id="sound-icon">🔊</span>
+      </button>
+    </div>
+
+    <!-- Game Mode Selection Screen -->
+    <div id="mode-selection-screen">
+      <div class="mode-title">
+        <h1 class="neon-title">SQUABBLE</h1>
+        <p class="mode-subtitle">Hood Fantasy Battle System</p>
+      </div>
+      <div class="mode-buttons">
+        <button
+          id="fade-mode-button"
+          class="square-mode-button"
+          onclick="window.selectGameMode('fade');"
+        >
+          Fade Mode <span style="font-size: 1.2em;">👊</span>
+          <div class="mode-description">Quick battles against opponents</div>
+        </button>
+        <button
+          id="story-mode-button"
+          class="square-mode-button"
+          onclick="window.selectGameMode('story');"
+        >
+          Story Mode <span style="font-size: 1.2em;">🗺️</span>
+          <div class="mode-description">Explore the hood, meet characters, build your squad</div>
+        </button>
+      </div>
+    </div>
     
-    .btn {
-      display: block;
-      width: 100%;
-      background-color: #4ecca4;
-      color: #000;
-      border: none;
-      padding: 20px;
-      margin-bottom: 20px;
-      font-size: 18px;
-      font-weight: bold;
-      cursor: pointer;
-      font-family: inherit;
-    }
+    <!-- Character Selection Screen (initially hidden) -->
+    <div id="selection-screen" style="display: none;">
+      <!-- This will be populated by JS -->
+    </div>
     
-    .btn:hover {
-      background-color: #6edfb5;
-    }
+    <!-- Battle Screen (Initially Hidden) -->
+    <div id="battle-screen" style="display: none;">
+      <!-- This will be populated by JS -->
+    </div>
     
-    .description {
-      font-size: 12px;
-      margin-top: 8px;
-      opacity: 0.8;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1 class="title">SQUABBLE</h1>
-    <p class="subtitle">Hood Fantasy Battle System</p>
+    <!-- Overworld Container (initially hidden) -->
+    <div id="overworld-container" style="display: none;">
+      <!-- This will be populated by JS -->
+    </div>
     
-    <button class="btn" onclick="alert('Fade Mode selected!')">
-      Fade Mode 👊
-      <div class="description">Quick battles against opponents</div>
-    </button>
-    
-    <button class="btn" onclick="alert('Story Mode selected!')">
-      Story Mode 🗺️
-      <div class="description">Explore the hood, meet characters, build your squad</div>
-    </button>
-  </div>
-</body>
+    <!-- Load all scripts -->
+    <script src="level-system.js"></script>
+    <script src="inventory-system.js"></script>
+    <script src="shop-system.js"></script>
+    <script src="animations.js"></script>
+    <script src="battle-dialogue.js"></script>
+    <script src="fixed_sprite_manager.js"></script>
+    <script src="sprite-manager.js"></script>
+    <script src="overworld.js"></script>
+    <script src="clean_overworld.js"></script>
+    <script src="script.js"></script>
+  </body>
 </html>
