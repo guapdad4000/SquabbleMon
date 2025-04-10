@@ -3392,6 +3392,20 @@ function updateMoveButtons() {
   const movesContainer = document.getElementById("moves");
   if (!movesContainer || !activePlayerCharacter || !activePlayerCharacter.moves) return;
   
+  // Check if it's the opponent's turn
+  const isOpponentTurn = currentTurn === "opponent";
+  console.log("Current turn is", currentTurn, "- Opponent turn:", isOpponentTurn);
+  
+  // Update battle-menu class to indicate opponent's turn for CSS styling
+  const battleMenu = document.getElementById("battle-menu");
+  if (battleMenu) {
+    if (isOpponentTurn) {
+      battleMenu.classList.add("opponent-turn");
+    } else {
+      battleMenu.classList.remove("opponent-turn");
+    }
+  }
+  
   // Get all move buttons
   const moveButtons = movesContainer.querySelectorAll(".move-button");
   
@@ -3425,22 +3439,36 @@ function updateMoveButtons() {
       // Add data for tooltips
       button.dataset.move = JSON.stringify(move);
       
-      // Style based on move type
+      // Start with clean slate - remove all existing classes
       button.className = "move-button";
       
-      // If move has no PP left, disable the button
-      if (move.pp !== undefined && move.pp <= 0) {
+      // Handle opponent turn or PP limitations
+      if (isOpponentTurn) {
+        // Add disabled class for styling when it's opponent's turn
+        button.classList.add("disabled");
         button.disabled = true;
-        button.style.opacity = "0.5";
-        button.style.cursor = "not-allowed";
+      } else if (move.pp !== undefined && move.pp <= 0) {
+        // Add disabled class for styling when no PP left
+        button.classList.add("disabled");
+        button.disabled = true;
       } else {
+        // Make sure button is enabled
         button.disabled = false;
-        button.style.opacity = "1";
-        button.style.cursor = "pointer";
+        button.classList.remove("disabled");
       }
       
       // Set click handler
-      button.onclick = () => useMove(move);
+      button.onclick = function() {
+        // Only process if not disabled
+        if (!this.disabled) {
+          // Remove selected class from all buttons first
+          moveButtons.forEach(btn => btn.classList.remove("selected"));
+          // Add selected class to the clicked button
+          this.classList.add("selected");
+          // Execute the move
+          useMove(move);
+        }
+      };
       
       // Show button
       button.style.display = "block";
@@ -3468,8 +3496,16 @@ function updateItemButtons() {
   const itemButtons = document.querySelectorAll("#items button");
   if (!itemButtons || itemButtons.length === 0) return;
   
-  // Update button states based on available items
+  // Check if it's the opponent's turn
+  const isOpponentTurn = currentTurn === "opponent";
+  
+  // Update button states based on available items and turn
   itemButtons.forEach(button => {
+    // Make sure we have the item-button class for styling
+    if (!button.classList.contains("item-button")) {
+      button.classList.add("item-button");
+    }
+    
     const onclickAttr = button.getAttribute("onclick");
     if (!onclickAttr) return;
     
@@ -3479,15 +3515,37 @@ function updateItemButtons() {
     const itemType = match[1];
     if (!itemUseCounts[itemType] && itemUseCounts[itemType] !== 0) return;
     
-    // Disable if item is used up and style it differently
-    button.disabled = itemUseCounts[itemType] <= 0;
-    if (itemUseCounts[itemType] <= 0) {
-      button.style.opacity = "0.5";
-      button.style.cursor = "not-allowed";
+    // Reset any existing special classes
+    button.classList.remove("disabled");
+    button.classList.remove("selected");
+    
+    // Handle opponent turn or depleted items
+    if (isOpponentTurn) {
+      // Add disabled class for styling when it's opponent's turn
+      button.classList.add("disabled");
+      button.disabled = true;
+    } else if (itemUseCounts[itemType] <= 0) {
+      // Add disabled class for styling when item is depleted
+      button.classList.add("disabled");
+      button.disabled = true;
     } else {
-      button.style.opacity = "1";
-      button.style.cursor = "pointer";
+      // Make sure button is enabled
+      button.disabled = false;
     }
+    
+    // Update click handler to handle selected state
+    const originalOnclick = button.onclick;
+    button.onclick = function() {
+      // Only process if not disabled
+      if (!this.disabled) {
+        // Remove selected class from all item buttons
+        itemButtons.forEach(btn => btn.classList.remove("selected"));
+        // Add selected class to the clicked button
+        this.classList.add("selected");
+        // Execute the original onclick
+        originalOnclick.call(this);
+      }
+    };
   });
   
   // Refresh navigation for mobile controls
