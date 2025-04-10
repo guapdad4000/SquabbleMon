@@ -933,6 +933,13 @@ const NewOverworldSystem = (function() {
   function handleKeyDown(e) {
     console.log("Overworld keydown:", e.key);
     
+    // Check if battle screen is visible - if so, don't allow overworld movement
+    const battleScreen = document.getElementById('battle-screen');
+    if (battleScreen && getComputedStyle(battleScreen).display !== 'none') {
+      console.log("Battle screen is active, ignoring overworld movement keys");
+      return;
+    }
+    
     // In dialogue mode, handle both action key and escape/B keys
     if (dialogueBox && dialogueBox.style.display !== 'none') {
       console.log("In dialogue mode, handling:", e.key);
@@ -1352,11 +1359,25 @@ const NewOverworldSystem = (function() {
   function startNpcBattle(npc) {
     console.log("Starting battle with NPC:", npc.name);
     
+    // Assign a unique ID to the NPC if it doesn't have one
+    if (!npc.id) {
+      npc.id = `npc_${npc.name.replace(/\s+/g, '_').toLowerCase()}_${Date.now()}`;
+      console.log("Assigned new ID to NPC:", npc.id);
+    }
+    
+    // Check if this NPC has been defeated already
+    if (window.defeatedNPCs && window.defeatedNPCs.includes(npc.id)) {
+      console.log("This NPC has already been defeated:", npc.id);
+      alert(`${npc.name} has already been defeated and isn't looking for another fade!`);
+      return;
+    }
+    
     // Create opponent based on NPC
     const npcLevel = npc.level || 5;
     
     // Create proper opponent structure for battle system
     const opponent = {
+      id: npc.id, // Include the ID so the battle system can mark it as defeated
       name: npc.name,
       type: "npc",
       level: npcLevel,
