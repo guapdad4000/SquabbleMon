@@ -721,63 +721,55 @@ function applyVisualEffectGif(moveType, user) {
     // Use a lower z-index to ensure the effect appears behind character sprites
     effectDiv.style.zIndex = '5';
     
-    // Position the effect depending on who is using the move - align behind character
-    if (user === 'player') {
-      // Get the player sprite position
-      const playerSprite = document.getElementById('player-sprite');
-      if (playerSprite) {
-        // Position the effect behind the player, aligning the bottom of the effect with the bottom of the sprite
-        const playerRect = playerSprite.getBoundingClientRect();
-        const battleScreen = document.getElementById('battle-screen') || document.querySelector('.battle-screen');
-        const battleRect = battleScreen.getBoundingClientRect();
-        
-        // Calculate percentages for positioning
-        const leftPos = ((playerRect.left + playerRect.width/2 - battleRect.left) / battleRect.width * 100) - 7.5; // Center horizontally
-        const topPos = ((playerRect.bottom - battleRect.top) / battleRect.height * 100) - 25; // Align bottoms with offset
-        
-        effectDiv.style.left = `${leftPos}%`;
-        effectDiv.style.top = `${topPos}%`;
-        effectDiv.style.transform = 'translateX(-50%)'; // Center the effect
-        console.log("Positioned effect behind player at:", leftPos, topPos);
+    // Position the effect at the bottom of the affected sprite (target), not the user
+    // For normal attacks, we want to show the effect on the opponent when player attacks
+    // and on the player when opponent attacks
+    const isAttackEffect = !moveType.toLowerCase().includes('buff') && 
+                          !moveType.toLowerCase().includes('heal') && 
+                          !moveType.toLowerCase().includes('status');
+    
+    // Determine target sprite based on who's using the move
+    const targetUser = isAttackEffect ? (user === 'player' ? 'opponent' : 'player') : user;
+    
+    // Get the appropriate sprite based on who is the target
+    const targetSprite = document.getElementById(targetUser === 'player' ? 'player-sprite' : 'opponent-sprite');
+    const battleScreen = document.getElementById('battle-screen') || document.querySelector('.battle-screen');
+    
+    if (targetSprite && battleScreen) {
+      // Get the target sprite position
+      const targetRect = targetSprite.getBoundingClientRect();
+      const battleRect = battleScreen.getBoundingClientRect();
+      
+      // Calculate percentages for positioning
+      const leftPos = ((targetRect.left + targetRect.width/2 - battleRect.left) / battleRect.width * 100) - 7.5; // Center horizontally
+      
+      // Check for specific move types that need better positioning
+      const isElectricEffect = moveType.toLowerCase() === 'electric' || 
+                             moveType.toLowerCase() === 'lightning';
+      
+      // Adjust vertical positioning based on effect type
+      let topPos = 0;
+      if (isElectricEffect) {
+        // Center the effect on the sprite
+        topPos = ((targetRect.top + targetRect.height/2 - battleRect.top) / battleRect.height * 100) - 15;
+        effectDiv.style.width = '200px'; // Make electric effects larger
+        effectDiv.style.height = '200px';
       } else {
-        // Fallback if sprite not found
+        // Position at the bottom of the sprite for most effects
+        topPos = ((targetRect.bottom - battleRect.top) / battleRect.height * 100) - 25; // Align with bottom
+      }
+      
+      effectDiv.style.left = `${leftPos}%`;
+      effectDiv.style.top = `${topPos}%`;
+      effectDiv.style.transform = 'translateX(-50%)'; // Center the effect
+      console.log(`Positioned effect (${moveType}) at bottom of ${targetUser} at:`, leftPos, topPos);
+    } else {
+      // Fallback if sprite or battle screen not found
+      console.warn("Target sprite or battle screen not found, using fallback positioning");
+      if (targetUser === 'player') {
         effectDiv.style.left = '60%';
         effectDiv.style.top = '60%';
-      }
-    } else {
-      // For opponent
-      const opponentSprite = document.getElementById('opponent-sprite');
-      if (opponentSprite) {
-        // Position the effect behind the opponent, aligning the bottom of the effect with the bottom of the sprite
-        const opponentRect = opponentSprite.getBoundingClientRect();
-        const battleScreen = document.getElementById('battle-screen') || document.querySelector('.battle-screen');
-        const battleRect = battleScreen.getBoundingClientRect();
-        
-        // Calculate percentages for positioning
-        const leftPos = ((opponentRect.left + opponentRect.width/2 - battleRect.left) / battleRect.width * 100) - 7.5; // Center horizontally
-        
-        // Check for specific move types that need better positioning
-        const isElectricEffect = moveType.toLowerCase() === 'electric' || 
-                               moveType.toLowerCase() === 'lightning';
-                               
-        // Adjust vertical positioning for electric effects - they need to be better centered
-        let topPos = 0;
-        if (isElectricEffect) {
-          // Center the effect on the sprite rather than aligning bottoms
-          topPos = ((opponentRect.top + opponentRect.height/2 - battleRect.top) / battleRect.height * 100) - 15;
-          effectDiv.style.width = '200px'; // Make electric effects larger
-          effectDiv.style.height = '200px';
-        } else {
-          // Standard positioning for other effects
-          topPos = ((opponentRect.bottom - battleRect.top) / battleRect.height * 100) - 25; // Align bottoms with offset
-        }
-        
-        effectDiv.style.left = `${leftPos}%`;
-        effectDiv.style.top = `${topPos}%`;
-        effectDiv.style.transform = 'translateX(-50%)'; // Center the effect
-        console.log(`Positioned effect (${moveType}) behind opponent at:`, leftPos, topPos);
       } else {
-        // Fallback if sprite not found
         effectDiv.style.left = '20%';
         effectDiv.style.top = '40%';
       }
