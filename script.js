@@ -1571,6 +1571,14 @@ function initMobileControls() {
 // Function to select game mode
 function selectGameMode(mode) {
   console.log(`Selecting game mode: ${mode}`);
+  
+  // Special case for 'explore' - call startExploreMode directly
+  if (mode === 'explore') {
+    currentGameMode = 'story'; // Set to story mode for explore
+    startExploreMode();
+    return;
+  }
+  
   currentGameMode = mode;
   
   // Hide mode selection screen
