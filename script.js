@@ -3506,7 +3506,42 @@ function updateMoveButtons() {
 
 function updateItemButtons() {
   // In our new UI, item buttons are fixed and styled directly in the HTML
+  const itemsSection = document.getElementById("items");
   const itemButtons = document.querySelectorAll("#items button");
+  if (!itemsSection) return;
+  
+  // Check if player has any items
+  let hasAnyItems = false;
+  
+  // First, check if there are any items in the inventory
+  if (playerInventory && playerInventory.items) {
+    hasAnyItems = playerInventory.items.some(item => item.count > 0);
+  }
+  
+  // Create or remove the empty bag message
+  let emptyBagMessage = document.querySelector(".empty-bag-message");
+  if (!hasAnyItems) {
+    // If no items and no message, create one
+    if (!emptyBagMessage) {
+      emptyBagMessage = document.createElement("div");
+      emptyBagMessage.className = "empty-bag-message";
+      emptyBagMessage.textContent = "Your bag is empty. Visit the shop to purchase items!";
+      
+      // Insert before the first button or append to the end
+      if (itemButtons && itemButtons.length > 0) {
+        itemsSection.insertBefore(emptyBagMessage, itemButtons[0]);
+      } else {
+        itemsSection.appendChild(emptyBagMessage);
+      }
+    }
+  } else {
+    // If has items but message exists, remove it
+    if (emptyBagMessage) {
+      emptyBagMessage.remove();
+    }
+  }
+  
+  // If there are no buttons, exit early
   if (!itemButtons || itemButtons.length === 0) return;
   
   // Check if it's the opponent's turn
